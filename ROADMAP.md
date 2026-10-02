@@ -15,8 +15,9 @@ O estado de execução fica em [PROJECT_STATE.md](PROJECT_STATE.md). Referência
 A base existe: Kotlin/Compose, seis telas demonstrativas, busca, menu flutuante,
 wrapper, documentação Gold e referências visuais. Build e testes locais passaram.
 **Isso ainda não é um app integrado:** não há login, API, cache ou ações reais.
-O CI corrigido passou; evidência em docs/VERIFICATION.md. A auditoria
-independente inicial ainda não foi executada.
+O CI corrigido passou; evidência em docs/VERIFICATION.md. Naquele ponto de
+partida, a auditoria independente ainda não havia sido executada; o resultado
+atual está em PROJECT_STATE.md e docs/evidence/C00.2-review.md.
 
 ## Escopo da primeira versão totalmente operante
 

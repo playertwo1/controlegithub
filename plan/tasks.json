@@ -32,11 +32,11 @@
       "depends_on": [
         "C00.1"
       ],
-      "status": "BLOCKED",
+      "status": "DONE",
       "acceptance": "Destinos, Voltar e recriação preservam estado; teclado e gestos não encobrem conteúdo.",
       "contract": "plan/contracts/C01.1.md",
       "evidence": "docs/evidence/C01.1.md",
-      "blocked_reason": "Implementação e verificações concluídas; auditoria independente exigida por AGENTS.md ainda pendente."
+      "blocked_reason": null
     },
     {
       "id": "C01.2",
@@ -45,10 +45,10 @@
       "depends_on": [
         "C01.1"
       ],
-      "status": "PLANNED",
+      "status": "DONE",
       "acceptance": "TalkBack identifica destinos; foco e alvos de toque verificados no dock.",
-      "contract": null,
-      "evidence": null,
+      "contract": "plan/contracts/C01.2.md",
+      "evidence": "docs/evidence/C01.2.md",
       "blocked_reason": null
     },
     {

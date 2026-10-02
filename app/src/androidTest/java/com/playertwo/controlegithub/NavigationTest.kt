@@ -3,6 +3,8 @@ package com.playertwo.controlegithub
 import android.view.WindowInsets
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.SemanticsProperties
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -48,6 +50,33 @@ class NavigationTest {
         }
     }
 
+    @Test fun dockExposesAccessibleTabsInOrderWithLargeTouchTargets() {
+        compose.onNodeWithText("Explorar demonstração").performClick()
+
+        val labels = listOf("Início", "Repos", "Trabalho", "Avisos")
+        val density = compose.activity.resources.displayMetrics.density
+        val centers = labels.map { label ->
+            val node = compose.onNodeWithText(label)
+            node.assertIsDisplayed()
+            node.assertHasClickAction()
+            node.assert(SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Tab))
+
+            val bounds = node.fetchSemanticsNode().boundsInRoot
+            assertTrue("$label target is narrower than 48dp", bounds.width / density >= 48f)
+            assertTrue("$label target is shorter than 48dp", bounds.height / density >= 48f)
+            bounds.center.x
+        }
+        assertTrue("Dock destinations are not in visual order", centers.zipWithNext().all { (left, right) -> left < right })
+
+        labels.forEach { selected ->
+            compose.onNodeWithText(selected).performClick()
+            labels.forEach { label ->
+                if (label == selected) compose.onNodeWithText(label).assertIsSelected()
+                else compose.onNodeWithText(label).assertIsNotSelected()
+            }
+        }
+    }
+
     @Test fun selectedDestinationSurvivesActivityRecreation() {
         compose.onNodeWithText("Explorar demonstração").performClick()
         compose.onNodeWithText("Repos").performClick()
@@ -67,6 +96,9 @@ class NavigationTest {
         compose.waitUntil(5_000) {
             compose.activity.window.decorView.rootWindowInsets?.isVisible(WindowInsets.Type.ime()) == true
         }
+        val searchField = compose.onNodeWithText("Buscar nome ou linguagem")
+        searchField.assertIsDisplayed()
+        searchField.performTextInput("Python")
         compose.onNodeWithText("Repos").assertDoesNotExist()
 
         compose.runOnIdle { compose.activity.window.insetsController?.hide(WindowInsets.Type.ime()) }

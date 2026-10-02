@@ -56,9 +56,9 @@ O [roadmap](ROADMAP.md) mantém 21 checkpoints e cinco marcos. O
 [backlog](plan/tasks.json) divide a execução em 42 entregas; o
 [protocolo](docs/EXECUTION.md) define seleção, refinamento e evidências.
 CI confirmado no SHA 643757b. C00.1 (baseline) e C02.1 (configuração OAuth)
-estão concluídos. C00.2 (auditoria da fundação) também passou; C01.1 (navegação)
-ainda aguarda auditoria independente. M0 permanece aberto e o validador não
-aponta tarefa elegível até C01.1 ser aceito. Consulte o [estado](PROJECT_STATE.md),
+estão concluídos. C00.2 e C01.1 (navegação) passaram por auditoria independente.
+C01.2 (acessibilidade da navegação) também passou; M0 — Fundação confiável —
+está aceito. A próxima entrega a refinar é C03.1 (autorizar conta). Consulte o [estado](PROJECT_STATE.md),
 o [backlog](plan/tasks.json) e a [evidência de navegação](docs/evidence/C01.1.md).
 As [decisões técnicas](docs/ARCHITECTURE.md) e o [guia visual](docs/DESIGN.md)
 orientam a implementação sem introduzir uma arquitetura maior que o necessário.

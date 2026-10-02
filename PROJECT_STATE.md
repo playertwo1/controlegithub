@@ -1,8 +1,7 @@
 # Estado do projeto
 
-Atualizado em 2026-10-02. Login ainda não implementado. C02.1, C04.1 e C04.2
-estão concluídos. C00.2 passou pela auditoria da fundação; C01.1 aguarda
-auditoria independente.
+Atualizado em 2026-10-02. Login ainda não implementado. C00.2, C01.1, C01.2,
+C02.1, C04.1 e C04.2 estão concluídos. M0 — Fundação confiável — foi aceito.
 
 ## Entrega atual
 
@@ -18,12 +17,14 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Build debug | PASS |
 | Testes unitários | PASS — 3 testes |
 | Lint | PASS — sem erros; avisos de versões/target documentados |
-| Teste de navegação no emulador | PASS — 1 teste, Android API 37 |
-| Navegação C01.1 (4 cenários) | PASS — Pixel 9, API 37; dock dentro da área segura por gestos |
+| Teste de navegação no emulador | PASS — 5 testes, Android API 37 |
+| Navegação C01.1 (4 cenários) | PASS — Pixel 9, API 37; dock e busca respeitam IME e insets |
 | Check Ideias Standard | PASS — manifest, lock e contexto |
 | Capturas e links da documentação | PASS |
 | Auditoria independente C00.2 | PASS — P2 documental corrigido e rechecado; novas execuções do emulador e Standard marcadas NOT_RUN |
-| Auditoria independente C01.1 | BLOCKED — implementação aprovada nos testes locais; auditoria ainda pendente |
+| Navegação e auditoria C01.1 | PASS — finding corrigido; cinco testes instrumentados e rechecagem independente passaram |
+| Acessibilidade da navegação C01.2 | PASS — semânticas de aba, seleção, ordem e alvos ≥48 dp; seis instrumentados; auditoria independente passou |
+| M0 — Fundação confiável | PASS — C00 e C01 aceitos |
 | CI remoto (`3e6945c`) | PASS — run 37058742858; plano, build, unit tests e lint |
 | OAuth App C02.1 | PASS — registrado por playertwo1; Device Flow e expiração ativos; sem secret |
 | Requisição real de Device Flow | PASS — HTTP 200; códigos de dispositivo/usuário sanitizados e descartados |
@@ -35,17 +36,19 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 
 Evidências: docs/VERIFICATION.md e docs/evidence/C00.2-review.md. C00.2 passou
 em revisão independente; APK e instrumentação constam como evidência histórica,
-e novas execuções ficaram NOT_RUN sem dispositivo conectado. C01.1 ainda aguarda
-auditoria, então M0 permanece aberto.
+e novas execuções ficaram NOT_RUN sem dispositivo conectado. C01.1 e C01.2 também
+passaram em auditoria; M0 foi aceito.
 
 ## Planejamento e retomada
 
 Estados canônicos: plan/tasks.json. Roadmap mantém 21 checkpoints/5 marcos;
 backlog divide em 42 entregas. Nenhum marco foi aceito. Funções API não existem.
 Auditoria C00.2 revisou a fundação em HEAD `daaf60f`; parecer PASS após correção
-e rechecagem documental em docs/evidence/C00.2-review.md. C01.1 implementado e
-verificado localmente; evidência em docs/evidence/C01.1.md, auditoria pendente,
-mantendo M0 aberto. O validador atualmente não aponta tarefa elegível. C02.1 está concluído:
+e rechecagem documental em docs/evidence/C00.2-review.md. C01.1 implementado,
+verificado localmente e aprovado em auditoria independente; evidência em
+docs/evidence/C01.1.md. C01.2 (acessibilidade da navegação) foi concluído em
+docs/evidence/C01.2.md; C00 e C01 fecham M0. Nenhuma tarefa está pronta até
+refinar o contrato de C03.1. C02.1 está concluído:
 OAuth App criado, Client ID somente local, escopos documentados, endpoint real
 testado e auditoria independente PASS. Login pertence a C03. Veja docs/AUTH.md e
 docs/evidence/C02.1.md. Nenhum usuário concedeu acesso ao app e nenhuma sessão
