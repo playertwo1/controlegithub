@@ -14,6 +14,9 @@ class NavigationTest {
         if (BuildConfig.GITHUB_OAUTH_CLIENT_ID.isBlank()) {
             compose.onNodeWithText("Integração GitHub indisponível · app OAuth não configurado")
                 .assertIsDisplayed()
+        } else {
+            compose.onNodeWithText("Client ID configurado · login será habilitado em próxima etapa")
+                .assertIsDisplayed()
         }
     }
 

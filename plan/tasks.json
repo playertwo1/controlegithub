@@ -62,7 +62,7 @@
       "acceptance": "Device Flow configurado, escopos justificados e resposta real sanitizada.",
       "contract": "plan/contracts/C02.1.md",
       "evidence": "docs/evidence/C02.1.md",
-      "blocked_reason": "O proprietário precisa registrar um OAuth App, habilitar Device Flow e fornecer somente o Client ID público; sem isso o endpoint real não pode ser testado."
+      "blocked_reason": "Critérios funcionais passaram; falta auditoria independente do diff e evidências exigida por AGENTS.md antes de marcar DONE."
     },
     {
       "id": "C03.1",

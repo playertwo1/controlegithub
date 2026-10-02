@@ -5,6 +5,9 @@ login nem chama a API. A solicitação do roadmap é configurar um OAuth App com
 Device Flow; o fluxo de login será implementado em C03, depois que esta
 configuração for validada.
 
+O OAuth App do projeto já foi registrado na conta `playertwo1`, com Device Flow
+ativado e expiração de tokens habilitada. [Abrir configurações do app](https://github.com/settings/applications/3900445).
+
 ## Configurar o OAuth App
 
 1. No GitHub, abra **Settings → Developer settings → OAuth Apps → New OAuth App**.
