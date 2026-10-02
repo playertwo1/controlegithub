@@ -9,6 +9,14 @@ import org.junit.Test
 
 class NavigationTest {
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
+
+    @Test fun missingOAuthConfigurationIsDisclosed() {
+        if (BuildConfig.GITHUB_OAUTH_CLIENT_ID.isBlank()) {
+            compose.onNodeWithText("Integração GitHub indisponível · app OAuth não configurado")
+                .assertIsDisplayed()
+        }
+    }
+
     @Test fun searchSurvivesOpeningRepositoryAndBack() {
         compose.onNodeWithText("Explorar demonstração").performClick()
         compose.onNodeWithText("Repos").performClick()

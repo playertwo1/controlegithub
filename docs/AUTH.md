@@ -1,0 +1,67 @@
+# Configuração de acesso ao GitHub
+
+O protótipo atual funciona em demonstração com dados fictícios. Ele não faz
+login nem chama a API. A solicitação do roadmap é configurar um OAuth App com
+Device Flow; o fluxo de login será implementado em C03, depois que esta
+configuração for validada.
+
+## Configurar o OAuth App
+
+1. No GitHub, abra **Settings → Developer settings → OAuth Apps → New OAuth App**.
+2. Use `ControleGitHub Android` como nome e
+   `https://github.com/playertwo1/controlegithub` como homepage pública.
+3. Para o campo obrigatório de callback, use a mesma URL do repositório. O Device
+   Flow não usa callback; não habilite wildcard matching.
+4. Habilite **Enable Device Flow** e mantenha tokens com expiração habilitados.
+5. Registre o app e copie o **Client ID**. Nunca copie o Client Secret para o
+   Android, para este repositório ou para a conversa. Device Flow não exige
+   client secret.
+6. Configure somente o Client ID na propriedade Gradle local
+   `GITHUB_OAUTH_CLIENT_ID`, por exemplo em
+   `%USERPROFILE%\.gradle\gradle.properties`:
+
+   ```properties
+   GITHUB_OAUTH_CLIENT_ID=Iv1.seu_client_id
+   ```
+
+   A propriedade é pública e pode compor o APK. Não adicione `gradle.properties`
+   pessoal ao Git.
+
+Sem a propriedade, o build usa uma string vazia e a tela inicial declara a
+integração indisponível. Um valor configurado ainda não habilita login: C03
+implementará autenticação. Não use um ID inventado como se fosse integração.
+
+## Escopos planejados
+
+| Escopo | Motivo no produto 1.0 | Limite que o usuário deve conhecer |
+|---|---|---|
+| `read:user` | Identificar e exibir o perfil da conta conectada. | Permite leitura do perfil; não é necessário para ler informação pública sem autenticação. |
+| `repo` | Repositórios privados e operações em issues/PRs previstas para C12/C13. | Concede acesso amplo de leitura e escrita a repositórios públicos e privados visíveis ao usuário; OAuth Apps não oferecem permissões granulares por operação. |
+| `notifications` | Ler a caixa de notificações no C09. | Também permite marcar threads como lidas e gerir inscrições/watch de repositórios. |
+
+Não pedir `admin:org`, `delete_repo`, `gist` ou escopos de webhooks: não há
+funcionalidade 1.0 que os justifique. Sem `repo`, conteúdo privado e issues/PRs
+restritos podem falhar; políticas da organização e SAML também podem negar
+acesso mesmo após autorização. O app deverá mostrar a funcionalidade indisponível
+e explicar a permissão necessária, sem repetir autorização automaticamente.
+
+O GitHub recomenda GitHub Apps em vez de OAuth Apps quando possível, pois usam
+permissões granulares; também recomenda PKCE para clientes nativos. A opção
+Device Flow está mantida por ser a decisão atual do roadmap, mas o GitHub alerta
+que este fluxo pode facilitar phishing e recomenda habilitá-lo apenas em
+ambientes restritos (CLI/IoT/headless). Reavaliar essa decisão antes de expandir
+o login para usuários além do proprietário.
+
+## Revogação
+
+O usuário pode revogar o acesso em **Settings → Applications → Authorized OAuth
+Apps**. O logout local e a revogação remota serão cobertos por C03. Se a política
+da organização, SAML ou permissões negarem acesso, informar isso sem expor
+tokens ou dados privados em logs.
+
+## Referências oficiais
+
+- [Criar um OAuth App](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
+- [Autorizar OAuth Apps e Device Flow](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)
+- [Escopos de OAuth Apps](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps)
+- [Boas práticas para criar OAuth Apps](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/best-practices-for-creating-an-oauth-app)

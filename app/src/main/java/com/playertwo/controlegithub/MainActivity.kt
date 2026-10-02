@@ -128,7 +128,15 @@ private fun Welcome(modifier: Modifier, onStart: () -> Unit) {
         Column {
             Button(onClick = onStart, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(16.dp)) { Text("Explorar demonstração", fontWeight = FontWeight.Bold) }
             Spacer(Modifier.height(16.dp))
-            Text("Prévia local · sem login ou acesso à sua conta", color = Muted, fontSize = 12.sp)
+            Text(
+                if (BuildConfig.GITHUB_OAUTH_CLIENT_ID.isBlank()) {
+                    "Integração GitHub indisponível · app OAuth não configurado"
+                } else {
+                    "Client ID configurado · login será habilitado em próxima etapa"
+                },
+                color = Muted,
+                fontSize = 12.sp
+            )
         }
     }
 }

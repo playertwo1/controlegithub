@@ -1,7 +1,8 @@
 # Estado do projeto
 
-Atualizado em 2026-10-02. Fase F0; integração GitHub ainda não implementada.
-Baseline C00.1 verificada; C00.2 e C01.1 aguardam auditoria independente.
+Atualizado em 2026-10-02. Integração GitHub ainda não implementada.
+Baseline C00.1 verificada; C00.2 e C01.1 aguardam auditoria independente; C02.1
+aguarda registro do OAuth App e Client ID pelo proprietário.
 
 ## Entrega atual
 
@@ -24,6 +25,8 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Auditoria independente C00.2 | BLOCKED — revisor independente não disponível; parecer NOT_RUN |
 | Auditoria independente C01.1 | BLOCKED — implementação aprovada nos testes locais; parecer NOT_RUN |
 | CI remoto (`3e6945c`) | PASS — run 37058742858; plano, build, unit tests e lint |
+| Configuração C02.1 sem Client ID | PASS — BuildConfig vazio e indisponibilidade visível no protótipo |
+| Requisição real de Device Flow | BLOCKED — Client ID/App ainda não fornecido; resposta real NOT_RUN |
 | Primeiro CI remoto (`69a02f1`) | FAIL — setup do SDK solicitou pacote obsoleto `tools` |
 
 Evidências: docs/VERIFICATION.md. CI PASS no SHA 643757b, run 37050937095;
@@ -37,4 +40,7 @@ backlog divide em 42 entregas. Nenhum marco foi aceito. Funções API não exist
 Contrato C00.2 pronto para auditor distinto do autor. C01.1 implementado e
 verificado localmente; evidência em docs/evidence/C01.1.md. Ambos aguardam parecer
 independente, então M0 continua aberto. A próxima tarefa elegível por dependência
-individual é C02.1; nenhum trabalho de OAuth foi iniciado nesta entrega.
+individual deve ser selecionada pelo validador do backlog. C02.1 tem guia,
+propriedade local Gradle e estado sem configuração explícito; falta o proprietário
+registrar OAuth App com Device Flow e fornecer o Client ID público para testar o
+endpoint. Veja docs/AUTH.md e docs/evidence/C02.1.md. Login não foi implementado.

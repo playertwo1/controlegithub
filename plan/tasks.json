@@ -58,11 +58,11 @@
       "depends_on": [
         "C00.1"
       ],
-      "status": "READY",
+      "status": "BLOCKED",
       "acceptance": "Device Flow configurado, escopos justificados e resposta real sanitizada.",
       "contract": "plan/contracts/C02.1.md",
-      "evidence": null,
-      "blocked_reason": null
+      "evidence": "docs/evidence/C02.1.md",
+      "blocked_reason": "O proprietário precisa registrar um OAuth App, habilitar Device Flow e fornecer somente o Client ID público; sem isso o endpoint real não pode ser testado."
     },
     {
       "id": "C03.1",

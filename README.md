@@ -62,6 +62,7 @@ e a [evidência de navegação](docs/evidence/C01.1.md).
 O [estado](PROJECT_STATE.md) registra verificações e limitações.
 As [decisões técnicas](docs/ARCHITECTURE.md) e o [guia visual](docs/DESIGN.md)
 orientam a implementação sem introduzir uma arquitetura maior que o necessário.
+O [guia de configuração e escopos GitHub](docs/AUTH.md) explica o preparo do OAuth.
 
 ## Contribuir
 
