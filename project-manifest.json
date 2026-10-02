@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1",
+  "project": {
+    "name": "ControleGitHub",
+    "type": "android",
+    "description": "Painel Android nativo para GitHub"
+  },
+  "standard": {
+    "name": "Ideias Standard",
+    "version": "0.1.0-draft",
+    "profile": "LIGHT"
+  },
+  "packs": [],
+  "governance": {
+    "product_authority": "USER",
+    "builder": "HUMAN_OR_AGENT",
+    "auditor": "INDEPENDENT_REVIEWER"
+  },
+  "context": {
+    "strategy": "PROGRESSIVE",
+    "full_repo_scan_default": false
+  }
+}

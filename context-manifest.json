@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "strategy": "PROGRESSIVE",
+  "routes": {
+    "DEFAULT": {
+      "required": [
+        "README.md",
+        "AGENTS.md"
+      ],
+      "conditional": [
+        "PROJECT_STATE.md",
+        "ROADMAP.md",
+        "docs/ARCHITECTURE.md"
+      ],
+      "discovery": []
+    }
+  }
+}
