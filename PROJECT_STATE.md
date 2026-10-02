@@ -27,6 +27,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | OAuth App C02.1 | PASS — registrado por playertwo1; Device Flow e expiração ativos; sem secret |
 | Requisição real de Device Flow | PASS — HTTP 200; códigos de dispositivo/usuário sanitizados e descartados |
 | Auditoria independente C02.1 | BLOCKED — evidência funcional completa; parecer NOT_RUN |
+| CI C02.1 (`1deaac5`) | PASS — run 37065527035; plano, build, testes unitários e lint |
 | Primeiro CI remoto (`69a02f1`) | FAIL — setup do SDK solicitou pacote obsoleto `tools` |
 
 Evidências: docs/VERIFICATION.md. CI PASS no SHA 643757b, run 37050937095;
