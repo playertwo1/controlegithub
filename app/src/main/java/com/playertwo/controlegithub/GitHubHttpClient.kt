@@ -16,7 +16,8 @@ internal sealed interface GitHubHttpResult {
     data class Failure(
         val error: GitHubHttpError,
         val statusCode: Int? = null,
-        val headers: GitHubResponseHeaders = GitHubResponseHeaders()
+        val headers: GitHubResponseHeaders = GitHubResponseHeaders(),
+        val retryAtEpochMillis: Long? = null
     ) : GitHubHttpResult
 }
 
@@ -26,6 +27,45 @@ internal data class GitHubResponseHeaders(
     val rateLimitRemaining: String? = null,
     val rateLimitReset: String? = null
 )
+
+internal class GitHubRateLimitGate(private val nowMillis: () -> Long) {
+    @Volatile
+    private var blockedUntil: Long? = null
+
+    @Synchronized
+    fun retryAtEpochMillis(): Long? {
+        val deadline = blockedUntil ?: return null
+        if (nowMillis() >= deadline) blockedUntil = null
+        return blockedUntil
+    }
+
+    @Synchronized
+    fun block(headers: GitHubResponseHeaders): Long {
+        val now = nowMillis()
+        val retryAfter = headers.retryAfter?.toLongOrNull()?.takeIf { it >= 0 }
+            ?.let { addSeconds(now, it) }
+        val reset = headers.rateLimitReset?.toLongOrNull()?.takeIf { it >= 0 }
+            ?.takeIf { headers.rateLimitRemaining == "0" }
+            ?.let(::epochSecondsToMillis)
+        val fallback = if (retryAfter == null && reset == null) addMillis(now, FALLBACK_DELAY_MILLIS) else now
+        val deadline = maxOf(addMillis(now, MINIMUM_DELAY_MILLIS), retryAfter ?: now, reset ?: now, fallback)
+        return maxOf(blockedUntil?.takeIf { it > now } ?: now, deadline).also { blockedUntil = it }
+    }
+
+    private fun addSeconds(now: Long, seconds: Long): Long =
+        if (seconds > (Long.MAX_VALUE - now) / 1_000) Long.MAX_VALUE else now + seconds * 1_000
+
+    private fun epochSecondsToMillis(seconds: Long): Long =
+        if (seconds > Long.MAX_VALUE / 1_000) Long.MAX_VALUE else seconds * 1_000
+
+    private fun addMillis(now: Long, millis: Long): Long =
+        if (now > Long.MAX_VALUE - millis) Long.MAX_VALUE else now + millis
+
+    private companion object {
+        const val MINIMUM_DELAY_MILLIS = 1_000L
+        const val FALLBACK_DELAY_MILLIS = 60_000L
+    }
+}
 
 internal enum class GitHubHttpError(val userMessage: String) {
     UNAUTHORIZED("Sua sessão expirou. Conecte-se novamente."),
@@ -42,8 +82,11 @@ internal enum class GitHubHttpError(val userMessage: String) {
 internal class GitHubHttpClient(
     private val baseUrl: URI = URI.create("https://api.github.com/"),
     private val connectTimeoutMillis: Int = 15_000,
-    private val readTimeoutMillis: Int = 30_000
+    private val readTimeoutMillis: Int = 30_000,
+    nowMillis: () -> Long = System::currentTimeMillis
 ) {
+    private val rateLimitGate = GitHubRateLimitGate(nowMillis)
+
     init {
         require(connectTimeoutMillis > 0 && readTimeoutMillis > 0)
         require(isAllowedBase(baseUrl)) { "GitHub API URL must use HTTPS on api.github.com" }
@@ -55,7 +98,14 @@ internal class GitHubHttpClient(
 
         val target = baseUrl.resolve(path.removePrefix("/"))
         require(sameOrigin(baseUrl, target))
-        return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis)
+        return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate)
+    }
+
+    internal fun pathFromLink(linkUrl: String): String {
+        val target = baseUrl.resolve(URI.create(linkUrl))
+        require(target.userInfo == null && target.fragment == null && sameOrigin(baseUrl, target))
+        val path = target.rawPath?.takeIf(String::isNotEmpty) ?: throw IllegalArgumentException()
+        return path + (target.rawQuery?.let { "?$it" } ?: "")
     }
 
     private fun isAllowedBase(uri: URI): Boolean {
@@ -72,7 +122,8 @@ internal class GitHubHttpCall internal constructor(
     private val url: URI,
     private val accessToken: String?,
     private val connectTimeoutMillis: Int,
-    private val readTimeoutMillis: Int
+    private val readTimeoutMillis: Int,
+    private val rateLimitGate: GitHubRateLimitGate
 ) {
     private val cancelled = AtomicBoolean(false)
 
@@ -86,6 +137,9 @@ internal class GitHubHttpCall internal constructor(
 
     fun execute(): GitHubHttpResult {
         if (cancelled.get()) return GitHubHttpResult.Failure(GitHubHttpError.CANCELLED)
+        rateLimitGate.retryAtEpochMillis()?.let {
+            return GitHubHttpResult.Failure(GitHubHttpError.RATE_LIMITED, retryAtEpochMillis = it)
+        }
 
         var activeConnection: HttpURLConnection? = null
         return try {
@@ -118,7 +172,12 @@ internal class GitHubHttpCall internal constructor(
                 if (cancelled.get()) GitHubHttpResult.Failure(GitHubHttpError.CANCELLED)
                 else GitHubHttpResult.Success(statusCode, body, headers)
             } else {
-                GitHubHttpResult.Failure(errorFor(statusCode), statusCode, headers)
+                val rateLimited = statusCode == 429 ||
+                    (statusCode == 403 &&
+                        (headers.retryAfter != null || headers.rateLimitRemaining == "0"))
+                val error = if (rateLimited) GitHubHttpError.RATE_LIMITED else errorFor(statusCode)
+                val retryAt = if (rateLimited) rateLimitGate.block(headers) else null
+                GitHubHttpResult.Failure(error, statusCode, headers, retryAt)
             }
         } catch (_: SocketTimeoutException) {
             failureUnlessCancelled(GitHubHttpError.TIMEOUT)

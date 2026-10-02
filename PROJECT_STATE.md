@@ -1,7 +1,8 @@
 # Estado do projeto
 
-Atualizado em 2026-10-02. Login e uso da API ainda não implementados.
-Baseline C00.1 verificada; C00.2, C01.1 e C02.1 aguardam auditoria independente.
+Atualizado em 2026-10-02. Login ainda não implementado. C02.1 e C04.1 estão
+concluídos; C04.2 está em implementação/verificação. C00.2 e C01.1 aguardam
+auditoria independente.
 
 ## Entrega atual
 
@@ -29,6 +30,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Auditoria independente C02.1 | PASS — escopos e limites revisados; documentação ajustada conforme achado |
 | CI C02.1 (`1deaac5`) | PASS — run 37065527035; plano, build, testes unitários e lint |
 | Transporte GitHub C04.1 | PASS — auditoria e CI remotos passaram em `2a4e689` |
+| Paginação e rate limit C04.2 | IN_PROGRESS — testes locais passaram; auditoria e CI pendentes |
 | Primeiro CI remoto (`69a02f1`) | FAIL — setup do SDK solicitou pacote obsoleto `tools` |
 
 Evidências: docs/VERIFICATION.md. CI PASS no SHA 643757b, run 37050937095;
@@ -52,3 +54,7 @@ C04.1 pode avançar sem login: transporte REST nativo limitado a `api.github.com
 em HTTPS, mensagens de erro tipadas e fixtures locais. Evidência em
 docs/evidence/C04.1.md; integrado com o teste CI remoto 37070881713. Integrar
 token real fica para C03/C05.
+
+C04.2 implementa o consumo explícito de uma página por vez, deduplicação por
+identificador e bloqueio compartilhado do cliente HTTP até o prazo de rate
+limit. Fontes e testes em plan/contracts/C04.2.md e docs/evidence/C04.2.md.

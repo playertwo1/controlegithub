@@ -63,7 +63,10 @@ class GitHubHttpClientTest {
         expected.forEach { (status, error) ->
             fixture(status, "error body containing $TOKEN").use { fixture ->
                 val result = fixture.client().get("/user", TOKEN).execute()
-                assertEquals(GitHubHttpResult.Failure(error, status), result)
+                val failure = result as GitHubHttpResult.Failure
+                assertEquals(error, failure.error)
+                assertEquals(status, failure.statusCode)
+                assertEquals(status == 429, failure.retryAtEpochMillis != null)
                 assertFalse(error.userMessage.contains(TOKEN))
                 assertFalse(error.userMessage.contains("error body"))
             }
