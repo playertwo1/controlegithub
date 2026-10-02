@@ -19,11 +19,11 @@
       "depends_on": [
         "C00.1"
       ],
-      "status": "READY",
+      "status": "BLOCKED",
       "acceptance": "Parecer independente registrado e findings resolvidos.",
       "contract": "plan/contracts/C00.2.md",
       "evidence": null,
-      "blocked_reason": null
+      "blocked_reason": "Requer parecer de pessoa/agente diferente de quem implementou; revisor independente ainda não está disponível nesta execução."
     },
     {
       "id": "C01.1",
@@ -32,11 +32,11 @@
       "depends_on": [
         "C00.1"
       ],
-      "status": "READY",
+      "status": "BLOCKED",
       "acceptance": "Destinos, Voltar e recriação preservam estado; teclado e gestos não encobrem conteúdo.",
       "contract": "plan/contracts/C01.1.md",
-      "evidence": null,
-      "blocked_reason": null
+      "evidence": "docs/evidence/C01.1.md",
+      "blocked_reason": "Implementação e verificações concluídas; falta auditoria independente exigida por AGENTS.md para aceitar DONE."
     },
     {
       "id": "C01.2",

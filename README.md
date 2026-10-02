@@ -55,9 +55,10 @@ APK local: `app/build/outputs/apk/debug/app-debug.apk`.
 O [roadmap](ROADMAP.md) mantém 21 checkpoints e cinco marcos. O
 [backlog](plan/tasks.json) divide a execução em 42 entregas; o
 [protocolo](docs/EXECUTION.md) define seleção, refinamento e evidências.
-CI confirmado no SHA 643757b. C00.1 (baseline) está concluído; C00.2 (auditoria
-independente) é a próxima tarefa READY antes de fechar M0. Contratos seguintes:
-C01.1 (navegação) e C02.1 (OAuth).
+CI confirmado no SHA 643757b. C00.1 (baseline) está concluído. C00.2 e C01.1
+(navegação) aguardam auditoria independente; M0 permanece aberto. A próxima
+tarefa elegível pelas dependências individuais é C02.1 (OAuth); veja o [estado](PROJECT_STATE.md)
+e a [evidência de navegação](docs/evidence/C01.1.md).
 O [estado](PROJECT_STATE.md) registra verificações e limitações.
 As [decisões técnicas](docs/ARCHITECTURE.md) e o [guia visual](docs/DESIGN.md)
 orientam a implementação sem introduzir uma arquitetura maior que o necessário.
