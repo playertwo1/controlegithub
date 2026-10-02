@@ -23,6 +23,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Capturas e links da documentação | PASS |
 | Auditoria independente C00.2 | BLOCKED — revisor independente não disponível; parecer NOT_RUN |
 | Auditoria independente C01.1 | BLOCKED — implementação aprovada nos testes locais; parecer NOT_RUN |
+| CI remoto (`3e6945c`) | PASS — run 37058742858; plano, build, unit tests e lint |
 | Primeiro CI remoto (`69a02f1`) | FAIL — setup do SDK solicitou pacote obsoleto `tools` |
 
 Evidências: docs/VERIFICATION.md. CI PASS no SHA 643757b, run 37050937095;
