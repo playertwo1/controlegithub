@@ -24,7 +24,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Auditoria independente C00.2 | PASS — P2 documental corrigido e rechecado; novas execuções do emulador e Standard marcadas NOT_RUN |
 | Navegação e auditoria C01.1 | PASS — finding corrigido; cinco testes instrumentados e rechecagem independente passaram |
 | Acessibilidade da navegação C01.2 | PASS — semânticas de aba, seleção, ordem e alvos ≥48 dp; seis instrumentados; auditoria independente passou |
-| M0 — Fundação confiável | PASS — C00 e C01 aceitos |
+| M0 — Fundação confiável | PASS — C00 e C01 aceitos; CI do fechamento em `ebb8fb0` passou (run 37079293659) |
 | CI remoto (`3e6945c`) | PASS — run 37058742858; plano, build, unit tests e lint |
 | OAuth App C02.1 | PASS — registrado por playertwo1; Device Flow e expiração ativos; sem secret |
 | Requisição real de Device Flow | PASS — HTTP 200; códigos de dispositivo/usuário sanitizados e descartados |
