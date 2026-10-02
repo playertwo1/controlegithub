@@ -15,11 +15,13 @@ telas finais. Preferências posteriores: inspiração One UI e menus flutuantes.
 - Nenhum login fictício apresentado como integração concluída.
 - Build, testes, lint e resultados do Standard reproduzíveis.
 
-## Delta
+## Revisão e alvo
 
-Repositório inicialmente vazio. O primeiro commit contém toda a fundação.
-Começar por README, diff do commit, `docs/VERIFICATION.md`, build/manifest,
-`DemoData.kt`, navegação, testes e contrato visual. Expandir apenas para hipóteses.
+Repositório inicialmente vazio; a fundação entrou em `69a02f1`. Revisar o delta
+`69a02f1..643757b24f161e2efadf4a0cc58a437b527fc133` pelo contrato
+`plan/contracts/C00.2.md`. Começar por README, diff, `docs/VERIFICATION.md`,
+build/manifest, `DemoData.kt`, navegação, testes e contrato visual. Expandir só
+para verificar hipóteses e registrar comandos/arquivos realmente examinados.
 
 ## Atenção
 

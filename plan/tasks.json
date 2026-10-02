@@ -7,7 +7,7 @@
       "title": "Baseline reproduzível",
       "depends_on": [],
       "status": "DONE",
-      "acceptance": "Checkout limpo gera APK; testes/lint e CI do SHA passam.",
+      "acceptance": "Checkout limpo passa build, testes e lint; APK baixado do CI instala e inicia no Pixel 9/API 37.",
       "contract": null,
       "evidence": "docs/VERIFICATION.md",
       "blocked_reason": null
@@ -19,9 +19,9 @@
       "depends_on": [
         "C00.1"
       ],
-      "status": "PLANNED",
+      "status": "READY",
       "acceptance": "Parecer independente registrado e findings resolvidos.",
-      "contract": null,
+      "contract": "plan/contracts/C00.2.md",
       "evidence": null,
       "blocked_reason": null
     },

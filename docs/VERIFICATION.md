@@ -60,3 +60,22 @@ Correção: configurar `packages: platform-tools`, conforme a
 [documentação do action](https://github.com/android-actions/setup-android#additional-packages).
 A [execução corrigida](https://github.com/playertwo1/controlegithub/actions/runs/37037178446)
 foi confirmada completed/success em 2026-10-02, SHA 03fe0cd.
+
+## Baseline atual — C00.1
+
+Em 2026-10-02, no SHA `643757b24f161e2efadf4a0cc58a437b527fc133`, o CI de
+[run 37050937095](https://github.com/playertwo1/controlegithub/actions/runs/37050937095)
+passou em checkout limpo: validador do plano, build, testes unitários e lint.
+Localmente `assembleDebug testDebugUnitTest lintDebug` passou; as tarefas locais
+estavam atualizadas pelo Gradle. O teste de navegação já havia passado no Pixel
+9/API 37 conforme a evidência acima; o diff desde então não alterou código do app.
+
+Baixei `controlegithub-debug` desse run e instalei no AVD `Pixel_9` (Android 17,
+API 37). `adb install -r` retornou `Success`; iniciar `com.playertwo.controlegithub`
+retornou `Events injected: 1`. Pacote `com.playertwo.controlegithub`, versionName
+0.1.0, minSdk 26, targetSdk 36. SHA-256 do APK instalado:
+`A5DB0E5E2E44861C40991E63C705239497447F54A22AD282BF91E39B108035C8`.
+
+C00.1 atende baseline/build/test/lint/instalação. C00.2 continua NOT_RUN: parecer
+independente ainda necessário para fechar C00 e M0. Contrato para o auditor:
+`plan/contracts/C00.2.md`.
