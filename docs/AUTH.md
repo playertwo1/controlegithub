@@ -39,7 +39,7 @@ implementará autenticação. Não use um ID inventado como se fosse integraçã
 | Escopo | Motivo no produto 1.0 | Limite que o usuário deve conhecer |
 |---|---|---|
 | `read:user` | Identificar e exibir o perfil da conta conectada. | Permite leitura do perfil; não é necessário para ler informação pública sem autenticação. |
-| `repo` | Repositórios privados e operações em issues/PRs previstas para C12/C13. | Concede acesso amplo de leitura e escrita a repositórios públicos e privados visíveis ao usuário; OAuth Apps não oferecem permissões granulares por operação. |
+| `repo` | Repositórios privados e operações em issues/PRs previstas para C12/C13. | Concede acesso amplo de leitura e escrita a repositórios públicos e privados visíveis ao usuário, incluindo código e webhooks; também permite gerir projetos pessoais e recursos de organizações, como projetos, convites, associações a equipes e webhooks. OAuth Apps não oferecem permissões granulares por operação. |
 | `notifications` | Ler a caixa de notificações no C09. | Também permite marcar threads como lidas e gerir inscrições/watch de repositórios. |
 
 Não pedir `admin:org`, `delete_repo`, `gist` ou escopos de webhooks: não há

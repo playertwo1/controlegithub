@@ -58,11 +58,11 @@
       "depends_on": [
         "C00.1"
       ],
-      "status": "BLOCKED",
+      "status": "DONE",
       "acceptance": "Device Flow configurado, escopos justificados e resposta real sanitizada.",
       "contract": "plan/contracts/C02.1.md",
       "evidence": "docs/evidence/C02.1.md",
-      "blocked_reason": "Critérios funcionais passaram; falta auditoria independente do diff e evidências exigida por AGENTS.md antes de marcar DONE."
+      "blocked_reason": null
     },
     {
       "id": "C03.1",

@@ -26,7 +26,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | CI remoto (`3e6945c`) | PASS — run 37058742858; plano, build, unit tests e lint |
 | OAuth App C02.1 | PASS — registrado por playertwo1; Device Flow e expiração ativos; sem secret |
 | Requisição real de Device Flow | PASS — HTTP 200; códigos de dispositivo/usuário sanitizados e descartados |
-| Auditoria independente C02.1 | BLOCKED — evidência funcional completa; parecer NOT_RUN |
+| Auditoria independente C02.1 | PASS — escopos e limites revisados; documentação ajustada conforme achado |
 | CI C02.1 (`1deaac5`) | PASS — run 37065527035; plano, build, testes unitários e lint |
 | Primeiro CI remoto (`69a02f1`) | FAIL — setup do SDK solicitou pacote obsoleto `tools` |
 
@@ -41,8 +41,8 @@ backlog divide em 42 entregas. Nenhum marco foi aceito. Funções API não exist
 Contrato C00.2 pronto para auditor distinto do autor. C01.1 implementado e
 verificado localmente; evidência em docs/evidence/C01.1.md. Ambos aguardam parecer
 independente, então M0 continua aberto. A próxima tarefa elegível por dependência
-individual deve ser selecionada pelo validador do backlog. C02.1 foi configurado:
-OAuth App criado, Client ID somente local, escopos documentados e endpoint real
-testado. A tarefa aguarda auditoria independente antes de DONE; login pertence a
-C03. Veja docs/AUTH.md e docs/evidence/C02.1.md. Nenhum usuário concedeu acesso
-ao app e nenhuma sessão autenticada foi criada.
+individual deve ser selecionada pelo validador do backlog. C02.1 está concluído:
+OAuth App criado, Client ID somente local, escopos documentados, endpoint real
+testado e auditoria independente PASS. Login pertence a C03. Veja docs/AUTH.md e
+docs/evidence/C02.1.md. Nenhum usuário concedeu acesso ao app e nenhuma sessão
+autenticada foi criada.
