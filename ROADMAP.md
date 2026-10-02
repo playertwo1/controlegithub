@@ -4,9 +4,9 @@ Objetivo: um aplicativo Android que permita conectar uma conta GitHub, acompanha
 repositórios e trabalho, executar as ações previstas e usar uma versão assinada
 com recuperação de erros, privacidade e evidência de funcionamento real.
 
-Este documento define aceite agregado. A execução usa as 42 fatias de
-[plan/tasks.json](plan/tasks.json) e o protocolo [EXECUTION](docs/EXECUTION.md). O estado de execução e o checkpoint
-ativo ficam em [PROJECT_STATE.md](PROJECT_STATE.md). Referências das 36 telas:
+Este documento define o aceite agregado. A execução usa as 42 tarefas de
+[plan/tasks.json](plan/tasks.json) e o [protocolo de execução](docs/EXECUTION.md).
+O estado de execução fica em [PROJECT_STATE.md](PROJECT_STATE.md). Referências das 36 telas:
 [catálogo visual](docs/design/README.md); regras One UI/menu flutuante:
 [contrato visual](docs/DESIGN.md).
 
@@ -15,7 +15,8 @@ ativo ficam em [PROJECT_STATE.md](PROJECT_STATE.md). Referências das 36 telas:
 A base existe: Kotlin/Compose, seis telas demonstrativas, busca, menu flutuante,
 wrapper, documentação Gold e referências visuais. Build e testes locais passaram.
 **Isso ainda não é um app integrado:** não há login, API, cache ou ações reais.
-O CI corrigido passou; evidência em docs/VERIFICATION.md. A auditoria independente inicial ainda não foi executada.
+O CI corrigido passou; evidência em docs/VERIFICATION.md. A auditoria
+independente inicial ainda não foi executada.
 
 ## Escopo da primeira versão totalmente operante
 
@@ -30,13 +31,17 @@ Tablet recebe comportamento utilizável; um layout dedicado fica para evolução
 
 ## Marcos de entrega
 
-| Marco | Checkpoint | Resultado demonstrável |
+| Marco | Checkpoints exigidos | Resultado demonstrável |
 |---|---|---|
-| M0 — Fundação confiável | C01 | Protótipo reproduzível, CI verde e navegação validada |
+| M0 — Fundação confiável | C00 + C01 | Protótipo reproduzível, CI verde, navegação validada e auditoria inicial aceita |
 | M1 — Primeiro uso real | C06 | Login, repositórios e painel com dados da conta |
 | M2 — Triagem diária | C11 | Issues, PRs, avisos e Actions com cache e recuperação |
 | M3 — Produtividade completa | C15 | Escrita, revisão, Kanban, favoritos e resumo reais |
 | M4 — Versão 1.0 operante | C20 | Release assinada, beta validado e operação documentada |
+
+Cada marco fecha quando todos os checkpoints listados e seus aceites passam.
+Dependências transitivas desses checkpoints também precisam estar aceitas.
+Concluir o último checkpoint citado, sozinho, não fecha o marco.
 
 M1 já entrega valor; não esperar concluir todas as telas para usar dados reais.
 Cada marco produz um APK de teste. M4 produz APK/AAB de release conforme o canal
@@ -71,9 +76,13 @@ CONCLUÍDO exige aceite e evidências; desenho, commit ou build isolado não bas
 | C19 | F4 | Beta com uso real | C18 |
 | C20 | F4 | Aceite final e operação — M4 | C19 |
 
-As dependências da tabela são para aceite agregado. Para executar, usar as
-dependências por tarefa do backlog. C01.1 não espera auditoria C00.2; favoritos
-não esperam issues. Preferências e acessibilidade podem avançar cedo.
+As dependências desta tabela são gates de aceite/fechamento dos checkpoints;
+`depends_on` no backlog controla quando uma tarefa individual pode começar.
+Uma tarefa pode avançar antes de seu checkpoint predecessor fechar se suas
+dependências próprias estiverem concluídas. Por isso C01.1 pode avançar após
+C00.1 enquanto a auditoria C00.2 está pendente. Isso permite preparação, não
+fecha C00 nem M0. M0 só fecha depois de C00.1, C00.2 e todo C01 aceitos.
+Favoritos não esperam issues; preferências podem avançar cedo.
 
 A ordem numérica é uma ordem segura de entrega, não uma exigência de serializar
 tudo: C04 pode avançar com respostas HTTP de teste enquanto o OAuth é configurado;
@@ -90,7 +99,9 @@ Corrigir a falha de setup do SDK e revisar a fundação pelo delta.
 
 **Aceite:** build, testes unitários e lint passam localmente e no GitHub Actions;
 wrapper validado; SDK local/segredos não versionados; links e imagens presentes;
-resultado da auditoria independente registrado. Instalar APK gerado pelo CI.
+APK gerado pelo CI instalado. Auditoria independente registra PASS sem findings
+ou PASS após findings corrigidos e nova revisão. Findings abertos mantêm C00
+incompleto.
 **Evidência:** SHA, link da execução, APK e relatório. Teste não executado = NOT_RUN.
 
 ### C01 — Navegação e contrato visual
@@ -264,10 +275,16 @@ Fecha M3: todas as funções de produto da 1.0 operam.
 **Entregar:** tema claro/escuro/sistema, conta, permissões, privacidade e Sobre;
 fonte ampliada, contraste, TalkBack, rótulos e foco; estado persistente das opções.
 
-**Aceite:** todas as 36 telas/estados mapeados para implementação ou variante
-equivalente; dock respeita teclado/gestos e não cobre conteúdo; fluxo principal
-concluído com TalkBack e fonte a 200%; temas legíveis e controles acionáveis.
-**Evidência:** checklist por tela, capturas claras/escuras e teste de preferências.
+**Aceite:** cada ID 01–36 do catálogo visual recebe exatamente um destino:
+implementado na rota indicada; coberto por uma rota/estado equivalente indicado;
+ou excluído da 1.0 com motivo e decisão do proprietário. “Equivalente” significa
+mesma ação e resultado observável, ainda que apresentação ou rota difira; aparência
+da imagem, por si só, não é requisito de implementação. Exclusão não pode retirar
+uma função incluída no escopo 1.0. Além do mapeamento, o dock respeita teclado e
+gestos; TalkBack e fonte a 200% completam o fluxo principal; temas têm contraste
+legível e controles acionáveis.
+**Evidência:** matriz ID → rota/estado ou motivo de exclusão → critério aplicável;
+capturas claras/escuras e teste de preferências.
 
 ### C17 — Robustez e desempenho
 

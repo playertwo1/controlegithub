@@ -1,7 +1,9 @@
 # Catálogo visual — ControleGitHub
 
-**36 telas e estados da versão 1.0 planejada**, em seis pranchas. Referências
-conceituais geradas com `image_gen`, inspiração One UI, tema escuro e navegação
+**36 telas e estados conceituais da versão 1.0 planejada**, em seis pranchas.
+Não são 36 rotas nem exigem reprodução visual literal. C16 exige mapear cada ID
+a uma rota/estado implementado, equivalente ou exclusão justificada. São imagens
+de referência geradas com `image_gen`, inspiração One UI, tema escuro e navegação
 inferior flutuante. O app atual tem seis telas demonstrativas; as imagens abaixo
 representam o destino do produto e não recursos já implementados.
 

@@ -63,8 +63,14 @@ reduzir o aceite do checkpoint nem ampliar o escopo autorizado.
 - Antes de encerrar a sessão, registre no estado o que mudou, falhas e próxima
   ação. Preserve mudanças parciais e descreva como retomá-las. Não marque DONE
   apenas porque a sessão terminou.
-- Um checkpoint fecha quando suas tarefas e o aceite agregado passam. Um marco
-  inclui todos os checkpoints anteriores previstos no ROADMAP, com demonstração.
+- Um checkpoint fecha quando suas tarefas e o aceite agregado passam. Cada
+  dependência de checkpoint no ROADMAP é gate para fechar o checkpoint. Ela não
+  impede começar tarefas cujas dependências individuais já passaram. Cada marco
+  fecha somente quando todos os checkpoints listados para ele no ROADMAP e suas
+  dependências transitivas passam. Use os gates explícitos do ROADMAP;
+  ser dependência da última tarefa não substitui o aceite do checkpoint ou do
+  marco. No M0, C01.1 pode avançar após C00.1, mas M0 exige C00.1, C00.2
+  (auditoria aceita) e C01 concluídos.
 - Faça refinamento apenas do próximo grupo executável. Divida uma tarefa quando
   houver resultados independentes ou quando não couber em uma mudança coerente;
   não divida somente para aumentar a contagem. Mantenha IDs existentes e registre

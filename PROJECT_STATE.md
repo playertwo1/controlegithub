@@ -31,5 +31,6 @@ run 37037178446. Auditoria da fundação ainda NOT_RUN.
 Estados canônicos: plan/tasks.json. Roadmap mantém 21 checkpoints/5 marcos;
 backlog divide em 42 entregas. Nenhum marco foi aceito. Funções API não existem.
 Contratos iniciais delimitam navegação e configuração OAuth. Auditoria pendente
-impede M0, mas não preparação independente. Para retomar, executar
+em C00.2 impede fechar C00 e M0; C01.1 pode avançar após a baseline C00.1.
+Para retomar, executar
 python scripts/check_plan.py e seguir docs/EXECUTION.md.
