@@ -98,10 +98,10 @@
       "depends_on": [
         "C00.1"
       ],
-      "status": "PLANNED",
+      "status": "IN_PROGRESS",
       "acceptance": "Fixtures 200/401/403/429/5xx e timeout produzem estados distintos; logs omitem credenciais.",
-      "contract": null,
-      "evidence": null,
+      "contract": "plan/contracts/C04.1.md",
+      "evidence": "docs/evidence/C04.1.md",
       "blocked_reason": null
     },
     {

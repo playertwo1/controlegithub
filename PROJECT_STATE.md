@@ -28,6 +28,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Requisição real de Device Flow | PASS — HTTP 200; códigos de dispositivo/usuário sanitizados e descartados |
 | Auditoria independente C02.1 | PASS — escopos e limites revisados; documentação ajustada conforme achado |
 | CI C02.1 (`1deaac5`) | PASS — run 37065527035; plano, build, testes unitários e lint |
+| Transporte GitHub C04.1 | IN_PROGRESS — 8 cenários locais e auditoria passaram; CI pendente |
 | Primeiro CI remoto (`69a02f1`) | FAIL — setup do SDK solicitou pacote obsoleto `tools` |
 
 Evidências: docs/VERIFICATION.md. CI PASS no SHA 643757b, run 37050937095;
@@ -46,3 +47,7 @@ OAuth App criado, Client ID somente local, escopos documentados, endpoint real
 testado e auditoria independente PASS. Login pertence a C03. Veja docs/AUTH.md e
 docs/evidence/C02.1.md. Nenhum usuário concedeu acesso ao app e nenhuma sessão
 autenticada foi criada.
+
+C04.1 pode avançar sem login: transporte REST nativo limitado a `api.github.com`
+em HTTPS, mensagens de erro tipadas e fixtures locais. Evidência em
+docs/evidence/C04.1.md; integrar token real fica para C03/C05.
