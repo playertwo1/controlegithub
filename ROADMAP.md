@@ -4,7 +4,8 @@ Objetivo: um aplicativo Android que permita conectar uma conta GitHub, acompanha
 repositórios e trabalho, executar as ações previstas e usar uma versão assinada
 com recuperação de erros, privacidade e evidência de funcionamento real.
 
-Este documento define entregas e aceite. O estado de execução e o checkpoint
+Este documento define aceite agregado. A execução usa as 42 fatias de
+[plan/tasks.json](plan/tasks.json) e o protocolo [EXECUTION](docs/EXECUTION.md). O estado de execução e o checkpoint
 ativo ficam em [PROJECT_STATE.md](PROJECT_STATE.md). Referências das 36 telas:
 [catálogo visual](docs/design/README.md); regras One UI/menu flutuante:
 [contrato visual](docs/DESIGN.md).
@@ -14,8 +15,7 @@ ativo ficam em [PROJECT_STATE.md](PROJECT_STATE.md). Referências das 36 telas:
 A base existe: Kotlin/Compose, seis telas demonstrativas, busca, menu flutuante,
 wrapper, documentação Gold e referências visuais. Build e testes locais passaram.
 **Isso ainda não é um app integrado:** não há login, API, cache ou ações reais.
-O primeiro CI remoto falhou na instalação do SDK; a configuração está sendo
-corrigida em C00. A auditoria independente inicial ainda não foi executada.
+O CI corrigido passou; evidência em docs/VERIFICATION.md. A auditoria independente inicial ainda não foi executada.
 
 ## Escopo da primeira versão totalmente operante
 
@@ -70,6 +70,10 @@ CONCLUÍDO exige aceite e evidências; desenho, commit ou build isolado não bas
 | C18 | F4 | Privacidade e release assinada | C17 |
 | C19 | F4 | Beta com uso real | C18 |
 | C20 | F4 | Aceite final e operação — M4 | C19 |
+
+As dependências da tabela são para aceite agregado. Para executar, usar as
+dependências por tarefa do backlog. C01.1 não espera auditoria C00.2; favoritos
+não esperam issues. Preferências e acessibilidade podem avançar cedo.
 
 A ordem numérica é uma ordem segura de entrega, não uma exigência de serializar
 tudo: C04 pode avançar com respostas HTTP de teste enquanto o OAuth é configurado;
@@ -273,8 +277,9 @@ Investigar requisições repetidas, travamentos, memória e uso de bateria.
 
 **Aceite:** fluxos essenciais sem crash/ANR; paginação/diffs grandes responsivos;
 recuperação após processo encerrado; nenhuma requisição extra por mera recomposição.
-Meta inicial de abertura do painel com cache: até 2 s no aparelho de referência,
-com medição e condições documentadas; rede não entra nessa meta.
+Orçamento do painel com cache: até 2 s; antes de READY, o contrato identifica
+aparelho, versão Android, volume da fixture, início/fim medidos e número de
+repetições. Medir abertura até conteúdo acionável; rede não entra nessa meta.
 **Evidência:** matriz dispositivo → cenário → resultado e medições reproduzíveis.
 
 ### C18 — Release, privacidade e atualização
@@ -294,10 +299,12 @@ de segurança/sessão/escrita e da entrega registra PASS ou findings resolvidos.
 **Entregar:** distribuir pelo canal autorizado a um grupo pequeno e registrar
 problemas com reprodução, impacto e versão. Sem telemetria obrigatória.
 
-**Aceite:** pelo menos dois usuários distintos completam login, leitura,
-notificação e uma ação de escrita em repos de teste; acompanhar ao menos sete
-dias de uso; nenhum bug crítico/alto aberto; demais limitações documentadas.
-Esses números são metas do plano, não validações já realizadas.
+**Aceite:** cobrir login, leitura, notificação, escrita, revisão, offline,
+reinício e atualização em contas/repos de teste. Não encerrar com perda de dados,
+exposição de credenciais, envio duplicado, crash que impeça o fluxo ou função
+essencial inacessível. Outros defeitos precisam de impacto e decisão registrados.
+Dois testers e sete dias são sugestões para recrutar/observar uso, sem espera
+artificial após cobertura concluída. O contrato define a matriz antes de READY.
 **Evidência:** relatos, matriz de cenários e regressões verificadas nas correções.
 
 ### C20 — Aplicativo totalmente operante
@@ -313,36 +320,14 @@ CI verde no SHA da release, auditorias resolvidas, artefatos acessíveis e nenhu
 dependência de modo demo para uma função essencial. Fecha M4.
 **Evidência:** relatório ponta a ponta, SHA, release, APK/checksum e limitações aceitas.
 
-## Regras para executar com eficiência
+## Execução e refinamento
 
-1. Um checkpoint ativo por área; entregar uma fatia funcional por PR/commit.
-2. Implementar leitura antes de escrita; usar repositório de teste nas mutações.
-3. Reutilizar estados/componentes já necessários; não criar módulos, backend ou
-   abstração multiprovedor antes de haver uma demanda concreta.
-4. Testar risco real: paginação, sessão, rate limit, envio duplicado e recuperação.
-5. Build/testes/lint em toda mudança de código; instrumentados para navegação;
-   validação de links/contratos em documentação. Inspecionar imagens quando mudarem.
-6. Atualizar estado e evidência na conclusão. Revisão independente nos marcos e
-   em mudanças de sessão/escrita; não tratar autorrevisão como auditoria.
-7. Falha bloqueia o aceite afetado, não toda preparação independente. Dependência
-   de OAuth, segunda conta, aparelho físico ou assinatura deve ser identificada cedo.
-8. Não prometer datas antes de C06. Estimar esforço por checkpoint após os primeiros
-   ciclos medidos; manter prazo, escopo e dependências explícitos.
+O [backlog](plan/tasks.json) divide os checkpoints em 42 entregas verificáveis.
+O [protocolo](docs/EXECUTION.md) define seleção, estados, contratos e evidências.
+Não duplicar status nesta tabela nem criar uma segunda fila.
 
-## Registro mínimo por checkpoint
-
-```text
-Checkpoint: Cxx — título
-Estado: PLANEJADO / EM EXECUÇÃO / BLOQUEADO / CONCLUÍDO
-Entrega e critérios: link para a seção deste roadmap
-Dependências e impedimento concreto:
-SHA/PR e artefato:
-Verificações: comando → PASS / FAIL / NOT_RUN
-Evidência de uso real, quando aplicável:
-Revisão independente, quando exigida:
-Limitações e próxima ação:
-```
-
-Registrar no estado ou relatório do checkpoint; não copiar o roadmap inteiro.
-Se o aceite mudar, documentar o motivo e a decisão do proprietário antes de
-marcar CONCLUÍDO. Nunca remover um requisito apenas para obter PASS.
+PLANNED indica entrega futura, ainda não pronta para implementar. Definir no
+contrato ambiente, métricas, janela do resumo, política de alertas e canal antes
+de READY. Sugestões de duração/amostra do beta não substituem cobertura de riscos.
+Contratos iniciais: C01.1 e C02.1. Refinar próximos grupos com código e API atual,
+sem remover aceite ou ampliar o produto para fechar tarefas.

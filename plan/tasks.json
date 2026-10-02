@@ -1,0 +1,568 @@
+{
+  "version": 1,
+  "tasks": [
+    {
+      "id": "C00.1",
+      "checkpoint": "C00",
+      "title": "Baseline reproduzível",
+      "depends_on": [],
+      "status": "DONE",
+      "acceptance": "Checkout limpo gera APK; testes/lint e CI do SHA passam.",
+      "contract": null,
+      "evidence": "docs/VERIFICATION.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "C00.2",
+      "checkpoint": "C00",
+      "title": "Auditoria da fundação",
+      "depends_on": [
+        "C00.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Parecer independente registrado e findings resolvidos.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C01.1",
+      "checkpoint": "C01",
+      "title": "Navegação previsível",
+      "depends_on": [
+        "C00.1"
+      ],
+      "status": "READY",
+      "acceptance": "Destinos, Voltar e recriação preservam estado; teclado e gestos não encobrem conteúdo.",
+      "contract": "plan/contracts/C01.1.md",
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C01.2",
+      "checkpoint": "C01",
+      "title": "Acessibilidade da navegação",
+      "depends_on": [
+        "C01.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "TalkBack identifica destinos; foco e alvos de toque verificados no dock.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C02.1",
+      "checkpoint": "C02",
+      "title": "Configuração OAuth verificável",
+      "depends_on": [
+        "C00.1"
+      ],
+      "status": "READY",
+      "acceptance": "Device Flow configurado, escopos justificados e resposta real sanitizada.",
+      "contract": "plan/contracts/C02.1.md",
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C03.1",
+      "checkpoint": "C03",
+      "title": "Autorizar conta",
+      "depends_on": [
+        "C01.1",
+        "C02.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Autorizar mostra conta real; negar, expirar ou cancelar retorna à entrada sem sessão falsa.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C03.2",
+      "checkpoint": "C03",
+      "title": "Restaurar e encerrar sessão",
+      "depends_on": [
+        "C03.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Reinício restaura sessão válida; logout remove token e dados privados; 401 exige novo login.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C04.1",
+      "checkpoint": "C04",
+      "title": "Transporte autenticado e falhas",
+      "depends_on": [
+        "C00.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Fixtures 200/401/403/429/5xx e timeout produzem estados distintos; logs omitem credenciais.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C04.2",
+      "checkpoint": "C04",
+      "title": "Paginação e rate limit",
+      "depends_on": [
+        "C04.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Link entre páginas não duplica itens; limite impede repetição contínua e oferece retry.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C05.1",
+      "checkpoint": "C05",
+      "title": "Lista de repositórios reais",
+      "depends_on": [
+        "C03.2",
+        "C04.2"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Conta vê repos autorizados, incluindo privados; vazio/erro e paginação funcionam.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C05.2",
+      "checkpoint": "C05",
+      "title": "Busca e filtros de repos",
+      "depends_on": [
+        "C05.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Busca/filtros têm semântica local/remota explícita; limpar restaura lista sem duplicações.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C06.1",
+      "checkpoint": "C06",
+      "title": "Detalhe do repositório",
+      "depends_on": [
+        "C05.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Detalhe e README correspondem ao repo; Markdown não executa código.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C06.2",
+      "checkpoint": "C06",
+      "title": "Painel da conta",
+      "depends_on": [
+        "C06.1",
+        "C05.2"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Painel identifica conta e origem dos números; demo não aparece como real.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C07.1",
+      "checkpoint": "C07",
+      "title": "Lista e filtros de issues",
+      "depends_on": [
+        "C06.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Lista distingue issues de PRs; aberto/fechado e paginação retornam itens corretos.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C07.2",
+      "checkpoint": "C07",
+      "title": "Detalhe e conversa da issue",
+      "depends_on": [
+        "C07.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Detalhe mostra autor, corpo e comentários; conteúdo removido tem estado próprio.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C08.1",
+      "checkpoint": "C08",
+      "title": "Lista e detalhe de PRs",
+      "depends_on": [
+        "C06.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "PRs abertos/fechados/merged exibem estado e origem/destino corretos.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C08.2",
+      "checkpoint": "C08",
+      "title": "Arquivos, diff e checks",
+      "depends_on": [
+        "C08.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Diff e checks pertencem ao PR; binário, truncamento e falha têm estados explícitos.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C09.1",
+      "checkpoint": "C09",
+      "title": "Caixa de notificações",
+      "depends_on": [
+        "C07.2",
+        "C08.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Avisos paginados abrem issue/PR correto; tipos restantes têm fallback documentado.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C09.2",
+      "checkpoint": "C09",
+      "title": "Marcar notificações lidas",
+      "depends_on": [
+        "C09.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Marcar lida persiste no GitHub; falha não confirma leitura indevidamente.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C10.1",
+      "checkpoint": "C10",
+      "title": "Workflows e execuções",
+      "depends_on": [
+        "C06.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Lista/detalhe exibem status e conclusão de runs/jobs do repo escolhido.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C10.2",
+      "checkpoint": "C10",
+      "title": "Logs de Actions",
+      "depends_on": [
+        "C10.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Logs autorizados abrem; expirados/negados exibem motivo; segredos não persistem.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C11.1",
+      "checkpoint": "C11",
+      "title": "Cache de leituras",
+      "depends_on": [
+        "C07.2",
+        "C08.2",
+        "C09.2",
+        "C10.2"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Offline mostra último dado com data/origem; cache não cruza contas.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C11.2",
+      "checkpoint": "C11",
+      "title": "Refresh e reconexão",
+      "depends_on": [
+        "C11.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Reconectar atualiza sem duplicar; erro mantém cache sinalizado e permite retry.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C12.1",
+      "checkpoint": "C12",
+      "title": "Criar issue",
+      "depends_on": [
+        "C07.2",
+        "C11.2"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Enviar cria issue real; toque repetido/timeout não provoca reenvio automático.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C12.2",
+      "checkpoint": "C12",
+      "title": "Editar e comentar issue",
+      "depends_on": [
+        "C12.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Edição/comentário aparece no GitHub; permissão negada preserva texto.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C12.3",
+      "checkpoint": "C12",
+      "title": "Metadados e fechar/reabrir",
+      "depends_on": [
+        "C12.2"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Labels, responsáveis e estado refletem servidor; ações negadas não são oferecidas.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C13.1",
+      "checkpoint": "C13",
+      "title": "Comentar PR",
+      "depends_on": [
+        "C08.2",
+        "C11.2"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Comentário aparece no PR; falha preserva rascunho e envio ambíguo não repete.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C13.2",
+      "checkpoint": "C13",
+      "title": "Enviar revisão de PR",
+      "depends_on": [
+        "C13.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Aprovar/solicitar mudanças/comentar respeita permissões e confirma no GitHub.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C14.1",
+      "checkpoint": "C14",
+      "title": "Favoritos locais",
+      "depends_on": [
+        "C05.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Favoritar/desfavoritar persiste após reinício e fica isolado por conta.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C14.2",
+      "checkpoint": "C14",
+      "title": "Kanban local de issues",
+      "depends_on": [
+        "C07.2",
+        "C11.2"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Mover card persiste; UI informa que coluna não muda estado no GitHub.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C15.1",
+      "checkpoint": "C15",
+      "title": "Resumo diário",
+      "depends_on": [
+        "C09.1",
+        "C10.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Resumo usa janela/timezone definidos, identifica origem e cache desatualizado.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C15.2",
+      "checkpoint": "C15",
+      "title": "Sincronização em segundo plano",
+      "depends_on": [
+        "C11.2",
+        "C15.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Respeita preferências/restrições Android; logout cancela acesso encerrado.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C15.3",
+      "checkpoint": "C15",
+      "title": "Alertas locais configuráveis",
+      "depends_on": [
+        "C15.2"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Permissão negada mantém app utilizável; preferências evitam alertas duplicados.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C16.1",
+      "checkpoint": "C16",
+      "title": "Preferências e temas",
+      "depends_on": [
+        "C01.2"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Claro/escuro/sistema e preferências persistem; conteúdo mantém contraste.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C16.2",
+      "checkpoint": "C16",
+      "title": "Acessibilidade do conjunto",
+      "depends_on": [
+        "C12.3",
+        "C13.2",
+        "C14.2",
+        "C15.3",
+        "C16.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Fluxos passam TalkBack, fonte ampliada e foco sem controles inacessíveis.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C17.1",
+      "checkpoint": "C17",
+      "title": "Matriz Android e layouts",
+      "depends_on": [
+        "C16.2"
+      ],
+      "status": "PLANNED",
+      "acceptance": "API 26 e atual testadas; rotação, compacto/tablet e recriação preservam fluxo.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C17.2",
+      "checkpoint": "C17",
+      "title": "Desempenho e falhas prolongadas",
+      "depends_on": [
+        "C17.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Baseline e orçamento medidos em aparelho definido; rede lenta/offline sem crash/ANR.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C18.1",
+      "checkpoint": "C18",
+      "title": "Privacidade, licença e segurança",
+      "depends_on": [
+        "C17.2"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Política corresponde aos dados; licença decidida pelo proprietário; revisão resolvida.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C18.2",
+      "checkpoint": "C18",
+      "title": "Release assinada e atualização",
+      "depends_on": [
+        "C18.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Assinada instala/atualiza sem perder dados; chaves fora do Git; canal documentado.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C19.1",
+      "checkpoint": "C19",
+      "title": "Beta e correção de defeitos",
+      "depends_on": [
+        "C18.2"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Cenários reais registrados; defeitos bloqueantes corrigidos e retestados.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C20.1",
+      "checkpoint": "C20",
+      "title": "Aceite ponta a ponta da 1.0",
+      "depends_on": [
+        "C00.2",
+        "C06.2",
+        "C14.1",
+        "C19.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Todos checkpoints aceitos; jornada real e atualização passam no SHA da release.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C20.2",
+      "checkpoint": "C20",
+      "title": "Entrega e operação",
+      "depends_on": [
+        "C20.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "APK/checksum e notas no canal autorizado; suporte, revogação e atualização documentados.",
+      "contract": null,
+      "evidence": null,
+      "blocked_reason": null
+    }
+  ]
+}

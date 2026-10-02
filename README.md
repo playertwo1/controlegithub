@@ -52,9 +52,10 @@ APK local: `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## Próximos passos
 
-O [roadmap](ROADMAP.md) define 21 checkpoints (C00–C20), dependências, critérios
-de aceite e cinco marcos, da fundação à versão 1.0 operante. Checkpoint atual:
-C00 — confirmar CI e revisar a fundação; depois navegação e integração GitHub.
+O [roadmap](ROADMAP.md) mantém 21 checkpoints e cinco marcos. O
+[backlog](plan/tasks.json) divide a execução em 42 entregas; o
+[protocolo](docs/EXECUTION.md) define seleção, refinamento e evidências.
+CI confirmado; contratos iniciais: C01.1 (navegação) e C02.1 (OAuth).
 O [estado](PROJECT_STATE.md) registra verificações e limitações.
 As [decisões técnicas](docs/ARCHITECTURE.md) e o [guia visual](docs/DESIGN.md)
 orientam a implementação sem introduzir uma arquitetura maior que o necessário.

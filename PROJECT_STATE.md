@@ -1,7 +1,7 @@
 # Estado do projeto
 
-Atualizado em 2026-10-02. Fase F0, **checkpoint ativo C00 — EM EXECUÇÃO**.
-Base implementada e verificada localmente; CI remoto e auditoria inicial pendentes.
+Atualizado em 2026-10-02. Fase F0; integração GitHub ainda não implementada.
+Base verificada localmente e no CI remoto; auditoria independente pendente.
 
 ## Entrega atual
 
@@ -23,18 +23,13 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Auditoria independente | NOT_RUN |
 | Primeiro CI remoto (`69a02f1`) | FAIL — setup do SDK solicitou pacote obsoleto `tools` |
 
-Evidências: `docs/VERIFICATION.md`. A correção de CI define explicitamente
-`packages: platform-tools`; reexecução remota ainda precisa ser confirmada.
-O resultado local não substitui o remoto.
+Evidências: docs/VERIFICATION.md. CI corrigido PASS no SHA 03fe0cd,
+run 37037178446. Auditoria da fundação ainda NOT_RUN.
 
-## Checkpoints
+## Planejamento e retomada
 
-C00: EM EXECUÇÃO; C01: PARCIAL (protótipo e referências prontos, aceite completo
-de navegação/acessibilidade pendente); C02–C20: PLANEJADOS. Marcos M0–M4 ainda
-não aceitos. Critérios e dependências: `ROADMAP.md`.
-
-## Próxima ação
-
-Confirmar CI corrigido e realizar auditoria da fundação para fechar C00.
-Depois consolidar C01 e configurar OAuth em C02; C04 pode avançar com testes HTTP
-independentemente da configuração da conta. C03 depende do OAuth App do proprietário.
+Estados canônicos: plan/tasks.json. Roadmap mantém 21 checkpoints/5 marcos;
+backlog divide em 42 entregas. Nenhum marco foi aceito. Funções API não existem.
+Contratos iniciais delimitam navegação e configuração OAuth. Auditoria pendente
+impede M0, mas não preparação independente. Para retomar, executar
+python scripts/check_plan.py e seguir docs/EXECUTION.md.

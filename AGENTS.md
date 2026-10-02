@@ -2,6 +2,8 @@
 
 Leia este arquivo e o pedido atual. Localize antes de ler; abra o estado, roadmap
 e documentos somente quando necessários. Faça a menor mudança correta.
+Para executar o roadmap, siga [docs/EXECUTION.md](docs/EXECUTION.md), valide
+plan/tasks.json com python scripts/check_plan.py e abra o contrato selecionado.
 
 - Android nativo, Kotlin e Jetpack Compose; interface em português.
 - Não apresente dados de demonstração como dados reais.

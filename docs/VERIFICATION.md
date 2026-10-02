@@ -58,4 +58,5 @@ O [primeiro CI remoto](https://github.com/playertwo1/controlegithub/actions/runs
 falhou no setup do SDK, antes do build, ao solicitar o pacote obsoleto `tools`.
 Correção: configurar `packages: platform-tools`, conforme a
 [documentação do action](https://github.com/android-actions/setup-android#additional-packages).
-A nova execução ainda deve ser confirmada; a falha não invalida os testes locais.
+A [execução corrigida](https://github.com/playertwo1/controlegithub/actions/runs/37037178446)
+foi confirmada completed/success em 2026-10-02, SHA 03fe0cd.
