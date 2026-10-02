@@ -1,7 +1,7 @@
 # Estado do projeto
 
-Atualizado em 2026-10-02. Fase F0: implementada e verificada localmente;
-auditoria independente pendente.
+Atualizado em 2026-10-02. Fase F0, **checkpoint ativo C00 — EM EXECUÇÃO**.
+Base implementada e verificada localmente; CI remoto e auditoria inicial pendentes.
 
 ## Entrega atual
 
@@ -21,11 +21,20 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Check Ideias Standard | PASS — manifest, lock e contexto |
 | Capturas e links da documentação | PASS |
 | Auditoria independente | NOT_RUN |
+| Primeiro CI remoto (`69a02f1`) | FAIL — setup do SDK solicitou pacote obsoleto `tools` |
 
-Evidências: `docs/VERIFICATION.md`. CI configurado; resultado remoto deve ser
-consultado no GitHub Actions, sem presumir PASS a partir do resultado local.
+Evidências: `docs/VERIFICATION.md`. A correção de CI define explicitamente
+`packages: platform-tools`; reexecução remota ainda precisa ser confirmada.
+O resultado local não substitui o remoto.
+
+## Checkpoints
+
+C00: EM EXECUÇÃO; C01: PARCIAL (protótipo e referências prontos, aceite completo
+de navegação/acessibilidade pendente); C02–C20: PLANEJADOS. Marcos M0–M4 ainda
+não aceitos. Critérios e dependências: `ROADMAP.md`.
 
 ## Próxima ação
 
-Auditoria independente da F0 e depois F1: autenticação e repositórios reais.
-O proprietário precisa configurar um OAuth App antes de testar login real.
+Confirmar CI corrigido e realizar auditoria da fundação para fechar C00.
+Depois consolidar C01 e configurar OAuth em C02; C04 pode avançar com testes HTTP
+independentemente da configuração da conta. C03 depende do OAuth App do proprietário.

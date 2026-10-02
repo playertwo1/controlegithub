@@ -54,4 +54,8 @@ Autenticação, API GitHub e mutações: NOT_RUN, ainda não implementadas.
 API 26, aparelhos físicos, tema claro, tablets e TalkBack: NOT_RUN.
 Auditoria independente: NOT_RUN; a revisão do autor não substitui auditoria.
 O PASS estrutural do Standard não constitui certificação Gold.
-CI está configurado; a execução remota é consultável em GitHub Actions.
+O [primeiro CI remoto](https://github.com/playertwo1/controlegithub/actions/runs/37036444089)
+falhou no setup do SDK, antes do build, ao solicitar o pacote obsoleto `tools`.
+Correção: configurar `packages: platform-tools`, conforme a
+[documentação do action](https://github.com/android-actions/setup-android#additional-packages).
+A nova execução ainda deve ser confirmada; a falha não invalida os testes locais.
