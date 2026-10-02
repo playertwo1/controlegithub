@@ -19,7 +19,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,13 +38,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ControleApp() {
     var started by rememberSaveable { mutableStateOf(false) }
     var page by rememberSaveable { mutableStateOf(0) }
     var selectedName by rememberSaveable { mutableStateOf<String?>(null) }
+    var repositoryQuery by rememberSaveable { mutableStateOf("") }
     val selected = DemoData.repositories.firstOrNull { it.name == selectedName }
-    val keyboardOpen = WindowInsets.ime.getBottom(LocalDensity.current) > 0
+    val keyboardOpen = WindowInsets.isImeVisible
     BackHandler(started) { if (selected != null) selectedName = null else started = false }
     Scaffold(containerColor = Palette.background, bottomBar = {
         if (started && !keyboardOpen) Box(
@@ -93,7 +94,7 @@ fun ControleApp() {
                     items(DemoData.repositories.take(2)) { repo -> RepoCard(repo) { selectedName = repo.name } }
                 }
                 1 -> {
-                    item { SearchRepositories { selectedName = it } }
+                    item { SearchRepositories(repositoryQuery, { repositoryQuery = it }) { selectedName = it } }
                 }
                 2 -> {
                     item { Section("Issues e pull requests") }
@@ -133,10 +134,9 @@ private fun Welcome(modifier: Modifier, onStart: () -> Unit) {
 }
 
 @Composable
-private fun SearchRepositories(onSelect: (String) -> Unit) {
-    var query by rememberSaveable { mutableStateOf("") }
+private fun SearchRepositories(query: String, onQueryChange: (String) -> Unit, onSelect: (String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        OutlinedTextField(value = query, onValueChange = { query = it }, label = { Text("Buscar nome ou linguagem") }, leadingIcon = { Icon(Icons.Outlined.Search, null) }, singleLine = true, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp))
+        OutlinedTextField(value = query, onValueChange = onQueryChange, label = { Text("Buscar nome ou linguagem") }, leadingIcon = { Icon(Icons.Outlined.Search, null) }, singleLine = true, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp))
         val repos = DemoData.search(query)
         Text("${repos.size} repositórios · conta de exemplo", color = Muted, fontSize = 13.sp)
         repos.forEach { RepoCard(it) { onSelect(it.name) } }
