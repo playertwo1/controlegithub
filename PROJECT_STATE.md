@@ -1,8 +1,7 @@
 # Estado do projeto
 
-Atualizado em 2026-10-02. Login ainda não implementado. C02.1 e C04.1 estão
-concluídos; C04.2 está em implementação/verificação. C00.2 e C01.1 aguardam
-auditoria independente.
+Atualizado em 2026-10-02. Login ainda não implementado. C02.1, C04.1 e C04.2
+estão concluídos. C00.2 e C01.1 aguardam auditoria independente.
 
 ## Entrega atual
 
@@ -30,7 +29,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Auditoria independente C02.1 | PASS — escopos e limites revisados; documentação ajustada conforme achado |
 | CI C02.1 (`1deaac5`) | PASS — run 37065527035; plano, build, testes unitários e lint |
 | Transporte GitHub C04.1 | PASS — auditoria e CI remotos passaram em `2a4e689` |
-| Paginação e rate limit C04.2 | IN_PROGRESS — testes locais passaram; auditoria e CI pendentes |
+| Paginação e rate limit C04.2 | PASS — implementação, auditoria e CI remoto no SHA `bd02490` |
 | Primeiro CI remoto (`69a02f1`) | FAIL — setup do SDK solicitou pacote obsoleto `tools` |
 
 Evidências: docs/VERIFICATION.md. CI PASS no SHA 643757b, run 37050937095;
