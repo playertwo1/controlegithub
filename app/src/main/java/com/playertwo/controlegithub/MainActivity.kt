@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 private val Mint = Color(0xFF3E85FF)
-private val Muted = Color(0xFF9AA8BB)
+internal val Muted = Color(0xFF9AA8BB)
 private val Palette = darkColorScheme(primary = Mint, onPrimary = Color.White, secondaryContainer = Color(0xFF153562), onSecondaryContainer = Mint, background = Color(0xFF080808), surface = Color(0xFF1C1C1E), onSurface = Color(0xFFF5F5F7))
 
 class MainActivity : ComponentActivity() {
@@ -45,6 +45,7 @@ fun ControleApp() {
     var page by rememberSaveable { mutableStateOf(0) }
     var selectedName by rememberSaveable { mutableStateOf<String?>(null) }
     var repositoryQuery by rememberSaveable { mutableStateOf("") }
+    var session by remember { mutableStateOf<GitHubSession?>(null) }
     val selected = DemoData.repositories.firstOrNull { it.name == selectedName }
     val keyboardOpen = WindowInsets.isImeVisible
     BackHandler(started) { if (selected != null) selectedName = null else started = false }
@@ -70,13 +71,15 @@ fun ControleApp() {
             }
         }
     }) { padding ->
-        if (!started) Welcome(Modifier.padding(padding)) { started = true }
+        if (!started) Welcome(Modifier.padding(padding), session, onConnected = { session = it }) { started = true }
         else LazyColumn(Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item {
                 Text("CONTROLE / GITHUB", color = Mint, fontSize = 12.sp, letterSpacing = 2.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(48.dp))
                 Text(if (selected != null) selected.name else listOf("Seu centro de comando", "Repositórios", "Seu trabalho", "Notificações")[page], fontSize = 28.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
+                Text(session?.let { "Conta conectada: @${it.user.login}" } ?: "Nenhuma conta conectada", color = Mint, fontSize = 13.sp)
+                session?.let { Text(it.user.profileUrl, color = Muted, fontSize = 12.sp) }
                 Text("Modo demonstração · dados fictícios", color = Muted, fontSize = 13.sp)
             }
             if (selected != null) {
@@ -115,7 +118,12 @@ fun ControleApp() {
 }
 
 @Composable
-private fun Welcome(modifier: Modifier, onStart: () -> Unit) {
+private fun Welcome(
+    modifier: Modifier,
+    session: GitHubSession?,
+    onConnected: (GitHubSession) -> Unit,
+    onStart: () -> Unit
+) {
     Column(modifier.fillMaxSize().padding(28.dp), verticalArrangement = Arrangement.SpaceBetween) {
         Text("CONTROLE / GITHUB", color = Mint, fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
         Column {
@@ -126,17 +134,15 @@ private fun Welcome(modifier: Modifier, onStart: () -> Unit) {
             Text("Repositórios, issues e pull requests.\nTudo encontra seu lugar, no seu Android.", color = Muted, fontSize = 17.sp, lineHeight = 26.sp)
         }
         Column {
+            session?.let {
+                Text("Conta conectada: @${it.user.login}", color = Mint, fontSize = 13.sp)
+                Text(it.user.profileUrl, color = Muted, fontSize = 12.sp)
+            }
+            if (session != null) Spacer(Modifier.height(12.dp))
+            GitHubSignIn(onConnected)
+            Spacer(Modifier.height(12.dp))
             Button(onClick = onStart, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(16.dp)) { Text("Explorar demonstração", fontWeight = FontWeight.Bold) }
             Spacer(Modifier.height(16.dp))
-            Text(
-                if (BuildConfig.GITHUB_OAUTH_CLIENT_ID.isBlank()) {
-                    "Integração GitHub indisponível · app OAuth não configurado"
-                } else {
-                    "Client ID configurado · login será habilitado em próxima etapa"
-                },
-                color = Muted,
-                fontSize = 12.sp
-            )
         }
     }
 }

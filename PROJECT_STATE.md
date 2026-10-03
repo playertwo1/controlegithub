@@ -1,12 +1,16 @@
 # Estado do projeto
 
-Atualizado em 2026-10-02. Login ainda não implementado. C00.2, C01.1, C01.2,
-C02.1, C04.1 e C04.2 estão concluídos. M0 — Fundação confiável — foi aceito.
+Atualizado em 2026-10-02. C03.1 está em implementação: Device Flow, validação
+do perfil e sessão em memória já estão codificados e passam nos testes locais;
+autorização real do proprietário e auditoria ainda estão pendentes. C00.2,
+C01.1, C01.2, C02.1, C04.1 e C04.2 estão concluídos. M0 — Fundação confiável —
+foi aceito.
 
 ## Entrega atual
 
-Protótipo Android nativo com dados locais fictícios. Sem autenticação, rede,
-sincronização ou operações no GitHub. As telas demonstram o fluxo do produto.
+Protótipo Android nativo com dados locais fictícios. C03.1 já solicita código,
+faz polling cancelável e confirma perfil real; repositórios e operações ainda
+usam demonstração, sem persistência de sessão. As telas demonstram o produto.
 Menu inferior flutuante; sete pranchas conceituais (visão geral + 36 telas/estados)
 e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 
@@ -15,9 +19,9 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Verificação | Resultado |
 |---|---|
 | Build debug | PASS |
-| Testes unitários | PASS — 3 testes |
+| Testes unitários | PASS — 25 testes, incluindo fixtures locais OAuth e orquestração |
 | Lint | PASS — sem erros; avisos de versões/target documentados |
-| Teste de navegação no emulador | PASS — 5 testes, Android API 37 |
+| Teste instrumentado no emulador | PASS — 7 testes, Android API 37; inclui perfil OAuth |
 | Navegação C01.1 (4 cenários) | PASS — Pixel 9, API 37; dock e busca respeitam IME e insets |
 | Check Ideias Standard | PASS — manifest, lock e contexto |
 | Capturas e links da documentação | PASS |
@@ -30,6 +34,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Requisição real de Device Flow | PASS — HTTP 200; códigos de dispositivo/usuário sanitizados e descartados |
 | Auditoria independente C02.1 | PASS — escopos e limites revisados; documentação ajustada conforme achado |
 | CI C02.1 (`1deaac5`) | PASS — run 37065527035; plano, build, testes unitários e lint |
+| C03.1 — Device Flow e perfil | EM ANDAMENTO — 25 unitários, 7 instrumentados, build/lint e auditoria independente passaram; autorização real pendente |
 | Transporte GitHub C04.1 | PASS — auditoria e CI remotos passaram em `2a4e689` |
 | Paginação e rate limit C04.2 | PASS — implementação, auditoria e CI remoto no SHA `bd02490` |
 | Primeiro CI remoto (`69a02f1`) | FAIL — setup do SDK solicitou pacote obsoleto `tools` |
@@ -47,12 +52,14 @@ Auditoria C00.2 revisou a fundação em HEAD `daaf60f`; parecer PASS após corre
 e rechecagem documental em docs/evidence/C00.2-review.md. C01.1 implementado,
 verificado localmente e aprovado em auditoria independente; evidência em
 docs/evidence/C01.1.md. C01.2 (acessibilidade da navegação) foi concluído em
-docs/evidence/C01.2.md; C00 e C01 fecham M0. Nenhuma tarefa está pronta até
-refinar o contrato de C03.1. C02.1 está concluído:
+docs/evidence/C01.2.md; C00 e C01 fecham M0. C03.1 está ativa, com contrato em
+plan/contracts/C03.1.md e evidência parcial em docs/evidence/C03.1.md. Falta a
+autorização real do proprietário e a auditoria independente antes do aceite.
+C02.1 está concluído:
 OAuth App criado, Client ID somente local, escopos documentados, endpoint real
-testado e auditoria independente PASS. Login pertence a C03. Veja docs/AUTH.md e
-docs/evidence/C02.1.md. Nenhum usuário concedeu acesso ao app e nenhuma sessão
-autenticada foi criada.
+testado e auditoria independente PASS. Veja docs/AUTH.md e
+docs/evidence/C02.1.md. Nenhum usuário concedeu acesso ao app antes de C03.1;
+a prova real desta entrega ainda não ocorreu.
 
 C04.1 pode avançar sem login: transporte REST nativo limitado a `api.github.com`
 em HTTPS, mensagens de erro tipadas e fixtures locais. Evidência em
