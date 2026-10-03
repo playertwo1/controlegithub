@@ -34,7 +34,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Requisição real de Device Flow | PASS — HTTP 200; códigos de dispositivo/usuário sanitizados e descartados |
 | Auditoria independente C02.1 | PASS — escopos e limites revisados; documentação ajustada conforme achado |
 | CI C02.1 (`1deaac5`) | PASS — run 37065527035; plano, build, testes unitários e lint |
-| C03.1 — Device Flow e perfil | EM ANDAMENTO — 25 unitários, 7 instrumentados, build/lint e auditoria independente passaram; autorização real pendente |
+| C03.1 — Device Flow e perfil | EM ANDAMENTO — 25 unitários, 7 instrumentados, build/lint, auditoria e CI remoto (run 37082537911) passaram; autorização real pendente |
 | Transporte GitHub C04.1 | PASS — auditoria e CI remotos passaram em `2a4e689` |
 | Paginação e rate limit C04.2 | PASS — implementação, auditoria e CI remoto no SHA `bd02490` |
 | Primeiro CI remoto (`69a02f1`) | FAIL — setup do SDK solicitou pacote obsoleto `tools` |
