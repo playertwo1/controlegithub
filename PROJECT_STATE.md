@@ -1,8 +1,9 @@
 # Estado do projeto
 
-Atualizado em 2026-10-02. C03.1 está em implementação: Device Flow, validação
-do perfil e sessão em memória já estão codificados e passam nos testes locais;
-autorização real do proprietário e auditoria ainda estão pendentes. C00.2,
+Atualizado em 2026-10-03. C03.1 está bloqueado somente pela autorização real do
+proprietário, explicitamente adiada por ele; implementação, testes, auditoria e
+CI passaram. C16.1 está em execução para tema claro/escuro/sistema, independente
+da autorização. C00.2,
 C01.1, C01.2, C02.1, C04.1 e C04.2 estão concluídos. M0 — Fundação confiável —
 foi aceito.
 
@@ -34,7 +35,8 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Requisição real de Device Flow | PASS — HTTP 200; códigos de dispositivo/usuário sanitizados e descartados |
 | Auditoria independente C02.1 | PASS — escopos e limites revisados; documentação ajustada conforme achado |
 | CI C02.1 (`1deaac5`) | PASS — run 37065527035; plano, build, testes unitários e lint |
-| C03.1 — Device Flow e perfil | EM ANDAMENTO — 25 unitários, 7 instrumentados, build/lint, auditoria e CI remoto (run 37082537911) passaram; autorização real pendente |
+| C03.1 — Device Flow e perfil | BLOQUEADO — implementação, 25 unitários, 7 instrumentados, build/lint, auditoria e CI remoto (run 37082537911) passaram; autorização real adiada pelo proprietário |
+| C16.1 — Preferência de tema | EM EXECUÇÃO — build, 25 unitários, lint e 11 instrumentados passaram no Pixel 9/API 37; captura visual e auditoria independente pendentes |
 | Transporte GitHub C04.1 | PASS — auditoria e CI remotos passaram em `2a4e689` |
 | Paginação e rate limit C04.2 | PASS — implementação, auditoria e CI remoto no SHA `bd02490` |
 | Primeiro CI remoto (`69a02f1`) | FAIL — setup do SDK solicitou pacote obsoleto `tools` |
@@ -52,9 +54,11 @@ Auditoria C00.2 revisou a fundação em HEAD `daaf60f`; parecer PASS após corre
 e rechecagem documental em docs/evidence/C00.2-review.md. C01.1 implementado,
 verificado localmente e aprovado em auditoria independente; evidência em
 docs/evidence/C01.1.md. C01.2 (acessibilidade da navegação) foi concluído em
-docs/evidence/C01.2.md; C00 e C01 fecham M0. C03.1 está ativa, com contrato em
-plan/contracts/C03.1.md e evidência parcial em docs/evidence/C03.1.md. Falta a
-autorização real do proprietário e a auditoria independente antes do aceite.
+docs/evidence/C01.2.md; C00 e C01 fecham M0. C03.1 está bloqueada pela
+autorização real que o proprietário decidiu deixar para depois; auditoria
+independente, testes determinísticos e CI já passaram. Contrato e evidência
+parcial em plan/contracts/C03.1.md e docs/evidence/C03.1.md. Retomar o aceite
+real quando o proprietário autorizar.
 C02.1 está concluído:
 OAuth App criado, Client ID somente local, escopos documentados, endpoint real
 testado e auditoria independente PASS. Veja docs/AUTH.md e
@@ -69,3 +73,8 @@ token real fica para C03/C05.
 C04.2 implementa o consumo explícito de uma página por vez, deduplicação por
 identificador e bloqueio compartilhado do cliente HTTP até o prazo de rate
 limit. Fontes e testes em plan/contracts/C04.2.md e docs/evidence/C04.2.md.
+
+C16.1 é a tarefa ativa, com contrato em plan/contracts/C16.1.md. C01.2 já
+concluída é sua única pré-condição; C03.1 fica pendente sem impedir esta entrega.
+Implementação e verificações locais estão prontas. Ainda faltam captura visual
+confiável do emulador e auditoria independente; a tarefa continua IN_PROGRESS.

@@ -72,11 +72,11 @@
         "C01.1",
         "C02.1"
       ],
-      "status": "IN_PROGRESS",
+      "status": "BLOCKED",
       "acceptance": "Autorizar mostra conta real; negar, expirar ou cancelar retorna à entrada sem sessão falsa.",
       "contract": "plan/contracts/C03.1.md",
-      "evidence": null,
-      "blocked_reason": null
+      "evidence": "docs/evidence/C03.1.md",
+      "blocked_reason": "Autorização real depende do consentimento do proprietário, explicitamente adiado por ele. Código, testes, auditoria e CI passaram; retomar quando ele decidir autorizar no GitHub."
     },
     {
       "id": "C03.2",
@@ -447,9 +447,9 @@
       "depends_on": [
         "C01.2"
       ],
-      "status": "PLANNED",
+      "status": "IN_PROGRESS",
       "acceptance": "Claro/escuro/sistema e preferências persistem; conteúdo mantém contraste.",
-      "contract": null,
+      "contract": "plan/contracts/C16.1.md",
       "evidence": null,
       "blocked_reason": null
     },

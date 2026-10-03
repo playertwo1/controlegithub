@@ -11,6 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -99,7 +100,7 @@ internal fun GitHubSignIn(onConnected: (GitHubSession) -> Unit) {
         }
 
         authorization?.let { device ->
-            Text("Código de autorização", color = Muted, fontSize = 13.sp)
+            Text("Código de autorização", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(device.userCode, fontSize = 24.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                 OutlinedButton(onClick = { clipboard.setText(AnnotatedString(device.userCode)) }) { Text("Copiar") }
@@ -111,7 +112,7 @@ internal fun GitHubSignIn(onConnected: (GitHubSession) -> Unit) {
         if (connecting) {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(vertical = 4.dp)) {
                 CircularProgressIndicator(strokeWidth = 2.dp)
-                Text(message.orEmpty(), color = Muted, fontSize = 13.sp, modifier = Modifier.weight(1f))
+                Text(message.orEmpty(), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, modifier = Modifier.weight(1f))
             }
             OutlinedButton(
                 onClick = {
@@ -124,7 +125,7 @@ internal fun GitHubSignIn(onConnected: (GitHubSession) -> Unit) {
                 modifier = Modifier.fillMaxWidth()
             ) { Text("Cancelar autorização") }
         } else {
-            message?.let { Text(it, color = Muted, fontSize = 12.sp) }
+            message?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp) }
         }
         Spacer(Modifier.height(2.dp))
     }

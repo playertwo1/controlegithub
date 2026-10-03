@@ -2,8 +2,11 @@
 
 Direção escolhida pelo proprietário: inspiração One UI, tema escuro e menu
 inferior flutuante. Catálogo do produto planejado: [36 telas](design/README.md).
-Fundo `#080808`, superfícies `#1C1C1E`, destaque `#3E85FF`, texto `#F5F5F7`,
-secundário `#9AA8BB`. Fonte do sistema, cards de 28 dp, espaçamento base 8 dp.
+No tema escuro, fundo `#080808`, superfícies `#1C1C1E` e texto `#F5F5F7`; o
+tema claro usa fundo `#F7F8FA` e superfície branca. O azul tem papel semântico
+por tema para manter contraste: escuro `#80B3FF`, claro `#0052A4`. Texto
+secundário usa `onSurfaceVariant` do Material 3. Fonte do sistema, cards de
+28 dp, espaçamento base 8 dp.
 
 Referências oficiais: [princípios One UI](https://developer.samsung.com/one-ui/index.html),
 [layout](https://developer.samsung.com/one-ui/layout/basic.html),
