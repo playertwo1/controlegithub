@@ -72,11 +72,11 @@
         "C01.1",
         "C02.1"
       ],
-      "status": "BLOCKED",
+      "status": "DONE",
       "acceptance": "Autorizar mostra conta real; negar, expirar ou cancelar retorna à entrada sem sessão falsa.",
       "contract": "plan/contracts/C03.1.md",
       "evidence": "docs/evidence/C03.1.md",
-      "blocked_reason": "Autorização real depende do consentimento do proprietário, explicitamente adiado por ele. Código, testes, auditoria e CI passaram; retomar quando ele decidir autorizar no GitHub."
+      "blocked_reason": null
     },
     {
       "id": "C03.2",
