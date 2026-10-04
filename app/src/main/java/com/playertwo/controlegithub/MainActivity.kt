@@ -233,6 +233,16 @@ internal fun ControleApp(
             onLogout = { repositorySessionExpired = false; logoutConfirm = true },
             onAppearance = { appearanceOpen = true }
         )
+        else if (page == 0 && selected == null && session != null) GitHubHomeScreen(
+            modifier = Modifier.padding(padding),
+            client = apiClient,
+            session = session,
+            sessionRestoring = sessionRestoring,
+            onOpenRepositories = { page = 1 },
+            onSessionExpired = onSessionExpired,
+            onLogout = { logoutConfirm = true },
+            onAppearance = { appearanceOpen = true }
+        )
         else LazyColumn(Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -251,7 +261,7 @@ internal fun ControleApp(
                 if (sessionRetry) TextButton(onClick = onRetrySession) { Text("Tentar restaurar sessão") }
                 if (sessionStorageError) Text("A sessão saiu da tela, mas o armazenamento seguro informou falha.", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
                 if (sessionStorageError) TextButton(onClick = onRetrySessionCleanup) { Text("Tentar limpar a sessão") }
-                Text("Modo demonstração · dados fictícios", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
+                if (session == null) Text("Modo demonstração · dados fictícios", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
             }
             if (selected != null) {
                 item { TextButton(onClick = { selectedName = null }) { Text("← Voltar") } }
@@ -269,17 +279,23 @@ internal fun ControleApp(
                 }
                 1 -> Unit
                 2 -> {
-                    item { Section("Issues e pull requests") }
-                    item { WorkCard("ISSUE #18", "Preparar primeira versão Android", "controlegithub · planejamento") }
-                    item { WorkCard("PR #12", "Adicionar tema e navegação", "controlegithub · em revisão") }
-                    item { WorkCard("ISSUE #7", "Documentar padrões de projeto", "ideias_standard · documentação") }
-                    item { Text("Triagem e ações no GitHub estarão disponíveis após a integração da conta.", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    if (session != null) item { NotIntegratedScreen("Seu trabalho", "Issues e pull requests") }
+                    else {
+                        item { Section("Issues e pull requests") }
+                        item { WorkCard("ISSUE #18", "Preparar primeira versão Android", "controlegithub · planejamento") }
+                        item { WorkCard("PR #12", "Adicionar tema e navegação", "controlegithub · em revisão") }
+                        item { WorkCard("ISSUE #7", "Documentar padrões de projeto", "ideias_standard · documentação") }
+                        item { Text("Triagem e ações no GitHub estarão disponíveis após a integração da conta.", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    }
                 }
                 3 -> {
-                    item { Section("Caixa de entrada") }
-                    item { WorkCard("REVISÃO", "Uma revisão está esperando", "controlegithub · PR #12") }
-                    item { WorkCard("MENÇÃO", "Você foi mencionado em uma issue", "ideias_standard · issue #7") }
-                    item { Text("Exemplos de notificações. Nenhuma conta está conectada.", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    if (session != null) item { NotIntegratedScreen("Avisos", "Notificações do GitHub") }
+                    else {
+                        item { Section("Caixa de entrada") }
+                        item { WorkCard("REVISÃO", "Uma revisão está esperando", "controlegithub · PR #12") }
+                        item { WorkCard("MENÇÃO", "Você foi mencionado em uma issue", "ideias_standard · issue #7") }
+                        item { Text("Exemplos de notificações. Nenhuma conta está conectada.", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    }
                 }
             }
         }
@@ -340,7 +356,9 @@ private fun Welcome(
             if (session != null) Spacer(Modifier.height(12.dp))
             if (session == null) GitHubSignIn(onConnected, enabled = !sessionRestoring)
             Spacer(Modifier.height(12.dp))
-            Button(onClick = onStart, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(16.dp)) { Text("Explorar demonstração", fontWeight = FontWeight.Bold) }
+            Button(onClick = onStart, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(16.dp)) {
+                Text(if (session == null) "Explorar demonstração" else "Abrir painel", fontWeight = FontWeight.Bold)
+            }
             Spacer(Modifier.height(16.dp))
         }
     }

@@ -8,7 +8,7 @@ Maestro com fixture, auditoria independente e CI no SHA `992d781` (run
 no SHA `5064cd0` e auditoria independente. C03.2
 foi publicada em `04077f9`; seu CI passou no run 37194260058. C00.2, C01.1, C01.2,
 C02.1, C04.1 e C04.2 também estão concluídos. M0 — Fundação confiável — foi aceito.
-C06.1 foi concluída no SHA `e4a218a`: build, lint, 40 testes unitários, 31 instrumentados, inspeção Maestro, reauditoria independente e CI remoto (run 37205228834) passaram.
+C06.1 foi concluída no SHA `e4a218a`: build, lint, 40 testes unitários, 31 instrumentados, inspeção Maestro, reauditoria independente e CI remoto (run 37205228834) passaram. C06.2 é a tarefa ativa; implementação, validação local e reauditoria independente passaram; CI remoto pendente; evidência em docs/evidence/C06.2.md.
 
 ## Entrega atual
 
@@ -45,6 +45,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | C05.1 — Lista de repositórios reais | CONCLUÍDO — 36 unitários, 15 instrumentados, build/lint, CI remoto, comparação real redigida, lista vazia, refresh, falha/retry e auditoria independente PASS |
 | C05.2 — Busca e filtros de repositórios | CONCLUÍDO — 40 unitários, 18 instrumentados, build/lint, inspeção visual Maestro com fixture, auditoria independente e CI remoto (run 37200219568) PASS; evidência em docs/evidence/C05.2.md |
 | C06.1 — Detalhe real do repositório e README | CONCLUÍDO — build/lint, 40 unitários, 31 instrumentados no Pixel 9, Maestro, reauditoria independente e CI remoto (run 37205228834) PASS; comparação real reservada para o aceite agregado C06; evidência em docs/evidence/C06.1.md |
+| C06.2 — Painel real da conta conectada | EM ANDAMENTO — build, lint, 40 unitários, suíte conectada 41/41 e 8 testes focados após último ajuste PASS; Maestro e auditoria independente PASS; CI remoto pendente; evidência em docs/evidence/C06.2.md |
 | C16.1 — Preferência de tema | CONCLUÍDO — build, 25 unitários, lint, 11 instrumentados, persistência após reinício do processo, capturas Sistema/Claro/Escuro, CI remoto (run 37138619727) e revisão independente PASS |
 | Transporte GitHub C04.1 | PASS — auditoria e CI remotos passaram em `2a4e689` |
 | Paginação e rate limit C04.2 | PASS — implementação, auditoria e CI remoto no SHA `bd02490` |
@@ -85,7 +86,7 @@ verifica busca, filtros, estado sem correspondências, paginação, atualizaçã
 ausência de novas consultas ao filtrar. Auditoria independente e CI remoto
 passaram no SHA `992d781`; veja docs/evidence/C05.2.md.
 
-C06.1 foi concluída: o detalhe consulta metadados atuais e README da identidade selecionada na lista real; branch, contagens e último push têm semânticas documentadas, e o README é texto Markdown inerte. Build/lint, 40 testes unitários, 31 instrumentados no Pixel 9, inspeção Maestro, reauditoria independente e CI remoto passaram. A comparação real permanece como parte do aceite agregado C06. Contrato e evidência em plan/contracts/C06.1.md e docs/evidence/C06.1.md.
+C06.1 foi concluída: o detalhe consulta metadados atuais e README da identidade selecionada na lista real; branch, contagens e último push têm semânticas documentadas, e o README é texto Markdown inerte. Build/lint, 40 testes unitários, 31 instrumentados no Pixel 9, inspeção Maestro, reauditoria independente e CI remoto passaram. A comparação real permanece como parte do aceite agregado C06. C06.2 implementa o perfil real da conta conectada, o refresh e placeholders honestos; build/lint, 40 unitários, suíte conectada de 41 e 8 testes C06.2 focados após o último ajuste passaram no Pixel 9. Maestro confirmou a hierarquia da fixture, e a auditoria independente passou sem findings acionáveis. CI remoto pendente; evidência em docs/evidence/C06.2.md. Contratos e evidências anteriores em plan/contracts/C06.1.md e docs/evidence/C06.1.md.
 
 C04.1 pode avançar sem login: transporte REST nativo limitado a `api.github.com`
 em HTTPS, mensagens de erro tipadas e fixtures locais. Evidência em

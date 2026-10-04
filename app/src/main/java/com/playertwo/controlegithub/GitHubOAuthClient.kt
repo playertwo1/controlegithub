@@ -39,6 +39,41 @@ internal data class GitHubUser(val login: String, val profileUrl: String) {
     }
 }
 
+internal data class GitHubAccountProfile(
+    val login: String,
+    val profileUrl: String,
+    val displayName: String?,
+    val publicRepositories: Long?,
+    val ownedPrivateRepositories: Long?,
+    val followers: Long?
+) {
+    companion object {
+        fun parse(json: String, expectedLogin: String): GitHubAccountProfile {
+            val profile = JSONObject(json)
+            val user = GitHubUser.parse(json)
+            if (!user.login.equals(expectedLogin, ignoreCase = true)) throw IOException("Perfil divergente")
+            fun count(field: String): Long? {
+                if (!profile.has(field) || profile.isNull(field)) return null
+                val value = profile.opt(field)
+                val number = (value as? Number)?.toLong()
+                    ?: throw IOException("Perfil inválido")
+                if (number < 0 || (value is Double && value % 1.0 != 0.0) ||
+                    (value is Float && value % 1.0f != 0.0f)
+                ) throw IOException("Perfil inválido")
+                return number
+            }
+            return GitHubAccountProfile(
+                login = user.login,
+                profileUrl = user.profileUrl,
+                displayName = (profile.opt("name") as? String)?.trim()?.takeIf(String::isNotEmpty),
+                publicRepositories = count("public_repos"),
+                ownedPrivateRepositories = count("owned_private_repos"),
+                followers = count("followers")
+            )
+        }
+    }
+}
+
 internal sealed interface DevicePoll {
     data class Pending(val intervalSeconds: Long) : DevicePoll
     data class Authorized(val credentials: SessionCredentials) : DevicePoll {
