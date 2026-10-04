@@ -202,12 +202,14 @@
       "checkpoint": "C08",
       "title": "Lista e detalhe de PRs",
       "depends_on": [
-        "C06.1"
+        "C06.1",
+        "C07.1",
+        "C07.2"
       ],
-      "status": "PLANNED",
+      "status": "IN_PROGRESS",
       "acceptance": "PRs abertos/fechados/merged exibem estado e origem/destino corretos.",
-      "contract": null,
-      "evidence": null,
+      "contract": "plan/contracts/C08.1.md",
+      "evidence": "docs/evidence/C08.1.md",
       "blocked_reason": null
     },
     {

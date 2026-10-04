@@ -67,6 +67,17 @@ visíveis” + “Todas” retornou lista vazia, sem issue real para comparar. M
 MCP ficou indisponível; a hierarquia foi conferida por fallback e a fixture foi
 inspecionada pelo Maestro. Evidências em docs/evidence/C07.2.md.
 
+O checkpoint agregado C07 segue sem aceite até ser possível comparar uma issue
+real com comentários, conforme `ROADMAP.md`; as tarefas C07.1 e C07.2 estão
+concluídas individualmente. C08.1 está `IN_PROGRESS`: contrato de PRs em
+`plan/contracts/C08.1.md`, com busca global de PRs que envolvem a conta, estados
+aberto/fechado/mesclado e detalhe/comentários/reviews somente leitura já
+implementados. Build/lint, suíte Pixel 9 69/69 e auditoria independente passaram
+após as correções; CI e publicação ainda pendentes. Comparação
+autenticada real `NOT_RUN`; C08 agregado segue pendente do PR real com arquivos,
+estados e reviews. Contrato e evidência em `plan/contracts/C08.1.md` e
+`docs/evidence/C08.1.md`.
+
 ## Planejamento e retomada
 
 Estados canônicos: plan/tasks.json. Roadmap mantém 21 checkpoints/5 marcos;

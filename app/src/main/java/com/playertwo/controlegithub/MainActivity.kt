@@ -172,6 +172,7 @@ internal fun ControleApp(
     var started by rememberSaveable { mutableStateOf(false) }
     var appearanceOpen by rememberSaveable { mutableStateOf(false) }
     var page by rememberSaveable { mutableStateOf(0) }
+    var workAreaPullRequests by rememberSaveable { mutableStateOf(false) }
     var selectedName by rememberSaveable { mutableStateOf<String?>(null) }
     var logoutConfirm by rememberSaveable { mutableStateOf(false) }
     var repositorySessionExpired by remember { mutableStateOf(false) }
@@ -202,7 +203,7 @@ internal fun ControleApp(
                     val labels = listOf("Início", "Repos", "Trabalho", "Avisos")
                     val icons = listOf(Icons.Outlined.Home, Icons.Outlined.Folder, Icons.Outlined.CheckCircle, Icons.Outlined.Notifications)
                     labels.forEachIndexed { index, label ->
-                        NavigationBarItem(selected = page == index, onClick = { page = index; selectedName = null },
+                        NavigationBarItem(selected = page == index, onClick = { page = index; selectedName = null; workAreaPullRequests = false },
                             icon = { Icon(icons[index], contentDescription = label) }, label = { Text(label) })
                     }
                 }
@@ -243,6 +244,17 @@ internal fun ControleApp(
             onLogout = { logoutConfirm = true },
             onAppearance = { appearanceOpen = true }
         )
+        else if (page == 2 && selected == null && workAreaPullRequests) GitHubPullRequestsScreen(
+            modifier = Modifier.padding(padding),
+            client = apiClient,
+            session = session,
+            sessionRestoring = sessionRestoring,
+            sessionStorageError = sessionStorageError,
+            onConnected = connectAndPersist,
+            onSessionExpired = onSessionExpired,
+            onAppearance = { appearanceOpen = true },
+            onShowIssues = { workAreaPullRequests = false }
+        )
         else if (page == 2 && selected == null) GitHubIssuesScreen(
             modifier = Modifier.padding(padding),
             client = apiClient,
@@ -251,7 +263,8 @@ internal fun ControleApp(
             sessionStorageError = sessionStorageError,
             onConnected = connectAndPersist,
             onSessionExpired = onSessionExpired,
-            onAppearance = { appearanceOpen = true }
+            onAppearance = { appearanceOpen = true },
+            onShowPullRequests = { workAreaPullRequests = true }
         )
         else LazyColumn(Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item {

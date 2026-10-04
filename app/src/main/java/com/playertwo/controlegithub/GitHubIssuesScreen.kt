@@ -58,7 +58,8 @@ internal fun GitHubIssuesScreen(
     sessionStorageError: Boolean,
     onConnected: suspend (GitHubSession) -> Boolean,
     onSessionExpired: (GitHubSession) -> Unit,
-    onAppearance: () -> Unit
+    onAppearance: () -> Unit,
+    onShowPullRequests: () -> Unit = {}
 ) {
     var selectedScope by rememberSaveable(session?.user?.login) { mutableStateOf(GitHubIssueScope.ASSIGNED) }
     var selectedState by rememberSaveable(session?.user?.login) { mutableStateOf(GitHubIssueState.OPEN) }
@@ -146,6 +147,13 @@ internal fun GitHubIssuesScreen(
             }
             Spacer(Modifier.height(22.dp))
             Text("Seu trabalho", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        }
+
+        item(key = "work-type-filter") {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilterChip(selected = true, onClick = {}, label = { Text("Issues") })
+                FilterChip(selected = false, onClick = onShowPullRequests, label = { Text("Pull requests") })
+            }
         }
 
         when {
