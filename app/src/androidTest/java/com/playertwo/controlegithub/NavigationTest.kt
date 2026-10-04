@@ -9,7 +9,7 @@ import org.junit.Rule
 import org.junit.Test
 
 class NavigationTest {
-    @get:Rule val compose = createAndroidComposeRule<MainActivity>()
+    @get:Rule val compose = createAndroidComposeRule<NavigationTestActivity>()
 
     @Test fun missingOAuthConfigurationIsDisclosed() {
         if (BuildConfig.GITHUB_OAUTH_CLIENT_ID.isBlank()) {

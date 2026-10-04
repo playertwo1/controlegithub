@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Refresh
@@ -72,6 +73,8 @@ internal fun GitHubIssuesScreen(
     var loading by remember(pager) { mutableStateOf(false) }
     var errorMessage by remember(pager) { mutableStateOf<String?>(null) }
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
+    var openedIssue by remember { mutableStateOf<GitHubIssue?>(null) }
+    val listState = rememberLazyListState()
 
     suspend fun loadNextPage() {
         val activePager = pager ?: return
@@ -111,8 +114,19 @@ internal fun GitHubIssuesScreen(
         onDispose { pager?.cancel() }
     }
 
-    LazyColumn(
+    if (openedIssue != null && session != null) {
+        GitHubIssueDetailScreen(
+            modifier = modifier,
+            client = client,
+            session = session,
+            issue = openedIssue!!,
+            onBack = { openedIssue = null },
+            onSessionExpired = onSessionExpired,
+            onAppearance = onAppearance
+        )
+    } else LazyColumn(
         modifier.fillMaxSize(),
+        state = listState,
         contentPadding = PaddingValues(horizontal = 24.dp, vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -211,7 +225,7 @@ internal fun GitHubIssuesScreen(
                         Text("Nenhuma issue encontrada com estes filtros.", color = MaterialTheme.colorScheme.onSurfaceVariant)
                     } else Spacer(Modifier.height(0.dp))
                 }
-                items(issues, key = GitHubIssue::identity) { issue -> GitHubIssueCard(issue) }
+                items(issues, key = GitHubIssue::identity) { issue -> GitHubIssueCard(issue) { openedIssue = issue } }
                 item(key = "issues-more") {
                     if (hasNext && errorMessage == null) {
                         TextButton(
@@ -230,8 +244,9 @@ internal fun GitHubIssuesScreen(
 }
 
 @Composable
-private fun GitHubIssueCard(issue: GitHubIssue) {
+private fun GitHubIssueCard(issue: GitHubIssue, onClick: () -> Unit) {
     Surface(
+        onClick = onClick,
         shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.surface,
         tonalElevation = 1.dp

@@ -13,7 +13,7 @@ import org.junit.Rule
 import org.junit.Test
 
 class ThemePreferencesTest {
-    @get:Rule val compose = createAndroidComposeRule<MainActivity>()
+    @get:Rule val compose = createAndroidComposeRule<NavigationTestActivity>()
 
     @After fun restoreSystemTheme() = runBlocking {
         ThemePreferences(InstrumentationRegistry.getInstrumentation().targetContext)
