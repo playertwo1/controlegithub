@@ -10,7 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -78,41 +79,36 @@ internal fun GitHubRepositoryDetailScreen(
         if (expired) onSessionExpired(session)
     }
 
-    LazyColumn(
-        modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 20.dp),
+    Column(
+        modifier.fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(PaddingValues(horizontal = 24.dp, vertical = 20.dp)),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Voltar aos repositórios")
-                }
-                Spacer(Modifier.weight(1f))
-                IconButton(onClick = onAppearance) {
-                    Icon(Icons.Outlined.Settings, contentDescription = "Configurações de aparência")
-                }
-                IconButton(onClick = { refreshVersion++ }, enabled = !loading) {
-                    Icon(Icons.Outlined.Refresh, contentDescription = "Atualizar detalhe")
-                }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onBack) {
+                Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Voltar aos repositórios")
             }
-            Spacer(Modifier.height(8.dp))
-            Text(repository.fullName, fontSize = 28.sp, fontWeight = FontWeight.Bold)
-            Text("Detalhe do repositório", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(Modifier.weight(1f))
+            IconButton(onClick = onAppearance) {
+                Icon(Icons.Outlined.Settings, contentDescription = "Configurações de aparência")
+            }
+            IconButton(onClick = { refreshVersion++ }, enabled = !loading) {
+                Icon(Icons.Outlined.Refresh, contentDescription = "Atualizar detalhe")
+            }
         }
+        Spacer(Modifier.height(8.dp))
+        Text(repository.fullName, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        Text("Detalhe do repositório", color = MaterialTheme.colorScheme.onSurfaceVariant)
 
         when (val current = result) {
-            null -> item {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    CircularProgressIndicator()
-                    Text("Carregando detalhes do GitHub…")
-                }
+            null -> Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                CircularProgressIndicator()
+                Text("Carregando detalhes do GitHub…")
             }
-            is GitHubRepositoryDetailResult.Failed -> item {
-                DetailError(current.error, current.retryAtEpochMillis) { refreshVersion++ }
-            }
-            is GitHubRepositoryDetailResult.Loaded -> {
-                item {
+            is GitHubRepositoryDetailResult.Failed ->
+                DetailError(current.error, current.retryAtEpochMillis, enabled = !loading) { refreshVersion++ }
+            is GitHubRepositoryDetailResult.Loaded -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     Surface(
                         shape = RoundedCornerShape(20.dp),
                         color = MaterialTheme.colorScheme.surface,
@@ -128,10 +124,8 @@ internal fun GitHubRepositoryDetailScreen(
                             DetailValue("Último push", current.detail.pushedAt?.let(::formatPushTime))
                         }
                     }
-                }
-                when (val readme = current.readme) {
-                    is GitHubReadmeResult.Found -> item {
-                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    when (val readme = current.readme) {
+                        is GitHubReadmeResult.Found -> Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             Text("README", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                             Surface(
                                 shape = RoundedCornerShape(20.dp),
@@ -145,25 +139,20 @@ internal fun GitHubRepositoryDetailScreen(
                                 )
                             }
                         }
-                    }
-                    GitHubReadmeResult.Missing -> item {
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        GitHubReadmeResult.Missing -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text("README", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                             Text("README não encontrado para este repositório.", color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
-                    }
-                    is GitHubReadmeResult.Failed -> item {
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        is GitHubReadmeResult.Failed -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text("README", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
-                            DetailError(readme.error, readme.retryAtEpochMillis) { refreshVersion++ }
+                            DetailError(readme.error, readme.retryAtEpochMillis, enabled = !loading) { refreshVersion++ }
                         }
                     }
-                }
             }
         }
 
         if (loading && result != null) {
-            item { Text("Atualizando dados…", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            Text("Atualizando dados…", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -177,7 +166,12 @@ private fun DetailValue(label: String, value: String?) {
 }
 
 @Composable
-private fun DetailError(error: GitHubHttpError, retryAtEpochMillis: Long?, onRetry: () -> Unit) {
+private fun DetailError(
+    error: GitHubHttpError,
+    retryAtEpochMillis: Long?,
+    enabled: Boolean,
+    onRetry: () -> Unit
+) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(error.userMessage, color = MaterialTheme.colorScheme.error)
         retryAtEpochMillis?.let { deadline ->
@@ -185,7 +179,7 @@ private fun DetailError(error: GitHubHttpError, retryAtEpochMillis: Long?, onRet
                 .format(Date(deadline))
             Text("Tente novamente após $safeTime.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        TextButton(onClick = onRetry) { Text("Tentar novamente") }
+        TextButton(onClick = onRetry, enabled = enabled) { Text("Tentar novamente") }
     }
 }
 
