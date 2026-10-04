@@ -36,10 +36,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val preferences = remember(context) { ThemePreferences(context) }
+            val apiClient = remember(context) { GitHubHttpClient() }
             val sessions = remember(context) {
                 GitHubSessionManager(
                     SecureSessionStore(context),
-                    GitHubOAuthClient(BuildConfig.GITHUB_OAUTH_CLIENT_ID)
+                    GitHubOAuthClient(BuildConfig.GITHUB_OAUTH_CLIENT_ID, apiClient = apiClient)
                 )
             }
             val themeMode by preferences.themeMode.collectAsState(initial = AppThemeMode.SYSTEM)
@@ -79,6 +80,7 @@ class MainActivity : ComponentActivity() {
                 ControleApp(
                     themeMode = themeMode,
                     preferenceError = preferenceError,
+                    apiClient = apiClient,
                     session = session,
                     sessionRestoring = sessionRestoring,
                     sessionRetry = sessionRetry,
@@ -106,6 +108,20 @@ class MainActivity : ComponentActivity() {
                         } catch (_: Exception) {
                             sessionStorageError = true
                             false
+                        }
+                    },
+                    onSessionExpired = { expired ->
+                        scope.launch {
+                            if (session?.accessToken == expired.accessToken) {
+                                try {
+                                    sessions.logout()
+                                    sessionStorageError = false
+                                } catch (_: Exception) {
+                                    sessionStorageError = true
+                                } finally {
+                                    session = null
+                                }
+                            }
                         }
                     },
                     onLogout = {
@@ -141,6 +157,7 @@ class MainActivity : ComponentActivity() {
 internal fun ControleApp(
     themeMode: AppThemeMode,
     preferenceError: Boolean,
+    apiClient: GitHubHttpClient,
     session: GitHubSession?,
     sessionRestoring: Boolean,
     sessionRetry: Boolean,
@@ -148,6 +165,7 @@ internal fun ControleApp(
     onRetrySession: () -> Unit,
     onRetrySessionCleanup: () -> Unit,
     onConnected: suspend (GitHubSession) -> Boolean,
+    onSessionExpired: (GitHubSession) -> Unit,
     onLogout: () -> Unit,
     onThemeModeChange: (AppThemeMode) -> Unit
 ) {
@@ -155,8 +173,13 @@ internal fun ControleApp(
     var appearanceOpen by rememberSaveable { mutableStateOf(false) }
     var page by rememberSaveable { mutableStateOf(0) }
     var selectedName by rememberSaveable { mutableStateOf<String?>(null) }
-    var repositoryQuery by rememberSaveable { mutableStateOf("") }
     var logoutConfirm by rememberSaveable { mutableStateOf(false) }
+    var repositorySessionExpired by remember { mutableStateOf(false) }
+    val connectAndPersist: suspend (GitHubSession) -> Boolean = { connected ->
+        val saved = onConnected(connected)
+        if (saved) repositorySessionExpired = false
+        saved
+    }
     val selected = DemoData.repositories.firstOrNull { it.name == selectedName }
     val keyboardOpen = WindowInsets.isImeVisible
     BackHandler(appearanceOpen || started) {
@@ -192,8 +215,23 @@ internal fun ControleApp(
         )
         else if (!started) Welcome(
             Modifier.padding(padding), session, sessionRestoring, sessionRetry, sessionStorageError,
-            onRetrySession, onRetrySessionCleanup, onConnected, onLogout = { logoutConfirm = true },
+            onRetrySession, onRetrySessionCleanup, connectAndPersist, onLogout = { logoutConfirm = true },
             onAppearance = { appearanceOpen = true }, onStart = { started = true }
+        )
+        else if (page == 1 && selected == null) GitHubRepositoriesScreen(
+            modifier = Modifier.padding(padding),
+            client = apiClient,
+            session = session,
+            sessionRestoring = sessionRestoring,
+            sessionStorageError = sessionStorageError,
+            sessionExpired = repositorySessionExpired,
+            onConnected = connectAndPersist,
+            onSessionExpired = { expired ->
+                repositorySessionExpired = true
+                onSessionExpired(expired)
+            },
+            onLogout = { repositorySessionExpired = false; logoutConfirm = true },
+            onAppearance = { appearanceOpen = true }
         )
         else LazyColumn(Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item {
@@ -229,9 +267,7 @@ internal fun ControleApp(
                     item { Section("Seus repositórios") }
                     items(DemoData.repositories.take(2)) { repo -> RepoCard(repo) { selectedName = repo.name } }
                 }
-                1 -> {
-                    item { SearchRepositories(repositoryQuery, { repositoryQuery = it }) { selectedName = it } }
-                }
+                1 -> Unit
                 2 -> {
                     item { Section("Issues e pull requests") }
                     item { WorkCard("ISSUE #18", "Preparar primeira versão Android", "controlegithub · planejamento") }
@@ -328,17 +364,6 @@ private fun LogoutConfirmation(storageError: Boolean, onDismiss: () -> Unit, onC
         confirmButton = { TextButton(onClick = onConfirm) { Text("Sair") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
-}
-
-@Composable
-private fun SearchRepositories(query: String, onQueryChange: (String) -> Unit, onSelect: (String) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        OutlinedTextField(value = query, onValueChange = onQueryChange, label = { Text("Buscar nome ou linguagem") }, leadingIcon = { Icon(Icons.Outlined.Search, null) }, singleLine = true, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp))
-        val repos = DemoData.search(query)
-        Text("${repos.size} repositórios · conta de exemplo", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
-        repos.forEach { RepoCard(it) { onSelect(it.name) } }
-        if (repos.isEmpty()) Text("Nenhum repositório encontrado. Tente outro termo.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
 }
 
 @Composable

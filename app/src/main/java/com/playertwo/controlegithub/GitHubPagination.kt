@@ -7,7 +7,11 @@ internal sealed interface GitHubPageResult<out T> {
 
     data class Loaded<T>(override val items: List<T>, val hasNext: Boolean) : GitHubPageResult<T>
     data class RateLimited<T>(override val items: List<T>, val retryAtEpochMillis: Long) : GitHubPageResult<T>
-    data class Failed<T>(override val items: List<T>, val message: String) : GitHubPageResult<T>
+    data class Failed<T>(
+        override val items: List<T>,
+        val message: String,
+        val error: GitHubHttpError? = null
+    ) : GitHubPageResult<T>
 }
 
 internal class GitHubPaginator<T>(
@@ -101,7 +105,7 @@ internal class GitHubPaginator<T>(
         }
 
         visitedPaths.remove(path)
-        return GitHubPageResult.Failed(items.values.toList(), failure.error.userMessage)
+        return GitHubPageResult.Failed(items.values.toList(), failure.error.userMessage, failure.error)
     }
 
     private companion object {

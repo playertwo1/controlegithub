@@ -144,6 +144,46 @@ class GitHubPaginationTest {
         assertFalse(failed.message.contains("private error body"))
     }
 
+    @Test
+    fun repositoryPagerRequestsAllAffiliationsAndDeduplicatesByGitHubId() = fixture(
+        GitHubRepositoryPager.FIRST_PAGE_PATH to listOf(
+            Reply(200, "1:first,2:first", link = "<http://127.0.0.1:PORT/user/repos?page=2>; rel=\"next\"")
+        ),
+        "/user/repos?page=2" to listOf(Reply(200, "2:duplicate,3:last"))
+    ).use { fixture ->
+        fixture.replacePortInLinks()
+        val pager = GitHubRepositoryPager(fixture.client(), TOKEN) { body ->
+            if (body.isEmpty()) emptyList() else body.split(',').map { value ->
+                val id = value.substringBefore(':').toLong()
+                val name = value.substringAfter(':')
+                GitHubRepository(id, name, "owner/$name", "owner", false, null, "Kotlin", 0)
+            }
+        }
+
+        assertTrue((pager.loadNext() as GitHubPageResult.Loaded).hasNext)
+        val result = pager.loadNext() as GitHubPageResult.Loaded
+
+        assertFalse(result.hasNext)
+        assertEquals(listOf(1L, 2L, 3L), result.items.map(GitHubRepository::id))
+        assertEquals("first", result.items[1].name)
+        assertEquals(listOf(GitHubRepositoryPager.FIRST_PAGE_PATH, "/user/repos?page=2"), fixture.requests)
+        assertTrue(fixture.authorization.all { it == "Bearer $TOKEN" })
+    }
+
+    @Test
+    fun unauthorizedRepositoryPageIsDistinguishedFromPermissionAndNetworkErrors() = fixture(
+        "/repos" to listOf(Reply(401, "")),
+        "/forbidden" to listOf(Reply(403, ""))
+    ).use { fixture ->
+        val result = fixture.pager("/repos").loadNext() as GitHubPageResult.Failed
+        val forbidden = fixture.pager("/forbidden").loadNext() as GitHubPageResult.Failed
+
+        assertEquals(GitHubHttpError.UNAUTHORIZED, result.error)
+        assertEquals("Sua sessão expirou. Conecte-se novamente.", result.message)
+        assertEquals(GitHubHttpError.FORBIDDEN, forbidden.error)
+        assertEquals(GitHubHttpError.FORBIDDEN.userMessage, forbidden.message)
+    }
+
     private fun fixture(vararg routes: Pair<String, List<Reply>>) = Fixture(routes.toMap())
 
     private data class Item(val id: String, val value: String)

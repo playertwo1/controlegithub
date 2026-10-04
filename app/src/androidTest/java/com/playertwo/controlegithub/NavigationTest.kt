@@ -1,6 +1,5 @@
 package com.playertwo.controlegithub
 
-import android.view.WindowInsets
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.semantics.Role
@@ -20,16 +19,13 @@ class NavigationTest {
         }
     }
 
-    @Test fun searchSurvivesOpeningRepositoryAndBack() {
+    @Test fun repositoriesTabRequiresAnAccountAndDoesNotShowDemoRows() {
         compose.onNodeWithText("Explorar demonstração").performClick()
         compose.onNodeWithText("Repos").performClick()
-        compose.onNodeWithText("Buscar nome ou linguagem").performTextInput("Python")
-        compose.onNodeWithText("ideias_standard").performClick()
-        compose.onNodeWithText("Visão geral").assertIsDisplayed()
-        compose.activityRule.scenario.onActivity { it.onBackPressedDispatcher.onBackPressed() }
-        compose.waitForIdle()
-        compose.onNodeWithText("Repositórios").assertIsDisplayed()
-        compose.onNode(hasSetTextAction()).assertTextContains("Python")
+        compose.onNodeWithText("Seus repositórios").assertIsDisplayed()
+        compose.onNodeWithText("Conecte sua conta GitHub para ver os repositórios que ela pode acessar.")
+            .assertIsDisplayed()
+        compose.onNodeWithText("ideias_standard").assertDoesNotExist()
     }
 
     @Test fun eachFloatingDestinationSelectsItsPage() {
@@ -37,7 +33,7 @@ class NavigationTest {
 
         val destinations = listOf(
             "Início" to "Seu centro de comando",
-            "Repos" to "Repositórios",
+            "Repos" to "Seus repositórios",
             "Trabalho" to "Seu trabalho",
             "Avisos" to "Notificações"
         )
@@ -83,40 +79,6 @@ class NavigationTest {
         compose.waitForIdle()
 
         compose.onNodeWithText("Repos").assertIsSelected()
-        compose.onNodeWithText("Repositórios").assertIsDisplayed()
-    }
-
-    @Test fun dockHidesWithKeyboardAndReturnsAfterDismissal() {
-        compose.onNodeWithText("Explorar demonstração").performClick()
-        compose.onNodeWithText("Repos").performClick()
-        compose.onNodeWithText("Buscar nome ou linguagem").performClick()
-
-        compose.waitUntil(5_000) {
-            compose.activity.window.decorView.rootWindowInsets?.isVisible(WindowInsets.Type.ime()) == true
-        }
-        val searchField = compose.onNodeWithText("Buscar nome ou linguagem")
-        searchField.assertIsDisplayed()
-        searchField.performTextInput("Python")
-        compose.onNodeWithText("Repos").assertDoesNotExist()
-
-        compose.runOnIdle { compose.activity.window.insetsController?.hide(WindowInsets.Type.ime()) }
-        compose.waitUntil(5_000) {
-            compose.activity.window.decorView.rootWindowInsets?.isVisible(WindowInsets.Type.ime()) == false
-        }
-        compose.waitUntil(5_000) {
-            compose.onAllNodesWithText("Repos").fetchSemanticsNodes().isNotEmpty()
-        }
-        val reposNode = compose.onNodeWithText("Repos")
-        reposNode.assertIsDisplayed()
-
-        val root = compose.activity.window.decorView
-        val gestureInset = root.rootWindowInsets
-            ?.getInsets(WindowInsets.Type.navigationBars())
-            ?.bottom ?: 0
-        val dockItemBottom = reposNode.fetchSemanticsNode().boundsInRoot.bottom
-        assertTrue(
-            "Dock item overlaps the system navigation area",
-            dockItemBottom <= root.height - gestureInset
-        )
+        compose.onNodeWithText("Seus repositórios").assertIsDisplayed()
     }
 }
