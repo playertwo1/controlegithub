@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.LazyColumn
@@ -41,6 +42,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -75,6 +77,7 @@ internal fun GitHubRepositoriesScreen(
     var retryPending by remember(pager) { mutableStateOf(false) }
     var errorMessage by remember(pager) { mutableStateOf<String?>(null) }
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
+    var selectedRepository by remember(pager) { mutableStateOf<GitHubRepository?>(null) }
     var searchQuery by remember(session?.user?.login) { mutableStateOf("") }
     var visibilityFilter by remember(session?.user?.login) { mutableStateOf(RepositoryVisibilityFilter.ALL) }
     var languageFilter by remember(session?.user?.login) { mutableStateOf<String?>(null) }
@@ -138,7 +141,17 @@ internal fun GitHubRepositoriesScreen(
         onDispose { pager?.cancel() }
     }
 
-    LazyColumn(
+    if (selectedRepository != null && session != null) {
+        GitHubRepositoryDetailScreen(
+            modifier = modifier,
+            client = client,
+            session = session,
+            repository = selectedRepository!!,
+            onBack = { selectedRepository = null },
+            onSessionExpired = onSessionExpired,
+            onAppearance = onAppearance
+        )
+    } else LazyColumn(
         modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 24.dp, vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -311,7 +324,7 @@ internal fun GitHubRepositoriesScreen(
             }
 
             items(visibleRepositories, key = GitHubRepository::id) { repository ->
-                GitHubRepositoryCard(repository)
+                GitHubRepositoryCard(repository) { selectedRepository = repository }
             }
 
             if (loaded && hasNext) {
@@ -338,11 +351,11 @@ internal fun GitHubRepositoriesScreen(
 }
 
 @Composable
-private fun GitHubRepositoryCard(repository: GitHubRepository) {
+private fun GitHubRepositoryCard(repository: GitHubRepository, onClick: () -> Unit) {
     Surface(
         shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.surface,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = onClick)
     ) {
         Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(repository.fullName, fontSize = 18.sp, fontWeight = FontWeight.Bold)
