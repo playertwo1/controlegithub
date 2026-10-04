@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,11 +19,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -39,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -69,6 +75,25 @@ internal fun GitHubRepositoriesScreen(
     var retryPending by remember(pager) { mutableStateOf(false) }
     var errorMessage by remember(pager) { mutableStateOf<String?>(null) }
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
+    var searchQuery by remember(session?.user?.login) { mutableStateOf("") }
+    var visibilityFilter by remember(session?.user?.login) { mutableStateOf(RepositoryVisibilityFilter.ALL) }
+    var languageFilter by remember(session?.user?.login) { mutableStateOf<String?>(null) }
+    val availableLanguages = remember(repositories) {
+        repositories.mapNotNull(GitHubRepository::language)
+            .distinctBy { it.lowercase(Locale.ROOT) }
+            .sortedBy { it.lowercase(Locale.ROOT) }
+    }
+    val visibleRepositories = remember(repositories, searchQuery, visibilityFilter, languageFilter) {
+        filterGitHubRepositories(repositories, searchQuery, visibilityFilter, languageFilter)
+    }
+    val hasActiveFilters = searchQuery.isNotBlank() ||
+        visibilityFilter != RepositoryVisibilityFilter.ALL || languageFilter != null
+
+    fun clearFilters() {
+        searchQuery = ""
+        visibilityFilter = RepositoryVisibilityFilter.ALL
+        languageFilter = null
+    }
 
     suspend fun loadNextPage() {
         val activePager = pager ?: return
@@ -180,6 +205,75 @@ internal fun GitHubRepositoriesScreen(
                 }
             }
 
+            if (loaded && repositories.isNotEmpty()) {
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedTextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            label = { Text("Buscar repositórios") },
+                            placeholder = { Text("Nome, proprietário ou linguagem") },
+                            singleLine = true,
+                            trailingIcon = {
+                                if (searchQuery.isNotEmpty()) {
+                                    IconButton(onClick = { searchQuery = "" }) {
+                                        Icon(Icons.Outlined.Close, contentDescription = "Limpar busca")
+                                    }
+                                }
+                            }
+                        )
+                        Text(
+                            "Busca e filtros aplicados aos ${repositories.size} repositórios carregados.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 12.sp
+                        )
+                        Row(
+                            modifier = Modifier.horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            FilterChip(
+                                selected = visibilityFilter == RepositoryVisibilityFilter.ALL,
+                                onClick = { visibilityFilter = RepositoryVisibilityFilter.ALL },
+                                label = { Text("Todos") }
+                            )
+                            FilterChip(
+                                selected = visibilityFilter == RepositoryVisibilityFilter.PUBLIC,
+                                onClick = { visibilityFilter = RepositoryVisibilityFilter.PUBLIC },
+                                label = { Text("Públicos") }
+                            )
+                            FilterChip(
+                                selected = visibilityFilter == RepositoryVisibilityFilter.PRIVATE,
+                                onClick = { visibilityFilter = RepositoryVisibilityFilter.PRIVATE },
+                                label = { Text("Privados") }
+                            )
+                        }
+                        Row(
+                            modifier = Modifier.horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            FilterChip(
+                                selected = languageFilter == null,
+                                onClick = { languageFilter = null },
+                                label = { Text("Todas as linguagens") }
+                            )
+                            availableLanguages.forEach { language ->
+                                FilterChip(
+                                    selected = languageFilter.equals(language, ignoreCase = true),
+                                    onClick = {
+                                        languageFilter = if (languageFilter.equals(language, ignoreCase = true)) null else language
+                                    },
+                                    label = { Text(language) }
+                                )
+                            }
+                        }
+                        if (hasActiveFilters) {
+                            TextButton(onClick = ::clearFilters) { Text("Limpar filtros") }
+                        }
+                    }
+                }
+            }
+
             errorMessage?.let { message ->
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -207,7 +301,16 @@ internal fun GitHubRepositoriesScreen(
                 }
             }
 
-            items(repositories, key = GitHubRepository::id) { repository ->
+            if (loaded && repositories.isNotEmpty() && visibleRepositories.isEmpty()) {
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("Nenhum repositório corresponde aos critérios", fontWeight = FontWeight.SemiBold)
+                        Text("Os critérios consideram apenas os repositórios carregados.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+            }
+
+            items(visibleRepositories, key = GitHubRepository::id) { repository ->
                 GitHubRepositoryCard(repository)
             }
 

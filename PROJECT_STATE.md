@@ -1,17 +1,20 @@
 # Estado do projeto
 
-Atualizado em 2026-10-04. C03.1, C03.2, C05.1 e C16.1 estão concluídas. C05.1
-passou implementação, build, 36 testes unitários, 15 instrumentados, lint,
-comparação manual sanitizada, CI no SHA `5064cd0` e auditoria independente. C03.2
+Atualizado em 2026-10-04. C03.1, C03.2, C05.1 e C16.1 estão concluídas; C05.2
+está em implementação com testes locais e CI remoto pendente. A auditoria
+independente de C05.2 passou sem findings bloqueantes. C05.1 passou build,
+36 testes unitários, 15 instrumentados, lint, comparação manual sanitizada, CI
+no SHA `5064cd0` e auditoria independente. C03.2
 foi publicada em `04077f9`; seu CI passou no run 37194260058. C00.2, C01.1, C01.2,
 C02.1, C04.1 e C04.2 também estão concluídos. M0 — Fundação confiável — foi aceito.
 
 ## Entrega atual
 
-Protótipo Android nativo com dados locais fictícios. C03.1 já solicita código,
-faz polling cancelável e confirma perfil real; C03.2 persiste a sessão cifrada.
-C05.1 está integrando repositórios reais na aba Repos; demais operações seguem
-marcadas como demonstração. As telas demonstram o produto.
+Protótipo Android nativo com dados locais fictícios identificados como
+demonstração. C03.1 já solicita código, faz polling cancelável e confirma perfil
+real; C03.2 persiste a sessão cifrada. C05.1 lista repositórios reais e C05.2
+adiciona busca e filtros locais à aba Repos; demais operações seguem marcadas
+como demonstração. As telas demonstram o produto.
 Menu inferior flutuante; sete pranchas conceituais (visão geral + 36 telas/estados)
 e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 
@@ -20,9 +23,9 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | Verificação | Resultado |
 |---|---|
 | Build debug | PASS |
-| Testes unitários | PASS — 25 testes, incluindo fixtures locais OAuth e orquestração |
+| Testes unitários | PASS — C05.2: 40 testes, incluindo busca/filtros e fixtures locais |
 | Lint | PASS — sem erros; avisos de versões/target documentados |
-| Teste instrumentado no emulador | PASS — histórico: 7 testes, Android API 37; inclui perfil OAuth |
+| Teste instrumentado no emulador | PASS — C05.2: 18 testes, Pixel 9 / Android API 37 |
 | Navegação C01.1 (4 cenários) | PASS — Pixel 9, API 37; dock e busca respeitam IME e insets |
 | Check Ideias Standard | PASS — manifest, lock e contexto |
 | Capturas e links da documentação | PASS |
@@ -38,6 +41,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | C03.1 — Device Flow e perfil | CONCLUÍDO — consentimento real e perfil esperado confirmados no Pixel 9; build/lint, 25 unitários, 7 instrumentados, auditoria e CI remoto (run 37082537911) passaram |
 | C03.2 — Restaurar e encerrar sessão | CONCLUÍDO — 34 unitários, 13 instrumentados, autorização, restauração após reinício, logout, captura segura, auditoria independente e CI remoto PASS (run 37194260058) |
 | C05.1 — Lista de repositórios reais | CONCLUÍDO — 36 unitários, 15 instrumentados, build/lint, CI remoto, comparação real redigida, lista vazia, refresh, falha/retry e auditoria independente PASS |
+| C05.2 — Busca e filtros de repositórios | EM ANDAMENTO — 40 unitários, 18 instrumentados, build/lint, inspeção visual Maestro com fixture e auditoria independente PASS; CI remoto pendente; evidência em docs/evidence/C05.2.md |
 | C16.1 — Preferência de tema | CONCLUÍDO — build, 25 unitários, lint, 11 instrumentados, persistência após reinício do processo, capturas Sistema/Claro/Escuro, CI remoto (run 37138619727) e revisão independente PASS |
 | Transporte GitHub C04.1 | PASS — auditoria e CI remotos passaram em `2a4e689` |
 | Paginação e rate limit C04.2 | PASS — implementação, auditoria e CI remoto no SHA `bd02490` |
@@ -70,6 +74,13 @@ C05.1 está concluído. Contrato e evidência em plan/contracts/C05.1.md e
 docs/evidence/C05.1.md. A comparação real com o endpoint e os cenários aplicáveis
 foram validados sem registrar dados da conta; código e evidência estão no SHA
 `5064cd0`, com CI e auditoria independente aprovados.
+
+C05.2 implementa busca por nome/nome completo/linguagem e filtros locais por
+visibilidade e linguagem sobre os itens carregados. Contrato em
+plan/contracts/C05.2.md; evidência local em docs/evidence/C05.2.md. Instrumentação
+verifica busca, filtros, estado sem correspondências, paginação, atualização e
+ausência de novas consultas ao filtrar. Auditoria independente passou; falta CI
+remoto no SHA final.
 
 C04.1 pode avançar sem login: transporte REST nativo limitado a `api.github.com`
 em HTTPS, mensagens de erro tipadas e fixtures locais. Evidência em

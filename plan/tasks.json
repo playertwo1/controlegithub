@@ -138,9 +138,9 @@
       "depends_on": [
         "C05.1"
       ],
-      "status": "PLANNED",
+      "status": "IN_PROGRESS",
       "acceptance": "Busca/filtros têm semântica local/remota explícita; limpar restaura lista sem duplicações.",
-      "contract": null,
+      "contract": "plan/contracts/C05.2.md",
       "evidence": null,
       "blocked_reason": null
     },
