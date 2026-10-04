@@ -57,10 +57,13 @@ o login para usuários além do proprietário.
 
 ## Revogação
 
-O usuário pode revogar o acesso em **Settings → Applications → Authorized OAuth
-Apps**. O logout local e a revogação remota serão cobertos por C03. Se a política
-da organização, SAML ou permissões negarem acesso, informar isso sem expor
-tokens ou dados privados em logs.
+O logout do app remove a sessão e os tokens locais. A concessão OAuth permanece
+ativa no GitHub até que o usuário a revogue em **Settings → Applications →
+Authorized OAuth Apps**. O endpoint REST para revogar uma autorização exige
+`client_secret`; esse segredo não pode ser distribuído num app Android nativo.
+C03.2 oferece um atalho para as configurações oficiais, sem fingir revogação
+remota. Se a política da organização, SAML ou permissões negarem acesso,
+informar isso sem expor tokens ou dados privados em logs.
 
 ## Referências oficiais
 
@@ -68,3 +71,4 @@ tokens ou dados privados em logs.
 - [Autorizar OAuth Apps e Device Flow](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)
 - [Escopos de OAuth Apps](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps)
 - [Boas práticas para criar OAuth Apps](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/best-practices-for-creating-an-oauth-app)
+- [Revogar autorizações OAuth](https://docs.github.com/en/rest/apps/oauth-applications)

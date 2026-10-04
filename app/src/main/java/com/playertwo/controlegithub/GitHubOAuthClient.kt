@@ -41,13 +41,24 @@ internal data class GitHubUser(val login: String, val profileUrl: String) {
 
 internal sealed interface DevicePoll {
     data class Pending(val intervalSeconds: Long) : DevicePoll
-    data class Authorized(val accessToken: String) : DevicePoll {
+    data class Authorized(val credentials: SessionCredentials) : DevicePoll {
         override fun toString() = "Authorized"
     }
     data object Denied : DevicePoll
     data object Expired : DevicePoll
     data object Failed : DevicePoll
 }
+
+internal sealed interface OAuthTokenResult {
+    data class Success(val credentials: SessionCredentials) : OAuthTokenResult {
+        override fun toString() = "Success"
+    }
+    data class Failure(val reason: String) : OAuthTokenResult {
+        override fun toString() = "Failure"
+    }
+}
+
+internal const val BAD_REFRESH_TOKEN = "bad_refresh_token"
 
 internal suspend fun <T> OAuthHttpCall<T>.await(): T = suspendCancellableCoroutine { continuation ->
     continuation.invokeOnCancellation { cancel() }
@@ -126,7 +137,8 @@ internal class GitHubOAuthClient(
     private val authBaseUrl: URI = URI.create("https://github.com/login/"),
     private val apiClient: GitHubHttpClient = GitHubHttpClient(),
     private val connectTimeoutMillis: Int = 15_000,
-    private val readTimeoutMillis: Int = 15_000
+    private val readTimeoutMillis: Int = 15_000,
+    private val nowMillis: () -> Long = System::currentTimeMillis
 ) {
     init {
         require(connectTimeoutMillis > 0 && readTimeoutMillis > 0)
@@ -153,19 +165,53 @@ internal class GitHubOAuthClient(
         connectTimeoutMillis,
         readTimeoutMillis
     ) { response ->
-        val values = parseForm(response)
-        when (values["error"]) {
-            "authorization_pending" -> DevicePoll.Pending(intervalSeconds)
-            "slow_down" -> DevicePoll.Pending(intervalSeconds + SLOW_DOWN_SECONDS)
-            "expired_token", "token_expired" -> DevicePoll.Expired
-            "access_denied" -> DevicePoll.Denied
-            null -> values["access_token"]?.takeIf(String::isNotBlank)?.let(DevicePoll::Authorized)
-                ?: DevicePoll.Failed
-            else -> DevicePoll.Failed
+        when (val result = parseTokenResponse(response)) {
+            is OAuthTokenResult.Success -> DevicePoll.Authorized(result.credentials)
+            is OAuthTokenResult.Failure -> when (result.reason) {
+                "authorization_pending" -> DevicePoll.Pending(intervalSeconds)
+                "slow_down" -> DevicePoll.Pending(intervalSeconds + SLOW_DOWN_SECONDS)
+                "expired_token", "token_expired" -> DevicePoll.Expired
+                "access_denied" -> DevicePoll.Denied
+                else -> DevicePoll.Failed
+            }
         }
     }
 
+    fun refresh(refreshToken: String): OAuthHttpCall<OAuthTokenResult> = OAuthHttpCall(
+        authBaseUrl.resolve("oauth/access_token"),
+        mapOf(
+            "client_id" to clientId,
+            "grant_type" to "refresh_token",
+            "refresh_token" to refreshToken
+        ),
+        connectTimeoutMillis,
+        readTimeoutMillis,
+        ::parseTokenResponse
+    )
+
     fun user(accessToken: String): GitHubHttpCall = apiClient.get("/user", accessToken)
+
+    private fun parseTokenResponse(response: String): OAuthTokenResult {
+        val values = parseForm(response)
+        values["error"]?.let { return OAuthTokenResult.Failure(it) }
+        val accessToken = values["access_token"]?.takeIf(String::isNotBlank)
+            ?: return OAuthTokenResult.Failure("invalid_response")
+        val expiresAt = parseExpiry(values, "expires_in")
+            ?: if (values.containsKey("expires_in")) return OAuthTokenResult.Failure("invalid_response") else null
+        val refreshToken = values["refresh_token"]?.takeIf(String::isNotBlank)
+        val refreshExpiresAt = parseExpiry(values, "refresh_token_expires_in")
+            ?: if (values.containsKey("refresh_token_expires_in")) return OAuthTokenResult.Failure("invalid_response") else null
+        return OAuthTokenResult.Success(
+            SessionCredentials(accessToken, refreshToken, expiresAt, refreshExpiresAt)
+        )
+    }
+
+    private fun parseExpiry(values: Map<String, String>, field: String): Long? {
+        val seconds = values[field]?.toLongOrNull() ?: return null
+        val now = nowMillis()
+        if (seconds <= 0 || seconds > (Long.MAX_VALUE - now) / 1_000) return null
+        return now + seconds * 1_000
+    }
 
     private fun parseDeviceAuthorization(response: String): DeviceAuthorization {
         val values = parseForm(response)
@@ -191,4 +237,5 @@ internal class GitHubOAuthClient(
         const val DEVICE_GRANT = "urn:ietf:params:oauth:grant-type:device_code"
         const val SLOW_DOWN_SECONDS = 5L
     }
+
 }

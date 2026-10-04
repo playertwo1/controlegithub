@@ -29,10 +29,11 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-internal class GitHubSession(val user: GitHubUser, val accessToken: String)
-
 @Composable
-internal fun GitHubSignIn(onConnected: (GitHubSession) -> Unit) {
+internal fun GitHubSignIn(
+    onConnected: suspend (GitHubSession) -> Boolean,
+    enabled: Boolean = true
+) {
     val scope = rememberCoroutineScope()
     val clipboard = LocalClipboardManager.current
     val uriHandler = LocalUriHandler.current
@@ -71,9 +72,12 @@ internal fun GitHubSignIn(onConnected: (GitHubSession) -> Unit) {
                                 },
                                 nowMillis = android.os.SystemClock::elapsedRealtime
                             )
-                            authorization = null
-                            message = null
-                            onConnected(session)
+                            if (onConnected(session)) {
+                                authorization = null
+                                message = null
+                            } else {
+                                message = "Não foi possível salvar a sessão segura. Tente novamente."
+                            }
                         } catch (error: SignInException) {
                             authorization = null
                             message = when (error.reason) {
@@ -93,7 +97,7 @@ internal fun GitHubSignIn(onConnected: (GitHubSession) -> Unit) {
                     }
                 }
             },
-            enabled = !connecting,
+            enabled = !connecting && enabled,
             modifier = Modifier.fillMaxWidth().height(56.dp)
         ) {
             Text("Conectar ao GitHub", fontWeight = FontWeight.Bold)

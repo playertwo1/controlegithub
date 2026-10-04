@@ -22,7 +22,7 @@ class DeviceSignInFlowTest {
             requestCode = { device() },
             poll = { _, interval ->
                 polls += interval
-                if (polls.size == 1) DevicePoll.Pending(10) else DevicePoll.Authorized("private-token")
+                if (polls.size == 1) DevicePoll.Pending(10) else DevicePoll.Authorized(SessionCredentials("private-token"))
             },
             loadProfile = { loadedToken = it; user },
             onAuthorization = { shownCode = it },
@@ -68,7 +68,7 @@ class DeviceSignInFlowTest {
             runBlocking {
                 authorizeDeviceFlow(
                     requestCode = { device() },
-                    poll = { _, _ -> polls++; DevicePoll.Authorized("private-token") },
+                    poll = { _, _ -> polls++; DevicePoll.Authorized(SessionCredentials("private-token")) },
                     loadProfile = { null },
                     onAuthorization = {},
                     nowMillis = { 0L },
@@ -82,7 +82,7 @@ class DeviceSignInFlowTest {
             runBlocking {
                 authorizeDeviceFlow(
                     requestCode = { device() },
-                    poll = { _, _ -> DevicePoll.Authorized("private-token") },
+                    poll = { _, _ -> DevicePoll.Authorized(SessionCredentials("private-token")) },
                     loadProfile = { null },
                     onAuthorization = {},
                     nowMillis = { 0L },

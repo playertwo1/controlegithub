@@ -85,10 +85,10 @@
       "depends_on": [
         "C03.1"
       ],
-      "status": "PLANNED",
+      "status": "DONE",
       "acceptance": "Reinício restaura sessão válida; logout remove token e dados privados; 401 exige novo login.",
-      "contract": null,
-      "evidence": null,
+      "contract": "plan/contracts/C03.2.md",
+      "evidence": "docs/evidence/C03.2.md",
       "blocked_reason": null
     },
     {

@@ -35,7 +35,7 @@ class GitHubOAuthClientTest {
 
         fixture.response = "access_token=private-token"
         val authorized = client.poll("device-code", 10).execute()
-        assertEquals(DevicePoll.Authorized("private-token"), authorized)
+        assertEquals(DevicePoll.Authorized(SessionCredentials("private-token")), authorized)
         assertEquals("Authorized", authorized.toString())
 
         fixture.response = "error=access_denied"
@@ -43,6 +43,25 @@ class GitHubOAuthClientTest {
 
         fixture.response = "error=expired_token"
         assertEquals(DevicePoll.Expired, client.poll("device-code", 10).execute())
+    }
+
+    @Test
+    fun refreshUsesOnlyClientIdAndParsesRotatedExpiry() = fixture(
+        "access_token=new-access&refresh_token=new-refresh&expires_in=28800&refresh_token_expires_in=15897600"
+    ).use { fixture ->
+        val client = fixture.client()
+        fixture.response = "access_token=rotated-access&refresh_token=rotated-refresh&expires_in=28800&refresh_token_expires_in=15897600"
+        val result = client.refresh("old-refresh").execute() as OAuthTokenResult.Success
+        assertEquals("rotated-access", result.credentials.accessToken)
+        assertEquals("rotated-refresh", result.credentials.refreshToken)
+        assertTrue(result.credentials.accessExpiresAtMillis!! > System.currentTimeMillis())
+        assertTrue(fixture.requestBody.get().contains("grant_type=refresh_token"))
+        assertTrue(fixture.requestBody.get().contains("refresh_token=old-refresh"))
+        assertTrue(fixture.requestBody.get().contains("client_id=public-client"))
+        assertFalse(fixture.requestBody.get().contains("client_secret"))
+
+        fixture.response = "error=bad_refresh_token"
+        assertEquals(OAuthTokenResult.Failure(BAD_REFRESH_TOKEN), client.refresh("old-refresh").execute())
     }
 
     @Test

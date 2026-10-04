@@ -29,9 +29,9 @@ internal suspend fun authorizeDeviceFlow(
             DevicePoll.Expired -> throw SignInException(SignInFailure.EXPIRED)
             DevicePoll.Failed -> throw SignInException(SignInFailure.FAILED)
             is DevicePoll.Authorized -> {
-                val user = loadProfile(result.accessToken)
+                val user = loadProfile(result.credentials.accessToken)
                     ?: throw SignInException(SignInFailure.INVALID_PROFILE)
-                return GitHubSession(user, result.accessToken)
+                return GitHubSession(user, result.credentials)
             }
         }
     }

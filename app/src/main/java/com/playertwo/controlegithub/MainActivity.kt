@@ -36,9 +36,35 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val preferences = remember(context) { ThemePreferences(context) }
+            val sessions = remember(context) {
+                GitHubSessionManager(
+                    SecureSessionStore(context),
+                    GitHubOAuthClient(BuildConfig.GITHUB_OAUTH_CLIENT_ID)
+                )
+            }
             val themeMode by preferences.themeMode.collectAsState(initial = AppThemeMode.SYSTEM)
             val scope = rememberCoroutineScope()
             var preferenceError by remember { mutableStateOf(false) }
+            var session by remember { mutableStateOf<GitHubSession?>(null) }
+            var sessionRestoring by remember { mutableStateOf(true) }
+            var sessionRetry by remember { mutableStateOf(false) }
+            var sessionStorageError by remember { mutableStateOf(false) }
+            suspend fun restoreSession() {
+                sessionRestoring = true
+                sessionRetry = false
+                sessionStorageError = false
+                when (val result = sessions.restore()) {
+                    is SessionRestoreResult.Restored -> session = result.session
+                    SessionRestoreResult.SignedOut -> session = null
+                    SessionRestoreResult.Retry -> sessionRetry = true
+                    SessionRestoreResult.CleanupFailed -> {
+                        session = null
+                        sessionStorageError = true
+                    }
+                }
+                sessionRestoring = false
+            }
+            LaunchedEffect(sessions) { restoreSession() }
             val darkSystemBars = appIsDark(themeMode, androidx.compose.foundation.isSystemInDarkTheme())
             DisposableEffect(darkSystemBars) {
                 enableEdgeToEdge(
@@ -50,16 +76,61 @@ class MainActivity : ComponentActivity() {
                 onDispose {}
             }
             ControleTheme(themeMode) {
-                ControleApp(themeMode, preferenceError, onThemeModeChange = { mode ->
-                    scope.launch {
+                ControleApp(
+                    themeMode = themeMode,
+                    preferenceError = preferenceError,
+                    session = session,
+                    sessionRestoring = sessionRestoring,
+                    sessionRetry = sessionRetry,
+                    sessionStorageError = sessionStorageError,
+                    onRetrySession = { scope.launch { restoreSession() } },
+                    onRetrySessionCleanup = {
+                        scope.launch {
+                            try {
+                                sessions.logout()
+                                sessionStorageError = false
+                                sessionRetry = false
+                            } catch (_: Exception) {
+                                sessionStorageError = true
+                            } finally {
+                                session = null
+                            }
+                        }
+                    },
+                    onConnected = { connected ->
                         try {
-                            preferences.setThemeMode(mode)
-                            preferenceError = false
+                            sessions.persist(connected)
+                            session = connected
+                            sessionStorageError = false
+                            true
                         } catch (_: Exception) {
-                            preferenceError = true
+                            sessionStorageError = true
+                            false
+                        }
+                    },
+                    onLogout = {
+                        scope.launch {
+                            try {
+                                sessions.logout()
+                                sessionStorageError = false
+                            } catch (_: Exception) {
+                                sessionStorageError = true
+                            } finally {
+                                session = null
+                            }
+                        }
+                    },
+                    onThemeModeChange = { mode ->
+                        scope.launch {
+                            try {
+                                preferences.setThemeMode(mode)
+                                preferenceError = false
+                            } catch (_: Exception) {
+                                preferenceError = true
+                            }
                         }
                     }
-                })
+                )
             }
         }
     }
@@ -70,6 +141,14 @@ class MainActivity : ComponentActivity() {
 internal fun ControleApp(
     themeMode: AppThemeMode,
     preferenceError: Boolean,
+    session: GitHubSession?,
+    sessionRestoring: Boolean,
+    sessionRetry: Boolean,
+    sessionStorageError: Boolean,
+    onRetrySession: () -> Unit,
+    onRetrySessionCleanup: () -> Unit,
+    onConnected: suspend (GitHubSession) -> Boolean,
+    onLogout: () -> Unit,
     onThemeModeChange: (AppThemeMode) -> Unit
 ) {
     var started by rememberSaveable { mutableStateOf(false) }
@@ -77,7 +156,7 @@ internal fun ControleApp(
     var page by rememberSaveable { mutableStateOf(0) }
     var selectedName by rememberSaveable { mutableStateOf<String?>(null) }
     var repositoryQuery by rememberSaveable { mutableStateOf("") }
-    var session by remember { mutableStateOf<GitHubSession?>(null) }
+    var logoutConfirm by rememberSaveable { mutableStateOf(false) }
     val selected = DemoData.repositories.firstOrNull { it.name == selectedName }
     val keyboardOpen = WindowInsets.isImeVisible
     BackHandler(appearanceOpen || started) {
@@ -111,7 +190,11 @@ internal fun ControleApp(
             Modifier.padding(padding), themeMode, preferenceError,
             onBack = { appearanceOpen = false }, onThemeModeChange = onThemeModeChange
         )
-        else if (!started) Welcome(Modifier.padding(padding), session, onConnected = { session = it }, onAppearance = { appearanceOpen = true }) { started = true }
+        else if (!started) Welcome(
+            Modifier.padding(padding), session, sessionRestoring, sessionRetry, sessionStorageError,
+            onRetrySession, onRetrySessionCleanup, onConnected, onLogout = { logoutConfirm = true },
+            onAppearance = { appearanceOpen = true }, onStart = { started = true }
+        )
         else LazyColumn(Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -125,6 +208,11 @@ internal fun ControleApp(
                 Spacer(Modifier.height(8.dp))
                 Text(session?.let { "Conta conectada: @${it.user.login}" } ?: "Nenhuma conta conectada", color = MaterialTheme.colorScheme.primary, fontSize = 13.sp)
                 session?.let { Text(it.user.profileUrl, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp) }
+                session?.let { TextButton(onClick = { logoutConfirm = true }) { Text("Sair da conta") } }
+                if (sessionRestoring) CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                if (sessionRetry) TextButton(onClick = onRetrySession) { Text("Tentar restaurar sessão") }
+                if (sessionStorageError) Text("A sessão saiu da tela, mas o armazenamento seguro informou falha.", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+                if (sessionStorageError) TextButton(onClick = onRetrySessionCleanup) { Text("Tentar limpar a sessão") }
                 Text("Modo demonstração · dados fictícios", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
             }
             if (selected != null) {
@@ -160,13 +248,24 @@ internal fun ControleApp(
             }
         }
     }
+    if (logoutConfirm) LogoutConfirmation(
+        storageError = sessionStorageError,
+        onDismiss = { logoutConfirm = false },
+        onConfirm = { logoutConfirm = false; onLogout() }
+    )
 }
 
 @Composable
 private fun Welcome(
     modifier: Modifier,
     session: GitHubSession?,
-    onConnected: (GitHubSession) -> Unit,
+    sessionRestoring: Boolean,
+    sessionRetry: Boolean,
+    sessionStorageError: Boolean,
+    onRetrySession: () -> Unit,
+    onRetrySessionCleanup: () -> Unit,
+    onConnected: suspend (GitHubSession) -> Boolean,
+    onLogout: () -> Unit,
     onAppearance: () -> Unit,
     onStart: () -> Unit
 ) {
@@ -185,17 +284,50 @@ private fun Welcome(
             Text("Repositórios, issues e pull requests.\nTudo encontra seu lugar, no seu Android.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 17.sp, lineHeight = 26.sp)
         }
         Column {
+            if (sessionRestoring) {
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                    CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                    Text("Restaurando sessão segura…", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
             session?.let {
                 Text("Conta conectada: @${it.user.login}", color = MaterialTheme.colorScheme.primary, fontSize = 13.sp)
                 Text(it.user.profileUrl, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                TextButton(onClick = onLogout) { Text("Sair da conta") }
             }
+            if (sessionRetry) {
+                Text("Não foi possível validar a sessão agora. Ela continua protegida no dispositivo.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                TextButton(onClick = onRetrySession) { Text("Tentar novamente") }
+            }
+            if (sessionStorageError) Text("Não foi possível atualizar o armazenamento seguro da sessão.", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+            if (sessionStorageError) TextButton(onClick = onRetrySessionCleanup) { Text("Tentar limpar a sessão") }
             if (session != null) Spacer(Modifier.height(12.dp))
-            GitHubSignIn(onConnected)
+            if (session == null) GitHubSignIn(onConnected, enabled = !sessionRestoring)
             Spacer(Modifier.height(12.dp))
             Button(onClick = onStart, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(16.dp)) { Text("Explorar demonstração", fontWeight = FontWeight.Bold) }
             Spacer(Modifier.height(16.dp))
         }
     }
+}
+
+@Composable
+private fun LogoutConfirmation(storageError: Boolean, onDismiss: () -> Unit, onConfirm: () -> Unit) {
+    val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Sair do GitHub?") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Isso remove a sessão e os dados privados deste dispositivo. A autorização do aplicativo continuará ativa no GitHub até ser revogada nas configurações da conta.")
+                TextButton(onClick = {
+                    uriHandler.openUri("https://github.com/settings/connections/applications/${BuildConfig.GITHUB_OAUTH_CLIENT_ID}")
+                }) { Text("Abrir autorizações do GitHub") }
+                if (storageError) Text("O armazenamento seguro informou uma falha na operação anterior.", color = MaterialTheme.colorScheme.error)
+            }
+        },
+        confirmButton = { TextButton(onClick = onConfirm) { Text("Sair") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+    )
 }
 
 @Composable
