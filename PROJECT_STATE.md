@@ -1,11 +1,11 @@
 # Estado do projeto
 
 Atualizado em 2026-10-04. C03.1, C03.2 e C16.1 estão concluídas; C05.1 tem
-implementação local, build, testes unitários, lint e instrumentação aprovados.
-Falta a comparação manual após nova autorização e a auditoria final da evidência.
-C03.2 foi publicada em `04077f9`; seu CI passou no run 37194260058. C00.2, C01.1,
-C01.2, C02.1, C04.1 e C04.2 também estão concluídos. M0 — Fundação confiável —
-foi aceito.
+implementação, automação, CI e validação manual real concluídas. Uma cobertura
+instrumentada adicional para a tela vazia passou; a auditoria independente final
+está pendente. C03.2 foi publicada em `04077f9`; seu CI passou no run 37194260058.
+C00.2, C01.1, C01.2, C02.1, C04.1 e C04.2 também estão concluídos. M0 — Fundação
+confiável — foi aceito.
 
 ## Entrega atual
 
@@ -38,7 +38,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | CI C02.1 (`1deaac5`) | PASS — run 37065527035; plano, build, testes unitários e lint |
 | C03.1 — Device Flow e perfil | CONCLUÍDO — consentimento real e perfil esperado confirmados no Pixel 9; build/lint, 25 unitários, 7 instrumentados, auditoria e CI remoto (run 37082537911) passaram |
 | C03.2 — Restaurar e encerrar sessão | CONCLUÍDO — 34 unitários, 13 instrumentados, autorização, restauração após reinício, logout, captura segura, auditoria independente e CI remoto PASS (run 37194260058) |
-| C05.1 — Lista de repositórios reais | EM EXECUÇÃO — implementação, 36 unitários, 14 instrumentados, build/lint e auditoria estática PASS; comparação real pendente de nova autorização |
+| C05.1 — Lista de repositórios reais | EM REVISÃO FINAL — implementação, 36 unitários, 15 instrumentados, build/lint, CI remoto, comparação real redigida, lista vazia, refresh e falha/retry PASS; auditoria final pendente |
 | C16.1 — Preferência de tema | CONCLUÍDO — build, 25 unitários, lint, 11 instrumentados, persistência após reinício do processo, capturas Sistema/Claro/Escuro, CI remoto (run 37138619727) e revisão independente PASS |
 | Transporte GitHub C04.1 | PASS — auditoria e CI remotos passaram em `2a4e689` |
 | Paginação e rate limit C04.2 | PASS — implementação, auditoria e CI remoto no SHA `bd02490` |
@@ -67,10 +67,10 @@ OAuth App criado, Client ID somente local, escopos documentados, endpoint real
 testado e auditoria independente PASS. Veja docs/AUTH.md e
 docs/evidence/C02.1.md. O proprietário concluiu as autorizações reais de C03.1
 e C03.2; a sessão persistente e o logout local foram verificados em C03.2.
-C05.1 está em validação final: implementação e checagens automatizadas passaram;
-contrato e evidência em plan/contracts/C05.1.md e docs/evidence/C05.1.md. A sessão
-atual está encerrada e será necessária nova autorização para comparar a lista
-real e fechar a auditoria da evidência.
+C05.1 está em revisão final: contrato e evidência em plan/contracts/C05.1.md e
+docs/evidence/C05.1.md. A comparação real com o endpoint e os cenários aplicáveis
+foram validados sem registrar dados da conta; falta apenas a auditoria independente
+final antes de atualizar o estado canônico.
 
 C04.1 pode avançar sem login: transporte REST nativo limitado a `api.github.com`
 em HTTPS, mensagens de erro tipadas e fixtures locais. Evidência em
