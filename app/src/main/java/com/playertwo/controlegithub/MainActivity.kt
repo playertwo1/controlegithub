@@ -243,6 +243,16 @@ internal fun ControleApp(
             onLogout = { logoutConfirm = true },
             onAppearance = { appearanceOpen = true }
         )
+        else if (page == 2 && selected == null) GitHubIssuesScreen(
+            modifier = Modifier.padding(padding),
+            client = apiClient,
+            session = session,
+            sessionRestoring = sessionRestoring,
+            sessionStorageError = sessionStorageError,
+            onConnected = connectAndPersist,
+            onSessionExpired = onSessionExpired,
+            onAppearance = { appearanceOpen = true }
+        )
         else LazyColumn(Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {

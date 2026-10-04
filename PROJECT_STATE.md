@@ -8,7 +8,7 @@ Maestro com fixture, auditoria independente e CI no SHA `992d781` (run
 no SHA `5064cd0` e auditoria independente. C03.2
 foi publicada em `04077f9`; seu CI passou no run 37194260058. C00.2, C01.1, C01.2,
 C02.1, C04.1 e C04.2 também estão concluídos. M0 — Fundação confiável — foi aceito.
-C06.1 foi concluída no SHA `e4a218a`: build, lint, 40 testes unitários, 31 instrumentados, inspeção Maestro, reauditoria independente e CI remoto (run 37205228834) passaram. C06.2 passou validação local, inspeção Maestro e auditoria independente; CI remoto PASS no SHA `f8aa9d3` (run 37208985019); evidência em docs/evidence/C06.2.md.
+C06.1 foi concluída no SHA `e4a218a`: build, lint, 40 testes unitários, 31 instrumentados, inspeção Maestro, reauditoria independente e CI remoto (run 37205228834) passaram. C06.2 passou validação local, inspeção Maestro e auditoria independente; CI remoto PASS no SHA `f8aa9d3` (run 37208985019); evidência em docs/evidence/C06.2.md. C07.1 é a tarefa ativa após refinamento do contrato. Implementação e validação local concluídas; comparação real dentro do app pendente porque a sessão do emulador foi removida pela suíte conectada e o fluxo de reconexão não avançou. Evidências e próximo passo em docs/evidence/C07.1.md.
 
 ## Entrega atual
 

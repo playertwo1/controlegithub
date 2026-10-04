@@ -56,7 +56,11 @@ class GitHubHomeScreenTest {
             compose.onNodeWithText("Menos abas.", substring = true).assertDoesNotExist()
 
             compose.onNodeWithText("Trabalho").performClick()
-            compose.onNodeWithText("Ainda não integrado").assertIsDisplayed()
+            compose.waitUntil(10_000) {
+                api.requests.size == 2 &&
+                    compose.onAllNodesWithText("Issues do GitHub").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Nenhuma issue encontrada com estes filtros.").assertIsDisplayed()
             compose.onNodeWithText("ISSUE #18").assertDoesNotExist()
             compose.onNodeWithText("Avisos").performClick()
             compose.onNodeWithText("Ainda não integrado").assertIsDisplayed()
@@ -64,21 +68,25 @@ class GitHubHomeScreenTest {
 
             compose.onNodeWithText("Início").performClick()
             compose.waitUntil(10_000) {
-                api.requests.size == 2 &&
+                api.requests.size == 3 &&
                     compose.onAllNodesWithText("Fixture Developer").fetchSemanticsNodes().isNotEmpty()
             }
             compose.onNodeWithContentDescription("Atualizar perfil").performClick()
             compose.waitUntil(10_000) {
-                api.requests.size == 3 &&
+                api.requests.size == 4 &&
                     compose.onAllNodesWithText("Fixture Developer").fetchSemanticsNodes().isNotEmpty()
             }
-            assertEquals(List(3) { "GET /user HTTP/1.1" }, api.requests)
+            assertEquals(
+                listOf("GET /user HTTP/1.1", "GET /issues?filter=assigned&state=open&pulls=false&per_page=50 HTTP/1.1") +
+                    List(2) { "GET /user HTTP/1.1" },
+                api.requests
+            )
             if (androidx.test.platform.app.InstrumentationRegistry.getArguments().getString("maestroPreview") == "true") {
                 Thread.sleep(60_000)
             }
             compose.onNodeWithText("Seus repositórios").performScrollTo().performClick()
             compose.waitUntil(10_000) {
-                api.requests.size == 4 &&
+                api.requests.size == 5 &&
                     compose.onAllNodesWithText("Nenhum repositório acessível").fetchSemanticsNodes().isNotEmpty()
             }
             assertTrue(api.requests.last().startsWith("GET /user/repos?"))
@@ -119,8 +127,8 @@ class GitHubHomeScreenTest {
         compose.onNodeWithText("Explorar demonstração").performClick()
         compose.onNodeWithText("Modo demonstração · dados fictícios").assertIsDisplayed()
         compose.onNodeWithText("Trabalho").performClick()
-        compose.onNodeWithText("Modo demonstração · dados fictícios").assertIsDisplayed()
-        compose.onNodeWithText("Preparar primeira versão Android").assertIsDisplayed()
+        compose.onNodeWithText("Conecte sua conta GitHub para consultar as issues que ela pode acessar.").assertIsDisplayed()
+        compose.onNodeWithText("Preparar primeira versão Android").assertDoesNotExist()
         compose.onNodeWithText("Avisos").performClick()
         compose.onNodeWithText("Modo demonstração · dados fictícios").assertIsDisplayed()
         compose.onNodeWithText("Você foi mencionado em uma issue").assertIsDisplayed()
@@ -264,7 +272,7 @@ private class ProfileApi(initialStatus: Int = 200) : AutoCloseable {
                         dropNextResponse = false
                         return@use
                     }
-                    val body = if (responseStatus != 200) "{}" else if (requests.last().startsWith("GET /user/repos?")) "[]" else
+                    val body = if (responseStatus != 200) "{}" else if (requests.last().startsWith("GET /user/repos?") || requests.last().startsWith("GET /issues?")) "[]" else
                         """{"login":"fixture-user","html_url":"https://github.com/fixture-user","name":"Fixture Developer","public_repos":0,"owned_private_repos":7,"followers":12}"""
                     val bytes = body.toByteArray(StandardCharsets.UTF_8)
                     socket.getOutputStream().apply {
