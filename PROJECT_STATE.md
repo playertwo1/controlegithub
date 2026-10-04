@@ -1,8 +1,9 @@
 # Estado do projeto
 
-Atualizado em 2026-10-04. C03.1, C03.2, C05.1 e C16.1 estão concluídas; C05.2
-está em implementação com testes locais e CI remoto pendente. A auditoria
-independente de C05.2 passou sem findings bloqueantes. C05.1 passou build,
+Atualizado em 2026-10-04. C03.1, C03.2, C05.1, C05.2 e C16.1 estão concluídas.
+C05.2 passou build, 40 testes unitários, 18 instrumentados, lint, inspeção
+Maestro com fixture, auditoria independente e CI no SHA `992d781` (run
+37200219568). C05.1 passou build,
 36 testes unitários, 15 instrumentados, lint, comparação manual sanitizada, CI
 no SHA `5064cd0` e auditoria independente. C03.2
 foi publicada em `04077f9`; seu CI passou no run 37194260058. C00.2, C01.1, C01.2,
@@ -41,7 +42,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | C03.1 — Device Flow e perfil | CONCLUÍDO — consentimento real e perfil esperado confirmados no Pixel 9; build/lint, 25 unitários, 7 instrumentados, auditoria e CI remoto (run 37082537911) passaram |
 | C03.2 — Restaurar e encerrar sessão | CONCLUÍDO — 34 unitários, 13 instrumentados, autorização, restauração após reinício, logout, captura segura, auditoria independente e CI remoto PASS (run 37194260058) |
 | C05.1 — Lista de repositórios reais | CONCLUÍDO — 36 unitários, 15 instrumentados, build/lint, CI remoto, comparação real redigida, lista vazia, refresh, falha/retry e auditoria independente PASS |
-| C05.2 — Busca e filtros de repositórios | EM ANDAMENTO — 40 unitários, 18 instrumentados, build/lint, inspeção visual Maestro com fixture e auditoria independente PASS; CI remoto pendente; evidência em docs/evidence/C05.2.md |
+| C05.2 — Busca e filtros de repositórios | CONCLUÍDO — 40 unitários, 18 instrumentados, build/lint, inspeção visual Maestro com fixture, auditoria independente e CI remoto (run 37200219568) PASS; evidência em docs/evidence/C05.2.md |
 | C16.1 — Preferência de tema | CONCLUÍDO — build, 25 unitários, lint, 11 instrumentados, persistência após reinício do processo, capturas Sistema/Claro/Escuro, CI remoto (run 37138619727) e revisão independente PASS |
 | Transporte GitHub C04.1 | PASS — auditoria e CI remotos passaram em `2a4e689` |
 | Paginação e rate limit C04.2 | PASS — implementação, auditoria e CI remoto no SHA `bd02490` |
@@ -79,8 +80,8 @@ C05.2 implementa busca por nome/nome completo/linguagem e filtros locais por
 visibilidade e linguagem sobre os itens carregados. Contrato em
 plan/contracts/C05.2.md; evidência local em docs/evidence/C05.2.md. Instrumentação
 verifica busca, filtros, estado sem correspondências, paginação, atualização e
-ausência de novas consultas ao filtrar. Auditoria independente passou; falta CI
-remoto no SHA final.
+ausência de novas consultas ao filtrar. Auditoria independente e CI remoto
+passaram no SHA `992d781`; veja docs/evidence/C05.2.md.
 
 C04.1 pode avançar sem login: transporte REST nativo limitado a `api.github.com`
 em HTTPS, mensagens de erro tipadas e fixtures locais. Evidência em

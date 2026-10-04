@@ -138,10 +138,10 @@
       "depends_on": [
         "C05.1"
       ],
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "acceptance": "Busca/filtros têm semântica local/remota explícita; limpar restaura lista sem duplicações.",
       "contract": "plan/contracts/C05.2.md",
-      "evidence": null,
+      "evidence": "docs/evidence/C05.2.md",
       "blocked_reason": null
     },
     {
