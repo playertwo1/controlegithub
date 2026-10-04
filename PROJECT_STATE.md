@@ -8,15 +8,16 @@ Maestro com fixture, auditoria independente e CI no SHA `992d781` (run
 no SHA `5064cd0` e auditoria independente. C03.2
 foi publicada em `04077f9`; seu CI passou no run 37194260058. C00.2, C01.1, C01.2,
 C02.1, C04.1 e C04.2 também estão concluídos. M0 — Fundação confiável — foi aceito.
-C06.1 foi concluída no SHA `e4a218a`: build, lint, 40 testes unitários, 31 instrumentados, inspeção Maestro, reauditoria independente e CI remoto (run 37205228834) passaram. C06.2 passou validação local, inspeção Maestro e auditoria independente; CI remoto PASS no SHA `f8aa9d3` (run 37208985019); evidência em docs/evidence/C06.2.md. C07.1 é a tarefa ativa após refinamento do contrato. Implementação e validação local concluídas; comparação real dentro do app pendente porque a sessão do emulador foi removida pela suíte conectada e o fluxo de reconexão não avançou. Evidências e próximo passo em docs/evidence/C07.1.md.
+C06.1 foi concluída no SHA `e4a218a`: build, lint, 40 testes unitários, 31 instrumentados, inspeção Maestro, reauditoria independente e CI remoto (run 37205228834) passaram. C06.2 passou validação local, inspeção Maestro e auditoria independente; CI remoto PASS no SHA `f8aa9d3` (run 37208985019); evidência em docs/evidence/C06.2.md. C07.1 é a tarefa ativa após refinamento do contrato. Implementação, validação local, auditoria independente e CI remoto passaram no SHA `c8cc435` (run 37213377810); comparação real dentro do app pendente porque a sessão do emulador foi removida pela suíte conectada e os toques Maestro não acionaram a tela de entrada. Evidências e próximo passo em docs/evidence/C07.1.md.
 
 ## Entrega atual
 
 Protótipo Android nativo com dados locais fictícios identificados como
 demonstração. C03.1 já solicita código, faz polling cancelável e confirma perfil
 real; C03.2 persiste a sessão cifrada. C05.1 lista repositórios reais e C05.2
-adiciona busca e filtros locais à aba Repos; demais operações seguem marcadas
-como demonstração. As telas demonstram o produto.
+adiciona busca e filtros locais à aba Repos. C07.1 implementa lista real e
+filtros de issues; a comparação autenticada no app ainda está pendente. As demais
+operações seguem marcadas como demonstração. As telas demonstram o produto.
 Menu inferior flutuante; sete pranchas conceituais (visão geral + 36 telas/estados)
 e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 
@@ -46,6 +47,7 @@ e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 | C05.2 — Busca e filtros de repositórios | CONCLUÍDO — 40 unitários, 18 instrumentados, build/lint, inspeção visual Maestro com fixture, auditoria independente e CI remoto (run 37200219568) PASS; evidência em docs/evidence/C05.2.md |
 | C06.1 — Detalhe real do repositório e README | CONCLUÍDO — build/lint, 40 unitários, 31 instrumentados no Pixel 9, Maestro, reauditoria independente e CI remoto (run 37205228834) PASS; comparação real reservada para o aceite agregado C06; evidência em docs/evidence/C06.1.md |
 | C06.2 — Painel real da conta conectada | CONCLUÍDO — build, lint, 40 unitários, suíte conectada 41/41 e 8 testes focados após último ajuste PASS; Maestro, auditoria independente e CI remoto no SHA `f8aa9d3` (run 37208985019) PASS; evidência em docs/evidence/C06.2.md |
+| C07.1 — Lista e filtros de issues | IN_PROGRESS — implementação, build/lint, 40 unitários, 54 instrumentados, Maestro com fixtures, auditoria independente e CI no SHA `c8cc435` (run 37213377810) PASS; comparação autenticada dentro do app NOT_RUN; evidência em docs/evidence/C07.1.md |
 | C16.1 — Preferência de tema | CONCLUÍDO — build, 25 unitários, lint, 11 instrumentados, persistência após reinício do processo, capturas Sistema/Claro/Escuro, CI remoto (run 37138619727) e revisão independente PASS |
 | Transporte GitHub C04.1 | PASS — auditoria e CI remotos passaram em `2a4e689` |
 | Paginação e rate limit C04.2 | PASS — implementação, auditoria e CI remoto no SHA `bd02490` |
