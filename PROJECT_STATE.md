@@ -58,17 +58,14 @@ em revisão independente; APK e instrumentação constam como evidência histór
 e novas execuções ficaram NOT_RUN sem dispositivo conectado. C01.1 e C01.2 também
 passaram em auditoria; M0 foi aceito.
 
-C07.2 está `IN_PROGRESS`, aguardando CI remoto. O detalhe autenticado, comentários
-paginados, Markdown inerte, estados 404/410, retry e cancelamento de chamada ao
-sair da tela foram implementados. Build/lint, 41 testes unitários, 13 testes da
-tela de issues, 4 de mapeamento e suíte instrumentada completa 63/63 passaram no
-Pixel 9/API 37. Uma execução anterior teve dois timeouts em testes do detalhe de
-repositório; a classe passou 9/9 isolada e a execução completa seguinte passou.
-Auditoria independente do diff passou sem achados de código. A sessão real foi
-confirmada, mas “Todas visíveis” + “Todas” retornou lista vazia, sem issue real
-para comparação. Maestro MCP ficou indisponível; a hierarquia foi conferida por
-fallback e a fixture sintética foi inspecionada pelo Maestro. Detalhes e
-evidências em docs/evidence/C07.2.md.
+C07.2 está `DONE` no SHA `f0efe30`; build/lint, 41 testes unitários, 13 testes da
+tela de issues, 4 de mapeamento, suíte instrumentada 63/63, auditoria independente
+e CI remoto (run 37232921849) passaram. O detalhe autenticado, comentários
+paginados, Markdown inerte, estados 404/410, retry e cancelamento da chamada ao
+sair da tela foram implementados. A sessão real foi confirmada, mas “Todas
+visíveis” + “Todas” retornou lista vazia, sem issue real para comparar. Maestro
+MCP ficou indisponível; a hierarquia foi conferida por fallback e a fixture foi
+inspecionada pelo Maestro. Evidências em docs/evidence/C07.2.md.
 
 ## Planejamento e retomada
 
