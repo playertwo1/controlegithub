@@ -124,10 +124,10 @@ docs/evidence/C16.1.md; revisão independente PASS. Build, testes, lint,
 persistência após reinício do processo, capturas dos três modos e CI remoto
 passaram. C03.1 foi concluída após autorização real e revisão independente.
 
-C08.2 está em `IN_PROGRESS`. Arquivos, diffs inertes e checks/statuses por SHA
-foram implementados; build, testes unitários, lint e suíte conectada 79/79 no
-Pixel 9 passam. Ajustes de sincronização estabilizaram os cenários de diff longo
-e listas vazias; falhas intermitentes anteriores ficaram registradas na
-evidência. Auditoria independente final PASS; CI remoto segue pendente. A
-comparação autenticada com PR real está `NOT_RUN` até haver PR adequado.
-Detalhes em `docs/evidence/C08.2.md`.
+C08.2 está `DONE`. Arquivos, diffs inertes e checks/statuses por SHA foram
+implementados; build, testes unitários, lint e suíte conectada 79/79 no Pixel 9
+passam. Auditoria independente PASS. CI PASS no SHA `96b35b3` (run
+`37298729702`, tentativa 2); a primeira tentativa falhou num teste de
+cancelamento C07.2 que passou na repetição. A comparação autenticada com PR
+real está `NOT_RUN` até haver PR adequado; C08 agregado segue pendente do aceite
+real descrito no roadmap. Evidência em `docs/evidence/C08.2.md`.
