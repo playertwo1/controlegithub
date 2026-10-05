@@ -131,3 +131,10 @@ passam. Auditoria independente PASS. CI PASS no SHA `96b35b3` (run
 cancelamento C07.2 que passou na repetição. A comparação autenticada com PR
 real está `NOT_RUN` até haver PR adequado; C08 agregado segue pendente do aceite
 real descrito no roadmap. Evidência em `docs/evidence/C08.2.md`.
+
+C09.1 foi refinada e está `BLOCKED` antes da implementação. A REST Notifications
+API documenta que os endpoints aceitam apenas PAT clássico, enquanto o app usa
+OAuth Device Flow; a alternativa REST Events não fornece estado lido/não lido e
+pode atrasar até horas. Contrato e fontes em `plan/contracts/C09.1.md`. Aguarda
+decisão do proprietário sobre adiar mantendo OAuth, trocar o recurso por feed de
+atividade sem leitura, ou aprovar mudança de autenticação para PAT clássico.
