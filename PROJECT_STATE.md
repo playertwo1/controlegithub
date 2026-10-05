@@ -30,9 +30,11 @@ lookahead válido ao truncar e pool limitado para DNS legado. Build, testes
 unitários e lint passaram; o teste instrumentado workflow → execução → job →
 logs passou no Pixel 9 com fixture 404. Houve dois timeouts instrumentados
 intermitentes antes do passo de logs, e uma execução mais recente passou com a
-pausa de inspeção habilitada. Maestro não produziu uma inspeção válida da tela:
-o servidor do dispositivo falhou após reboot e o CLI encontrou uma caixa de
-diálogo de ANR do Android. Comparação com logs reais fica `NOT_RUN`; CI remoto
+pausa de inspeção habilitada. Dois retestes focados posteriores voltaram a
+expirar na lista de workflows; o relatório Compose registrou o indicador de
+carregamento, e a chamada Maestro concorrente não retornou conteúdo. As falhas anteriores incluíram servidor de
+dispositivo encerrado e diálogo de ANR do Android. Comparação com logs reais
+fica `NOT_RUN`; CI remoto
 passou no SHA `22938e1` (run 37344629817). C10.2 e C10 ainda não estão
 concluídos. Evidência detalhada em
 `docs/evidence/C10.2.md`.
