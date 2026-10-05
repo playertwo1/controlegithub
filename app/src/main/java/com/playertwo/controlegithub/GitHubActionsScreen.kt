@@ -62,11 +62,14 @@ internal fun GitHubActionsScreen(
     var refreshVersion by remember(repository.id, accessToken) { mutableIntStateOf(0) }
     var selectedWorkflow by remember(repository.id, accessToken) { mutableStateOf<GitHubWorkflow?>(null) }
     var selectedRun by remember(repository.id, accessToken) { mutableStateOf<GitHubWorkflowRun?>(null) }
+    var selectedJob by remember(repository.id, accessToken) { mutableStateOf<GitHubActionJob?>(null) }
     var allRuns by remember(repository.id, accessToken) { mutableStateOf(false) }
+    var sessionExpiryReported by remember(repository.id, accessToken) { mutableStateOf(false) }
     val actions = remember(client, accessToken, repository) {
         GitHubActionsRepository(client, accessToken, repository)
     }
     val title = when {
+        selectedJob != null -> "Logs do job"
         selectedRun != null -> "Execução #${selectedRun!!.runNumber}"
         selectedWorkflow != null -> selectedWorkflow!!.name
         allRuns -> "Todas as execuções"
@@ -74,6 +77,7 @@ internal fun GitHubActionsScreen(
     }
     fun back() {
         when {
+            selectedJob != null -> selectedJob = null
             selectedRun != null -> selectedRun = null
             selectedWorkflow != null || allRuns -> {
                 selectedWorkflow = null
@@ -97,11 +101,30 @@ internal fun GitHubActionsScreen(
                 Text(repository.fullName, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
             }
             IconButton(onClick = { refreshVersion++ }) {
-                Icon(Icons.Outlined.Refresh, contentDescription = "Atualizar Actions")
+                Icon(Icons.Outlined.Refresh, contentDescription = if (selectedJob != null) "Atualizar logs" else "Atualizar Actions")
             }
         }
 
         when {
+            selectedJob != null -> {
+                val run = selectedRun
+                val job = selectedJob!!
+                JobLogsContent(
+                    client = client,
+                    accessToken = accessToken,
+                    repository = repository,
+                    job = job,
+                    refreshVersion = refreshVersion,
+                    workflowName = run?.workflowName ?: selectedWorkflow?.name ?: "Workflow",
+                    runNumber = run?.runNumber,
+                    onSessionExpired = {
+                        if (!sessionExpiryReported) {
+                            sessionExpiryReported = true
+                            onSessionExpired()
+                        }
+                    }
+                )
+            }
             selectedRun != null -> {
                 val run = selectedRun!!
                 Column(Modifier.padding(horizontal = 24.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -123,6 +146,7 @@ internal fun GitHubActionsScreen(
                         Text(job.name, fontWeight = FontWeight.SemiBold)
                         Text("Status: ${actionJobStatusLabel(job.status)}", color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text("Conclusão: ${workflowConclusionLabel(job.conclusion, job.status)}")
+                        TextButton(onClick = { selectedJob = job }) { Text("Ver logs") }
                     }
                 }
             }
@@ -291,6 +315,85 @@ private fun ActionsCard(onClick: (() -> Unit)? = null, content: @Composable Colu
         tonalElevation = 1.dp
     ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp), content = content)
+    }
+}
+
+@Composable
+private fun JobLogsContent(
+    client: GitHubHttpClient,
+    accessToken: String,
+    repository: GitHubRepository,
+    job: GitHubActionJob,
+    refreshVersion: Int,
+    workflowName: String,
+    runNumber: Long?,
+    onSessionExpired: () -> Unit
+) {
+    val loader = remember(client, accessToken, repository, job.id, refreshVersion) {
+        GitHubActionJobLogsLoader(client, accessToken, repository)
+    }
+    var result by remember(loader) { mutableStateOf<GitHubActionJobLogsResult?>(null) }
+
+    LaunchedEffect(loader) {
+        val loaded = withContext(Dispatchers.IO) { loader.load(job.id) }
+        result = loaded
+        if (loaded is GitHubActionJobLogsResult.Failed && loaded.error == GitHubHttpError.UNAUTHORIZED) {
+            onSessionExpired()
+        }
+    }
+    DisposableEffect(loader) { onDispose { loader.cancel() } }
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        item {
+            Text(workflowName, fontWeight = FontWeight.SemiBold)
+            if (runNumber != null) Text("Execução #$runNumber", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(job.name, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        item {
+            Text(
+                "Os logs podem conter dados sensíveis. Evite compartilhá-los.",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        when (val current = result) {
+            null -> item {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                    Text("Carregando logs do GitHub…", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+            GitHubActionJobLogsResult.Empty -> item {
+                Text("Este job ainda não tem logs.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            is GitHubActionJobLogsResult.Failed -> item {
+                Text(current.message, color = MaterialTheme.colorScheme.error)
+                Text("Use Atualizar para tentar novamente.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            is GitHubActionJobLogsResult.Loaded -> {
+                if (current.truncated) item {
+                    Text("Prévia limitada a 1 MiB; o restante dos logs não é exibido.", color = MaterialTheme.colorScheme.error)
+                }
+                item {
+                    val chunks = remember(current.text) { splitJobLogPreview(current.text) }
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant
+                    ) {
+                        Column(Modifier.padding(12.dp)) {
+                            chunks.forEach { chunk ->
+                                Text(text = chunk, style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

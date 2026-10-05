@@ -25,7 +25,8 @@ internal data class GitHubResponseHeaders(
     val link: String? = null,
     val retryAfter: String? = null,
     val rateLimitRemaining: String? = null,
-    val rateLimitReset: String? = null
+    val rateLimitReset: String? = null,
+    val location: String? = null
 )
 
 internal class GitHubRateLimitGate(private val nowMillis: () -> Long) {
@@ -163,7 +164,8 @@ internal class GitHubHttpCall internal constructor(
                 link = activeConnection.getHeaderField("Link"),
                 retryAfter = activeConnection.getHeaderField("Retry-After"),
                 rateLimitRemaining = activeConnection.getHeaderField("X-RateLimit-Remaining"),
-                rateLimitReset = activeConnection.getHeaderField("X-RateLimit-Reset")
+                rateLimitReset = activeConnection.getHeaderField("X-RateLimit-Reset"),
+                location = activeConnection.getHeaderField("Location")
             )
             if (cancelled.get()) {
                 GitHubHttpResult.Failure(GitHubHttpError.CANCELLED)

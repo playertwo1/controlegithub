@@ -272,9 +272,9 @@
       "depends_on": [
         "C10.1"
       ],
-      "status": "PLANNED",
+      "status": "IN_PROGRESS",
       "acceptance": "Logs autorizados abrem; expirados/negados exibem motivo; segredos não persistem.",
-      "contract": null,
+      "contract": "plan/contracts/C10.2.md",
       "evidence": null,
       "blocked_reason": null
     },

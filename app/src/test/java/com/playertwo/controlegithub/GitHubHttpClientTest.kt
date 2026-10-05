@@ -124,7 +124,11 @@ class GitHubHttpClientTest {
         headers = mapOf("Location" to "https://example.com/collect")
     ).use { fixture ->
         assertEquals(
-            GitHubHttpResult.Failure(GitHubHttpError.UNEXPECTED, 302),
+            GitHubHttpResult.Failure(
+                GitHubHttpError.UNEXPECTED,
+                302,
+                GitHubResponseHeaders(location = "https://example.com/collect")
+            ),
             fixture.client().get("/user", TOKEN).execute()
         )
         assertEquals(1, fixture.requestCount)

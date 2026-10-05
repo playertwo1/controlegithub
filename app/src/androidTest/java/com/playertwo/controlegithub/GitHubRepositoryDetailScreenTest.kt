@@ -94,31 +94,59 @@ class GitHubRepositoryDetailScreenTest {
                 api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/actions/workflows?") }
             }
             assertEquals(listOf("CI Android", "Deploy"), parseGitHubWorkflows(api.actionsResponses.single()).map { it.name })
-            compose.waitUntil(20_000) {
-                compose.onAllNodesWithText("CI Android", substring = true).fetchSemanticsNodes().isNotEmpty()
-            }
+            val workflowsRendered = runCatching {
+                compose.waitUntil(20_000) {
+                    compose.onAllNodesWithText("CI Android", substring = true).fetchSemanticsNodes().isNotEmpty()
+                }
+            }.isSuccess
+            assertTrue(
+                "Workflow list was not rendered. Requests: ${api.paths}; responses: ${api.responsesSent}. Compose tree: ${compose.onRoot().printToString()}",
+                workflowsRendered
+            )
             compose.onNodeWithText("CI Android", substring = true).assertIsDisplayed()
             compose.onNodeWithText("Desativado manualmente", substring = true).assertIsDisplayed()
             compose.onNodeWithText("CI Android", substring = true).performClick()
             compose.waitUntil(10_000) {
                 api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/actions/workflows/42/runs?") }
             }
-            assertTrue("Workflow run endpoint was not called: ${api.paths}", api.paths.any { it.contains("/actions/workflows/42/runs?") })
-            compose.waitUntil(20_000) {
-                compose.onAllNodesWithText("#17", substring = true).fetchSemanticsNodes().isNotEmpty()
-            }
+            assertTrue("Workflow run endpoint was not called: ${api.paths}; responses: ${api.responsesSent}",
+                api.paths.any { it.contains("/actions/workflows/42/runs?") })
+            val runRendered = runCatching {
+                compose.waitUntil(20_000) {
+                    compose.onAllNodesWithText("#17", substring = true).fetchSemanticsNodes().isNotEmpty()
+                }
+            }.isSuccess
+            assertTrue(
+                "Workflow run was not rendered. Requests: ${api.paths}; responses: ${api.responsesSent}. Compose tree: ${compose.onRoot().printToString()}",
+                runRendered
+            )
             compose.onNodeWithText("Falhou", substring = true).assertIsDisplayed()
             compose.onNodeWithText("#17", substring = true).performClick()
             compose.waitUntil(10_000) {
                 api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/actions/runs/9001/jobs?") }
             }
-            compose.waitUntil(20_000) {
-                compose.onAllNodesWithText("Build and test", substring = true).fetchSemanticsNodes().isNotEmpty()
-            }
+            val jobsRendered = runCatching {
+                compose.waitUntil(20_000) {
+                    compose.onAllNodesWithText("Build and test", substring = true).fetchSemanticsNodes().isNotEmpty()
+                }
+            }.isSuccess
+            assertTrue(
+                "Job row not rendered. Requests: ${api.paths}; responses: ${api.responsesSent}. Compose tree: ${compose.onRoot().printToString()}",
+                jobsRendered
+            )
             compose.onNodeWithText("Build and test", substring = true).assertIsDisplayed()
             compose.onNodeWithText("main", substring = true).assertIsDisplayed()
             compose.onAllNodesWithText("Falhou", substring = true).assertCountEquals(2)
-            assertTrue(api.paths.none { it.contains("/logs") || it.contains("/rerun") || it.contains("/cancel") })
+            compose.onNodeWithText("Ver logs").performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/actions/jobs/500/logs") }
+            }
+            compose.onNodeWithText("Este recurso não está disponível para sua conta.").assertIsDisplayed()
+            compose.onNodeWithText("Este job ainda não tem logs.").assertDoesNotExist()
+            assertTrue(api.paths.none { it.contains("/rerun") || it.contains("/cancel") })
+            if (InstrumentationRegistry.getArguments().getString("maestroPreview") == "true") {
+                Thread.sleep(60_000)
+            }
         }
     }
 

@@ -19,9 +19,22 @@ instrumentados da classe passaram 15/15 e a auditoria independente passou. A
 suíte agregada mais recente terminou 87/88: o mesmo fluxo Actions passou isolado
 e na classe, mas sofreu timeout intermitente na execução total; detalhes em
 `docs/evidence/C10.1.md`. Comparação com Actions reais e CI remoto ficam
-`NOT_RUN`; por isso o checkpoint agregado C10 não está aceito. Próximo trabalho:
-refinar o contrato C10.2 (logs de Actions), sem acessar ou persistir dados de
-execução privados.
+`NOT_RUN`; por isso o checkpoint agregado C10 não está aceito.
+
+C10.2 está `IN_PROGRESS`. O contrato foi auditado; a implementação cobre a
+captura do redirecionamento temporário, validação de conteúdo, leitura limitada
+e tela de logs com descarte ao sair/atualizar. O downloader abre TCP apenas
+para IP público validado e estabelece TLS com SNI e validação do hostname.
+Revisão independente confirmou os controles TLS, cancelamento, UTF-8 estrito,
+lookahead válido ao truncar e pool limitado para DNS legado. Build, testes
+unitários e lint passaram; o teste instrumentado workflow → execução → job →
+logs passou no Pixel 9 com fixture 404. Houve dois timeouts instrumentados
+intermitentes antes do passo de logs, e uma execução mais recente passou com a
+pausa de inspeção habilitada. Maestro não produziu uma inspeção válida da tela:
+o servidor do dispositivo falhou após reboot e o CLI encontrou uma caixa de
+diálogo de ANR do Android. Comparação com logs reais e CI remoto também ficam
+`NOT_RUN`; C10.2 e C10 ainda não estão concluídos. Evidência detalhada em
+`docs/evidence/C10.2.md`.
 
 Protótipo Android nativo com dados locais fictícios identificados como
 demonstração. C03.1 já solicita código, faz polling cancelável e confirma perfil
