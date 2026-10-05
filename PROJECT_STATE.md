@@ -32,8 +32,9 @@ logs passou no Pixel 9 com fixture 404. Houve dois timeouts instrumentados
 intermitentes antes do passo de logs, e uma execução mais recente passou com a
 pausa de inspeção habilitada. Maestro não produziu uma inspeção válida da tela:
 o servidor do dispositivo falhou após reboot e o CLI encontrou uma caixa de
-diálogo de ANR do Android. Comparação com logs reais e CI remoto também ficam
-`NOT_RUN`; C10.2 e C10 ainda não estão concluídos. Evidência detalhada em
+diálogo de ANR do Android. Comparação com logs reais fica `NOT_RUN`; CI remoto
+passou no SHA `22938e1` (run 37344629817). C10.2 e C10 ainda não estão
+concluídos. Evidência detalhada em
 `docs/evidence/C10.2.md`.
 
 Protótipo Android nativo com dados locais fictícios identificados como
