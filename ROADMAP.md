@@ -10,14 +10,16 @@ O estado de execução fica em [PROJECT_STATE.md](PROJECT_STATE.md). Referência
 [catálogo visual](docs/design/README.md); regras One UI/menu flutuante:
 [contrato visual](docs/DESIGN.md).
 
-## Ponto de partida
+## Baseline original (C00.1)
 
 A base existe: Kotlin/Compose, seis telas demonstrativas, busca, menu flutuante,
 wrapper, documentação Gold e referências visuais. Build e testes locais passaram.
-**Isso ainda não é um app integrado:** não há login, API, cache ou ações reais.
-O CI corrigido passou; evidência em docs/VERIFICATION.md. Naquele ponto de
-partida, a auditoria independente ainda não havia sido executada; o resultado
-atual está em PROJECT_STATE.md e docs/evidence/C00.2-review.md.
+Este é o retrato registrado no início do projeto, antes das integrações. Não
+descreve o estado atual: autenticação e alguns fluxos de leitura já foram
+implementados. Consulte [PROJECT_STATE.md](PROJECT_STATE.md) e os registros em
+`docs/evidence/` para o estado e as limitações atuais. A verificação original e
+a auditoria da fundação estão em `docs/VERIFICATION.md` e
+`docs/evidence/C00.2-review.md`.
 
 ## Escopo da primeira versão totalmente operante
 
@@ -50,8 +52,9 @@ escolhido pelo proprietário. Publicação na loja não é requisito para operar
 
 ## Mapa de checkpoints
 
-Estados: **PARCIAL**, **PLANEJADO**, **EM EXECUÇÃO**, **BLOQUEADO** e **CONCLUÍDO**.
-CONCLUÍDO exige aceite e evidências; desenho, commit ou build isolado não bastam.
+O estado canônico de cada tarefa está somente em `plan/tasks.json`; não inferir
+estado pelo número do checkpoint ou por esta tabela. Checkpoint concluído exige
+aceite agregado e evidências; desenho, commit ou build isolado não bastam.
 
 | ID | Fase | Entrega | Depende de |
 |---|---|---|---|
@@ -205,13 +208,23 @@ item removido ou sem acesso recebe tratamento; atualização não duplica notifi
 
 ### C10 — Actions e logs
 
-**Entregar:** workflows, execuções, jobs, status e logs por repositório.
-Explicar logs ainda indisponíveis, expirados ou sem permissão.
+**Entregar:** workflows, execuções, jobs, status e logs por repositório, em
+somente leitura. Explicar logs ainda indisponíveis, expirados ou sem permissão.
 
 **Aceite:** execução em andamento/sucesso/falha corresponde ao GitHub; log grande
 carrega sem congelar; não expor credenciais nos logs do próprio app;
 não confundir ler uma execução com disparar workflow.
-**Evidência:** testar uma execução passando e uma falhando, mais log indisponível.
+**Evidência agregada:** execução real passando e falhando, além de log
+indisponível, com comparação ao GitHub e testes locais/remotos. C10.1 já entrega
+workflows, execuções recentes, jobs, paginação e estados de erro; a comparação
+com Actions reais segue `NOT_RUN`. C10.2 implementa obtenção validada e limitada
+de logs e seus estados de UI; build, testes, lint, fluxo instrumentado para log
+indisponível e CI passaram. A inspeção visual Maestro da tela e a comparação com
+um log real seguem `NOT_RUN`. Portanto C10.2 permanece `IN_PROGRESS` e C10 não
+está aceito. Os estados individuais e a evidência atual estão em
+[`plan/tasks.json`](plan/tasks.json), [`PROJECT_STATE.md`](PROJECT_STATE.md),
+[`docs/evidence/C10.1.md`](docs/evidence/C10.1.md) e
+[`docs/evidence/C10.2.md`](docs/evidence/C10.2.md).
 
 ### C11 — Cache, offline e recuperação
 

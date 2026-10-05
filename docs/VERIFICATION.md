@@ -1,5 +1,11 @@
 # Verificação da fundação — 2026-10-02
 
+Este documento registra somente o baseline histórico C00.1, executado antes da
+integração de conta e API. As frases sobre dados demonstrativos e ausência de
+credenciais descrevem aquele teste, não o estado atual do produto. Para o estado
+atual e verificações por entrega, consulte [PROJECT_STATE.md](../PROJECT_STATE.md)
+e [`docs/evidence/`](evidence/).
+
 ## Ambiente
 
 Windows, JDK 17, Gradle 9.3.1, AGP 9.1.1, SDK 36. Emulador Pixel 9 com

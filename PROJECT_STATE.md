@@ -37,12 +37,14 @@ passou no SHA `22938e1` (run 37344629817). C10.2 e C10 ainda não estão
 concluídos. Evidência detalhada em
 `docs/evidence/C10.2.md`.
 
-Protótipo Android nativo com dados locais fictícios identificados como
-demonstração. C03.1 já solicita código, faz polling cancelável e confirma perfil
+O modo de demonstração usa dados locais fictícios identificados como
+demonstração; áreas ainda não integradas não representam esses dados como reais.
+C03.1 já solicita código, faz polling cancelável e confirma perfil
 real; C03.2 persiste a sessão cifrada. C05.1 lista repositórios reais e C05.2
 adiciona busca e filtros locais à aba Repos. C07.1 implementa lista real e
-filtros de issues; a primeira página vazia foi comparada com o GitHub. As demais
-operações seguem marcadas como demonstração. As telas demonstram o produto.
+filtros de issues; a primeira página vazia foi comparada com o GitHub. Cada área
+ainda não integrada é identificada no app e não apresenta dados de demonstração
+como conteúdo da conta. As telas conceituais demonstram o produto planejado.
 Menu inferior flutuante; sete pranchas conceituais (visão geral + 36 telas/estados)
 e seis capturas reais. Origem Gold fixada no lock e adaptação documentada.
 

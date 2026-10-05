@@ -1,9 +1,10 @@
 # Configuração de acesso ao GitHub
 
-O protótipo atual funciona em demonstração com dados fictícios. Ele não faz
-login nem chama a API. A solicitação do roadmap é configurar um OAuth App com
-Device Flow; o fluxo de login será implementado em C03, depois que esta
-configuração for validada.
+O app implementa login GitHub por Device Flow e usa a sessão cifrada no aparelho
+para os fluxos reais descritos em [PROJECT_STATE.md](../PROJECT_STATE.md). O
+modo de demonstração continua disponível sem sessão e seus dados são fictícios e
+identificados como demonstração. Áreas ainda não integradas não devem aparentar
+ser dados da conta.
 
 O OAuth App do projeto já foi registrado na conta `playertwo1`, com Device Flow
 ativado e expiração de tokens habilitada. [Abrir configurações do app](https://github.com/settings/applications/3900445).
@@ -30,9 +31,11 @@ ativado e expiração de tokens habilitada. [Abrir configurações do app](https
    A propriedade é pública e pode compor o APK. Não adicione `gradle.properties`
    pessoal ao Git.
 
-Sem a propriedade, o build usa uma string vazia e a tela inicial declara a
-integração indisponível. Um valor configurado ainda não habilita login: C03
-implementará autenticação. Não use um ID inventado como se fosse integração.
+Sem a propriedade, a tela de entrada informa que a autorização está
+indisponível; ela ainda permite abrir a demonstração. Um Client ID configurado
+habilita o pedido de código, mas não concede acesso por si só: o usuário ainda
+precisa autorizar o app no GitHub. Não use um ID inventado como se fosse
+integração.
 
 ## Escopos planejados
 

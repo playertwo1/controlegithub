@@ -1,20 +1,40 @@
 # ControleGitHub
 
-Seu GitHub, sob controle. Um painel Android nativo inspirado na proposta do
-[GitDeck](https://github.com/debba/gitdeck), com interface própria para celular.
+Seu GitHub, sob controle. Um aplicativo Android nativo em Kotlin e Jetpack
+Compose, inspirado na proposta do [GitDeck](https://github.com/debba/gitdeck) e
+com interface própria para celular.
 
-**Estado: protótipo navegável, com dados fictícios e sem conta conectada.**
-Não acessa APIs, não autentica e não altera seus repositórios nesta versão.
+**Estado atual:** autenticação GitHub e alguns fluxos de leitura usam dados reais
+da conta conectada. As áreas ainda não integradas são identificadas no app; o
+modo de demonstração usa dados fictícios rotulados como demonstração. O produto
+continua em desenvolvimento e ainda não oferece operações de escrita no GitHub.
+O estado detalhado e as limitações verificadas estão em
+[PROJECT_STATE.md](PROJECT_STATE.md).
 
-## Design do aplicativo final
+## O que funciona hoje
 
-[Catálogo das 36 telas e estados](docs/design/README.md): inspiração One UI,
-tema escuro e menus inferiores flutuantes. Propostas visuais do produto planejado,
-separadas do protótipo já executável.
+- Autorização por Device Flow, restauração de sessão cifrada no aparelho e logout.
+- Perfil da conta, lista de repositórios e busca/filtros locais dos itens carregados.
+- Detalhe do repositório e lista/filtros de issues em leitura.
+- Fluxos de Actions para workflows, execuções, jobs e uma tela de logs em
+  implementação. C10.2 ainda aguarda inspeção visual da tela de logs e comparação
+  com um job real; veja [roadmap](ROADMAP.md) e [evidência C10.2](docs/evidence/C10.2.md).
+- Modo de demonstração para áreas ainda não conectadas, sem apresentar amostras
+  como dados da conta.
+
+## Design
+
+[Catálogo das 36 telas e estados conceituais](docs/design/README.md): inspiração
+One UI, tema escuro e menu inferior flutuante. As imagens mostram o produto
+planejado; não comprovam a implementação das telas.
 
 ![Referência One UI com menu flutuante](docs/design/00-overview-oneui-v2.png)
 
-## Capturas do protótipo atual
+## Capturas
+
+As imagens abaixo documentam capturas do baseline visual inicial no emulador.
+Elas antecedem as integrações reais e mostram dados fictícios; consulte o estado
+atual em [PROJECT_STATE.md](PROJECT_STATE.md).
 
 | Entrada | Painel | Repositórios |
 |---|---|---|
@@ -24,14 +44,15 @@ separadas do protótipo já executável.
 |---|---|---|
 | ![Detalhe](docs/screens/04-detail.png) | ![Trabalho](docs/screens/05-work.png) | ![Notificações](docs/screens/06-notifications.png) |
 
-Capturas reais do protótipo no emulador Android. Os números são demonstrativos.
-
 ## Executar
 
 1. Abra a pasta no Android Studio e aguarde a sincronização Gradle.
 2. Use JDK 17, SDK Android 36 e um dispositivo Android 8.0 (API 26) ou superior.
 3. Configure o SDK no Android Studio ou em `local.properties` (não versionado).
-4. Execute o módulo `app` e toque em **Explorar demonstração**.
+4. Para habilitar o login local, configure `GITHUB_OAUTH_CLIENT_ID` conforme
+   [docs/AUTH.md](docs/AUTH.md). Sem essa propriedade, o app informa que a
+   autorização está indisponível; a demonstração permanece acessível.
+5. Execute o módulo `app`.
 
 ```sh
 ./gradlew assembleDebug testDebugUnitTest lintDebug
@@ -39,31 +60,23 @@ Capturas reais do protótipo no emulador Android. Os números são demonstrativo
 ./gradlew connectedDebugAndroidTest
 ```
 
-Windows: substitua `./gradlew` por `.\gradlew.bat`.
+Windows: use `.\gradlew.bat`.
 APK local: `app/build/outputs/apk/debug/app-debug.apk`.
 
-## Nesta versão
+## Roadmap e documentos
 
-- Entrada, painel, repositórios, detalhe, trabalho e notificações.
-- Busca por nome ou linguagem, incluindo estado vazio.
-- Tema escuro, menu inferior flutuante e estado preservado na recriação da Activity.
-- Testes de busca e fluxo de navegação; CI com build, testes e lint.
-- Base Gold adaptada de [Ideias Standard](https://github.com/playertwo1/ideias_standard).
+O [roadmap](ROADMAP.md) define os 21 checkpoints e cinco marcos. O
+[backlog](plan/tasks.json) contém as 42 tarefas e seus estados canônicos; rode
+`python scripts/check_plan.py` antes de selecionar trabalho. O
+[protocolo de execução](docs/EXECUTION.md) define como continuar uma tarefa; cada
+entrega READY tem um contrato em `plan/contracts/`. O
+[estado atual](PROJECT_STATE.md) e as evidências em `docs/evidence/` registram o
+que foi verificado e o que segue pendente. Consulte também as
+[decisões de arquitetura](docs/ARCHITECTURE.md), o [contrato visual](docs/DESIGN.md),
+o [guia OAuth](docs/AUTH.md) e a [verificação histórica da fundação](docs/VERIFICATION.md).
 
-## Próximos passos
-
-O [roadmap](ROADMAP.md) mantém 21 checkpoints e cinco marcos. O
-[backlog](plan/tasks.json) divide a execução em 42 entregas; o
-[protocolo](docs/EXECUTION.md) define seleção, refinamento e evidências.
-CI confirmado no SHA 643757b. C00.1 (baseline) e C02.1 (configuração OAuth)
-estão concluídos. C00.2 e C01.1 (navegação) passaram por auditoria independente.
-C01.2 (acessibilidade da navegação) também passou; M0 — Fundação confiável —
-está aceito. C03.1 (autorizar conta) está em andamento; confira contrato e
-evidência parcial no [estado](PROJECT_STATE.md),
-o [backlog](plan/tasks.json) e a [evidência de navegação](docs/evidence/C01.1.md).
-As [decisões técnicas](docs/ARCHITECTURE.md) e o [guia visual](docs/DESIGN.md)
-orientam a implementação sem introduzir uma arquitetura maior que o necessário.
-O [guia de configuração e escopos GitHub](docs/AUTH.md) explica o preparo do OAuth.
+A base Gold foi adaptada de [Ideias Standard](https://github.com/playertwo1/ideias_standard);
+veja [origem e adaptações](docs/STANDARD_ADOPTION.md).
 
 ## Contribuir
 

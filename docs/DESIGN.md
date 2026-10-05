@@ -34,11 +34,15 @@ de autorização vêm da API, não da imagem. Senha não coletada; token protegi
 no aparelho. Offline mostra cache e horário; limite da API respeita retry/reset.
 Permissão insuficiente terá mensagem contextual e acesso à revisão de permissões.
 
-## Fluxo
+## Fluxo de entrada e sessão
 
-Entrada → Explorar demonstração → Início / Repos / Trabalho / Avisos.
-Um card de repositório abre o detalhe; Voltar retorna à seção anterior.
-A busca aceita nome ou linguagem e explica quando não encontra resultados.
+Sem Client ID configurado, a entrada informa que a autorização está indisponível
+e permite explorar a demonstração. Com Client ID, o usuário pode autorizar a
+conta pelo Device Flow. A sessão autenticada mostra somente recursos já
+integrados; telas ainda não integradas explicam seu estado. Um card de
+repositório abre o detalhe; Voltar retorna à seção anterior. A busca de
+repositórios atua sobre itens carregados e explica quando não encontra
+resultados.
 
 ## Imagens conceituais
 
@@ -48,15 +52,18 @@ claro usam a mesma estrutura; detalhes e espaçamento seguem este documento.
 
 ## Capturas
 
-`screens/01-welcome.png` até `screens/06-notifications.png` são capturas do app,
-produzidas no emulador Pixel 9. Não são propostas geradas por IA.
+`screens/01-welcome.png` até `screens/06-notifications.png` são capturas do
+baseline visual inicial no emulador Pixel 9, antes da integração com a conta.
+Não são propostas geradas por IA nem evidência do estado autenticado atual.
 Para atualizar: instalar o APK, navegar até cada tela e usar
 `adb shell screencap -p /sdcard/screen.png` seguido de `adb pull`.
 
-Dados e conta são exemplificativos. A indicação de demonstração aparece em todas
-as seções; a entrada não simula um login concluído.
+As capturas usam dados demonstrativos. O app atual diferencia esses dados dos
+recursos carregados da conta; veja [PROJECT_STATE.md](../PROJECT_STATE.md) para
+as integrações verificadas.
 
 ## Evolução
 
-A F1 adicionará autorização, carregamento, erro, vazio e sessão expirada.
-Antes do beta: TalkBack, tamanho de fonte, contraste, tema claro e telas grandes.
+Autorização, perfil e parte das telas de leitura já estão implementados. Os
+estados e funções restantes avançam conforme o roadmap. Antes do beta: TalkBack,
+tamanho de fonte, contraste, tema claro e telas grandes.
