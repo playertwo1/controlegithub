@@ -18,6 +18,7 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -61,6 +62,19 @@ internal fun GitHubRepositoryDetailScreen(
     var loading by remember(repository.id, session.accessToken) { mutableStateOf(false) }
     val loader = remember(client, session.accessToken) {
         GitHubRepositoryDetailLoader(client, session.accessToken)
+    }
+
+    var actionsOpen by remember(repository.id, session.accessToken) { mutableStateOf(false) }
+    if (actionsOpen) {
+        GitHubActionsScreen(
+            modifier = modifier,
+            client = client,
+            accessToken = session.accessToken,
+            repository = repository,
+            onBack = { actionsOpen = false },
+            onSessionExpired = { onSessionExpired(session) }
+        )
+        return
     }
 
     BackHandler(onBack = onBack)
@@ -123,6 +137,9 @@ internal fun GitHubRepositoryDetailScreen(
                             DetailValue("Issues + PRs abertas", current.detail.openIssuesAndPullRequests?.toString())
                             DetailValue("Último push", current.detail.pushedAt?.let(::formatPushTime))
                         }
+                    }
+                    Button(onClick = { actionsOpen = true }, modifier = Modifier.fillMaxWidth()) {
+                        Text("Ver GitHub Actions")
                     }
                     when (val readme = current.readme) {
                         is GitHubReadmeResult.Found -> Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {

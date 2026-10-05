@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 import androidx.test.platform.app.InstrumentationRegistry
 import org.json.JSONObject
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -80,6 +81,122 @@ class GitHubRepositoryDetailScreenTest {
             compose.onNodeWithText("README não encontrado para este repositório.").assertIsDisplayed()
             compose.onNodeWithText("Branch padrão").assertIsDisplayed()
             compose.onNodeWithText("Interno").assertIsDisplayed()
+        }
+    }
+
+    @Test fun repositoryDetailOpensWorkflowRunAndJobStatusesForSelectedRepository() {
+        DetailApi().use { api ->
+            showRepositories(api)
+            openDetail(api)
+
+            compose.onNodeWithText("Ver GitHub Actions").performScrollTo().performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/actions/workflows?") }
+            }
+            assertEquals(listOf("CI Android", "Deploy"), parseGitHubWorkflows(api.actionsResponses.single()).map { it.name })
+            compose.waitUntil(20_000) {
+                compose.onAllNodesWithText("CI Android", substring = true).fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("CI Android", substring = true).assertIsDisplayed()
+            compose.onNodeWithText("Desativado manualmente", substring = true).assertIsDisplayed()
+            compose.onNodeWithText("CI Android", substring = true).performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/actions/workflows/42/runs?") }
+            }
+            assertTrue("Workflow run endpoint was not called: ${api.paths}", api.paths.any { it.contains("/actions/workflows/42/runs?") })
+            compose.waitUntil(20_000) {
+                compose.onAllNodesWithText("#17", substring = true).fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Falhou", substring = true).assertIsDisplayed()
+            compose.onNodeWithText("#17", substring = true).performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/actions/runs/9001/jobs?") }
+            }
+            compose.waitUntil(20_000) {
+                compose.onAllNodesWithText("Build and test", substring = true).fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Build and test", substring = true).assertIsDisplayed()
+            compose.onNodeWithText("main", substring = true).assertIsDisplayed()
+            compose.onAllNodesWithText("Falhou", substring = true).assertCountEquals(2)
+            assertTrue(api.paths.none { it.contains("/logs") || it.contains("/rerun") || it.contains("/cancel") })
+        }
+    }
+
+    @Test fun repositoryActionsCanShowAllRecentRuns() {
+        DetailApi().use { api ->
+            showRepositories(api)
+            openActions(api)
+            compose.onNodeWithText("Todas as execuções").performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/actions/runs?") }
+            }
+            compose.waitUntil(20_000) {
+                compose.onAllNodesWithText("#17", substring = true).fetchSemanticsNodes().isNotEmpty() ||
+                    compose.onAllNodesWithText("Não foi possível interpretar a resposta do GitHub.")
+                        .fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Falhou", substring = true).assertIsDisplayed()
+        }
+    }
+
+    @Test fun actionsEmptyStateIsNotAnError() {
+        DetailApi(emptyActionsWorkflows = true).use { api ->
+            showRepositories(api)
+            openActions(api)
+            compose.waitUntil(20_000) {
+                compose.onAllNodesWithText("Este repositório não tem workflows do GitHub Actions.")
+                    .fetchSemanticsNodes().isNotEmpty() ||
+                    compose.onAllNodesWithText("Sua conta não tem permissão para acessar este recurso.")
+                        .fetchSemanticsNodes().isNotEmpty() ||
+                    compose.onAllNodesWithText("Este recurso não está disponível para sua conta.")
+                        .fetchSemanticsNodes().isNotEmpty() ||
+                    compose.onAllNodesWithText("Não foi possível interpretar a resposta do GitHub.")
+                        .fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Este repositório não tem workflows do GitHub Actions.").assertIsDisplayed()
+            compose.onNodeWithText("Sua conta não tem permissão para acessar este recurso.").assertDoesNotExist()
+        }
+    }
+
+    @Test fun forbiddenActionsRequestIsNotPresentedAsAnEmptyList() {
+        DetailApi(actionsWorkflowsStatus = 403).use { api ->
+            showRepositories(api)
+            openActions(api)
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Sua conta não tem permissão para acessar este recurso.")
+                    .fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Este repositório não tem workflows do GitHub Actions.").assertDoesNotExist()
+        }
+    }
+
+    @Test fun actionsPaginationLoadsOnlyTheNextValidatedPageAndDeduplicates() {
+        DetailApi(paginatedActionsWorkflows = true).use { api ->
+            showRepositories(api)
+            openActions(api)
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/actions/workflows?") } &&
+                    compose.onAllNodesWithText("CI Android", substring = true).fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Carregar mais").performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.contains("/actions/workflows?page=2") } &&
+                    compose.onAllNodesWithText("Deploy", substring = true).fetchSemanticsNodes().isNotEmpty()
+            }
+            assertEquals(1, compose.onAllNodesWithText("CI Android", substring = true).fetchSemanticsNodes().size)
+            assertEquals(2, api.paths.count { it.contains("/actions/workflows") })
+            compose.onNodeWithText("Carregar mais").assertDoesNotExist()
+        }
+    }
+
+    @Test fun unauthorizedActionsRequestExpiresSessionOnce() {
+        DetailApi(actionsWorkflowsStatus = 401).use { api ->
+            val expired = AtomicInteger()
+            showRepositories(api) { expired.incrementAndGet() }
+            openActions(api)
+            compose.waitUntil(10_000) { expired.get() == 1 }
+            assertEquals(1, expired.get())
+            compose.onNodeWithText("Sua sessão expirou. Conecte-se novamente.").assertIsDisplayed()
         }
     }
 
@@ -183,6 +300,14 @@ class GitHubRepositoryDetailScreenTest {
         }
     }
 
+    private fun openActions(api: DetailApi) {
+        openDetail(api)
+        compose.onNodeWithText("Ver GitHub Actions").performScrollTo().performClick()
+        compose.waitUntil(10_000) {
+            api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/actions/workflows?") }
+        }
+    }
+
     private fun showRepositories(api: DetailApi, onSessionExpired: () -> Unit = {}) {
         val client = GitHubHttpClient(baseUrl = api.baseUrl)
         val session = GitHubSession(
@@ -212,7 +337,10 @@ class GitHubRepositoryDetailScreenTest {
         private val readmeStatus: Int = 200,
         private val failMetadataNetworkOnce: Boolean = false,
         private val failMetadataServerOnce: Boolean = false,
-        private val metadataRetryDelayMillis: Long = 0
+        private val metadataRetryDelayMillis: Long = 0,
+        private val actionsWorkflowsStatus: Int = 200,
+        private val emptyActionsWorkflows: Boolean = false,
+        private val paginatedActionsWorkflows: Boolean = false
     ) : AutoCloseable {
         private val server = ServerSocket(0, 2, InetAddress.getByName("127.0.0.1"))
         val baseUrl = URI.create("http://127.0.0.1:${server.localPort}/")
@@ -220,6 +348,8 @@ class GitHubRepositoryDetailScreenTest {
         val readmeRequests = AtomicInteger()
         val metadataRequests = AtomicInteger()
         val paths = ConcurrentLinkedQueue<String>()
+        val actionsResponses = ConcurrentLinkedQueue<String>()
+        val responsesSent = ConcurrentLinkedQueue<String>()
         @Volatile var description = "Fixture detail"
         private val readme = "# Intro\n<script>literal</script>\n[link](https://example.test)\n```sh\necho safe\n```"
         private val readmeBody = JSONObject()
@@ -230,6 +360,7 @@ class GitHubRepositoryDetailScreenTest {
         private val acceptThread = Thread {
             while (!server.isClosed) {
                 try {
+                    var responseRequestLine: String? = null
                     server.accept().use { socket ->
                         val reader = BufferedReader(InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8))
                         val requestLine = reader.readLine().orEmpty()
@@ -245,6 +376,16 @@ class GitHubRepositoryDetailScreenTest {
                         }
                         val (status, body) = when {
                             requestLine.startsWith("GET /user/repos?") -> 200 to repositoryList
+                            requestLine.startsWith("GET /repos/acme/Mobile/actions/workflows?page=2") -> 200 to workflowsNextPageBody
+                            requestLine.startsWith("GET /repos/acme/Mobile/actions/workflows?") -> actionsWorkflowsStatus to when {
+                                actionsWorkflowsStatus != 200 -> "{}"
+                                emptyActionsWorkflows -> """{"total_count":0,"workflows":[]}"""
+                                paginatedActionsWorkflows -> workflowsFirstPageBody
+                                else -> workflowsBody
+                            }
+                            requestLine.startsWith("GET /repos/acme/Mobile/actions/runs?") -> 200 to runsBody
+                            requestLine.startsWith("GET /repos/acme/Mobile/actions/workflows/42/runs?") -> 200 to runsBody
+                            requestLine.startsWith("GET /repos/acme/Mobile/actions/runs/9001/jobs?") -> 200 to jobsBody
                             requestLine.startsWith("GET /repos/acme/Mobile/readme") -> readmeStatus to if (readmeStatus == 200) readmeBody else "{}"
                             requestLine.startsWith("GET /repos/acme/Mobile ") -> {
                                 val selectedStatus = if (failMetadataServerOnce && metadataAttempt == 1) 503 else metadataStatus
@@ -252,6 +393,7 @@ class GitHubRepositoryDetailScreenTest {
                             }
                             else -> 404 to "{}"
                         }
+                        if (requestLine.startsWith("GET /repos/acme/Mobile/actions/workflows?")) actionsResponses.add(body)
                         if (metadataAttempt > 1 && metadataRetryDelayMillis > 0) {
                             Thread.sleep(metadataRetryDelayMillis)
                         }
@@ -268,6 +410,9 @@ class GitHubRepositoryDetailScreenTest {
                             "HTTP/1.1 $status $reason\r\n" +
                                 "Content-Type: application/json\r\n" +
                                 (if (status == 429) "Retry-After: 2\r\n" else "") +
+                                (if (paginatedActionsWorkflows && requestLine.startsWith("GET /repos/acme/Mobile/actions/workflows?"))
+                                    "Link: <http://127.0.0.1:${server.localPort}/repos/acme/Mobile/actions/workflows?page=2&per_page=50>; rel=\"next\"\r\n"
+                                else "") +
                                 "Content-Length: ${bytes.size}\r\n" +
                                 "Connection: close\r\n\r\n"
                             ).toByteArray(StandardCharsets.UTF_8)
@@ -276,7 +421,9 @@ class GitHubRepositoryDetailScreenTest {
                             write(bytes)
                             flush()
                         }
+                        responseRequestLine = requestLine
                     }
+                    responseRequestLine?.let(responsesSent::add)
                 } catch (_: java.net.SocketException) { }
             }
         }.apply { name = "repository-detail-fixture"; isDaemon = true; start() }
@@ -287,6 +434,19 @@ class GitHubRepositoryDetailScreenTest {
         }
 
         private fun metadataBody() = metadata.replace("Fixture detail", description)
+
+        private val workflowsBody = """{"total_count":2,"workflows":[
+            {"id":42,"name":"CI Android","path":".github/workflows/android.yml","state":"active"},
+            {"id":43,"name":"Deploy","path":".github/workflows/deploy.yml","state":"disabled_manually"}]}"""
+        private val workflowsFirstPageBody = """{"total_count":2,"workflows":[
+            {"id":42,"name":"CI Android","path":".github/workflows/android.yml","state":"active"}]}"""
+        private val workflowsNextPageBody = """{"total_count":2,"workflows":[
+            {"id":42,"name":"CI Android duplicado","path":".github/workflows/android.yml","state":"active"},
+            {"id":43,"name":"Deploy","path":".github/workflows/deploy.yml","state":"disabled_manually"}]}"""
+        private val runsBody = """{"total_count":1,"workflow_runs":[
+            {"id":9001,"workflow_id":42,"name":"CI Android","run_number":17,"event":"push","status":"completed","conclusion":"failure","head_branch":"main","head_sha":"${"a".repeat(40)}","created_at":"2026-10-05T11:00:00Z","run_started_at":"2026-10-05T11:00:01Z","updated_at":"2026-10-05T11:01:00Z"}]}"""
+        private val jobsBody = """{"total_count":1,"jobs":[
+            {"id":500,"run_id":9001,"name":"Build and test","status":"completed","conclusion":"failure","started_at":"2026-10-05T11:00:01Z","completed_at":"2026-10-05T11:01:00Z"}]}"""
 
         private companion object {
             val repositoryList = """[

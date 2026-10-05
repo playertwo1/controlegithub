@@ -259,10 +259,10 @@
       "depends_on": [
         "C06.1"
       ],
-      "status": "PLANNED",
+      "status": "DONE",
       "acceptance": "Lista/detalhe exibem status e conclusão de runs/jobs do repo escolhido.",
-      "contract": null,
-      "evidence": null,
+      "contract": "plan/contracts/C10.1.md",
+      "evidence": "docs/evidence/C10.1.md",
       "blocked_reason": null
     },
     {

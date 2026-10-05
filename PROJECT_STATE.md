@@ -1,6 +1,6 @@
 # Estado do projeto
 
-Atualizado em 2026-10-04. C03.1, C03.2, C05.1, C05.2, C06.1, C06.2, C07.1 e C16.1 estão concluídas.
+Atualizado em 2026-10-05. C03.1, C03.2, C05.1, C05.2, C06.1, C06.2, C07.1, C10.1 e C16.1 estão concluídas.
 C05.2 passou build, 40 testes unitários, 18 instrumentados, lint, inspeção
 Maestro com fixture, auditoria independente e CI no SHA `992d781` (run
 37200219568). C05.1 passou build,
@@ -11,6 +11,17 @@ C02.1, C04.1 e C04.2 também estão concluídos. M0 — Fundação confiável �
 C06.1 foi concluída no SHA `e4a218a`: build, lint, 40 testes unitários, 31 instrumentados, inspeção Maestro, reauditoria independente e CI remoto (run 37205228834) passaram. C06.2 passou validação local, inspeção Maestro e auditoria independente; CI remoto PASS no SHA `f8aa9d3` (run 37208985019); evidência em docs/evidence/C06.2.md. C07.1 foi concluída: build/lint, 40 testes unitários, 54 instrumentados, auditoria independente e CI no SHA `c8cc435` (run 37213377810) passaram; a lista vazia no Pixel 9 correspondeu à consulta autenticada redigida com os filtros padrão. Evidências em docs/evidence/C07.1.md.
 
 ## Entrega atual
+
+C10.1 implementa a área somente leitura de GitHub Actions no detalhe do
+repositório: workflows, execuções recentes por workflow ou gerais, jobs,
+paginação, estados vazios e erros. Build, unit tests e lint passaram; testes
+instrumentados da classe passaram 15/15 e a auditoria independente passou. A
+suíte agregada mais recente terminou 87/88: o mesmo fluxo Actions passou isolado
+e na classe, mas sofreu timeout intermitente na execução total; detalhes em
+`docs/evidence/C10.1.md`. Comparação com Actions reais e CI remoto ficam
+`NOT_RUN`; por isso o checkpoint agregado C10 não está aceito. Próximo trabalho:
+refinar o contrato C10.2 (logs de Actions), sem acessar ou persistir dados de
+execução privados.
 
 Protótipo Android nativo com dados locais fictícios identificados como
 demonstração. C03.1 já solicita código, faz polling cancelável e confirma perfil
