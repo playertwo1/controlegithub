@@ -48,6 +48,7 @@ internal data class GitHubPullRequestDetail(
     val body: String?,
     val labels: List<String>,
     val headBranch: String,
+    val headSha: String,
     val headRepository: String?,
     val baseBranch: String,
     val baseRepository: String
@@ -137,6 +138,8 @@ internal fun parseGitHubPullRequestDetail(
         else -> throw IOException("Pull request inválido")
     }
     val head = item.optJSONObject("head") ?: throw IOException("Pull request inválido")
+    val headSha = head.requiredNonBlankString("sha")
+    if (!headSha.matches(Regex("[0-9a-fA-F]{40}"))) throw IOException("Pull request inválido")
     val base = item.optJSONObject("base") ?: throw IOException("Pull request inválido")
     val baseRepository = base.optJSONObject("repo")?.requiredRepositoryName()
         ?: throw IOException("Pull request inválido")
@@ -150,6 +153,7 @@ internal fun parseGitHubPullRequestDetail(
         body = item.optionalString("body"),
         labels = item.optionalLabels("labels"),
         headBranch = head.requiredNonBlankString("ref"),
+        headSha = headSha.lowercase(Locale.ROOT),
         headRepository = head.optJSONObject("repo")?.optionalRepositoryName(),
         baseBranch = base.requiredNonBlankString("ref"),
         baseRepository = baseRepository

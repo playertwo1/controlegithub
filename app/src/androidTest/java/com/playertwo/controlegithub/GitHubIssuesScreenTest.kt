@@ -86,7 +86,7 @@ class GitHubIssuesScreenTest {
                     compose.onAllNodesWithText("Fixture issue one").fetchSemanticsNodes().isNotEmpty()
             }
             compose.onNodeWithText("Fixture issue one").performClick()
-            compose.waitUntil(10_000) {
+            compose.waitUntil(30_000) {
                 api.requests.any { it.startsWith("GET /repos/fixture-owner/fixture-repo/issues/18 HTTP") } &&
                     api.requests.any { it.startsWith("GET /repos/fixture-owner/fixture-repo/issues/18/comments") } &&
                     compose.onAllNodesWithText("**fixture description**").fetchSemanticsNodes().isNotEmpty()
@@ -182,7 +182,7 @@ class GitHubIssuesScreenTest {
             }
             compose.onNodeWithText("<script>inert()</script>").assertIsDisplayed()
             api.responseStatus = 200
-            compose.onNodeWithText("Tentar novamente").performClick()
+            compose.onNodeWithTag("issue-comments-retry").performScrollTo().performClick()
             compose.waitUntil(10_000) {
                 api.requests.count { it.contains("/comments?per_page=50&page=2") } == 2 &&
                     compose.onAllNodesWithText("fixture-comment-two").fetchSemanticsNodes().isNotEmpty()

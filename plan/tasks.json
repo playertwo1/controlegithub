@@ -219,10 +219,10 @@
       "depends_on": [
         "C08.1"
       ],
-      "status": "PLANNED",
+      "status": "IN_PROGRESS",
       "acceptance": "Diff e checks pertencem ao PR; binário, truncamento e falha têm estados explícitos.",
-      "contract": null,
-      "evidence": null,
+      "contract": "plan/contracts/C08.2.md",
+      "evidence": "docs/evidence/C08.2.md",
       "blocked_reason": null
     },
     {

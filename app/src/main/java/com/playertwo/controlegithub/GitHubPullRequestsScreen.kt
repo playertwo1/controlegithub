@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -44,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.time.ZoneId
@@ -294,6 +298,36 @@ internal fun GitHubPullRequestDetailScreen(
     var reviewsError by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf<String?>(null) }
     var sessionExpiryReported by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val filesPager = remember(client, session.accessToken, pullRequest.identity, refreshVersion) {
+        GitHubPullRequestFilesPager(client, session.accessToken, pullRequest)
+    }
+    val headSha = (detail as? GitHubPullRequestDetailResult.Loaded)?.detail?.headSha
+    val checkPager = remember(client, session.accessToken, pullRequest.identity, refreshVersion, headSha) {
+        headSha?.let { GitHubPullRequestCheckPager(client, session.accessToken, pullRequest, it) }
+    }
+    val statusPager = remember(client, session.accessToken, pullRequest.identity, refreshVersion, headSha) {
+        headSha?.let { GitHubCommitStatusPager(client, session.accessToken, pullRequest, it) }
+    }
+    var files by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(emptyList<GitHubPullRequestFile>()) }
+    var filesLoaded by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
+    var hasMoreFiles by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
+    var filesLimited by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
+    var loadingFiles by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
+    var filesError by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf<String?>(null) }
+    var expandedFiles by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(emptySet<String>()) }
+    var checks by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(emptyList<GitHubPullRequestCheck>()) }
+    var checksLoaded by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
+    var hasMoreChecks by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
+    var checksLimited by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
+    var loadingChecks by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
+    var checksError by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf<String?>(null) }
+    var statuses by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(emptyList<GitHubCommitStatus>()) }
+    var statusLoaded by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
+    var hasMoreStatuses by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
+    var statusesLimited by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
+    var loadingStatuses by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
+    var statusesError by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf<String?>(null) }
+    var combinedStatus by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf<String?>(null) }
 
     fun reportSessionExpiredOnce() {
         if (!sessionExpiryReported) {
@@ -336,6 +370,58 @@ internal fun GitHubPullRequestDetailScreen(
         } finally { loadingReviews = false }
     }
 
+    suspend fun loadFiles() {
+        if (loadingFiles || (filesLoaded && !hasMoreFiles && filesError == null)) return
+        loadingFiles = true; filesError = null
+        try {
+            when (val result = withContext(Dispatchers.IO) { filesPager.loadNext() }) {
+                is GitHubPullRequestFilesPageResult.Loaded -> {
+                    files = result.page.files; hasMoreFiles = result.page.hasNext; filesLimited = result.page.limited; filesLoaded = true
+                }
+                is GitHubPullRequestFilesPageResult.RateLimited -> filesError = GitHubHttpError.RATE_LIMITED.userMessage
+                is GitHubPullRequestFilesPageResult.Failed -> {
+                    files = result.items; filesError = result.message
+                    if (result.error == GitHubHttpError.UNAUTHORIZED) reportSessionExpiredOnce()
+                }
+            }
+        } finally { loadingFiles = false }
+    }
+
+    suspend fun loadChecks() {
+        val pager = checkPager ?: return
+        if (loadingChecks || (checksLoaded && !hasMoreChecks && checksError == null)) return
+        loadingChecks = true; checksError = null
+        try {
+            when (val result = withContext(Dispatchers.IO) { pager.loadNext() }) {
+                is GitHubLimitedPageResult.Loaded -> { checks = result.page.items; hasMoreChecks = result.page.hasNext; checksLimited = result.page.limited; checksLoaded = true }
+                is GitHubLimitedPageResult.RateLimited -> checksError = GitHubHttpError.RATE_LIMITED.userMessage
+                is GitHubLimitedPageResult.Failed -> {
+                    checks = result.items; checksError = result.message
+                    if (result.error == GitHubHttpError.UNAUTHORIZED) reportSessionExpiredOnce()
+                }
+            }
+        } finally { loadingChecks = false }
+    }
+
+    suspend fun loadStatuses() {
+        val pager = statusPager ?: return
+        if (loadingStatuses || (statusLoaded && !hasMoreStatuses && statusesError == null)) return
+        loadingStatuses = true; statusesError = null
+        try {
+            when (val result = withContext(Dispatchers.IO) { pager.loadNext() }) {
+                is GitHubLimitedPageResult.Loaded -> {
+                    statuses = result.page.items; hasMoreStatuses = result.page.hasNext; statusesLimited = result.page.limited; statusLoaded = true
+                    combinedStatus = pager.summaryState
+                }
+                is GitHubLimitedPageResult.RateLimited -> statusesError = GitHubHttpError.RATE_LIMITED.userMessage
+                is GitHubLimitedPageResult.Failed -> {
+                    statuses = result.items; statusesError = result.message
+                    if (result.error == GitHubHttpError.UNAUTHORIZED) reportSessionExpiredOnce()
+                }
+            }
+        } finally { loadingStatuses = false }
+    }
+
     BackHandler(onBack = onBack)
     LaunchedEffect(loader, pullRequest.identity, refreshVersion) {
         loadingDetail = true
@@ -350,8 +436,14 @@ internal fun GitHubPullRequestDetailScreen(
         if (detail is GitHubPullRequestDetailResult.Loaded) {
             launch { loadComments() }
             launch { loadReviews() }
+            launch { loadFiles() }
+            launch { loadChecks() }
+            launch { loadStatuses() }
         }
     }
+    DisposableEffect(filesPager) { onDispose { filesPager.cancel() } }
+    DisposableEffect(checkPager) { onDispose { checkPager?.cancel() } }
+    DisposableEffect(statusPager) { onDispose { statusPager?.cancel() } }
     DisposableEffect(commentsPager) { onDispose { commentsPager.cancel() } }
     DisposableEffect(reviewsPager) { onDispose { reviewsPager.cancel() } }
     DisposableEffect(loader) { onDispose { loader.cancel() } }
@@ -385,6 +477,45 @@ internal fun GitHubPullRequestDetailScreen(
                 Text("${value.baseRepository}:${value.baseBranch}", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text("Descrição", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                 PullRequestMarkdown(value.body?.takeIf(String::isNotBlank) ?: "Sem descrição.")
+                Text("Arquivos alterados · ${files.size}", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+                if (!filesLoaded && loadingFiles) LoadingPullRequests("Carregando arquivos…")
+                if (filesLoaded && files.isEmpty() && filesError == null) Text("Este pull request não informa arquivos alterados.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (files.isNotEmpty()) LazyColumn(
+                    modifier = Modifier.fillMaxWidth().heightIn(max = 480.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(files, key = GitHubPullRequestFile::filename) { file ->
+                        PullRequestFileCard(file, expandedFiles.contains(file.filename)) {
+                            expandedFiles = if (expandedFiles.contains(file.filename)) expandedFiles - file.filename else expandedFiles + file.filename
+                        }
+                    }
+                }
+                if (filesLimited) Text("O GitHub limitou a lista de arquivos exibida a 3.000 itens.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                filesError?.let { PullRequestLoadError(it, loadingFiles) { scope.launch { loadFiles() } } }
+                if (hasMoreFiles && filesError == null) TextButton(onClick = { scope.launch { loadFiles() } }, enabled = !loadingFiles, modifier = Modifier.fillMaxWidth()) {
+                    if (loadingFiles) CircularProgressIndicator(strokeWidth = 2.dp) else Text("Carregar mais arquivos")
+                }
+                Text("Checks do commit", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+                if (!checksLoaded && loadingChecks) LoadingPullRequests("Carregando checks…")
+                if (checksLoaded && checks.isEmpty() && checksError == null) Text("Nenhum check informado neste repositório e commit.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (checks.isNotEmpty()) LazyColumn(Modifier.fillMaxWidth().heightIn(max = 320.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(checks, key = GitHubPullRequestCheck::id) { PullRequestCheckCard(it) }
+                }
+                checksError?.let { PullRequestLoadError(it, loadingChecks) { scope.launch { loadChecks() } } }
+                if (hasMoreChecks && checksError == null) TextButton(onClick = { scope.launch { loadChecks() } }, enabled = !loadingChecks) { Text("Carregar mais checks") }
+                if (checksLimited) Text("A lista de checks foi limitada a 10.000 itens.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Statuses do commit", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+                combinedStatus?.takeIf { statuses.isNotEmpty() || checks.isNotEmpty() }?.let {
+                    Text("Resultado combinado: ${commitStateLabel(it)}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                if (!statusLoaded && loadingStatuses) LoadingPullRequests("Carregando statuses…")
+                if (statusLoaded && statuses.isEmpty() && statusesError == null) Text("Nenhum status informado neste repositório e commit.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (statuses.isNotEmpty()) LazyColumn(Modifier.fillMaxWidth().heightIn(max = 320.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(statuses, key = GitHubCommitStatus::id) { PullRequestCommitStatusCard(it) }
+                }
+                statusesError?.let { PullRequestLoadError(it, loadingStatuses, "pull-request-statuses-retry") { scope.launch { loadStatuses() } } }
+                if (hasMoreStatuses && statusesError == null) TextButton(onClick = { scope.launch { loadStatuses() } }, enabled = !loadingStatuses) { Text("Carregar mais statuses") }
+                if (statusesLimited) Text("A lista de statuses foi limitada a 10.000 itens.", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text("Comentários", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                 if (!commentsLoaded && loadingComments) LoadingPullRequests("Carregando comentários…")
                 if (commentsLoaded && comments.isEmpty() && commentsError == null) Text("Esta pull request ainda não tem comentários.", color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -449,10 +580,101 @@ private fun PullRequestReviewCard(review: GitHubPullRequestReview) {
 }
 
 @Composable
-private fun PullRequestLoadError(message: String, loading: Boolean, onRetry: () -> Unit) {
+private fun PullRequestFileCard(file: GitHubPullRequestFile, expanded: Boolean, onToggle: () -> Unit) {
+    Surface(
+        shape = RoundedCornerShape(18.dp),
+        color = MaterialTheme.colorScheme.surface,
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onToggle)
+    ) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(file.filename, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.SemiBold)
+            Text("${fileStatusLabel(file.status)} · +${file.additions} · −${file.deletions}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            if (expanded) {
+                if (file.patch.isNullOrEmpty()) {
+                    Text("Diff não fornecido pelo GitHub (arquivo binário ou trecho indisponível/truncado).", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                } else {
+                    val truncated = file.patch.length > MAX_VISIBLE_PATCH_LENGTH
+                    SelectionContainer {
+                        Text(
+                            file.patch.take(MAX_VISIBLE_PATCH_LENGTH),
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 12.sp,
+                            lineHeight = 16.sp
+                        )
+                    }
+                    if (truncated) Text("Trecho cortado localmente após 20.000 caracteres.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            } else Text("Toque para ${if (file.patch.isNullOrEmpty()) "ver os detalhes do diff" else "abrir o diff"}.", color = MaterialTheme.colorScheme.primary)
+        }
+    }
+}
+
+@Composable
+private fun PullRequestCheckCard(check: GitHubPullRequestCheck) {
+    Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(check.name, fontWeight = FontWeight.SemiBold)
+            Text(check.conclusion?.let(::checkConclusionLabel) ?: checkStatusLabel(check.status), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+@Composable
+private fun PullRequestCommitStatusCard(status: GitHubCommitStatus) {
+    Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(status.context, fontWeight = FontWeight.SemiBold)
+            Text("${commitStateLabel(status.state)}${status.description?.takeIf(String::isNotBlank)?.let { " · $it" }.orEmpty()}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+private fun fileStatusLabel(state: String) = when (state) {
+    "added" -> "Adicionado"
+    "removed" -> "Removido"
+    "modified" -> "Alterado"
+    "renamed" -> "Renomeado"
+    "copied" -> "Copiado"
+    "changed" -> "Alterado"
+    "unchanged" -> "Sem alterações"
+    else -> "Estado indisponível"
+}
+
+private fun checkStatusLabel(state: String) = when (state) {
+    "queued" -> "Na fila"
+    "in_progress" -> "Em andamento"
+    "completed" -> "Concluído"
+    else -> "Estado indisponível"
+}
+
+private fun checkConclusionLabel(state: String) = when (state) {
+    "success" -> "Sucesso"
+    "failure" -> "Falhou"
+    "neutral" -> "Neutro"
+    "cancelled" -> "Cancelado"
+    "skipped" -> "Ignorado"
+    "timed_out" -> "Tempo esgotado"
+    "action_required" -> "Ação necessária"
+    "stale" -> "Desatualizado"
+    "startup_failure" -> "Falha ao iniciar"
+    else -> "Conclusão indisponível"
+}
+
+private fun commitStateLabel(state: String) = when (state) {
+    "success" -> "Sucesso"
+    "failure" -> "Falha"
+    "error" -> "Erro"
+    "pending" -> "Pendente"
+    else -> "Estado indisponível"
+}
+
+private const val MAX_VISIBLE_PATCH_LENGTH = 20_000
+
+@Composable
+private fun PullRequestLoadError(message: String, loading: Boolean, retryTestTag: String? = null, onRetry: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(message, color = MaterialTheme.colorScheme.error)
-        TextButton(onClick = onRetry, enabled = !loading) { Text("Tentar novamente") }
+        TextButton(onClick = onRetry, enabled = !loading, modifier = retryTestTag?.let(Modifier::testTag) ?: Modifier) { Text("Tentar novamente") }
     }
 }
 
