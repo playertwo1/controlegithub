@@ -237,7 +237,7 @@
       "acceptance": "Avisos paginados abrem issue/PR correto; tipos restantes têm fallback documentado.",
       "contract": "plan/contracts/C09.1.md",
       "evidence": null,
-      "blocked_reason": "Decisão do proprietário necessária: a Notifications REST API documenta suporte apenas a PAT clássico, enquanto o app autentica com OAuth Device Flow. Escolher manter OAuth e adiar, substituir por feed de atividade sem estados lido/não lido, ou aprovar mudança de autenticação para PAT clássico."
+      "blocked_reason": "Adiado por decisão do proprietário: manter OAuth Device Flow. Retomar somente quando a documentação oficial confirmar compatibilidade da Notifications API com esse fluxo ou o proprietário rever explicitamente a decisão."
     },
     {
       "id": "C09.2",
