@@ -183,21 +183,23 @@ cancelamento C07.2 que passou na repetição. A comparação autenticada com PR
 real está `NOT_RUN` até haver PR adequado; C08 agregado segue pendente do aceite
 real descrito no roadmap. Evidência em `docs/evidence/C08.2.md`.
 
-Em C09.1, Tasks 0–3 ativaram o contrato autorizado, implementaram parsing,
-validação de destinos, paginação e a caixa autenticada com filtros, detalhe e
-navegação local. A auditoria independente inicial apontou data inválida aceita
-e ausência de estado vazio para filtros; ambos foram corrigidos e ganharam
-testes. Testes focados no Pixel 9/API 37: parser 5/5, caixa 7/7, navegação 5/5,
-Home 8/8 e regressões selecionadas de detalhes passaram. `assembleDebug
-testDebugUnitTest lintDebug` passou. O teste real OAuth na aba Avisos retornou
-HTTP 200, com itens presentes e renderizados; nenhum conteúdo privado foi
-registrado. A suíte conectada completa parou em 84/110 com `IndexOutOfBounds`
-em teste existente de detalhe de repositório e queda do runner; a repetição
-isolada passou 1/1, mas a suíte completa não conta como PASS. Maestro visualizou
-a demonstração sintética; a fixture de Avisos ainda não pode ser carregada na
-tela instalada sem adicionar um modo de teste. Reauditoria independente do
-código passou sem achados no range `abee9e5..c90879d`. Task 4 segue ativa para
-resolver/verificar os gates de dispositivo e registrar o estado final. CI remoto
-passou no SHA `4cabe74` (run `37442639784`, tentativa 1).
+Em C09.1, Tasks 0–3 implementaram parsing, validação de destinos, paginação e a
+caixa autenticada com filtros, detalhe e navegação local. A auditoria inicial
+apontou parsing permissivo de `updated_at` e falta de estado vazio para filtros;
+ambos foram corrigidos com testes. A consulta OAuth real retornou HTTP 200, com
+itens presentes e renderizados; nenhum conteúdo privado foi registrado. A
+fixture exclusiva do build debug agora permite ao Maestro percorrer caixa,
+detalhe, issue de origem e retorno. A faixa deixa explícito que os dados são
+fictícios; as quatro capturas estão em `docs/evidence/C09.1-maestro-*.png`. O
+manifesto release foi verificado sem a Activity ou rota da fixture. Build,
+testes unitários e lint passaram após essa mudança. A suíte instrumentada
+completa terminou com 109/110: `GitHubRepositoriesFilterScreenTest.searchByLanguageAppliesToNextPageAndRefreshKeepsCriteria`
+falhou por timeout; a execução focada da classe também reproduziu a falha
+(8/9). Como o diff atual só altera o source set debug, manifesto debug, fluxo
+Maestro e evidência, C09.1 segue `IN_PROGRESS` até adjudicar esse gate e concluir
+CI para o novo diff. A auditoria independente deste diff não encontrou achados;
+ela passou contra `3bd0ad9`. A auditoria anterior passou no range
+`abee9e5..c90879d`; CI anterior passou em `4cabe74` (run `37442639784`, tentativa
+1), não cobrindo a fixture.
 Plano: `docs/superpowers/plans/2026-10-05-github-notifications.md`; desenho:
 `docs/superpowers/specs/2026-10-06-github-notifications-design.md`.

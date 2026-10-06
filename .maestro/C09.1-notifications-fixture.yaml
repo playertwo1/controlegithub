@@ -1,0 +1,21 @@
+appId: com.playertwo.controlegithub
+---
+- openLink:
+    link: controlegithub://debug/notifications
+- assertVisible: "MODO DE TESTE - DADOS FICTICIOS"
+- assertVisible: "Fixture issue de notificacao"
+- takeScreenshot: C09.1-notifications-list
+- tapOn: "Fixture issue de notificacao"
+- assertVisible: "MODO DE TESTE - DADOS FICTICIOS"
+- assertVisible: "Detalhe da notificação"
+- takeScreenshot: C09.1-notifications-detail
+- tapOn: "Abrir origem"
+- assertVisible: "MODO DE TESTE - DADOS FICTICIOS"
+- assertVisible: "Fixture issue da origem"
+- takeScreenshot: C09.1-notifications-origin
+- tapOn: "Voltar às issues"
+- assertVisible: "MODO DE TESTE - DADOS FICTICIOS"
+- assertVisible: "Detalhe da notificação"
+- tapOn: "Voltar às notificações"
+- assertVisible: "Fixture issue de notificacao"
+- takeScreenshot: C09.1-notifications-return
