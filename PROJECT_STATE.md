@@ -183,10 +183,12 @@ cancelamento C07.2 que passou na repetição. A comparação autenticada com PR
 real está `NOT_RUN` até haver PR adequado; C08 agregado segue pendente do aceite
 real descrito no roadmap. Evidência em `docs/evidence/C08.2.md`.
 
-C09.1 continua sem implementação enquanto a nova especificação aguarda revisão
-do proprietário. Ele autorizou tentar a Notifications API com o OAuth Device
-Flow atual e reavaliar a autenticação se esse token for rejeitado. A documentação
-REST ainda diz que os endpoints aceitam apenas PAT clássico, apesar da página de
-escopos OAuth listar `notifications`. Design aprovado em conversa e registrado
-em `docs/superpowers/specs/2026-10-06-github-notifications-design.md`, commit
-`80c9864`; contrato operacional ainda precisa ser atualizado após a revisão.
+C09.1 continua sem implementação enquanto o plano detalhado aguarda revisão do
+proprietário. Ele aprovou tentar a Notifications API com o OAuth Device Flow
+atual e reavaliar autenticação em decisão separada se o token for rejeitado. A
+documentação REST ainda diz que os endpoints aceitam apenas PAT clássico,
+apesar da página de escopos OAuth listar `notifications`. Escopo/desenho:
+`docs/superpowers/specs/2026-10-06-github-notifications-design.md`; plano em
+revisão: `docs/superpowers/plans/2026-10-05-github-notifications.md`. O contrato
+operacional e o status BLOCKED serão atualizados após a revisão do plano e antes
+da execução.
