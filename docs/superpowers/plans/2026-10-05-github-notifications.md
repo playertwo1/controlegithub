@@ -44,7 +44,7 @@
 
 ## Tarefas
 
-### Tarefa 0: Ativar o contrato antes de iniciar implementação
+### Task 0: Ativar o contrato antes de iniciar implementação
 
 **Arquivos:** modificar `plan/contracts/C09.1.md`, `plan/tasks.json`, `PROJECT_STATE.md`.
 
@@ -66,7 +66,7 @@
 - [ ] **Passo 4: validar contrato e backlog antes do código.** Rode `python scripts/check_plan.py` e `git diff --check`. Esperado: estrutura do backlog PASS e somente C09.1 IN_PROGRESS.
 - [ ] **Passo 5: commit.** `git add plan/contracts/C09.1.md plan/tasks.json PROJECT_STATE.md; git commit -m "docs: resume GitHub notifications task"`.
 
-### Tarefa 1: Modelos, parser e destino seguro
+### Task 1: Modelos, parser e destino seguro
 
 **Arquivos:** criar `GitHubNotifications.kt`; criar `GitHubNotificationsTest.kt`.
 
@@ -103,7 +103,7 @@ internal sealed interface GitHubNotificationDestination {
 - [ ] **Passo 4: rodar a classe unitária até PASS.** Rode o mesmo comando; esperado: todos os testes de parser e fronteira de confiança passam.
 - [ ] **Passo 5: commit.** `git add app/src/main/java/com/playertwo/controlegithub/GitHubNotifications.kt app/src/test/java/com/playertwo/controlegithub/GitHubNotificationsTest.kt; git commit -m "feat: parse GitHub notifications safely"`.
 
-### Tarefa 2: Pager de threads
+### Task 2: Pager de threads
 
 **Arquivos:** modificar `GitHubNotifications.kt`; criar `GitHubNotificationPagerTest.kt`.
 
@@ -127,7 +127,7 @@ internal sealed interface GitHubNotificationDestination {
 - [ ] **Passo 4: executar pager e parser juntos.** Rode `./gradlew.bat testDebugUnitTest --tests 'com.playertwo.controlegithub.GitHubNotification*Test' --console=plain`. Esperado: PASS, incluindo falha/retentativa e nenhuma duplicata.
 - [ ] **Passo 5: commit.** `git add app/src/main/java/com/playertwo/controlegithub/GitHubNotifications.kt app/src/test/java/com/playertwo/controlegithub/GitHubNotificationPagerTest.kt; git commit -m "feat: page GitHub notifications"`.
 
-### Tarefa 3: Caixa e pilha local de navegação
+### Task 3: Caixa e pilha local de navegação
 
 **Arquivos:** criar `GitHubNotificationsScreen.kt`; modificar `MainActivity.kt`; criar `GitHubNotificationsScreenTest.kt`.
 
@@ -137,7 +137,7 @@ internal sealed interface GitHubNotificationDestination {
 
 ```kotlin
 @Test fun forbiddenOAuthIsExplicitAndNeverRendersEmptyState() {
-    NotificationApi(initialStatus = 403, pages = emptyList()).use { api ->
+    NotificationsScreenApi(initialStatus = 403, notificationsJson = "[]").use { api ->
         showNotifications(api)
         compose.waitUntil(10_000) { api.requests.size == 1 && compose.onAllNodesWithText("O GitHub não aceitou o acesso OAuth às notificações.").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithText("Nenhuma notificação.").assertDoesNotExist()
@@ -152,7 +152,7 @@ internal sealed interface GitHubNotificationDestination {
 - [ ] **Passo 6: executar testes focados e regressão de navegação.** Rode o comando instrumentado focado acima e `./gradlew.bat connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.playertwo.controlegithub.NavigationTest --console=plain`. Esperado: foco C09 passa, dock/abas existentes continuam passando.
 - [ ] **Passo 7: commit.** `git add app/src/main/java/com/playertwo/controlegithub/GitHubNotificationsScreen.kt app/src/main/java/com/playertwo/controlegithub/MainActivity.kt app/src/androidTest/java/com/playertwo/controlegithub/GitHubNotificationsScreenTest.kt; git commit -m "feat: add GitHub notifications inbox"`.
 
-### Tarefa 4: Verificação real, documentação e aceite
+### Task 4: Verificação real, documentação e aceite
 
 **Arquivos:** modificar `plan/contracts/C09.1.md`, `plan/tasks.json`, `PROJECT_STATE.md`; criar `docs/evidence/C09.1.md`.
 

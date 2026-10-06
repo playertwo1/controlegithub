@@ -1,7 +1,7 @@
 # C09.1 — Design da caixa de notificações
 
-**Estado:** escopo e desenho aprovados pelo proprietário em conversa; plano de
-implementação detalhado em revisão antes da execução.
+**Estado:** escopo, desenho e plano detalhado aprovados pelo proprietário; C09.1
+em execução.
 
 ## Objetivo
 

@@ -233,11 +233,11 @@
         "C07.2",
         "C08.1"
       ],
-      "status": "BLOCKED",
-      "acceptance": "Avisos paginados abrem issue/PR correto; tipos restantes têm fallback documentado.",
+      "status": "IN_PROGRESS",
+      "acceptance": "Lista autenticada de notificações paginadas e filtráveis; detalhe navega à origem validada; falha OAuth é explícita e nunca parece lista vazia.",
       "contract": "plan/contracts/C09.1.md",
       "evidence": null,
-      "blocked_reason": "Adiado por decisão do proprietário: manter OAuth Device Flow. Retomar somente quando a documentação oficial confirmar compatibilidade da Notifications API com esse fluxo ou o proprietário rever explicitamente a decisão."
+      "blocked_reason": null
     },
     {
       "id": "C09.2",
