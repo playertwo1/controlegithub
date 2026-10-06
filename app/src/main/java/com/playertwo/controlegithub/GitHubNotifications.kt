@@ -127,6 +127,27 @@ private fun JSONObject.optionalNotificationString(name: String): String? = when 
     else -> throw IOException(INVALID_NOTIFICATIONS_RESPONSE)
 }
 
+internal class GitHubNotificationPager(
+    client: GitHubHttpClient,
+    accessToken: String
+) {
+    private val pager = GitHubPaginator(
+        client = client,
+        firstPath = FIRST_PAGE_PATH,
+        accessToken = accessToken,
+        decode = ::parseGitHubNotifications,
+        itemKey = GitHubNotification::id
+    )
+
+    fun loadNext(): GitHubPageResult<GitHubNotification> = pager.loadNext()
+
+    fun cancel() = pager.cancel()
+
+    private companion object {
+        const val FIRST_PAGE_PATH = "/notifications?all=true&per_page=50"
+    }
+}
+
 private val NUMERIC_ID = Regex("[1-9][0-9]*")
 private val POSITIVE_NUMBER = Regex("[1-9][0-9]*")
 private const val INVALID_NOTIFICATIONS_RESPONSE = "Resposta de notificações inválida"
