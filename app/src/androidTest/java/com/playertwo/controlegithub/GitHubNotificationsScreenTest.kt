@@ -59,6 +59,8 @@ class GitHubNotificationsScreenTest {
             compose.onNodeWithText("Outro").performClick()
             compose.onNodeWithText("Fixture unknown").assertIsDisplayed()
             compose.onNodeWithText("Fixture issue").assertDoesNotExist()
+            compose.onNodeWithText("Lidas").performClick()
+            compose.onNodeWithText("Nenhuma notificação corresponde a estes filtros.").assertIsDisplayed()
         }
     }
 

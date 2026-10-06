@@ -133,6 +133,10 @@ private fun GitHubNotificationsContent(
     }
     DisposableEffect(pager) { onDispose { pager?.cancel() } }
 
+    val filtered = notifications.filter { notification ->
+        (stateFilter == NotificationStateFilter.ALL || notification.unread == (stateFilter == NotificationStateFilter.UNREAD)) &&
+            (typeFilter == NotificationTypeFilter.ALL || notificationTypeLabel(notification) == typeFilter.label)
+    }
     val covered = selectedNotification != null
     Box(modifier.fillMaxSize()) {
         LazyColumn(
@@ -192,11 +196,8 @@ private fun GitHubNotificationsContent(
                                 TextButton(onClick = { scope.launch { loadNextPage() } }, enabled = !loading) { Text("Tentar novamente") }
                             }
                             loaded && notifications.isEmpty() -> Text("Nenhuma notificação.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            loaded && errorMessage == null && filtered.isEmpty() -> Text("Nenhuma notificação corresponde a estes filtros.", color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
-                    }
-                    val filtered = notifications.filter { notification ->
-                        (stateFilter == NotificationStateFilter.ALL || notification.unread == (stateFilter == NotificationStateFilter.UNREAD)) &&
-                            (typeFilter == NotificationTypeFilter.ALL || notificationTypeLabel(notification) == typeFilter.label)
                     }
                     items(filtered, key = GitHubNotification::id) { notification ->
                         NotificationCard(notification) { selectedNotification = notification }
@@ -271,9 +272,7 @@ private fun NotificationDetail(notification: GitHubNotification, onBack: () -> U
         Text(notificationTypeLabel(notification), color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(notificationReasonLabel(notification.reason), color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(if (notification.unread) "Não lida" else "Lida", color = MaterialTheme.colorScheme.onSurfaceVariant)
-        notification.updatedAt?.let {
-            Text(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(Locale("pt", "BR")).withZone(ZoneId.systemDefault()).format(it), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
+        Text(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(Locale("pt", "BR")).withZone(ZoneId.systemDefault()).format(notification.updatedAt), color = MaterialTheme.colorScheme.onSurfaceVariant)
         when (notificationDestination(notification)) {
             GitHubNotificationDestination.Unavailable -> Text("A origem desta notificação não está disponível.", color = MaterialTheme.colorScheme.onSurfaceVariant)
             else -> TextButton(onClick = onOpenOrigin) { Text("Abrir origem") }

@@ -33,6 +33,15 @@ class GitHubNotificationsParserTest {
         }
     }
 
+    @Test fun rejectsMissingOrInvalidUpdateTimestamp() {
+        assertThrows(IOException::class.java) {
+            parseGitHubNotifications(fixtureThreads(fixtureNotificationJson(updatedAt = "not-an-instant")))
+        }
+        assertThrows(IOException::class.java) {
+            parseGitHubNotifications(fixtureThreads(fixtureNotificationJson(updatedAt = null)))
+        }
+    }
+
     @Test fun preservesUnknownTypeForFallbackAndMissingSubjectForRepositoryRouting() {
         val unknown = parseGitHubNotifications(fixtureThreads(fixtureNotificationJson(type = "FutureType"))).single()
         val missing = parseGitHubNotifications(fixtureThreads(fixtureNotificationJson(type = null, url = null))).single()
@@ -49,7 +58,8 @@ internal fun fixtureNotificationJson(
     url: String? = "https://api.github.com/repos/acme/app/issues/12",
     title: String = "Fixture title",
     unread: Boolean = true,
-    reason: String = "assign"
+    reason: String = "assign",
+    updatedAt: String? = "2026-10-01T12:00:00Z"
 ): String {
     val repository = JSONObject()
         .put("id", 1)
@@ -67,8 +77,8 @@ internal fun fixtureNotificationJson(
         .put("id", id)
         .put("unread", unread)
         .put("reason", reason)
-        .put("updated_at", "2026-10-01T12:00:00Z")
         .put("repository", repository)
+    updatedAt?.let { notification.put("updated_at", it) }
     if (type != null || url != null) notification.put("subject", subject)
     return notification.toString()
 }

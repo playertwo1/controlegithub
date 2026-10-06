@@ -13,7 +13,7 @@ internal data class GitHubNotification(
     val title: String?,
     val subjectType: String?,
     val repository: GitHubRepository,
-    val updatedAt: Instant?,
+    val updatedAt: Instant,
     val subjectApiUrl: String?
 )
 
@@ -40,8 +40,8 @@ internal fun parseGitHubNotifications(json: String): List<GitHubNotification> {
                 is JSONObject -> raw
                 else -> throw IOException(INVALID_NOTIFICATIONS_RESPONSE)
             }
-            val updatedAt = item.optionalNotificationString("updated_at")
-                ?.let { runCatching { Instant.parse(it) }.getOrNull() }
+            val updatedAt = runCatching { Instant.parse(item.requiredNotificationString("updated_at")) }
+                .getOrElse { throw IOException(INVALID_NOTIFICATIONS_RESPONSE) }
             GitHubNotification(
                 id = id,
                 unread = unread,
