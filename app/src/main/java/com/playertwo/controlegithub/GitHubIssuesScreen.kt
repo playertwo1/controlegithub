@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Refresh
@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,7 +76,7 @@ internal fun GitHubIssuesScreen(
     var errorMessage by remember(pager) { mutableStateOf<String?>(null) }
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
     var openedIssue by remember { mutableStateOf<GitHubIssue?>(null) }
-    val listState = rememberLazyListState()
+    val listState = remember(pager) { LazyListState() }
 
     suspend fun loadNextPage() {
         val activePager = pager ?: return
@@ -125,12 +126,13 @@ internal fun GitHubIssuesScreen(
             onSessionExpired = onSessionExpired,
             onAppearance = onAppearance
         )
-    } else LazyColumn(
-        modifier.fillMaxSize(),
-        state = listState,
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
+    } else key(pager) {
+        LazyColumn(
+            modifier.fillMaxSize(),
+            state = listState,
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
         item(key = "issues-header") {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -247,6 +249,7 @@ internal fun GitHubIssuesScreen(
                     } else Spacer(Modifier.height(0.dp))
                     }
             }
+        }
         }
     }
 }

@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -216,11 +217,12 @@ internal fun GitHubRepositoriesScreen(
             onSessionExpired = onSessionExpired,
             onAppearance = onAppearance
         )
-    } else LazyColumn(
-        modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
+    } else key(pager) {
+        LazyColumn(
+            modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -438,6 +440,7 @@ internal fun GitHubRepositoriesScreen(
                     }
                 }
             }
+        }
         }
     }
 }

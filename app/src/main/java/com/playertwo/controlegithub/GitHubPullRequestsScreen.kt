@@ -18,8 +18,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -83,7 +84,7 @@ internal fun GitHubPullRequestsScreen(
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
     var incomplete by remember(pager) { mutableStateOf(false) }
     var selectedPullRequest by remember { mutableStateOf<GitHubPullRequest?>(null) }
-    val listState = rememberLazyListState()
+    val listState = remember(pager) { LazyListState() }
 
     suspend fun loadNextPage() {
         val activePager = pager ?: return
@@ -136,12 +137,13 @@ internal fun GitHubPullRequestsScreen(
         return
     }
 
-    LazyColumn(
-        modifier.fillMaxSize(),
-        state = listState,
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
+    key(pager) {
+        LazyColumn(
+            modifier.fillMaxSize(),
+            state = listState,
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
         item(key = "pull-requests-header") {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -242,6 +244,7 @@ internal fun GitHubPullRequestsScreen(
                     }
                 }
             }
+        }
         }
     }
 }
