@@ -94,6 +94,8 @@ private fun GitHubNotificationsContent(
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
     var selectedNotification by remember { mutableStateOf<GitHubNotification?>(null) }
     var openedDestination by remember { mutableStateOf<GitHubNotificationDestination?>(null) }
+    var markingRead by remember { mutableStateOf(false) }
+    var markReadError by remember { mutableStateOf<String?>(null) }
     val listState = remember(pager) { LazyListState() }
     val scope = rememberCoroutineScope()
 
@@ -125,6 +127,42 @@ private fun GitHubNotificationsContent(
             }
         } finally {
             loading = false
+        }
+    }
+
+    fun markRead(notification: GitHubNotification) {
+        val activeSession = session ?: return
+        if (!notification.unread || markingRead) return
+        if (!notification.id.matches(Regex("[1-9][0-9]*"))) {
+            markReadError = GitHubHttpError.UNEXPECTED.userMessage
+            return
+        }
+        scope.launch {
+            markingRead = true
+            markReadError = null
+            try {
+                when (val result = withContext(Dispatchers.IO) {
+                    client.patch("/notifications/threads/${notification.id}", activeSession.accessToken).execute()
+                }) {
+                    is GitHubHttpResult.Success -> {
+                        if (result.statusCode == 205 || result.statusCode == 304) {
+                            val updated = notification.copy(unread = false)
+                            notifications = notifications.map { if (it.id == updated.id) updated else it }
+                            if (selectedNotification?.id == updated.id) selectedNotification = updated
+                        } else {
+                            markReadError = GitHubHttpError.UNEXPECTED.userMessage
+                        }
+                    }
+                    is GitHubHttpResult.Failure -> {
+                        markReadError = if (result.error == GitHubHttpError.FORBIDDEN) {
+                            "O GitHub não aceitou o acesso OAuth para marcar esta notificação como lida."
+                        } else result.error.userMessage
+                        if (result.error == GitHubHttpError.UNAUTHORIZED) onSessionExpired(activeSession)
+                    }
+                }
+            } finally {
+                markingRead = false
+            }
         }
     }
 
@@ -201,7 +239,10 @@ private fun GitHubNotificationsContent(
                         }
                     }
                     items(filtered, key = GitHubNotification::id) { notification ->
-                        NotificationCard(notification) { selectedNotification = notification }
+                        NotificationCard(notification) {
+                            markReadError = null
+                            selectedNotification = notification
+                        }
                     }
                     item(key = "notifications-more") {
                         if (hasNext && errorMessage == null) {
@@ -234,12 +275,19 @@ private fun GitHubNotificationsContent(
                         repository = notification.repository, onBack = { openedDestination = null },
                         onSessionExpired = onSessionExpired, onAppearance = onAppearance
                     )
-                    else -> NotificationDetail(notification, onBack = { selectedNotification = null }) {
-                        when (val safeDestination = notificationDestination(notification)) {
-                            GitHubNotificationDestination.Unavailable -> Unit
-                            else -> openedDestination = safeDestination
-                        }
-                    }
+                    else -> NotificationDetail(
+                        notification = notification,
+                        onBack = { selectedNotification = null },
+                        onOpenOrigin = {
+                            when (val safeDestination = notificationDestination(notification)) {
+                                GitHubNotificationDestination.Unavailable -> Unit
+                                else -> openedDestination = safeDestination
+                            }
+                        },
+                        markingRead = markingRead,
+                        markReadError = markReadError,
+                        onMarkRead = { markRead(notification) }
+                    )
                 }
             }
         }
@@ -259,7 +307,14 @@ private fun NotificationCard(notification: GitHubNotification, onClick: () -> Un
 }
 
 @Composable
-private fun NotificationDetail(notification: GitHubNotification, onBack: () -> Unit, onOpenOrigin: () -> Unit) {
+private fun NotificationDetail(
+    notification: GitHubNotification,
+    onBack: () -> Unit,
+    onOpenOrigin: () -> Unit,
+    markingRead: Boolean,
+    markReadError: String?,
+    onMarkRead: () -> Unit
+) {
     BackHandler(onBack = onBack)
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp, vertical = 20.dp),
@@ -274,6 +329,12 @@ private fun NotificationDetail(notification: GitHubNotification, onBack: () -> U
         Text(notificationTypeLabel(notification), color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(notificationReasonLabel(notification.reason), color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(if (notification.unread) "Não lida" else "Lida", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (notification.unread) {
+            TextButton(onClick = onMarkRead, enabled = !markingRead) {
+                Text(if (markingRead) "Marcando como lida…" else "Marcar como lida")
+            }
+            markReadError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+        }
         Text(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(Locale("pt", "BR")).withZone(ZoneId.systemDefault()).format(notification.updatedAt), color = MaterialTheme.colorScheme.onSurfaceVariant)
         when (notificationDestination(notification)) {
             GitHubNotificationDestination.Unavailable -> Text("A origem desta notificação não está disponível.", color = MaterialTheme.colorScheme.onSurfaceVariant)

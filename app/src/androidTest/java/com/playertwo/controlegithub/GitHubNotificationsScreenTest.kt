@@ -42,6 +42,93 @@ class GitHubNotificationsScreenTest {
         }
     }
 
+    @Test fun markingUnreadThreadUpdatesAfterResetContentResponse() = assertMarkReadSuccess(205)
+
+    @Test fun markingUnreadThreadUpdatesAfterNotModifiedResponse() = assertMarkReadSuccess(304)
+
+    private fun assertMarkReadSuccess(status: Int) {
+        NotificationsScreenApi(
+            notificationsJson = fixtureThreads(fixtureNotificationJson(title = "Fixture mark read")),
+            initialMarkReadStatus = status
+        ).use { api ->
+            showNotifications(api)
+            compose.waitUntil(10_000) { compose.onAllNodesWithText("Fixture mark read").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("Fixture mark read").performClick()
+            compose.onNodeWithText("Marcar como lida").performClick()
+
+            compose.waitUntil(10_000) {
+                api.requests.any { it.startsWith("PATCH /notifications/threads/1 ") } &&
+                    compose.onAllNodesWithText("Não lida").fetchSemanticsNodes().isEmpty()
+            }
+            assertEquals("Bearer fixture-token-fixture-user", api.authorizationHeaders.last())
+            compose.onNodeWithText("Lida").assertIsDisplayed()
+            compose.onNodeWithText("Marcar como lida").assertDoesNotExist()
+            compose.onNodeWithContentDescription("Voltar às notificações").performClick()
+            compose.onNodeWithText("Fixture mark read").performClick()
+            compose.onNodeWithText("Lida").assertIsDisplayed()
+            assertEquals(1, api.requests.count { it.startsWith("PATCH /notifications/threads/") })
+        }
+    }
+
+    @Test fun forbiddenMarkReadKeepsNotificationUnreadAndShowsError() {
+        NotificationsScreenApi(
+            notificationsJson = fixtureThreads(fixtureNotificationJson(title = "Fixture denied mark read")),
+            initialMarkReadStatus = 403
+        ).use { api ->
+            showNotifications(api)
+            compose.waitUntil(10_000) { compose.onAllNodesWithText("Fixture denied mark read").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("Fixture denied mark read").performClick()
+            compose.onNodeWithText("Marcar como lida").performClick()
+
+            compose.waitUntil(10_000) {
+                api.requests.any { it.startsWith("PATCH /notifications/threads/1 ") } &&
+                    compose.onAllNodesWithText("O GitHub não aceitou o acesso OAuth para marcar esta notificação como lida.").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Não lida").assertIsDisplayed()
+            compose.onNodeWithText("Marcar como lida").assertIsDisplayed()
+            compose.onNodeWithText("Lida").assertDoesNotExist()
+        }
+    }
+
+    @Test fun serverFailureKeepsNotificationUnreadAndAllowsRetry() {
+        NotificationsScreenApi(
+            notificationsJson = fixtureThreads(fixtureNotificationJson(title = "Fixture retry mark read")),
+            initialMarkReadStatus = 503
+        ).use { api ->
+            showNotifications(api)
+            compose.waitUntil(10_000) { compose.onAllNodesWithText("Fixture retry mark read").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("Fixture retry mark read").performClick()
+            compose.onNodeWithText("Marcar como lida").performClick()
+
+            compose.waitUntil(10_000) {
+                api.requests.any { it.startsWith("PATCH /notifications/threads/1 ") } &&
+                    compose.onAllNodesWithText("O GitHub está com instabilidade. Tente novamente mais tarde.").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Não lida").assertIsDisplayed()
+            compose.onNodeWithText("Marcar como lida").assertIsDisplayed()
+            compose.onNodeWithText("Lida").assertDoesNotExist()
+            assertEquals(1, api.requests.count { it.startsWith("PATCH /notifications/threads/") })
+        }
+    }
+
+    @Test fun unauthorizedMarkReadCallsSessionExpiryHandler() {
+        NotificationsScreenApi(
+            notificationsJson = fixtureThreads(fixtureNotificationJson(title = "Fixture expired mark read")),
+            initialMarkReadStatus = 401
+        ).use { api ->
+            val expiredCalls = AtomicInteger()
+            showNotifications(api, onSessionExpired = { expiredCalls.incrementAndGet() })
+            compose.waitUntil(10_000) { compose.onAllNodesWithText("Fixture expired mark read").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("Fixture expired mark read").performClick()
+            compose.onNodeWithText("Marcar como lida").performClick()
+
+            compose.waitUntil(10_000) { api.requests.any { it.startsWith("PATCH /notifications/threads/1 ") } && expiredCalls.get() == 1 }
+            compose.onNodeWithText("Sua sessão expirou. Conecte-se novamente.").assertIsDisplayed()
+            compose.onNodeWithText("Não lida").assertIsDisplayed()
+            compose.onNodeWithText("Marcar como lida").assertIsDisplayed()
+        }
+    }
+
     @Test fun filtersCombineStateAndUnknownType() {
         val fixtures = fixtureThreads(
             fixtureNotificationJson(id = "1", type = "Issue", title = "Fixture issue", unread = true),
@@ -182,31 +269,46 @@ private fun fixtureSession(login: String = "fixture-user") = GitHubSession(
 internal class NotificationsScreenApi(
     initialStatus: Int = 200,
     notificationsJson: String,
-    private val originResponses: Map<String, String> = emptyMap()
+    private val originResponses: Map<String, String> = emptyMap(),
+    initialMarkReadStatus: Int = 205
 ) : AutoCloseable {
     private val server = ServerSocket(0, 0, InetAddress.getByName("127.0.0.1"))
     val baseUri: URI = URI.create("http://127.0.0.1:${server.localPort}/")
     val requests = CopyOnWriteArrayList<String>()
+    val authorizationHeaders = CopyOnWriteArrayList<String>()
     @Volatile var responseStatus = initialStatus
     @Volatile var notificationsJson = notificationsJson
+    @Volatile var markReadStatus = initialMarkReadStatus
     private val worker = Thread {
         while (!server.isClosed) runCatching {
             server.accept().use { socket ->
                 val reader = BufferedReader(InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8))
                 val requestLine = reader.readLine().orEmpty()
                 requests += requestLine
-                while (reader.readLine()?.isNotEmpty() == true) Unit
-                val path = requestLine.substringAfter("GET ").substringBefore(" HTTP")
-                val isNotifications = path.startsWith("/notifications?")
+                var authorization: String? = null
+                var header = reader.readLine()
+                while (!header.isNullOrEmpty()) {
+                    if (header.startsWith("Authorization:", ignoreCase = true)) authorization = header.substringAfter(':').trim()
+                    header = reader.readLine()
+                }
+                authorization?.let(authorizationHeaders::add)
+                val path = requestLine.substringAfter(' ').substringBefore(" HTTP")
+                val isNotifications = requestLine.startsWith("GET ") && path.startsWith("/notifications?")
+                val isMarkRead = requestLine.startsWith("PATCH /notifications/threads/")
                 val body = if (isNotifications) this@NotificationsScreenApi.notificationsJson else originResponses[path] ?: "{}"
-                val status = if (isNotifications) responseStatus else if (path in originResponses) 200 else 404
+                val status = when {
+                    isNotifications -> responseStatus
+                    isMarkRead -> markReadStatus
+                    path in originResponses -> 200
+                    else -> 404
+                }
                 val reason = if (status == 200) "OK" else "Error"
                 val output = socket.getOutputStream()
                 output.write("HTTP/1.1 $status $reason\r\n".toByteArray(StandardCharsets.US_ASCII))
                 output.write("Content-Type: application/json\r\n".toByteArray(StandardCharsets.US_ASCII))
-                output.write("Content-Length: ${body.toByteArray(StandardCharsets.UTF_8).size}\r\n".toByteArray(StandardCharsets.US_ASCII))
+                output.write("Content-Length: ${if (isMarkRead) 0 else body.toByteArray(StandardCharsets.UTF_8).size}\r\n".toByteArray(StandardCharsets.US_ASCII))
                 output.write("Connection: close\r\n\r\n".toByteArray(StandardCharsets.US_ASCII))
-                output.write(body.toByteArray(StandardCharsets.UTF_8))
+                if (!isMarkRead) output.write(body.toByteArray(StandardCharsets.UTF_8))
                 output.flush()
             }
         }
