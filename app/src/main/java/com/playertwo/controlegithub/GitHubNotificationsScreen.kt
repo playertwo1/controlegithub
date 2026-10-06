@@ -15,8 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -94,7 +94,7 @@ private fun GitHubNotificationsContent(
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
     var selectedNotification by remember { mutableStateOf<GitHubNotification?>(null) }
     var openedDestination by remember { mutableStateOf<GitHubNotificationDestination?>(null) }
-    val listState = rememberLazyListState()
+    val listState = remember(pager) { LazyListState() }
     val scope = rememberCoroutineScope()
 
     suspend fun loadNextPage() {
@@ -139,12 +139,13 @@ private fun GitHubNotificationsContent(
     }
     val covered = selectedNotification != null
     Box(modifier.fillMaxSize()) {
-        LazyColumn(
-            Modifier.fillMaxSize().then(if (covered) Modifier.clearAndSetSemantics {} else Modifier),
-            state = listState,
-            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
+        key(pager) {
+            LazyColumn(
+                Modifier.fillMaxSize().then(if (covered) Modifier.clearAndSetSemantics {} else Modifier),
+                state = listState,
+                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
             item(key = "notifications-header") {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("CONTROLE / GITHUB", color = MaterialTheme.colorScheme.primary, fontSize = 12.sp, letterSpacing = 2.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
@@ -210,6 +211,7 @@ private fun GitHubNotificationsContent(
                         }
                     }
                 }
+            }
             }
         }
 
