@@ -1,6 +1,6 @@
 # Estado do projeto
 
-Atualizado em 2026-10-12. C03.1, C03.2, C05.1, C05.2, C06.1, C06.2, C07.1, C07.2, C08.1, C08.2, C10.1, C10.2, C14.1 e C16.1 estão concluídas. Os checkpoints agregados C07 e C08 foram aceitos pelo proprietário em 2026-10-12. C09.1 está `READY`.
+Atualizado em 2026-10-12. C03.1, C03.2, C05.1, C05.2, C06.1, C06.2, C07.1, C07.2, C08.1, C08.2, C10.1, C10.2, C14.1 e C16.1 estão concluídas. Os checkpoints agregados C07 e C08 foram aceitos pelo proprietário em 2026-10-12. C09.1 está `IN_PROGRESS`.
 C05.2 passou build, 40 testes unitários, 18 instrumentados, lint, inspeção
 Maestro com fixture, auditoria independente e CI no SHA `992d781` (run
 37200219568). C05.1 passou build,
@@ -186,12 +186,11 @@ adequado na conta de teste). O checkpoint agregado C08 foi aceito pelo
 proprietário em 2026-10-12, dispensando essa evidência. Evidência em
 `docs/evidence/C08.2.md`.
 
-C09.1 está `READY`. Em 2026-10-12 o proprietário (Rafael / playertwo1)
-confirmou que a Notifications API aceita o token atual do OAuth Device Flow,
-aprovou o plano
-`docs/superpowers/plans/2026-10-05-github-notifications.md` e resolveu o
-bloqueio anterior. Contrato atualizado em `plan/contracts/C09.1.md`. Desenho:
-`docs/superpowers/specs/2026-10-06-github-notifications-design.md`. A
-implementação ainda não começou; promover a `IN_PROGRESS` ao iniciar o código.
-Se uma execução futura receber `403`, registrar falha explícita e reabrir a
-decisão de autenticação em mudança separada.
+C09.1 retomada após revisão/aprovação do plano pelo proprietário. Em 2026-10-12
+o proprietário (Rafael / playertwo1) confirmou que a Notifications API aceita o
+token atual do OAuth Device Flow; `plan/contracts/C09.1.md` limita o teste a
+leitura e exige falha explícita se OAuth for rejeitado. Implementação em
+andamento na branch `feat/c09-github-notifications` (origem
+`codex/github-notifications`); validação-base no SHA `abee9e5` passou em build,
+testes unitários e lint. Plano: `docs/superpowers/plans/2026-10-05-github-notifications.md`;
+desenho aprovado: `docs/superpowers/specs/2026-10-06-github-notifications-design.md`.
