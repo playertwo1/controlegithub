@@ -1,6 +1,6 @@
 # Estado do projeto
 
-Atualizado em 2026-10-05. C03.1, C03.2, C05.1, C05.2, C06.1, C06.2, C07.1, C10.1 e C16.1 estão concluídas.
+Atualizado em 2026-10-06. C03.1, C03.2, C05.1, C05.2, C06.1, C06.2, C07.1, C10.1 e C16.1 estão concluídas.
 C05.2 passou build, 40 testes unitários, 18 instrumentados, lint, inspeção
 Maestro com fixture, auditoria independente e CI no SHA `992d781` (run
 37200219568). C05.1 passou build,
