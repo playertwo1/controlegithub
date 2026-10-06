@@ -1,0 +1,14 @@
+appId: com.playertwo.controlegithub
+---
+- openLink:
+    link: controlegithub://debug/notifications?markReadStatus=503
+- assertVisible: "MODO DE TESTE - DADOS FICTICIOS"
+- assertVisible: "Fixture issue de notificacao"
+- tapOn: "Fixture issue de notificacao"
+- assertVisible: "Detalhe da notificação"
+- assertVisible: "Não lida"
+- tapOn: "Marcar como lida"
+- assertVisible: "O GitHub está com instabilidade. Tente novamente mais tarde."
+- assertVisible: "Não lida"
+- assertVisible: "Marcar como lida"
+- assertNotVisible: "Lida"

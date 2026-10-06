@@ -39,7 +39,8 @@ class NotificationsFixtureActivity : ComponentActivity() {
             return
         }
 
-        val api = NotificationsFixtureApi().also { fixtureApi = it }
+        val markReadStatus = intent.data?.getQueryParameter("markReadStatus")?.toIntOrNull() ?: 205
+        val api = NotificationsFixtureApi(markReadStatus).also { fixtureApi = it }
         val session = GitHubSession(
             GitHubUser("fixture-user", "https://github.com/fixture-user"),
             SessionCredentials("debug-fixture-token")
@@ -81,7 +82,7 @@ class NotificationsFixtureActivity : ComponentActivity() {
     }
 }
 
-private class NotificationsFixtureApi : AutoCloseable {
+private class NotificationsFixtureApi(private val markReadStatus: Int) : AutoCloseable {
     private val server = ServerSocket(0, 0, InetAddress.getByName("127.0.0.1"))
     val baseUri: URI = URI.create("http://127.0.0.1:${server.localPort}/")
     private val worker = Thread({ serve() }, "notifications-debug-fixture").apply {
@@ -103,16 +104,24 @@ private class NotificationsFixtureApi : AutoCloseable {
         val reader = BufferedReader(InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8))
         val request = reader.readLine().orEmpty()
         while (reader.readLine()?.isNotEmpty() == true) Unit
-        val path = request.substringAfter("GET ").substringBefore(" HTTP")
-        val (status, body) = when (path) {
-            "/notifications?all=true&per_page=50" -> 200 to notificationFixture()
-            "/repos/fixture-org/app/issues/12" -> 200 to ISSUE_FIXTURE
-            "/repos/fixture-org/app/issues/12/comments?per_page=50" -> 200 to "[]"
+        val path = request.substringAfter(' ').substringBefore(" HTTP")
+        val (status, body) = when {
+            request.startsWith("GET ") && path == "/notifications?all=true&per_page=50" -> 200 to notificationFixture()
+            request.startsWith("PATCH /notifications/threads/9001 ") -> markReadStatus to ""
+            request.startsWith("GET ") && path == "/repos/fixture-org/app/issues/12" -> 200 to ISSUE_FIXTURE
+            request.startsWith("GET ") && path == "/repos/fixture-org/app/issues/12/comments?per_page=50" -> 200 to "[]"
             else -> 404 to "{}"
         }
         val bytes = body.toByteArray(StandardCharsets.UTF_8)
         val output = socket.getOutputStream()
-        output.write("HTTP/1.1 $status ${if (status == 200) "OK" else "Not Found"}\r\n".toByteArray(StandardCharsets.US_ASCII))
+        val reason = when (status) {
+            200 -> "OK"
+            403 -> "Forbidden"
+            205 -> "Reset Content"
+            503 -> "Service Unavailable"
+            else -> "Not Found"
+        }
+        output.write("HTTP/1.1 $status $reason\r\n".toByteArray(StandardCharsets.US_ASCII))
         output.write("Content-Type: application/json\r\nContent-Length: ${bytes.size}\r\nConnection: close\r\n\r\n".toByteArray(StandardCharsets.US_ASCII))
         output.write(bytes)
         output.flush()

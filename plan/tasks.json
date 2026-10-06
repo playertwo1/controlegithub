@@ -233,10 +233,10 @@
         "C07.2",
         "C08.1"
       ],
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "acceptance": "Lista autenticada de notificações paginadas e filtráveis; detalhe navega à origem validada; falha OAuth é explícita e nunca parece lista vazia.",
       "contract": "plan/contracts/C09.1.md",
-      "evidence": null,
+      "evidence": "docs/evidence/C09.1.md",
       "blocked_reason": null
     },
     {
@@ -246,9 +246,9 @@
       "depends_on": [
         "C09.1"
       ],
-      "status": "PLANNED",
+      "status": "IN_PROGRESS",
       "acceptance": "Marcar lida persiste no GitHub; falha não confirma leitura indevidamente.",
-      "contract": null,
+      "contract": "plan/contracts/C09.2.md",
       "evidence": null,
       "blocked_reason": null
     },

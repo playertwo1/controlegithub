@@ -183,24 +183,27 @@ cancelamento C07.2 que passou na repetição. A comparação autenticada com PR
 real está `NOT_RUN` até haver PR adequado; C08 agregado segue pendente do aceite
 real descrito no roadmap. Evidência em `docs/evidence/C08.2.md`.
 
-Em C09.1, Tasks 0–3 implementaram parsing, validação de destinos, paginação e a
-caixa autenticada com filtros, detalhe e navegação local. A auditoria inicial
-apontou parsing permissivo de `updated_at` e falta de estado vazio para filtros;
-ambos foram corrigidos com testes. A consulta OAuth real retornou HTTP 200, com
-itens presentes e renderizados; nenhum conteúdo privado foi registrado. A
-fixture exclusiva do build debug agora permite ao Maestro percorrer caixa,
-detalhe, issue de origem e retorno. A faixa deixa explícito que os dados são
-fictícios; as quatro capturas estão em `docs/evidence/C09.1-maestro-*.png`. O
-manifesto release foi verificado sem a Activity ou rota da fixture. Build,
-testes unitários e lint passaram após essa mudança. A suíte instrumentada
-completa terminou com 109/110: `GitHubRepositoriesFilterScreenTest.searchByLanguageAppliesToNextPageAndRefreshKeepsCriteria`
-falhou por timeout; a execução focada da classe também reproduziu a falha
-(8/9). Como o diff atual só altera o source set debug, manifesto debug, fluxo
-Maestro e evidência, C09.1 segue `IN_PROGRESS` até adjudicar esse gate e concluir
-CI para o novo diff. Commit da fixture `d2642ec`; CI passou no run
-`37483593333`. A auditoria independente deste diff não encontrou achados; ela
-passou contra `3bd0ad9`. A auditoria anterior passou no range
-`abee9e5..c90879d`; CI anterior passou em `4cabe74` (run `37442639784`, tentativa
-1), não cobrindo a fixture.
-Plano: `docs/superpowers/plans/2026-10-05-github-notifications.md`; desenho:
-`docs/superpowers/specs/2026-10-06-github-notifications-design.md`.
+Em C09.1, a caixa autenticada, paginação, filtros, detalhe, origem segura e
+retorno foram validados. Maestro percorreu novamente a fixture local no Pixel 9;
+a consulta OAuth real anterior retornou HTTP 200 sem guardar conteúdo privado.
+C09.1 está `DONE`, com evidência em `docs/evidence/C09.1.md`. A suíte conectada
+agregada permanece `NOT_PASS` em 109/110 por timeout no teste de Actions
+`GitHubRepositoryDetailScreenTest.forbiddenActionsRequestIsNotPresentedAsAnEmptyList`;
+esse resultado segue pendente e não foi chamado de PASS. Os testes específicos
+de Avisos passaram. No SHA `6bbaa7995051a2399363fd107c1194b61ad23de3`, o CI
+37490633721 e os checks locais build/testes/lint passaram, e a auditoria
+independente não encontrou bloqueios. Para evitar posição obsoleta ao trocar
+consultas paginadas, as LazyLists reiniciam seu estado de rolagem no novo pager;
+a causa da exceção observada numa paginação de Issues não foi atribuída
+definitivamente a essa correção.
+
+C09.2 segue `IN_PROGRESS`. A ação envia somente `PATCH /notifications/threads/{id}`
+para ID numérico validado, só altera o estado após `205`/`304` e mantém erro
+visível/retry em falha. Build, testes unitários e lint passaram; os 12 testes
+focados passaram no Pixel 9/API 37; Maestro passou nos fluxos de sucesso e `503`;
+auditoria independente PASS. A suíte conectada total foi `NOT_PASS` 112/115 por
+três falhas em Pull Requests, favoritos e Actions. O runner apagou a
+instalação e a sessão OAuth local; a tentativa real autorizada ainda é `NOT_RUN`.
+Retomar reautorizando o Device Flow e executar uma única marcação real; registrar
+somente status HTTP e estado visual. Evidência parcial em
+`docs/evidence/C09.2.md`; contrato em `plan/contracts/C09.2.md`.
