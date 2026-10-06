@@ -217,11 +217,13 @@ não confundir ler uma execução com disparar workflow.
 **Evidência agregada:** execução real passando e falhando, além de log
 indisponível, com comparação ao GitHub e testes locais/remotos. C10.1 já entrega
 workflows, execuções recentes, jobs, paginação e estados de erro; a comparação
-com Actions reais segue `NOT_RUN`. C10.2 implementa obtenção validada e limitada
-de logs e seus estados de UI; build, testes, lint, fluxo instrumentado para log
-indisponível e CI passaram. A inspeção visual Maestro da tela e a comparação com
-um log real seguem `NOT_RUN`. Portanto C10.2 permanece `IN_PROGRESS` e C10 não
-está aceito. Os estados individuais e a evidência atual estão em
+agregada de Actions reais segue pendente. C10.2 implementa obtenção validada e
+limitada de logs e seus estados de UI; build, testes, lint, fluxo instrumentado
+para log indisponível, CI e inspeção Maestro passaram. Um job real autorizado
+(`#49`, `build`) abriu no Pixel 9 e teve seus metadados confirmados pelo GitHub
+CLI; o conteúdo dos logs não foi copiado nem persistido. C10.2 está `DONE`; C10
+segue pendente da comparação agregada de execuções reais passando/falhando e do
+log indisponível. Os estados individuais e a evidência atual estão em
 [`plan/tasks.json`](plan/tasks.json), [`PROJECT_STATE.md`](PROJECT_STATE.md),
 [`docs/evidence/C10.1.md`](docs/evidence/C10.1.md) e
 [`docs/evidence/C10.2.md`](docs/evidence/C10.2.md).

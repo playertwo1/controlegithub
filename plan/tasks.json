@@ -272,10 +272,10 @@
       "depends_on": [
         "C10.1"
       ],
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "acceptance": "Logs autorizados abrem; expirados/negados exibem motivo; segredos não persistem.",
       "contract": "plan/contracts/C10.2.md",
-      "evidence": null,
+      "evidence": "docs/evidence/C10.2.md",
       "blocked_reason": null
     },
     {

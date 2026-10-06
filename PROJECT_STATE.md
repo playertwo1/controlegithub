@@ -21,7 +21,7 @@ e na classe, mas sofreu timeout intermitente na execução total; detalhes em
 `docs/evidence/C10.1.md`. Comparação com Actions reais e CI remoto ficam
 `NOT_RUN`; por isso o checkpoint agregado C10 não está aceito.
 
-C10.2 está `IN_PROGRESS`. O contrato foi auditado; a implementação cobre a
+C10.2 está `DONE` no código `22938e1`. O contrato foi auditado; a implementação cobre a
 captura do redirecionamento temporário, validação de conteúdo, leitura limitada
 e tela de logs com descarte ao sair/atualizar. O downloader abre TCP apenas
 para IP público validado e estabelece TLS com SNI e validação do hostname.
@@ -33,10 +33,14 @@ intermitentes antes do passo de logs, e uma execução mais recente passou com a
 pausa de inspeção habilitada. Dois retestes focados posteriores voltaram a
 expirar na lista de workflows; o relatório Compose registrou o indicador de
 carregamento, e a chamada Maestro concorrente não retornou conteúdo. As falhas anteriores incluíram servidor de
-dispositivo encerrado e diálogo de ANR do Android. Comparação com logs reais
-fica `NOT_RUN`; CI remoto
-passou no SHA `22938e1` (run 37344629817). C10.2 e C10 ainda não estão
-concluídos. Evidência detalhada em
+dispositivo encerrado e diálogo de ANR do Android. A inspeção visual posterior
+passou via Maestro 2.11.0 no Pixel 9/API 37: a conta autorizada abriu o job real
+`build` da execução #49; o GitHub CLI confirmou execução/job bem-sucedidos no
+SHA `e96feab`, e a tela exibiu o aviso de sensibilidade sem carregamento, estado
+vazio ou erro. O conteúdo dos logs não foi lido, copiado ou persistido. CI
+remoto passou no SHA `22938e1` (run 37344629817). C10.2 está concluído; C10
+permanece pendente da comparação agregada de Actions reais, incluindo execução
+passando/falhando e log indisponível. Evidência detalhada em
 `docs/evidence/C10.2.md`.
 
 O modo de demonstração usa dados locais fictícios identificados como
