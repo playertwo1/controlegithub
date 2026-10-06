@@ -201,7 +201,8 @@ C09.2 segue `IN_PROGRESS`. A ação envia somente `PATCH /notifications/threads/
 para ID numérico validado, só altera o estado após `205`/`304` e mantém erro
 visível/retry em falha. Build, testes unitários e lint passaram; os 12 testes
 focados passaram no Pixel 9/API 37; Maestro passou nos fluxos de sucesso e `503`;
-auditoria independente PASS. A suíte conectada total foi `NOT_PASS` 112/115 por
+auditoria independente PASS. CI remoto passou no SHA `e6be6f6` (run
+`37508108666`). A suíte conectada total foi `NOT_PASS` 112/115 por
 três falhas em Pull Requests, favoritos e Actions. O runner apagou a
 instalação e a sessão OAuth local; a tentativa real autorizada ainda é `NOT_RUN`.
 Retomar reautorizando o Device Flow e executar uma única marcação real; registrar
