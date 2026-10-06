@@ -300,6 +300,14 @@ internal fun ControleApp(
             onAppearance = { appearanceOpen = true },
             onShowPullRequests = { workAreaPullRequests = true }
         )
+        else if (page == 3 && selected == null && session != null) GitHubNotificationsScreen(
+            modifier = Modifier.padding(padding),
+            client = apiClient,
+            session = session,
+            sessionRestoring = sessionRestoring,
+            onSessionExpired = onSessionExpired,
+            onAppearance = { appearanceOpen = true }
+        )
         else LazyColumn(Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {
