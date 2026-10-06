@@ -381,10 +381,10 @@
       "depends_on": [
         "C05.1"
       ],
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "acceptance": "Favoritar/desfavoritar persiste após reinício e fica isolado por conta.",
       "contract": "plan/contracts/C14.1.md",
-      "evidence": null,
+      "evidence": "docs/evidence/C14.1.md",
       "blocked_reason": null
     },
     {

@@ -18,9 +18,9 @@ estrelas acessíveis e limpeza coordenada com logout sem chamadas de escrita ao
 GitHub. Build, lint e 66 testes unitários passaram. No Pixel 9/API 37, os testes
 focados passaram 10/10 e a inspeção visual Maestro usou fixture local. A suíte
 completa passou 93/95; dois testes antigos de issues e pull requests expiraram
-por timeout, sem falha nos testes C14.1. Auditoria independente passou. CI do
-commit ainda pendente; C14.1 permanece `IN_PROGRESS`. Evidências e retomada em
-`docs/evidence/C14.1.md`.
+por timeout, sem falha nos testes C14.1. Auditoria independente passou. CI
+remoto passou no SHA `f42cf0c` (run `37399713144`); C14.1 está `DONE`. Evidências
+em `docs/evidence/C14.1.md`.
 
 ## Entrega anterior — C10
 
