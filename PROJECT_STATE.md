@@ -1,6 +1,6 @@
 # Estado do projeto
 
-Atualizado em 2026-10-12. C03.1, C03.2, C05.1, C05.2, C06.1, C06.2, C07.1, C07.2, C08.1, C08.2, C10.1, C10.2, C14.1 e C16.1 estão concluídas. Os checkpoints agregados C07 e C08 foram aceitos pelo proprietário em 2026-10-12. C09.1 está `IN_PROGRESS`.
+Atualizado em 2026-10-12. C03.1, C03.2, C05.1, C05.2, C06.1, C06.2, C07.1, C07.2, C08.1, C08.2, C10.1, C10.2, C14.1 e C16.1 estão concluídas. Os checkpoints agregados C07 e C08 foram aceitos pelo proprietário em 2026-10-12. C09.1 está `DONE`. C09.2 está `IN_PROGRESS`.
 C05.2 passou build, 40 testes unitários, 18 instrumentados, lint, inspeção
 Maestro com fixture, auditoria independente e CI no SHA `992d781` (run
 37200219568). C05.1 passou build,
