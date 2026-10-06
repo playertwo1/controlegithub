@@ -110,7 +110,7 @@ internal sealed interface GitHubNotificationDestination {
 
 **Interfaces:** `GitHubNotificationPager(client: GitHubHttpClient, accessToken: String)`; `loadNext(): GitHubPageResult<GitHubNotification>`; `cancel()`. Compor `GitHubPaginator` usando `GET /notifications?all=true&per_page=50`, `parseGitHubNotifications` e `GitHubNotification::id`. Helper instrumentado: `NotificationApi(initialStatus: Int = 200, pages: List<String>, nextLink: String? = null): AutoCloseable`, com `baseUri: URI` e `requests: List<String>`; implementar com `ServerSocket` local e fechar servidor/thread em `close()`.
 
-- [ ] **Passo 1: escrever testes instrumentados com servidor HTTP local.** Verificar caminho e bearer fictício, primeira página, `Link` para página seguinte, deduplicação por ID, `403`, `401`, `429`, erro de servidor e JSON inválido. Não incluir token real nem dados de conta.
+- [ ] **Passo 1: escrever testes instrumentados com servidor HTTP local.** Verificar caminho e bearer fictício, primeira página, `Link` para página seguinte, deduplicação por ID, `401`/`403`/erro de servidor como `GitHubPageResult.Failed`, `429` como `RateLimited` e JSON inválido como falha de decode com mensagem explícita. Não incluir token real nem dados de conta.
 
 ```kotlin
 @Test fun pagerRequestsAllNotificationsAndDeduplicatesAcrossPages() {
