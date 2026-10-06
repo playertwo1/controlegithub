@@ -20,7 +20,9 @@ focados passaram 10/10 e a inspeção visual Maestro usou fixture local. A suít
 completa passou 93/95; dois testes antigos de issues e pull requests expiraram
 por timeout, sem falha nos testes C14.1. Auditoria independente passou. CI
 remoto passou no SHA `f42cf0c` (run `37399713144`); C14.1 está `DONE`. Evidências
-em `docs/evidence/C14.1.md`.
+em `docs/evidence/C14.1.md`. Um teste unitário preexistente de cancelamento
+falhou intermitentemente no CI documental; o fixture foi estabilizado e o CI
+passou no SHA `3e4bab7` (run `37400404769`).
 
 ## Entrega anterior — C10
 
