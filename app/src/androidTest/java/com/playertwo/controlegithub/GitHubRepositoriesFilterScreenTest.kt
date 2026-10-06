@@ -3,24 +3,133 @@ package com.playertwo.controlegithub
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStreamReader
 import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.URI
 import java.nio.charset.StandardCharsets
+import java.util.Locale
 import java.util.concurrent.atomic.AtomicInteger
 import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.CompletableDeferred
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 
 class GitHubRepositoriesFilterScreenTest {
     @get:Rule val compose = createComposeRule()
+    private val favorites = MemoryRepositoryFavoritesStore()
+
+    @Test fun loadedRepositoryListOffersFavoritesFilter() {
+        RepositoryFixtureApi().use { api ->
+            showRepositories(api)
+            awaitRepositories(api)
+            compose.waitUntil(5_000) {
+                compose.onAllNodesWithContentDescription("Adicionar acme/Mobile aos favoritos").fetchSemanticsNodes().isNotEmpty()
+            }
+            if (pauseForMaestroPreviewIfRequested()) return
+
+            compose.onNodeWithText("Favoritos").assertIsDisplayed()
+            assertEquals(1, api.requestCount.get())
+        }
+    }
+
+    @Test fun favoriteToggleFiltersLoadedRepositoriesWithoutRemoteRequest() {
+        RepositoryFixtureApi().use { api ->
+            showRepositories(api)
+            awaitRepositories(api)
+
+            compose.onNodeWithContentDescription("Adicionar acme/Mobile aos favoritos").performClick()
+            compose.onNodeWithContentDescription("Remover acme/Mobile dos favoritos").assertIsDisplayed()
+            compose.onNodeWithText("Favoritos").performClick()
+
+            compose.onNodeWithText("acme/Mobile").assertIsDisplayed()
+            compose.onNodeWithText("acme/docs").assertDoesNotExist()
+            compose.onNodeWithText("acme/tools").assertDoesNotExist()
+            assertEquals(1, api.requestCount.get())
+        }
+    }
+
+    @Test fun favoritesStayIsolatedWhenTheConnectedAccountChanges() {
+        RepositoryFixtureApi().use { api ->
+            val accountLogin = mutableStateOf("fixture-user")
+            showRepositories(api, accountLogin)
+            awaitRepositories(api)
+            compose.onNodeWithContentDescription("Adicionar acme/Mobile aos favoritos").performClick()
+            compose.onNodeWithContentDescription("Remover acme/Mobile dos favoritos").assertIsDisplayed()
+
+            accountLogin.value = "second-user"
+            compose.waitUntil(10_000) {
+                api.requestCount.get() == 2 &&
+                    compose.onAllNodesWithContentDescription("Adicionar acme/Mobile aos favoritos").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithContentDescription("Adicionar acme/Mobile aos favoritos").assertIsDisplayed()
+
+            accountLogin.value = "fixture-user"
+            compose.waitUntil(10_000) {
+                api.requestCount.get() == 3 &&
+                    compose.onAllNodesWithContentDescription("Remover acme/Mobile dos favoritos").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithContentDescription("Remover acme/Mobile dos favoritos").assertIsDisplayed()
+        }
+    }
+
+    @Test fun favoriteReadFailureDisablesControlsAndRetryRestoresThem() {
+        favorites.failLoad = true
+        RepositoryFixtureApi().use { api ->
+            showRepositories(api)
+            awaitRepositories(api)
+            compose.onNodeWithText("Não foi possível carregar favoritos").assertIsDisplayed()
+            compose.onNodeWithText("Favoritos").assertIsNotEnabled()
+            compose.onNodeWithContentDescription("Adicionar acme/Mobile aos favoritos").assertIsNotEnabled()
+
+            favorites.failLoad = false
+            compose.onNodeWithText("Tentar novamente").performClick()
+            compose.waitUntil(5_000) {
+                compose.onAllNodesWithText("Não foi possível carregar favoritos").fetchSemanticsNodes().isEmpty()
+            }
+            compose.onNodeWithContentDescription("Adicionar acme/Mobile aos favoritos").assertIsEnabled()
+        }
+    }
+
+    @Test fun failedFavoriteWriteKeepsThePersistedStarState() {
+        favorites.failWrite = true
+        RepositoryFixtureApi().use { api ->
+            showRepositories(api)
+            awaitRepositories(api)
+            compose.onNodeWithContentDescription("Adicionar acme/Mobile aos favoritos").performClick()
+            compose.waitUntil(5_000) {
+                compose.onAllNodesWithText("Não foi possível salvar o favorito").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithContentDescription("Adicionar acme/Mobile aos favoritos").assertIsDisplayed()
+            compose.onNodeWithContentDescription("Remover acme/Mobile dos favoritos").assertDoesNotExist()
+        }
+    }
+
+    @Test fun logoutIsDisabledWhileFavoriteIsBeingSaved() {
+        favorites.writeGate = CompletableDeferred()
+        RepositoryFixtureApi().use { api ->
+            showRepositories(api)
+            awaitRepositories(api)
+            compose.onNodeWithContentDescription("Adicionar acme/Mobile aos favoritos").performClick()
+            compose.onNodeWithText("Sair").assertIsNotEnabled()
+            favorites.writeGate?.complete(Unit)
+            compose.waitUntil(5_000) {
+                runCatching {
+                    compose.onNodeWithContentDescription("Remover acme/Mobile dos favoritos").assertIsDisplayed()
+                }.isSuccess
+            }
+            compose.onNodeWithText("Sair").assertIsEnabled()
+        }
+    }
 
     @Test fun searchAndCombinedFiltersStayLocalAndCanBeCleared() {
         RepositoryFixtureApi().use { api ->
@@ -106,24 +215,28 @@ class GitHubRepositoriesFilterScreenTest {
         }
     }
 
-    private fun showRepositories(api: RepositoryFixtureApi) {
-        val session = GitHubSession(
-            GitHubUser("fixture-user", "https://github.com/fixture-user"),
-            SessionCredentials("instrumentation-fixture-token")
-        )
+    private fun showRepositories(
+        api: RepositoryFixtureApi,
+        accountLogin: MutableState<String> = mutableStateOf("fixture-user")
+    ) {
         compose.setContent {
+            val currentLogin = accountLogin.value
             ControleTheme(AppThemeMode.LIGHT) {
                 GitHubRepositoriesScreen(
                     modifier = Modifier,
                     client = GitHubHttpClient(baseUrl = api.baseUrl),
-                    session = session,
+                    session = GitHubSession(
+                        GitHubUser(currentLogin, "https://github.com/$currentLogin"),
+                        SessionCredentials("instrumentation-fixture-token")
+                    ),
                     sessionRestoring = false,
                     sessionStorageError = false,
                     sessionExpired = false,
                     onConnected = { true },
                     onSessionExpired = {},
                     onLogout = {},
-                    onAppearance = {}
+                    onAppearance = {},
+                    favoritesStore = favorites
                 )
             }
         }
@@ -138,7 +251,7 @@ class GitHubRepositoriesFilterScreenTest {
 
     private fun pauseForMaestroPreviewIfRequested(): Boolean {
         if (InstrumentationRegistry.getArguments().getString("maestroPreview") != "true") return false
-        Thread.sleep(60_000)
+        Thread.sleep(180_000)
         return true
     }
 
@@ -191,6 +304,35 @@ class GitHubRepositoriesFilterScreenTest {
         override fun close() {
             server.close()
             acceptThread.join(1_000)
+        }
+    }
+
+    private class MemoryRepositoryFavoritesStore : RepositoryFavoritesStore {
+        private val byAccount = mutableMapOf<String, Set<Long>>()
+        var failLoad = false
+        var failWrite = false
+        var failClear = false
+        var writeGate: CompletableDeferred<Unit>? = null
+
+        override suspend fun load(accountLogin: String): Set<Long> {
+            if (failLoad) throw IOException("fixture read failure")
+            return byAccount[accountLogin.lowercase(Locale.ROOT)].orEmpty()
+        }
+
+        override suspend fun setFavorite(accountLogin: String, repositoryId: Long, favorite: Boolean): Set<Long> {
+            if (failWrite) throw IOException("fixture write failure")
+            writeGate?.await()
+            val key = accountLogin.lowercase(Locale.ROOT)
+            val updated = byAccount[key].orEmpty().toMutableSet().apply {
+                if (favorite) add(repositoryId) else remove(repositoryId)
+            }.toSet()
+            byAccount[key] = updated
+            return updated
+        }
+
+        override suspend fun clear(accountLogin: String) {
+            if (failClear) throw IOException("fixture clear failure")
+            byAccount.remove(accountLogin.lowercase(Locale.ROOT))
         }
     }
 }

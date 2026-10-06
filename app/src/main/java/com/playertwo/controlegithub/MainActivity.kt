@@ -29,6 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +38,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val preferences = remember(context) { ThemePreferences(context) }
+            val favoritesStore = remember(context) { DataStoreRepositoryFavoritesStore(context) }
+            val favoriteOperations = remember { Mutex() }
             val apiClient = remember(context) { GitHubHttpClient() }
             val sessions = remember(context) {
                 GitHubSessionManager(
@@ -50,6 +54,7 @@ class MainActivity : ComponentActivity() {
             var sessionRestoring by remember { mutableStateOf(true) }
             var sessionRetry by remember { mutableStateOf(false) }
             var sessionStorageError by remember { mutableStateOf(false) }
+            var favoriteCleanupError by remember { mutableStateOf(false) }
             suspend fun restoreSession() {
                 sessionRestoring = true
                 sessionRetry = false
@@ -85,6 +90,9 @@ class MainActivity : ComponentActivity() {
                     sessionRestoring = sessionRestoring,
                     sessionRetry = sessionRetry,
                     sessionStorageError = sessionStorageError,
+                    favoriteCleanupError = favoriteCleanupError,
+                    favoritesStore = favoritesStore,
+                    favoriteOperations = favoriteOperations,
                     onRetrySession = { scope.launch { restoreSession() } },
                     onRetrySessionCleanup = {
                         scope.launch {
@@ -104,6 +112,7 @@ class MainActivity : ComponentActivity() {
                             sessions.persist(connected)
                             session = connected
                             sessionStorageError = false
+                            favoriteCleanupError = false
                             true
                         } catch (_: Exception) {
                             sessionStorageError = true
@@ -126,13 +135,32 @@ class MainActivity : ComponentActivity() {
                     },
                     onLogout = {
                         scope.launch {
-                            try {
-                                sessions.logout()
-                                sessionStorageError = false
-                            } catch (_: Exception) {
-                                sessionStorageError = true
-                            } finally {
-                                session = null
+                            val login = session?.user?.login
+                            if (login == null) {
+                                try {
+                                    sessions.logout()
+                                    sessionStorageError = false
+                                    session = null
+                                } catch (_: Exception) {
+                                    sessionStorageError = true
+                                }
+                                return@launch
+                            }
+                            when (logoutWithFavoriteCleanup(login, favoritesStore, favoriteOperations) { sessions.logout() }) {
+                                FavoriteLogoutResult.LOGGED_OUT -> {
+                                    favoriteCleanupError = false
+                                    sessionStorageError = false
+                                    session = null
+                                }
+                                FavoriteLogoutResult.FAVORITES_NOT_CLEARED -> favoriteCleanupError = true
+                                FavoriteLogoutResult.SESSION_NOT_CLOSED -> {
+                                    favoriteCleanupError = false
+                                    sessionStorageError = true
+                                }
+                                FavoriteLogoutResult.RESTORE_FAILED -> {
+                                    favoriteCleanupError = true
+                                    sessionStorageError = true
+                                }
                             }
                         }
                     },
@@ -158,10 +186,13 @@ internal fun ControleApp(
     themeMode: AppThemeMode,
     preferenceError: Boolean,
     apiClient: GitHubHttpClient,
+    favoritesStore: RepositoryFavoritesStore,
+    favoriteOperations: Mutex,
     session: GitHubSession?,
     sessionRestoring: Boolean,
     sessionRetry: Boolean,
     sessionStorageError: Boolean,
+    favoriteCleanupError: Boolean,
     onRetrySession: () -> Unit,
     onRetrySessionCleanup: () -> Unit,
     onConnected: suspend (GitHubSession) -> Boolean,
@@ -226,6 +257,9 @@ internal fun ControleApp(
             sessionRestoring = sessionRestoring,
             sessionStorageError = sessionStorageError,
             sessionExpired = repositorySessionExpired,
+            favoritesStore = favoritesStore,
+            favoriteCleanupError = favoriteCleanupError,
+            favoriteOperations = favoriteOperations,
             onConnected = connectAndPersist,
             onSessionExpired = { expired ->
                 repositorySessionExpired = true

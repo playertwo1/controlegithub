@@ -27,6 +27,11 @@ class GitHubHomeScreenTest {
                     ControleApp(
                         themeMode = AppThemeMode.LIGHT,
                         preferenceError = false,
+                        favoritesStore = DataStoreRepositoryFavoritesStore(
+                            androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().targetContext
+                        ),
+                        favoriteOperations = kotlinx.coroutines.sync.Mutex(),
+                        favoriteCleanupError = false,
                         apiClient = GitHubHttpClient(api.baseUri),
                         session = session,
                         sessionRestoring = false,
@@ -110,6 +115,11 @@ class GitHubHomeScreenTest {
                 ControleApp(
                     themeMode = AppThemeMode.LIGHT,
                     preferenceError = false,
+                    favoritesStore = DataStoreRepositoryFavoritesStore(
+                        androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().targetContext
+                    ),
+                    favoriteOperations = kotlinx.coroutines.sync.Mutex(),
+                    favoriteCleanupError = false,
                     apiClient = GitHubHttpClient(),
                     session = null,
                     sessionRestoring = false,

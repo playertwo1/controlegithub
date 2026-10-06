@@ -10,7 +10,9 @@ internal fun filterGitHubRepositories(
     repositories: List<GitHubRepository>,
     query: String,
     visibility: RepositoryVisibilityFilter,
-    language: String?
+    language: String?,
+    favoriteIds: Set<Long> = emptySet(),
+    favoritesOnly: Boolean = false
 ): List<GitHubRepository> {
     val normalizedQuery = query.trim()
     return repositories.filter { repository ->
@@ -25,6 +27,7 @@ internal fun filterGitHubRepositories(
             RepositoryVisibilityFilter.PRIVATE -> repository.isPrivate
         }
         val matchesLanguage = language == null || repository.language?.equals(language, ignoreCase = true) == true
-        matchesQuery && matchesVisibility && matchesLanguage
+        val matchesFavorite = !favoritesOnly || repository.id in favoriteIds
+        matchesQuery && matchesVisibility && matchesLanguage && matchesFavorite
     }
 }

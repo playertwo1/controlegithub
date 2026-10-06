@@ -37,6 +37,26 @@ class GitHubRepositoryFiltersTest {
         assertTrue(filterGitHubRepositories(emptyList(), "", RepositoryVisibilityFilter.ALL, null).isEmpty())
     }
 
+    @Test fun favoritesFilterCombinesWithSearchVisibilityAndLanguage() {
+        assertEquals(
+            listOf(4L),
+            filterGitHubRepositories(
+                repositories,
+                query = "kotlin-kit",
+                visibility = RepositoryVisibilityFilter.PRIVATE,
+                language = "KOTLIN",
+                favoriteIds = setOf(1L, 2L, 4L),
+                favoritesOnly = true
+            ).map(GitHubRepository::id)
+        )
+        assertTrue(
+            filterGitHubRepositories(
+                repositories, "", RepositoryVisibilityFilter.ALL, null,
+                favoriteIds = emptySet(), favoritesOnly = true
+            ).isEmpty()
+        )
+    }
+
     private fun filter(
         query: String = "",
         visibility: RepositoryVisibilityFilter = RepositoryVisibilityFilter.ALL,

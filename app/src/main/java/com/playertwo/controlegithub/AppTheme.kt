@@ -23,7 +23,7 @@ internal enum class AppThemeMode(val label: String) {
     }
 }
 
-private val Context.preferencesDataStore by preferencesDataStore(name = "app_preferences")
+internal val Context.preferencesDataStore by preferencesDataStore(name = "app_preferences")
 private val themeModeKey = stringPreferencesKey("theme_mode")
 
 internal class ThemePreferences(context: Context) {

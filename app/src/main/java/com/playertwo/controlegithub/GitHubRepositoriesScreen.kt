@@ -17,10 +17,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -42,14 +44,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.util.Locale
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.Date
 
 @Composable
@@ -63,13 +69,20 @@ internal fun GitHubRepositoriesScreen(
     onConnected: suspend (GitHubSession) -> Boolean,
     onSessionExpired: (GitHubSession) -> Unit,
     onLogout: () -> Unit,
-    onAppearance: () -> Unit
+    onAppearance: () -> Unit,
+    favoritesStore: RepositoryFavoritesStore? = null,
+    favoriteCleanupError: Boolean = false,
+    favoriteOperations: Mutex = remember { Mutex() }
 ) {
     var refreshVersion by remember(session?.accessToken) { mutableIntStateOf(0) }
     val pager = remember(client, session?.accessToken, refreshVersion) {
         session?.let { GitHubRepositoryPager(client, it.accessToken) }
     }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val favoriteStore = remember(context, favoritesStore) {
+        favoritesStore ?: DataStoreRepositoryFavoritesStore(context)
+    }
     var repositories by remember(pager) { mutableStateOf(emptyList<GitHubRepository>()) }
     var hasNext by remember(pager) { mutableStateOf(false) }
     var loaded by remember(pager) { mutableStateOf(false) }
@@ -81,21 +94,73 @@ internal fun GitHubRepositoriesScreen(
     var searchQuery by remember(session?.user?.login) { mutableStateOf("") }
     var visibilityFilter by remember(session?.user?.login) { mutableStateOf(RepositoryVisibilityFilter.ALL) }
     var languageFilter by remember(session?.user?.login) { mutableStateOf<String?>(null) }
+    var favoriteIds by remember(session?.user?.login) { mutableStateOf<Set<Long>?>(null) }
+    var favoritesLoadError by remember(session?.user?.login) { mutableStateOf(false) }
+    var favoritesWriteError by remember(session?.user?.login) { mutableStateOf(false) }
+    var favoritesSaving by remember(session?.user?.login) { mutableStateOf(false) }
+    var favoritesOnly by remember(session?.user?.login) { mutableStateOf(false) }
+    var favoritesRetry by remember(session?.user?.login) { mutableIntStateOf(0) }
+    val accountLogin = session?.user?.login
+    LaunchedEffect(favoriteStore, accountLogin, favoritesRetry) {
+        if (accountLogin == null) {
+            favoriteIds = null
+            favoritesLoadError = false
+        } else {
+            favoriteIds = null
+            favoritesLoadError = false
+            try {
+                favoriteIds = withContext(Dispatchers.IO) { favoriteStore.load(accountLogin) }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                favoriteIds = null
+                favoritesLoadError = true
+                favoritesOnly = false
+            }
+        }
+    }
     val availableLanguages = remember(repositories) {
         repositories.mapNotNull(GitHubRepository::language)
             .distinctBy { it.lowercase(Locale.ROOT) }
             .sortedBy { it.lowercase(Locale.ROOT) }
     }
-    val visibleRepositories = remember(repositories, searchQuery, visibilityFilter, languageFilter) {
-        filterGitHubRepositories(repositories, searchQuery, visibilityFilter, languageFilter)
+    val visibleRepositories = remember(repositories, searchQuery, visibilityFilter, languageFilter, favoriteIds, favoritesOnly) {
+        filterGitHubRepositories(
+            repositories, searchQuery, visibilityFilter, languageFilter,
+            favoriteIds.orEmpty(), favoritesOnly && favoriteIds != null
+        )
     }
     val hasActiveFilters = searchQuery.isNotBlank() ||
-        visibilityFilter != RepositoryVisibilityFilter.ALL || languageFilter != null
+        visibilityFilter != RepositoryVisibilityFilter.ALL || languageFilter != null || favoritesOnly
 
     fun clearFilters() {
         searchQuery = ""
         visibilityFilter = RepositoryVisibilityFilter.ALL
         languageFilter = null
+        favoritesOnly = false
+    }
+
+    fun setFavorite(repository: GitHubRepository, favorite: Boolean) {
+        val login = accountLogin ?: return
+        if (favoriteIds == null || favoritesSaving) return
+        scope.launch {
+            favoritesSaving = true
+            favoritesWriteError = false
+            try {
+                val updated = withContext(Dispatchers.IO) {
+                    favoriteOperations.withLock {
+                        favoriteStore.setFavorite(login, repository.id, favorite)
+                    }
+                }
+                if (accountLogin == login) favoriteIds = updated
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                if (accountLogin == login) favoritesWriteError = true
+            } finally {
+                if (accountLogin == login) favoritesSaving = false
+            }
+        }
     }
 
     suspend fun loadNextPage() {
@@ -202,11 +267,18 @@ internal fun GitHubRepositoriesScreen(
                         Text("Conta conectada", color = MaterialTheme.colorScheme.primary, fontSize = 13.sp)
                         Text("@${session.user.login}", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                     }
-                    TextButton(onClick = onLogout) { Text("Sair") }
+                    TextButton(onClick = onLogout, enabled = !favoritesSaving) { Text("Sair") }
                     IconButton(onClick = { refreshVersion++ }, enabled = !loading) {
                         Icon(Icons.Outlined.Refresh, contentDescription = "Atualizar repositórios")
                     }
                 }
+            }
+
+            if (favoriteCleanupError) {
+                item { Text("Não foi possível apagar ou restaurar favoritos. Tente sair novamente.", color = MaterialTheme.colorScheme.error) }
+            }
+            if (sessionStorageError) {
+                item { Text("Não foi possível encerrar a sessão segura. Tente sair novamente.", color = MaterialTheme.colorScheme.error) }
             }
 
             if (loading && repositories.isEmpty()) {
@@ -260,6 +332,20 @@ internal fun GitHubRepositoriesScreen(
                                 onClick = { visibilityFilter = RepositoryVisibilityFilter.PRIVATE },
                                 label = { Text("Privados") }
                             )
+                            FilterChip(
+                                selected = favoritesOnly,
+                                onClick = { favoritesOnly = !favoritesOnly },
+                                enabled = favoriteIds != null && !favoritesSaving,
+                                label = { Text("Favoritos") }
+                            )
+                        }
+                        when {
+                            favoritesLoadError -> Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text("Não foi possível carregar favoritos", color = MaterialTheme.colorScheme.error, modifier = Modifier.weight(1f))
+                                TextButton(onClick = { favoritesRetry++ }) { Text("Tentar novamente") }
+                            }
+                            favoriteIds == null -> Text("Carregando favoritos…", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                            favoritesWriteError -> Text("Não foi possível salvar o favorito", color = MaterialTheme.colorScheme.error)
                         }
                         Row(
                             modifier = Modifier.horizontalScroll(rememberScrollState()),
@@ -324,7 +410,13 @@ internal fun GitHubRepositoriesScreen(
             }
 
             items(visibleRepositories, key = GitHubRepository::id) { repository ->
-                GitHubRepositoryCard(repository) { selectedRepository = repository }
+                GitHubRepositoryCard(
+                    repository = repository,
+                    isFavorite = repository.id in favoriteIds.orEmpty(),
+                    favoriteEnabled = favoriteIds != null && !favoritesSaving,
+                    onFavoriteClick = { setFavorite(repository, repository.id !in favoriteIds.orEmpty()) },
+                    onClick = { selectedRepository = repository }
+                )
             }
 
             if (loaded && hasNext) {
@@ -351,14 +443,33 @@ internal fun GitHubRepositoriesScreen(
 }
 
 @Composable
-private fun GitHubRepositoryCard(repository: GitHubRepository, onClick: () -> Unit) {
+private fun GitHubRepositoryCard(
+    repository: GitHubRepository,
+    isFavorite: Boolean,
+    favoriteEnabled: Boolean,
+    onFavoriteClick: () -> Unit,
+    onClick: () -> Unit
+) {
     Surface(
         shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.surface,
         modifier = Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = onClick)
     ) {
         Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(repository.fullName, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(repository.fullName, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                IconButton(onClick = onFavoriteClick, enabled = favoriteEnabled) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Filled.Star else Icons.Outlined.StarBorder,
+                        contentDescription = if (isFavorite) {
+                            "Remover ${repository.fullName} dos favoritos"
+                        } else {
+                            "Adicionar ${repository.fullName} aos favoritos"
+                        },
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     if (repository.isPrivate) "Privado" else "Público",
