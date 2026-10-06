@@ -38,7 +38,8 @@
 - Criar `app/src/main/java/com/playertwo/controlegithub/GitHubNotificationsScreen.kt`: estados da caixa, filtros, detalhe da notificação, roteamento local e reutilização das telas existentes.
 - Modificar `app/src/main/java/com/playertwo/controlegithub/MainActivity.kt`: substituir o placeholder autenticado de Avisos pela nova tela, preservando a navegação principal.
 - Criar `app/src/test/java/com/playertwo/controlegithub/GitHubNotificationsTest.kt`: parser, tipos/motivos, validação e construção do destino.
-- Criar `app/src/test/java/com/playertwo/controlegithub/GitHubNotificationPagerTest.kt`: endpoint inicial, paginação, deduplicação e respostas de falha por servidor local.
+- Criar `app/src/androidTest/java/com/playertwo/controlegithub/GitHubNotificationsParserTest.kt`: parser executado com o `org.json` do Android.
+- Criar `app/src/androidTest/java/com/playertwo/controlegithub/GitHubNotificationPagerTest.kt`: endpoint inicial, paginação, deduplicação e respostas de falha por servidor local.
 - Criar `app/src/androidTest/java/com/playertwo/controlegithub/GitHubNotificationsScreenTest.kt`: filtros, estados visíveis, stack local, retorno e limites de sessão usando fixture HTTP local sintética.
 - Modificar `plan/contracts/C09.1.md`, `plan/tasks.json`, `PROJECT_STATE.md` e criar `docs/evidence/C09.1.md` ao executar e fechar a entrega. Remover o bloqueio anterior somente após registrar a decisão do proprietário e atualizar o contrato; marcar DONE apenas com todos os gates comprovados.
 
@@ -68,13 +69,13 @@
 
 ### Task 1: Modelos, parser e destino seguro
 
-**Arquivos:** criar `GitHubNotifications.kt`; criar `GitHubNotificationsTest.kt`.
+**Arquivos:** criar `GitHubNotifications.kt`; criar `GitHubNotificationsTest.kt` e `GitHubNotificationsParserTest.kt`.
 
-**Interfaces:** `parseGitHubNotifications(json: String): List<GitHubNotification>`; `notificationDestination(item: GitHubNotification): GitHubNotificationDestination`. `GitHubNotification` contém `id: String`, `unread: Boolean`, `reason: String`, `title: String?`, `subjectType: String?`, `repositoryId: Long`, `repositoryFullName: String`, `updatedAt: Instant?` e `subjectApiUrl: String?`. O destino é selado: `Issue(repository: String, number: Int)`, `PullRequest(repository: String, number: Int)`, `Repository(repository: String)` ou `Unavailable`. `Repository` é usado quando `subject.type` é `Repository` ou ausente; tipos desconhecidos levam a `Unavailable`.
+**Interfaces:** `parseGitHubNotifications(json: String): List<GitHubNotification>`; `notificationDestination(item: GitHubNotification): GitHubNotificationDestination`; `notificationTypeLabel(item: GitHubNotification): String`; `notificationReasonLabel(reason: String): String`. `GitHubNotification` contém `id: String`, `unread: Boolean`, `reason: String`, `title: String?`, `subjectType: String?`, `repository: GitHubRepository`, `updatedAt: Instant?` e `subjectApiUrl: String?`. Reuse `parseGitHubRepositories` para validar e mapear o objeto `repository`; não duplique seu parser. O destino é selado: `Issue(repository: String, number: Int)`, `PullRequest(repository: String, number: Int)`, `Repository(repository: String)` ou `Unavailable`. `Repository` é usado quando `subject.type` é `Repository` ou ausente; tipos desconhecidos levam a `Unavailable`.
 
-Helpers exclusivos dos testes, declarados como `internal` nesta tarefa para uso nos dois arquivos unitários: `fixtureNotification(id: String = "thread-1", type: String? = "Issue", url: String? = "https://api.github.com/repos/acme/app/issues/12"): GitHubNotification`; `fixtureThreads(vararg items: GitHubNotification): String` serializa threads sintéticas pelo parser; os demais campos usam `unread=true`, `reason="assign"`, `title="Fixture title"`, `repositoryId=1`, `repositoryFullName="acme/app"` e `updatedAt=Instant.parse("2026-10-01T12:00:00Z")`.
+Helper unitário: `fixtureNotification(id: String = "1", type: String? = "Issue", url: String? = "https://api.github.com/repos/acme/app/issues/12"): GitHubNotification`; os demais campos usam `unread=true`, `reason="assign"`, `title="Fixture title"`, `repository=GitHubRepository(1, "app", "acme/app", "acme", false, null, null, 0)` e `updatedAt=Instant.parse("2026-10-01T12:00:00Z")`. Em `GitHubNotificationsParserTest`, definir `fixtureThreads(vararg notificationJson: String): String` para agrupar JSON sintético em array; IDs de fixture seguem o exemplo oficial, como string numérica; testar o parser no Android instrumentado porque a implementação usa o `org.json` do sistema.
 
-- [ ] **Passo 1: escrever testes unitários que falham.** Cobrir tipo e motivo conhecidos/desconhecidos, campos e datas opcionais, item malformado, lista JSON inválida e destinos válidos/inválidos. Casos de URL inválida devem incluir host diferente, HTTP, porta, credenciais, query, fragmento, repo divergente, número zero e caminho fora de `/issues/{n}` ou `/pulls/{n}`.
+- [ ] **Passo 1: escrever testes que falham.** Em `GitHubNotificationsTest`, cobrir rótulo de tipo/motivo e destinos válidos/inválidos. Em `GitHubNotificationsParserTest`, cobrir campos da thread, array vazio, JSON/item inválido e tipos desconhecidos usando JSON literal sintético. Casos de URL inválida devem incluir host diferente, HTTP, porta, credenciais, query, fragmento, repo divergente, número zero e caminho fora de `/issues/{n}` ou `/pulls/{n}`.
 
 ```kotlin
 @Test fun pullRequestDestinationAcceptsOnlyValidatedApiPath() {
@@ -88,7 +89,7 @@ Helpers exclusivos dos testes, declarados como `internal` nesta tarefa para uso 
 }
 ```
 
-- [ ] **Passo 2: rodar os testes novos e confirmar falha por tipos/funções ausentes.** Rode `./gradlew.bat testDebugUnitTest --tests 'com.playertwo.controlegithub.GitHubNotificationsTest' --console=plain`. Esperado: FAIL de compilação, antes da implementação.
+- [ ] **Passo 2: rodar testes novos antes da implementação.** Rode `./gradlew.bat testDebugUnitTest --tests 'com.playertwo.controlegithub.GitHubNotificationsTest' --console=plain` e `./gradlew.bat connectedDebugAndroidTest '-Pandroid.testInstrumentationRunnerArguments.class=com.playertwo.controlegithub.GitHubNotificationsParserTest' --console=plain` no Pixel 9/API 37. Esperado: ambos falham na compilação por faltar o modelo/parser.
 - [ ] **Passo 3: implementar modelos, parser e validação.** Parsear cada thread e seus campos obrigatórios sem retornar metadados parciais; manter strings `reason`/`subject.type` desconhecidas para fallback de UI. Validar URI HTTPS, host exatamente `api.github.com`, porta ausente, sem credenciais/query/fragmento, repo idêntico ao `repository.full_name` sem diferença de caixa e número decimal positivo dentro de `Int`.
 
 ```kotlin
@@ -100,20 +101,20 @@ internal sealed interface GitHubNotificationDestination {
 }
 ```
 
-- [ ] **Passo 4: rodar a classe unitária até PASS.** Rode o mesmo comando; esperado: todos os testes de parser e fronteira de confiança passam.
-- [ ] **Passo 5: commit.** `git add app/src/main/java/com/playertwo/controlegithub/GitHubNotifications.kt app/src/test/java/com/playertwo/controlegithub/GitHubNotificationsTest.kt; git commit -m "feat: parse GitHub notifications safely"`.
+- [ ] **Passo 4: rodar testes unitários e parser Android.** Rode o comando JVM acima e `./gradlew.bat connectedDebugAndroidTest '-Pandroid.testInstrumentationRunnerArguments.class=com.playertwo.controlegithub.GitHubNotificationsParserTest' --console=plain` com Pixel 9/API 37. Esperado: destinos/labels e parsing instrumentado passam.
+- [ ] **Passo 5: commit.** `git add app/src/main/java/com/playertwo/controlegithub/GitHubNotifications.kt app/src/test/java/com/playertwo/controlegithub/GitHubNotificationsTest.kt app/src/androidTest/java/com/playertwo/controlegithub/GitHubNotificationsParserTest.kt; git commit -m "feat: parse GitHub notifications safely"`.
 
 ### Task 2: Pager de threads
 
-**Arquivos:** modificar `GitHubNotifications.kt`; criar `GitHubNotificationPagerTest.kt`.
+**Arquivos:** modificar `GitHubNotifications.kt`; criar `app/src/androidTest/java/com/playertwo/controlegithub/GitHubNotificationPagerTest.kt`.
 
-**Interfaces:** `GitHubNotificationPager(client: GitHubHttpClient, accessToken: String)`; `loadNext(): GitHubPageResult<GitHubNotification>`; `cancel()`. Compor `GitHubPaginator` usando `GET /notifications?all=true&per_page=50`, `parseGitHubNotifications` e `GitHubNotification::id`. Helper de teste: `NotificationApi(initialStatus: Int = 200, pages: List<String>, nextLink: String? = null): AutoCloseable`, com `baseUri: URI` e `requests: List<String>`; implementar com `ServerSocket` local e fechar servidor/thread em `close()`.
+**Interfaces:** `GitHubNotificationPager(client: GitHubHttpClient, accessToken: String)`; `loadNext(): GitHubPageResult<GitHubNotification>`; `cancel()`. Compor `GitHubPaginator` usando `GET /notifications?all=true&per_page=50`, `parseGitHubNotifications` e `GitHubNotification::id`. Helper instrumentado: `NotificationApi(initialStatus: Int = 200, pages: List<String>, nextLink: String? = null): AutoCloseable`, com `baseUri: URI` e `requests: List<String>`; implementar com `ServerSocket` local e fechar servidor/thread em `close()`.
 
-- [ ] **Passo 1: escrever testes com servidor HTTP local.** Verificar caminho e bearer fictício, primeira página, `Link` para página seguinte, deduplicação por ID, `403`, `401`, `429`, erro de servidor e JSON inválido. Não incluir token real nem dados de conta.
+- [ ] **Passo 1: escrever testes instrumentados com servidor HTTP local.** Verificar caminho e bearer fictício, primeira página, `Link` para página seguinte, deduplicação por ID, `403`, `401`, `429`, erro de servidor e JSON inválido. Não incluir token real nem dados de conta.
 
 ```kotlin
 @Test fun pagerRequestsAllNotificationsAndDeduplicatesAcrossPages() {
-    NotificationApi(pages = listOf(fixtureThreads(fixtureNotification()), fixtureThreads(fixtureNotification())), nextLink = "<page-2>; rel=\"next\"").use { api ->
+    NotificationApi(pages = listOf(fixtureThreads(fixtureNotificationJson()), fixtureThreads(fixtureNotificationJson())), nextLink = "<page-2>; rel=\"next\"").use { api ->
         val pager = GitHubNotificationPager(GitHubHttpClient(api.baseUri), "fixture-token")
         assertEquals(1, pager.loadNext().items.size)
         assertEquals(1, pager.loadNext().items.size)
@@ -122,16 +123,16 @@ internal sealed interface GitHubNotificationDestination {
 }
 ```
 
-- [ ] **Passo 2: executar os testes novos para confirmar que falham.** Rode `./gradlew.bat testDebugUnitTest --tests 'com.playertwo.controlegithub.GitHubNotificationPagerTest' --console=plain`. Esperado: FAIL antes do pager.
+- [ ] **Passo 2: executar o teste instrumentado novo para confirmar que falha.** Rode `./gradlew.bat connectedDebugAndroidTest '-Pandroid.testInstrumentationRunnerArguments.class=com.playertwo.controlegithub.GitHubNotificationPagerTest' --console=plain` no Pixel 9/API 37. Esperado: FAIL de compilação antes do pager.
 - [ ] **Passo 3: implementar pager sobre `GitHubPaginator`.** Não criar parser de paginação próprio; propagar `GitHubPageResult` existente e cancelar chamada ativa ao sair da tela.
-- [ ] **Passo 4: executar pager e parser juntos.** Rode `./gradlew.bat testDebugUnitTest --tests 'com.playertwo.controlegithub.GitHubNotification*Test' --console=plain`. Esperado: PASS, incluindo falha/retentativa e nenhuma duplicata.
-- [ ] **Passo 5: commit.** `git add app/src/main/java/com/playertwo/controlegithub/GitHubNotifications.kt app/src/test/java/com/playertwo/controlegithub/GitHubNotificationPagerTest.kt; git commit -m "feat: page GitHub notifications"`.
+- [ ] **Passo 4: executar o pager instrumentado.** Rode `./gradlew.bat connectedDebugAndroidTest '-Pandroid.testInstrumentationRunnerArguments.class=com.playertwo.controlegithub.GitHubNotificationPagerTest' --console=plain` no Pixel 9/API 37. Esperado: PASS, incluindo falha/retry e nenhuma duplicata.
+- [ ] **Passo 5: commit.** `git add app/src/main/java/com/playertwo/controlegithub/GitHubNotifications.kt app/src/androidTest/java/com/playertwo/controlegithub/GitHubNotificationPagerTest.kt; git commit -m "feat: page GitHub notifications"`.
 
 ### Task 3: Caixa e pilha local de navegação
 
 **Arquivos:** criar `GitHubNotificationsScreen.kt`; modificar `MainActivity.kt`; criar `GitHubNotificationsScreenTest.kt`.
 
-**Interfaces:** `GitHubNotificationsScreen(modifier: Modifier, client: GitHubHttpClient, session: GitHubSession?, sessionRestoring: Boolean, onSessionExpired: (GitHubSession) -> Unit, onAppearance: () -> Unit)`. A composição recebe o estado da sessão como as telas existentes. Estado de lista/pager é lembrado pelo login/token; manter a lista composta sob uma camada de detalhe/origem para conservar pager, filtros e posição. Mudar de conta descarta o estado anterior. Helpers Android instrumentados: `fixtureSession(login: String = "fixture-user"): GitHubSession`; `NotificationsScreenApi(initialStatus: Int = 200, notificationsJson: String, originResponses: Map<String, String> = emptyMap()): AutoCloseable`, com `baseUri: URI` e `requests: List<String>`; `showNotifications(api: NotificationsScreenApi, session: GitHubSession = fixtureSession())` instala a tela usando `GitHubHttpClient(api.baseUri)`. `NotificationsScreenApi` responde a lista e às rotas de origem necessárias em loopback e fecha o servidor em `close()`.
+**Interfaces:** `GitHubNotificationsScreen(modifier: Modifier, client: GitHubHttpClient, session: GitHubSession?, sessionRestoring: Boolean, onSessionExpired: (GitHubSession) -> Unit, onAppearance: () -> Unit)`. A composição recebe o estado da sessão como as telas existentes. Estado de lista/pager é lembrado pelo login/token; manter a lista composta sob uma camada de detalhe/origem para conservar pager, filtros e posição. Mudar de conta descarta o estado anterior. Para repositório, usar `notification.repository` já validado; para issue/PR, passar ao detalhe existente somente identidade validada (repo e número), sem renderizar campos de estado/descrição inventados.
 
 - [ ] **Passo 1: escrever testes Compose contra fixture HTTP local.** Testar lista vazia somente após HTTP 200 válido, lista com lida/não lida e tipos conhecidos/desconhecidos, filtros combinados, retry, `403` explícito, `401` compartilhado, detalhe, abrir origem, voltar origem → detalhe → lista e logout/troca de usuário sem conteúdo antigo. Validar IDs semânticos de controles da mesma forma que telas vizinhas.
 
@@ -145,11 +146,11 @@ internal sealed interface GitHubNotificationDestination {
 }
 ```
 
-- [ ] **Passo 2: rodar o teste Compose de `403` antes da tela.** Rode `./gradlew.bat connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.playertwo.controlegithub.GitHubNotificationsScreenTest --console=plain` com Pixel 9/API 37 ativo. Esperado: a tela/teste ainda não compila.
+- [ ] **Passo 2: rodar o teste Compose de `403` antes da tela.** Rode `./gradlew.bat connectedDebugAndroidTest '-Pandroid.testInstrumentationRunnerArguments.class=com.playertwo.controlegithub.GitHubNotificationsScreenTest' --console=plain` com Pixel 9/API 37 ativo. Esperado: a tela/teste ainda não compila.
 - [ ] **Passo 3: implementar lista e detalhe da notificação.** Usar `rememberLazyListState`, filtros locais combináveis (estado: Todas/Não lidas/Lidas; tipo: Todos/Issue/Pull request/Repositório/Outro), paginação explícita, estados de carregamento/vazio válido/erro/retry. Mostrar `reason` em português quando conhecido e rótulo neutro se desconhecido.
 - [ ] **Passo 4: implementar destinos com pilha local.** Abrir as telas de detalhe existentes. Para issue/PR, criar o modelo mínimo da origem a partir de campos já validados e deixar o detalhe existente buscar metadados atuais; para repositório, usar `repositoryId` e nome/owner validados. Se o tipo/dados não permitem construir identidade segura, exibir indisponibilidade. Configurar `BackHandler` para voltar à tela anterior sem reset da lista.
 - [ ] **Passo 5: substituir o placeholder autenticado de Avisos.** Em `MainActivity.kt`, no ramo autenticado de `page == 3`, passar `apiClient`, sessão, flag de restauração e callbacks existentes. Manter o texto/fluxo sem sessão existente e não mexer na pilha global ou no dock.
-- [ ] **Passo 6: executar testes focados e regressão de navegação.** Rode o comando instrumentado focado acima e `./gradlew.bat connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.playertwo.controlegithub.NavigationTest --console=plain`. Esperado: foco C09 passa, dock/abas existentes continuam passando.
+- [ ] **Passo 6: executar testes focados e regressão de navegação.** Rode o comando instrumentado focado acima e `./gradlew.bat connectedDebugAndroidTest '-Pandroid.testInstrumentationRunnerArguments.class=com.playertwo.controlegithub.NavigationTest' --console=plain`. Esperado: foco C09 passa, dock/abas existentes continuam passando.
 - [ ] **Passo 7: commit.** `git add app/src/main/java/com/playertwo/controlegithub/GitHubNotificationsScreen.kt app/src/main/java/com/playertwo/controlegithub/MainActivity.kt app/src/androidTest/java/com/playertwo/controlegithub/GitHubNotificationsScreenTest.kt; git commit -m "feat: add GitHub notifications inbox"`.
 
 ### Task 4: Verificação real, documentação e aceite
