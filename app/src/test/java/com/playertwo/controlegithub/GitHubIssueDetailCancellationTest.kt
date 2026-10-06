@@ -28,7 +28,6 @@ class GitHubIssueDetailCancellationTest {
         assertTrue(server.requestReceived.await(2, TimeUnit.SECONDS))
         loader.cancel()
         worker.join(2_000)
-        server.releaseResponse.countDown()
 
         assertFalse("cancelling the detail loader should stop its HTTP worker", worker.isAlive)
         assertTrue(result.get() is GitHubIssueDetailResult.Failed)
