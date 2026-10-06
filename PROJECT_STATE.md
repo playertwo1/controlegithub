@@ -185,14 +185,19 @@ real descrito no roadmap. Evidência em `docs/evidence/C08.2.md`.
 
 Em C09.1, Tasks 0–3 ativaram o contrato autorizado, implementaram parsing,
 validação de destinos, paginação e a caixa autenticada com filtros, detalhe e
-navegação local. A tela passou 7 testes Compose focados; navegação 5/5,
-integração da Home 8/8 e regressões individuais de detalhes passaram no Pixel
-9/API 37. Maestro confirmou a navegação da demonstração identificada como
-fictícia; não houve inspeção Maestro autenticada nem requisição OAuth real.
-`assembleDebug testDebugUnitTest lintDebug` passou após a implementação. A suíte
-`connectedDebugAndroidTest` completa foi tentada duas vezes, mas falhou sob
-instabilidade do emulador (hierarquia Compose ausente e conexão ADB reiniciada);
-isso não é PASS. Task 4 segue ativa para evidência, auditoria independente e
-tentativa real OAuth.
+navegação local. A auditoria independente inicial apontou data inválida aceita
+e ausência de estado vazio para filtros; ambos foram corrigidos e ganharam
+testes. Testes focados no Pixel 9/API 37: parser 5/5, caixa 7/7, navegação 5/5,
+Home 8/8 e regressões selecionadas de detalhes passaram. `assembleDebug
+testDebugUnitTest lintDebug` passou. O teste real OAuth na aba Avisos retornou
+HTTP 200, com itens presentes e renderizados; nenhum conteúdo privado foi
+registrado. A suíte conectada completa parou em 84/110 com `IndexOutOfBounds`
+em teste existente de detalhe de repositório e queda do runner; a repetição
+isolada passou 1/1, mas a suíte completa não conta como PASS. Maestro visualizou
+a demonstração sintética; a fixture de Avisos ainda não pode ser carregada na
+tela instalada sem adicionar um modo de teste. Reauditoria independente do
+código passou sem achados no range `abee9e5..c90879d`. Task 4 segue ativa para
+resolver/verificar os gates de dispositivo e registrar o estado final. CI remoto
+está `NOT_RUN`.
 Plano: `docs/superpowers/plans/2026-10-05-github-notifications.md`; desenho:
 `docs/superpowers/specs/2026-10-06-github-notifications-design.md`.
