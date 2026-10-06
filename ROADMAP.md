@@ -214,16 +214,14 @@ somente leitura. Explicar logs ainda indisponíveis, expirados ou sem permissão
 **Aceite:** execução em andamento/sucesso/falha corresponde ao GitHub; log grande
 carrega sem congelar; não expor credenciais nos logs do próprio app;
 não confundir ler uma execução com disparar workflow.
-**Evidência agregada:** execução real passando e falhando, além de log
-indisponível, com comparação ao GitHub e testes locais/remotos. C10.1 já entrega
-workflows, execuções recentes, jobs, paginação e estados de erro; a comparação
-agregada de Actions reais segue pendente. C10.2 implementa obtenção validada e
-limitada de logs e seus estados de UI; build, testes, lint, fluxo instrumentado
-para log indisponível, CI e inspeção Maestro passaram. Um job real autorizado
-(`#49`, `build`) abriu no Pixel 9 e teve seus metadados confirmados pelo GitHub
-CLI; o conteúdo dos logs não foi copiado nem persistido. C10.2 está `DONE`; C10
-segue pendente da comparação agregada de execuções reais passando/falhando e do
-log indisponível. Os estados individuais e a evidência atual estão em
+**Evidência agregada:** PASS em 2026-10-05. No Pixel 9, Maestro mostrou o run
+real #49 como sucesso e o #51 como falha; os metadados corresponderam ao GitHub
+CLI. O job `build` do #51 estava cancelado sem etapas; ao abrir seus logs, o app
+indicou link expirado ou logs indisponíveis, sem confundi-los com log vazio. A
+fixture 404 de C10.2 também verificou o erro de indisponibilidade. Para o #49,
+o app abriu a tela real de logs e mostrou o aviso de sensibilidade. Nenhum corpo
+de log foi copiado ou persistido. C10.1 e C10.2 estão `DONE` e o aceite
+agregado C10 está concluído. Evidências individuais em
 [`plan/tasks.json`](plan/tasks.json), [`PROJECT_STATE.md`](PROJECT_STATE.md),
 [`docs/evidence/C10.1.md`](docs/evidence/C10.1.md) e
 [`docs/evidence/C10.2.md`](docs/evidence/C10.2.md).

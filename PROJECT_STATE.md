@@ -18,8 +18,12 @@ paginação, estados vazios e erros. Build, unit tests e lint passaram; testes
 instrumentados da classe passaram 15/15 e a auditoria independente passou. A
 suíte agregada mais recente terminou 87/88: o mesmo fluxo Actions passou isolado
 e na classe, mas sofreu timeout intermitente na execução total; detalhes em
-`docs/evidence/C10.1.md`. Comparação com Actions reais e CI remoto ficam
-`NOT_RUN`; por isso o checkpoint agregado C10 não está aceito.
+`docs/evidence/C10.1.md`. No Pixel 9, os runs #49 (sucesso) e #51 (falha)
+corresponderam aos metadados do GitHub CLI. O #51 não tinha etapas executadas e
+o app indicou link expirado ou logs indisponíveis, sem mostrá-los como vazios;
+a fixture 404 verificou a indisponibilidade. C10 foi aceito com a
+evidência real agregada registrada em `docs/evidence/C10.1.md` e
+`docs/evidence/C10.2.md`.
 
 C10.2 está `DONE` no código `22938e1`. O contrato foi auditado; a implementação cobre a
 captura do redirecionamento temporário, validação de conteúdo, leitura limitada
@@ -37,10 +41,10 @@ dispositivo encerrado e diálogo de ANR do Android. A inspeção visual posterio
 passou via Maestro 2.11.0 no Pixel 9/API 37: a conta autorizada abriu o job real
 `build` da execução #49; o GitHub CLI confirmou execução/job bem-sucedidos no
 SHA `e96feab`, e a tela exibiu o aviso de sensibilidade sem carregamento, estado
-vazio ou erro. O conteúdo dos logs não foi lido, copiado ou persistido. CI
-remoto passou no SHA `22938e1` (run 37344629817). C10.2 está concluído; C10
-permanece pendente da comparação agregada de Actions reais, incluindo execução
-passando/falhando e log indisponível. Evidência detalhada em
+vazio ou erro. O conteúdo dos logs não foi inspecionado, copiado ou persistido. CI
+remoto passou no SHA `22938e1` (run 37344629817). C10.2 está concluído e o
+checkpoint C10 também foi aceito após a comparação real de sucesso/falha e log
+indisponível. Evidência detalhada em
 `docs/evidence/C10.2.md`.
 
 O modo de demonstração usa dados locais fictícios identificados como
