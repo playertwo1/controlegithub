@@ -186,11 +186,14 @@ adequado na conta de teste). O checkpoint agregado C08 foi aceito pelo
 proprietário em 2026-10-12, dispensando essa evidência. Evidência em
 `docs/evidence/C08.2.md`.
 
-C09.1 retomada após revisão/aprovação do plano pelo proprietário. Em 2026-10-12
-o proprietário (Rafael / playertwo1) confirmou que a Notifications API aceita o
-token atual do OAuth Device Flow; `plan/contracts/C09.1.md` limita o teste a
-leitura e exige falha explícita se OAuth for rejeitado. Implementação em
-andamento na branch `feat/c09-github-notifications` (origem
-`codex/github-notifications`); validação-base no SHA `abee9e5` passou em build,
-testes unitários e lint. Plano: `docs/superpowers/plans/2026-10-05-github-notifications.md`;
-desenho aprovado: `docs/superpowers/specs/2026-10-06-github-notifications-design.md`.
+C09.1 retomada após aprovação do plano e decisão explícita do proprietário de
+testar empiricamente o OAuth Device Flow existente; o contrato limita o teste a
+leitura e exige falha explícita se OAuth for rejeitado. No worktree isolado,
+Task 0 ativou o contrato. Task 1 implementou parser/modelo, mapeamento de motivo
+e tipo, validação dos destinos e reutilização do parser de repositórios. Os 4
+testes JVM de destino/labels e 4 instrumentados do parser passaram no Pixel 9,
+API 37; cada teste vermelho apontou primeiro para ausência das funções/modelos.
+Build-base, testes unitários e lint passaram antes da alteração no SHA `abee9e5`.
+Task 2 (pager) é a próxima etapa; nenhuma requisição OAuth real foi feita ainda.
+Plano: `docs/superpowers/plans/2026-10-05-github-notifications.md`; desenho:
+`docs/superpowers/specs/2026-10-06-github-notifications-design.md`.
