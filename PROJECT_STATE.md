@@ -183,14 +183,16 @@ cancelamento C07.2 que passou na repetição. A comparação autenticada com PR
 real está `NOT_RUN` até haver PR adequado; C08 agregado segue pendente do aceite
 real descrito no roadmap. Evidência em `docs/evidence/C08.2.md`.
 
-Em C09.1, Task 0 reativou o contrato após o proprietário autorizar teste empírico
-do OAuth Device Flow existente; se OAuth for negado, a falha será explícita e
-esta tarefa volta a `BLOCKED`. Task 1 implementou parser/modelo, rótulos e
-validação dos destinos, com 4 testes JVM e 4 testes instrumentados no Pixel 9/API
-37. Task 2 compôs `GitHubPaginator` para `/notifications?all=true&per_page=50`,
-deduplicação, bearer e resultados 401/403/429/servidor/JSON inválido; 3 testes
-instrumentados passaram e a suíte JVM completa passou. O baseline no SHA `abee9e5`
-passou build, testes unitários e lint. Task 3 (interface/navegação) é a próxima;
-nenhuma requisição OAuth real foi feita ainda.
+Em C09.1, Tasks 0–3 ativaram o contrato autorizado, implementaram parsing,
+validação de destinos, paginação e a caixa autenticada com filtros, detalhe e
+navegação local. A tela passou 7 testes Compose focados; navegação 5/5,
+integração da Home 8/8 e regressões individuais de detalhes passaram no Pixel
+9/API 37. Maestro confirmou a navegação da demonstração identificada como
+fictícia; não houve inspeção Maestro autenticada nem requisição OAuth real.
+`assembleDebug testDebugUnitTest lintDebug` passou após a implementação. A suíte
+`connectedDebugAndroidTest` completa foi tentada duas vezes, mas falhou sob
+instabilidade do emulador (hierarquia Compose ausente e conexão ADB reiniciada);
+isso não é PASS. Task 4 segue ativa para evidência, auditoria independente e
+tentativa real OAuth.
 Plano: `docs/superpowers/plans/2026-10-05-github-notifications.md`; desenho:
 `docs/superpowers/specs/2026-10-06-github-notifications-design.md`.

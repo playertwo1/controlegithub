@@ -68,21 +68,25 @@ class GitHubHomeScreenTest {
             compose.onNodeWithText("Nenhuma issue encontrada com estes filtros.").assertIsDisplayed()
             compose.onNodeWithText("ISSUE #18").assertDoesNotExist()
             compose.onNodeWithText("Avisos").performClick()
-            compose.onNodeWithText("Ainda não integrado").assertIsDisplayed()
+            compose.waitUntil(10_000) {
+                api.requests.size == 3 &&
+                    compose.onAllNodesWithText("Nenhuma notificação.").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Nenhuma notificação.").assertIsDisplayed()
             compose.onNodeWithText("Você foi mencionado em uma issue").assertDoesNotExist()
 
             compose.onNodeWithText("Início").performClick()
             compose.waitUntil(10_000) {
-                api.requests.size == 3 &&
+                api.requests.size == 4 &&
                     compose.onAllNodesWithText("Fixture Developer").fetchSemanticsNodes().isNotEmpty()
             }
             compose.onNodeWithContentDescription("Atualizar perfil").performClick()
             compose.waitUntil(10_000) {
-                api.requests.size == 4 &&
+                api.requests.size == 5 &&
                     compose.onAllNodesWithText("Fixture Developer").fetchSemanticsNodes().isNotEmpty()
             }
             assertEquals(
-                listOf("GET /user HTTP/1.1", "GET /issues?filter=assigned&state=open&pulls=false&per_page=50 HTTP/1.1") +
+                listOf("GET /user HTTP/1.1", "GET /issues?filter=assigned&state=open&pulls=false&per_page=50 HTTP/1.1", "GET /notifications?all=true&per_page=50 HTTP/1.1") +
                     List(2) { "GET /user HTTP/1.1" },
                 api.requests
             )
@@ -282,7 +286,7 @@ private class ProfileApi(initialStatus: Int = 200) : AutoCloseable {
                         dropNextResponse = false
                         return@use
                     }
-                    val body = if (responseStatus != 200) "{}" else if (requests.last().startsWith("GET /user/repos?") || requests.last().startsWith("GET /issues?")) "[]" else
+                    val body = if (responseStatus != 200) "{}" else if (requests.last().startsWith("GET /user/repos?") || requests.last().startsWith("GET /issues?") || requests.last().startsWith("GET /notifications?")) "[]" else
                         """{"login":"fixture-user","html_url":"https://github.com/fixture-user","name":"Fixture Developer","public_repos":0,"owned_private_repos":7,"followers":12}"""
                     val bytes = body.toByteArray(StandardCharsets.UTF_8)
                     socket.getOutputStream().apply {

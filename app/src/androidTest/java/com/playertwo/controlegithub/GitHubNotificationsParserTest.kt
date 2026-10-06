@@ -46,7 +46,10 @@ class GitHubNotificationsParserTest {
 internal fun fixtureNotificationJson(
     id: String = "1",
     type: String? = "Issue",
-    url: String? = "https://api.github.com/repos/acme/app/issues/12"
+    url: String? = "https://api.github.com/repos/acme/app/issues/12",
+    title: String = "Fixture title",
+    unread: Boolean = true,
+    reason: String = "assign"
 ): String {
     val repository = JSONObject()
         .put("id", 1)
@@ -57,13 +60,13 @@ internal fun fixtureNotificationJson(
         .put("description", JSONObject.NULL)
         .put("language", JSONObject.NULL)
         .put("stargazers_count", 0)
-    val subject = JSONObject().put("title", "Fixture title")
+    val subject = JSONObject().put("title", title)
     type?.let { subject.put("type", it) }
     url?.let { subject.put("url", it) }
     val notification = JSONObject()
         .put("id", id)
-        .put("unread", true)
-        .put("reason", "assign")
+        .put("unread", unread)
+        .put("reason", reason)
         .put("updated_at", "2026-10-01T12:00:00Z")
         .put("repository", repository)
     if (type != null || url != null) notification.put("subject", subject)
