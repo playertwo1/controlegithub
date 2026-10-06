@@ -197,8 +197,9 @@ completa terminou com 109/110: `GitHubRepositoriesFilterScreenTest.searchByLangu
 falhou por timeout; a execução focada da classe também reproduziu a falha
 (8/9). Como o diff atual só altera o source set debug, manifesto debug, fluxo
 Maestro e evidência, C09.1 segue `IN_PROGRESS` até adjudicar esse gate e concluir
-CI para o novo diff. A auditoria independente deste diff não encontrou achados;
-ela passou contra `3bd0ad9`. A auditoria anterior passou no range
+CI para o novo diff. Commit da fixture `d2642ec`; CI passou no run
+`37483593333`. A auditoria independente deste diff não encontrou achados; ela
+passou contra `3bd0ad9`. A auditoria anterior passou no range
 `abee9e5..c90879d`; CI anterior passou em `4cabe74` (run `37442639784`, tentativa
 1), não cobrindo a fixture.
 Plano: `docs/superpowers/plans/2026-10-05-github-notifications.md`; desenho:
