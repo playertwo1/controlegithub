@@ -198,6 +198,6 @@ a demonstração sintética; a fixture de Avisos ainda não pode ser carregada n
 tela instalada sem adicionar um modo de teste. Reauditoria independente do
 código passou sem achados no range `abee9e5..c90879d`. Task 4 segue ativa para
 resolver/verificar os gates de dispositivo e registrar o estado final. CI remoto
-está `NOT_RUN`.
+passou no SHA `4cabe74` (run `37442639784`, tentativa 1).
 Plano: `docs/superpowers/plans/2026-10-05-github-notifications.md`; desenho:
 `docs/superpowers/specs/2026-10-06-github-notifications-design.md`.
