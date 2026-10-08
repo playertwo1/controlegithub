@@ -1,7 +1,7 @@
 # C09.1 — Design da caixa de notificações
 
-**Estado:** escopo e desenho aprovados pelo proprietário em conversa; plano de
-implementação detalhado em revisão antes da execução.
+**Estado:** escopo e desenho aprovados; implementação C09.1 em andamento no
+checkout atual. Evidências e gates pendentes estão em `docs/evidence/C09.1.md`.
 
 ## Objetivo
 
@@ -17,8 +17,9 @@ filtros, página e posição da lista.
 - Tentar a Notifications REST API com esse token. A referência REST atual diz
   que os endpoints aceitam apenas PAT clássico, enquanto a referência de
   escopos OAuth atribui leitura de notificações ao escopo `notifications`.
-  Essa divergência será resolvida empiricamente com a conta autorizada antes de
-  considerar a integração funcional.
+  Essa divergência deve ser resolvida empiricamente com uma sessão OAuth já
+  existente antes de considerar a integração funcional; não iniciar novo login
+  nem registrar conteúdo privado como parte desta entrega.
 - Se o GitHub negar acesso, mostrar indisponibilidade explícita; nunca mostrar
   uma caixa vazia como se a leitura tivesse funcionado. Registrar somente
   status e resultado sanitizado, sem token nem conteúdo privado. Parar o fluxo

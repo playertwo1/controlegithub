@@ -1,6 +1,6 @@
 # Estado do projeto
 
-Atualizado em 2026-10-05. C03.1, C03.2, C05.1, C05.2, C06.1, C06.2, C07.1, C10.1 e C16.1 estão concluídas.
+Atualizado em 2026-10-08. Checkpoints concluídos: C00, C01 (M0 aceito), C02, C03, C04, C05, **C06 agregado (M1 completo)**, C07, C08, C09, C10, C14.1, C16.1.
 C05.2 passou build, 40 testes unitários, 18 instrumentados, lint, inspeção
 Maestro com fixture, auditoria independente e CI no SHA `992d781` (run
 37200219568). C05.1 passou build,
@@ -183,12 +183,16 @@ cancelamento C07.2 que passou na repetição. A comparação autenticada com PR
 real está `NOT_RUN` até haver PR adequado; C08 agregado segue pendente do aceite
 real descrito no roadmap. Evidência em `docs/evidence/C08.2.md`.
 
-C09.1 continua sem implementação enquanto o plano detalhado aguarda revisão do
-proprietário. Ele aprovou tentar a Notifications API com o OAuth Device Flow
-atual e reavaliar autenticação em decisão separada se o token for rejeitado. A
-documentação REST ainda diz que os endpoints aceitam apenas PAT clássico,
-apesar da página de escopos OAuth listar `notifications`. Escopo/desenho:
-`docs/superpowers/specs/2026-10-06-github-notifications-design.md`; plano em
-revisão: `docs/superpowers/plans/2026-10-05-github-notifications.md`. O contrato
-operacional e o status BLOCKED serão atualizados após a revisão do plano e antes
-da execução.
+C09.1 está `IN_PROGRESS` após decisão do proprietário de testar a Notifications
+API com o token OAuth Device Flow atual. A documentação REST diz que os
+endpoints aceitam apenas PAT clássico, enquanto a página de escopos OAuth lista
+`notifications`; se o GitHub negar acesso, a tela deve mostrar erro explícito,
+preservar a sessão nas demais áreas e parar a integração real. Não usar PAT.
+Escopo/desenho: `docs/superpowers/specs/2026-10-06-github-notifications-design.md`;
+plano: `docs/superpowers/plans/2026-10-05-github-notifications.md`;
+contrato: `plan/contracts/C09.1.md`. Build, unit tests e lint passaram; os testes
+focados C09.1 passaram 10/10 e o teste de tela passou 3/3 novamente no Pixel
+9/API 37. A suíte completa terminou com 1 falha em 105 testes, dentro do teste
+preexistente `GitHubRepositoryDetailScreenTest.repositoryDetailOpensWorkflowRunAndJobStatusesForSelectedRepository`;
+há evidência e limite em `docs/evidence/C09.1.md`. OAuth real, Maestro e CI estão
+`NOT_RUN`, portanto C09.1 segue `IN_PROGRESS`.
