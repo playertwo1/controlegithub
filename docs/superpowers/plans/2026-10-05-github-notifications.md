@@ -2,8 +2,8 @@
 
 **Estado:** revisado e aprovado pelo proprietário (Rafael / playertwo1) em
 2026-10-12. O proprietário confirmou que a Notifications API aceita o token
-atual do OAuth Device Flow. C09.1 pode sair de `BLOCKED` para `READY` e avançar
-conforme este plano e `docs/EXECUTION.md`.
+atual do OAuth Device Flow. C09.1 está `DONE` com evidência; C09.2 está
+`IN_PROGRESS` (falta tentativa OAuth real autorizada de marcar como lida).
 
 > **Para agentes de execução:** SUB-SKILL OBRIGATÓRIA: use `superpowers:subagent-driven-development` (recomendado) ou `superpowers:executing-plans` para executar cada tarefa. Acompanhe o progresso com caixas `- [ ]`.
 

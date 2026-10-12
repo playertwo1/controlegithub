@@ -1,7 +1,8 @@
 # C09.1 — Design da caixa de notificações
 
-**Estado:** escopo, desenho e plano detalhado aprovados pelo proprietário; C09.1
-em execução.
+**Estado:** escopo, desenho e plano detalhado aprovados pelo proprietário em
+2026-10-12 (OAuth Device Flow aceito). C09.1 está `DONE`; C09.2 segue
+`IN_PROGRESS` aguardando tentativa OAuth real de marcar como lida.
 
 ## Objetivo
 
