@@ -1,5 +1,10 @@
 # Caixa de notificações do GitHub — plano de implementação
 
+**Estado:** revisado e aprovado pelo proprietário (Rafael / playertwo1) em
+2026-10-12. O proprietário confirmou que a Notifications API aceita o token
+atual do OAuth Device Flow. C09.1 pode sair de `BLOCKED` para `READY` e avançar
+conforme este plano e `docs/EXECUTION.md`.
+
 > **Para agentes de execução:** SUB-SKILL OBRIGATÓRIA: use `superpowers:subagent-driven-development` (recomendado) ou `superpowers:executing-plans` para executar cada tarefa. Acompanhe o progresso com caixas `- [ ]`.
 
 **Objetivo:** Implementar e validar C09.1 com notificações paginadas, filtros, detalhe e navegação segura, tratando rejeição OAuth como falha explícita em vez de caixa vazia.
@@ -46,12 +51,12 @@
 
 ### Tarefa 0: Ativar o contrato antes de iniciar implementação
 
-**Arquivos:** modificar `plan/contracts/C09.1.md`, `plan/tasks.json`, `PROJECT_STATE.md`.
+**Arquivos:** modificar `plan/contracts/C09.1.md`, `plan/tasks.json`, `PROJECT_STATE.md` (desbloqueio para `READY` já registrado em 2026-10-12).
 
-**Interfaces:** manter o ID `C09.1` e seus critérios de escopo. O consentimento já registrado pelo proprietário substitui o bloqueio anterior que exigia compatibilidade OAuth documentada: o plano aprovado agora testa empiricamente o token OAuth atual e para com erro explícito se receber `403`.
+**Interfaces:** manter o ID `C09.1` e seus critérios de escopo. Em 2026-10-12 o proprietário confirmou que a Notifications API aceita o token OAuth Device Flow atual e aprovou este plano; C09.1 passou de `BLOCKED` para `READY`. Ao iniciar o código, promover para `IN_PROGRESS`. Em execução, `403` continua falha explícita (nunca caixa vazia).
 
-- [ ] **Passo 1: revisar os textos atuais do contrato e do bloqueio.** Confirmar que somente a antiga exigência de compatibilidade oficial está sendo removida; manter o escopo somente leitura e a regra contra exibir falha como lista vazia.
-- [ ] **Passo 2: atualizar contrato e backlog para início autorizado.** Reescrever pré-condições/verificação/aceite em `plan/contracts/C09.1.md`; alterar C09.1 de `BLOCKED` para `IN_PROGRESS` e limpar `blocked_reason` em `plan/tasks.json` porque a decisão foi revista e este plano já terá aprovação do proprietário.
+- [x] **Passo 1: revisar os textos atuais do contrato e do bloqueio.** Feito em 2026-10-12: exigência de compatibilidade documental oficial removida; escopo somente leitura e regra contra falha como lista vazia mantidos.
+- [x] **Passo 2: atualizar contrato e backlog para início autorizado.** Feito em 2026-10-12: contrato reescrito; C09.1 em `READY` com `blocked_reason` nulo. Ao começar a implementação, alterar para `IN_PROGRESS`:
 
 ```json
 {
@@ -62,9 +67,9 @@
 }
 ```
 
-- [ ] **Passo 3: registrar a retomada no estado.** Atualizar a seção C09.1 de `PROJECT_STATE.md` para citar o plano aprovado e a tarefa ativa; não registrar testes ainda não executados como PASS.
-- [ ] **Passo 4: validar contrato e backlog antes do código.** Rode `python scripts/check_plan.py` e `git diff --check`. Esperado: estrutura do backlog PASS e somente C09.1 IN_PROGRESS.
-- [ ] **Passo 5: commit.** `git add plan/contracts/C09.1.md plan/tasks.json PROJECT_STATE.md; git commit -m "docs: resume GitHub notifications task"`.
+- [x] **Passo 3: registrar a retomada no estado.** Feito em 2026-10-12 em `PROJECT_STATE.md` (plano aprovado, C09.1 `READY`); ao iniciar código, registrar a tarefa ativa `IN_PROGRESS` sem promover testes não executados a PASS.
+- [ ] **Passo 4: validar contrato e backlog antes do código.** Rode `python scripts/check_plan.py` e `git diff --check`. Esperado: estrutura do backlog PASS e somente C09.1 IN_PROGRESS após o Passo 2 da sessão de implementação.
+- [ ] **Passo 5: commit ao promover para IN_PROGRESS.** `git add plan/contracts/C09.1.md plan/tasks.json PROJECT_STATE.md; git commit -m "docs: start GitHub notifications implementation"`.
 
 ### Tarefa 1: Modelos, parser e destino seguro
 
