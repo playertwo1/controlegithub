@@ -3,5 +3,18 @@
         <activity
             android:name=".NavigationTestActivity"
             android:exported="false" />
+        <activity
+            android:name=".NotificationsFixtureActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="controlegithub"
+                    android:host="debug"
+                    android:path="/notifications" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

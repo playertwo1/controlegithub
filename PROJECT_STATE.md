@@ -1,6 +1,6 @@
 # Estado do projeto
 
-Atualizado em 2026-10-12. C03.1, C03.2, C05.1, C05.2, C06.1, C06.2, C07.1, C07.2, C08.1, C08.2, C10.1, C10.2, C14.1 e C16.1 estão concluídas. Os checkpoints agregados C07 e C08 foram aceitos pelo proprietário em 2026-10-12. C09.1 está `READY`.
+Atualizado em 2026-10-12. C03.1, C03.2, C05.1, C05.2, C06.1, C06.2, C07.1, C07.2, C08.1, C08.2, C10.1, C10.2, C14.1 e C16.1 estão concluídas. Os checkpoints agregados C07 e C08 foram aceitos pelo proprietário em 2026-10-12. C09.1 está `DONE`. C09.2 está `IN_PROGRESS`.
 C05.2 passou build, 40 testes unitários, 18 instrumentados, lint, inspeção
 Maestro com fixture, auditoria independente e CI no SHA `992d781` (run
 37200219568). C05.1 passou build,
@@ -186,12 +186,28 @@ adequado na conta de teste). O checkpoint agregado C08 foi aceito pelo
 proprietário em 2026-10-12, dispensando essa evidência. Evidência em
 `docs/evidence/C08.2.md`.
 
-C09.1 está `READY`. Em 2026-10-12 o proprietário (Rafael / playertwo1)
-confirmou que a Notifications API aceita o token atual do OAuth Device Flow,
-aprovou o plano
-`docs/superpowers/plans/2026-10-05-github-notifications.md` e resolveu o
-bloqueio anterior. Contrato atualizado em `plan/contracts/C09.1.md`. Desenho:
-`docs/superpowers/specs/2026-10-06-github-notifications-design.md`. A
-implementação ainda não começou; promover a `IN_PROGRESS` ao iniciar o código.
-Se uma execução futura receber `403`, registrar falha explícita e reabrir a
-decisão de autenticação em mudança separada.
+Em C09.1, a caixa autenticada, paginação, filtros, detalhe, origem segura e
+retorno foram validados. Maestro percorreu novamente a fixture local no Pixel 9;
+a consulta OAuth real anterior retornou HTTP 200 sem guardar conteúdo privado.
+C09.1 está `DONE`, com evidência em `docs/evidence/C09.1.md`. A suíte conectada
+agregada permanece `NOT_PASS` em 109/110 por timeout no teste de Actions
+`GitHubRepositoryDetailScreenTest.forbiddenActionsRequestIsNotPresentedAsAnEmptyList`;
+esse resultado segue pendente e não foi chamado de PASS. Os testes específicos
+de Avisos passaram. No SHA `6bbaa7995051a2399363fd107c1194b61ad23de3`, o CI
+37490633721 e os checks locais build/testes/lint passaram, e a auditoria
+independente não encontrou bloqueios. Para evitar posição obsoleta ao trocar
+consultas paginadas, as LazyLists reiniciam seu estado de rolagem no novo pager;
+a causa da exceção observada numa paginação de Issues não foi atribuída
+definitivamente a essa correção.
+
+C09.2 segue `IN_PROGRESS`. A ação envia somente `PATCH /notifications/threads/{id}`
+para ID numérico validado, só altera o estado após `205`/`304` e mantém erro
+visível/retry em falha. Build, testes unitários e lint passaram; os 12 testes
+focados passaram no Pixel 9/API 37; Maestro passou nos fluxos de sucesso e `503`;
+auditoria independente PASS. CI remoto passou no SHA `e6be6f6` (run
+`37508108666`). A suíte conectada total foi `NOT_PASS` 112/115 por
+três falhas em Pull Requests, favoritos e Actions. O runner apagou a
+instalação e a sessão OAuth local; a tentativa real autorizada ainda é `NOT_RUN`.
+Retomar reautorizando o Device Flow e executar uma única marcação real; registrar
+somente status HTTP e estado visual. Evidência parcial em
+`docs/evidence/C09.2.md`; contrato em `plan/contracts/C09.2.md`.

@@ -93,13 +93,17 @@ internal class GitHubHttpClient(
         require(isAllowedBase(baseUrl)) { "GitHub API URL must use HTTPS on api.github.com" }
     }
 
-    fun get(path: String, accessToken: String? = null): GitHubHttpCall {
+    fun get(path: String, accessToken: String? = null): GitHubHttpCall = request("GET", path, accessToken)
+
+    fun patch(path: String, accessToken: String? = null): GitHubHttpCall = request("PATCH", path, accessToken)
+
+    private fun request(method: String, path: String, accessToken: String?): GitHubHttpCall {
         require(path.startsWith('/') && !path.startsWith("//") && '#' !in path)
         require(accessToken == null || (accessToken.isNotBlank() && accessToken.none(Char::isWhitespace)))
 
         val target = baseUrl.resolve(path.removePrefix("/"))
         require(sameOrigin(baseUrl, target))
-        return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate)
+        return GitHubHttpCall(target, method, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate)
     }
 
     internal fun pathFromLink(linkUrl: String): String {
@@ -121,6 +125,7 @@ internal class GitHubHttpClient(
 
 internal class GitHubHttpCall internal constructor(
     private val url: URI,
+    private val method: String,
     private val accessToken: String?,
     private val connectTimeoutMillis: Int,
     private val readTimeoutMillis: Int,
@@ -149,7 +154,7 @@ internal class GitHubHttpCall internal constructor(
             if (cancelled.get()) return GitHubHttpResult.Failure(GitHubHttpError.CANCELLED)
 
             activeConnection.apply {
-                requestMethod = "GET"
+                requestMethod = method
                 connectTimeout = connectTimeoutMillis
                 readTimeout = readTimeoutMillis
                 instanceFollowRedirects = false
@@ -169,8 +174,9 @@ internal class GitHubHttpCall internal constructor(
             )
             if (cancelled.get()) {
                 GitHubHttpResult.Failure(GitHubHttpError.CANCELLED)
-            } else if (statusCode in 200..299) {
-                val body = activeConnection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+            } else if (statusCode in 200..299 || statusCode == 304) {
+                val body = if (statusCode in setOf(204, 205, 304)) "" else
+                    activeConnection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
                 if (cancelled.get()) GitHubHttpResult.Failure(GitHubHttpError.CANCELLED)
                 else GitHubHttpResult.Success(statusCode, body, headers)
             } else {
