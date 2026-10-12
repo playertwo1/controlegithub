@@ -1,7 +1,8 @@
 # C09.1 — Design da caixa de notificações
 
 **Estado:** escopo e desenho aprovados pelo proprietário em conversa; plano de
-implementação detalhado em revisão antes da execução.
+implementação detalhado revisado e aprovado em 2026-10-12. O proprietário
+confirmou que a Notifications API aceita o token atual do OAuth Device Flow.
 
 ## Objetivo
 
