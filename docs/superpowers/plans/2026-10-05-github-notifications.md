@@ -45,13 +45,13 @@ conforme este plano e `docs/EXECUTION.md`.
 - Criar `app/src/test/java/com/playertwo/controlegithub/GitHubNotificationsTest.kt`: parser, tipos/motivos, validação e construção do destino.
 - Criar `app/src/test/java/com/playertwo/controlegithub/GitHubNotificationPagerTest.kt`: endpoint inicial, paginação, deduplicação e respostas de falha por servidor local.
 - Criar `app/src/androidTest/java/com/playertwo/controlegithub/GitHubNotificationsScreenTest.kt`: filtros, estados visíveis, stack local, retorno e limites de sessão usando fixture HTTP local sintética.
-- Modificar `plan/contracts/C09.1.md`, `plan/tasks.json`, `PROJECT_STATE.md` e criar `docs/evidence/C09.1.md` ao executar e fechar a entrega. Remover o bloqueio anterior somente após registrar a decisão do proprietário e atualizar o contrato; marcar DONE apenas com todos os gates comprovados.
+- Modificar `plan/contracts/C09.1.md`, `plan/tasks.json`, `STATE.md` e criar `docs/evidence/C09.1.md` ao executar e fechar a entrega. Remover o bloqueio anterior somente após registrar a decisão do proprietário e atualizar o contrato; marcar DONE apenas com todos os gates comprovados.
 
 ## Tarefas
 
 ### Tarefa 0: Ativar o contrato antes de iniciar implementação
 
-**Arquivos:** modificar `plan/contracts/C09.1.md`, `plan/tasks.json`, `PROJECT_STATE.md` (desbloqueio para `READY` já registrado em 2026-10-12).
+**Arquivos:** modificar `plan/contracts/C09.1.md`, `plan/tasks.json`, `STATE.md` (desbloqueio para `READY` já registrado em 2026-10-12).
 
 **Interfaces:** manter o ID `C09.1` e seus critérios de escopo. Em 2026-10-12 o proprietário confirmou que a Notifications API aceita o token OAuth Device Flow atual e aprovou este plano; C09.1 passou de `BLOCKED` para `READY`. Ao iniciar o código, promover para `IN_PROGRESS`. Em execução, `403` continua falha explícita (nunca caixa vazia).
 
@@ -67,9 +67,9 @@ conforme este plano e `docs/EXECUTION.md`.
 }
 ```
 
-- [x] **Passo 3: registrar a retomada no estado.** Feito em 2026-10-12 em `PROJECT_STATE.md` (plano aprovado, C09.1 `READY`); ao iniciar código, registrar a tarefa ativa `IN_PROGRESS` sem promover testes não executados a PASS.
+- [x] **Passo 3: registrar a retomada no estado.** Feito em 2026-10-12 em `STATE.md` (plano aprovado, C09.1 `READY`); ao iniciar código, registrar a tarefa ativa `IN_PROGRESS` sem promover testes não executados a PASS.
 - [ ] **Passo 4: validar contrato e backlog antes do código.** Rode `python scripts/check_plan.py` e `git diff --check`. Esperado: estrutura do backlog PASS e somente C09.1 IN_PROGRESS após o Passo 2 da sessão de implementação.
-- [ ] **Passo 5: commit ao promover para IN_PROGRESS.** `git add plan/contracts/C09.1.md plan/tasks.json PROJECT_STATE.md; git commit -m "docs: start GitHub notifications implementation"`.
+- [ ] **Passo 5: commit ao promover para IN_PROGRESS.** `git add plan/contracts/C09.1.md plan/tasks.json STATE.md; git commit -m "docs: start GitHub notifications implementation"`.
 
 ### Tarefa 1: Modelos, parser e destino seguro
 
@@ -159,14 +159,14 @@ internal sealed interface GitHubNotificationDestination {
 
 ### Tarefa 4: Verificação real, documentação e aceite
 
-**Arquivos:** modificar `plan/contracts/C09.1.md`, `plan/tasks.json`, `PROJECT_STATE.md`; criar `docs/evidence/C09.1.md`.
+**Arquivos:** modificar `plan/contracts/C09.1.md`, `plan/tasks.json`, `STATE.md`; criar `docs/evidence/C09.1.md`.
 
 - [ ] **Passo 1: concluir o contrato de aceite.** Depois da Tarefa 0, completar no contrato os resultados comprovados, negativos e ainda não executados. Manter `IN_PROGRESS` enquanto faltar qualquer critério; usar `BLOCKED` somente se uma falha exigir nova decisão do proprietário.
 - [ ] **Passo 2: rodar verificações completas locais.** `python scripts/check_plan.py`, `git diff --check` e `./gradlew.bat assembleDebug testDebugUnitTest lintDebug --console=plain`. Registrar resultados por comando, sem promover NOT_RUN a PASS.
 - [ ] **Passo 3: inspecionar a experiência sintética.** No Pixel 9/API 37, rodar `./gradlew.bat connectedDebugAndroidTest --console=plain`; inspecionar a fixture de lista/detalhe/retorno com Maestro. Identificar claramente que são dados de fixture e não capturar notificação real.
 - [ ] **Passo 4: testar OAuth real com a conta autorizada.** No app, atualizar Avisos e registrar somente status HTTP, presença/ausência de itens e renderização. Descartar o corpo da resposta. Se receber `403`, registrar acesso negado sanitizado, manter a sessão útil para demais telas e parar; não marcar integração como funcional, não pedir PAT nem implementar outro método dentro de C09.1. Reportar evidência e propor revisão de autenticação como decisão separada.
-- [ ] **Passo 5: fechar evidência e estado.** `docs/evidence/C09.1.md` lista ambiente, comandos, SHA, CI, auditoria independente e resultado OAuth sanitizado. Atualizar `PROJECT_STATE.md`; marcar `DONE` apenas quando critérios e gates exigidos passarem. Em caso de bloqueio real OAuth/ambiente, manter `BLOCKED`/`IN_PROGRESS` conforme causa e registrar ação concreta.
-- [ ] **Passo 6: validar o diff completo e commit.** Repetir `python scripts/check_plan.py` e `git diff --check`; obter auditoria independente do diff e corrigir findings antes do commit final: `git add plan/contracts/C09.1.md plan/tasks.json PROJECT_STATE.md docs/evidence/C09.1.md; git commit -m "docs: record GitHub notifications verification"`.
+- [ ] **Passo 5: fechar evidência e estado.** `docs/evidence/C09.1.md` lista ambiente, comandos, SHA, CI, auditoria independente e resultado OAuth sanitizado. Atualizar `STATE.md`; marcar `DONE` apenas quando critérios e gates exigidos passarem. Em caso de bloqueio real OAuth/ambiente, manter `BLOCKED`/`IN_PROGRESS` conforme causa e registrar ação concreta.
+- [ ] **Passo 6: validar o diff completo e commit.** Repetir `python scripts/check_plan.py` e `git diff --check`; obter auditoria independente do diff e corrigir findings antes do commit final: `git add plan/contracts/C09.1.md plan/tasks.json STATE.md docs/evidence/C09.1.md; git commit -m "docs: record GitHub notifications verification"`.
 
 ## Autorrevisão do plano
 

@@ -9,16 +9,17 @@ da conta conectada. As áreas ainda não integradas são identificadas no app; o
 modo de demonstração usa dados fictícios rotulados como demonstração. O produto
 continua em desenvolvimento e ainda não oferece operações de escrita no GitHub.
 O estado detalhado e as limitações verificadas estão em
-[PROJECT_STATE.md](PROJECT_STATE.md).
+[STATE.md](STATE.md).
 
 ## O que funciona hoje
 
 - Autorização por Device Flow, restauração de sessão cifrada no aparelho e logout.
 - Perfil da conta, lista de repositórios e busca/filtros locais dos itens carregados.
-- Detalhe do repositório e lista/filtros de issues em leitura.
-- Fluxos de Actions para workflows, execuções, jobs e uma tela de logs em
-  implementação. C10.2 ainda aguarda inspeção visual da tela de logs e comparação
-  com um job real; veja [roadmap](ROADMAP.md) e [evidência C10.2](docs/evidence/C10.2.md).
+- Detalhe do repositório, painel da conta e lista/filtros/detalhe de issues em leitura.
+- Pull requests em leitura: lista, detalhe, comentários, reviews, arquivos, diff e checks.
+- GitHub Actions em leitura: workflows, execuções, jobs e logs (C10 aceito; veja
+  [evidência C10.2](docs/evidence/C10.2.md)).
+- Favoritos locais de repositórios e preferência de tema (Sistema/Claro/Escuro).
 - Modo de demonstração para áreas ainda não conectadas, sem apresentar amostras
   como dados da conta.
 
@@ -34,7 +35,7 @@ planejado; não comprovam a implementação das telas.
 
 As imagens abaixo documentam capturas do baseline visual inicial no emulador.
 Elas antecedem as integrações reais e mostram dados fictícios; consulte o estado
-atual em [PROJECT_STATE.md](PROJECT_STATE.md).
+atual em [STATE.md](STATE.md).
 
 | Entrada | Painel | Repositórios |
 |---|---|---|
@@ -44,7 +45,7 @@ atual em [PROJECT_STATE.md](PROJECT_STATE.md).
 |---|---|---|
 | ![Detalhe](docs/screens/04-detail.png) | ![Trabalho](docs/screens/05-work.png) | ![Notificações](docs/screens/06-notifications.png) |
 
-## Executar
+## Como rodar
 
 1. Abra a pasta no Android Studio e aguarde a sincronização Gradle.
 2. Use JDK 17, SDK Android 36 e um dispositivo Android 8.0 (API 26) ou superior.
@@ -52,9 +53,12 @@ atual em [PROJECT_STATE.md](PROJECT_STATE.md).
 4. Para habilitar o login local, configure `GITHUB_OAUTH_CLIENT_ID` conforme
    [docs/AUTH.md](docs/AUTH.md). Sem essa propriedade, o app informa que a
    autorização está indisponível; a demonstração permanece acessível.
-5. Execute o módulo `app`.
+5. Execute o módulo `app` (ou `./gradlew installDebug`).
+
+## Como verificar
 
 ```sh
+python scripts/check_plan.py
 ./gradlew assembleDebug testDebugUnitTest lintDebug
 # Com emulador ou dispositivo conectado:
 ./gradlew connectedDebugAndroidTest
@@ -70,13 +74,15 @@ O [roadmap](ROADMAP.md) define os 21 checkpoints e cinco marcos. O
 `python scripts/check_plan.py` antes de selecionar trabalho. O
 [protocolo de execução](docs/EXECUTION.md) define como continuar uma tarefa; cada
 entrega READY tem um contrato em `plan/contracts/`. O
-[estado atual](PROJECT_STATE.md) e as evidências em `docs/evidence/` registram o
+[estado atual](STATE.md) e as evidências em `docs/evidence/` registram o
 que foi verificado e o que segue pendente. Consulte também as
 [decisões de arquitetura](docs/ARCHITECTURE.md), o [contrato visual](docs/DESIGN.md),
 o [guia OAuth](docs/AUTH.md) e a [verificação histórica da fundação](docs/VERIFICATION.md).
 
-A base Gold foi adaptada de [Ideias Standard](https://github.com/playertwo1/ideias_standard);
-veja [origem e adaptações](docs/STANDARD_ADOPTION.md).
+Visão, MVP e fora de escopo em [PROJECT.md](PROJECT.md); histórico em
+[CHANGELOG.md](CHANGELOG.md). A estrutura segue o
+[Ideias Standard](https://github.com/playertwo1/ideias_standard) v1.2.0; veja
+[origem e adaptações](docs/STANDARD_ADOPTION.md). Histórico (não editar): `docs/archive/`.
 
 ## Contribuir
 

@@ -1,7 +1,7 @@
 # Configuração de acesso ao GitHub
 
 O app implementa login GitHub por Device Flow e usa a sessão cifrada no aparelho
-para os fluxos reais descritos em [PROJECT_STATE.md](../PROJECT_STATE.md). O
+para os fluxos reais descritos em [STATE.md](../STATE.md). O
 modo de demonstração continua disponível sem sessão e seus dados são fictícios e
 identificados como demonstração. Áreas ainda não integradas não devem aparentar
 ser dados da conta.

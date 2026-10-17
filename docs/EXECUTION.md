@@ -2,12 +2,12 @@
 
 O ROADMAP define o produto e o aceite dos checkpoints C00–C20. O backlog
 `plan/tasks.json` é a única fonte de IDs, dependências e estados das tarefas.
-PROJECT_STATE registra evidências e limitações observadas, sem duplicar estados.
+STATE registra evidências e limitações observadas, sem duplicar estados.
 Os checkpoints agregam tarefas; não são a unidade de implementação.
 
 ## Seleção e contexto
 
-1. Leia AGENTS e PROJECT_STATE; rode `python scripts/check_plan.py`.
+1. Leia AGENTS e STATE; rode `python scripts/check_plan.py`.
 2. Se o usuário indicou uma tarefa, use-a. Caso contrário, retome IN_PROGRESS;
    na ausência dela, escolha a primeira READY na ordem do backlog cujas
    dependências estejam DONE. Não escolha por número de checkpoint.

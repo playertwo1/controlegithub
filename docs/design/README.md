@@ -6,7 +6,7 @@ a uma rota/estado implementado, equivalente ou exclusão justificada. São image
 de referência geradas com `image_gen`, inspiração One UI, tema escuro e navegação
 inferior flutuante. As imagens representam o destino planejado e não comprovam
 implementação. Algumas rotas já usam dados reais; outras seguem em demonstração
-ou ainda não estão disponíveis. Consulte [PROJECT_STATE.md](../../PROJECT_STATE.md)
+ou ainda não estão disponíveis. Consulte [STATE.md](../../STATE.md)
 para distinguir o que foi verificado.
 
 ## Visão geral

@@ -59,7 +59,7 @@ Para atualizar: instalar o APK, navegar até cada tela e usar
 `adb shell screencap -p /sdcard/screen.png` seguido de `adb pull`.
 
 As capturas usam dados demonstrativos. O app atual diferencia esses dados dos
-recursos carregados da conta; veja [PROJECT_STATE.md](../PROJECT_STATE.md) para
+recursos carregados da conta; veja [STATE.md](../STATE.md) para
 as integrações verificadas.
 
 ## Evolução

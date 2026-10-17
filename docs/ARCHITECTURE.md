@@ -21,7 +21,7 @@ O Client ID é público; client secret não é embutido no aplicativo. O token f
 protegido no dispositivo e não é enviado a um backend próprio. Perfil,
 repositórios, detalhe, lista de issues e partes de Actions já consultam a API em
 modo somente leitura. O estado por tela, as limitações e as verificações estão
-em [PROJECT_STATE.md](../PROJECT_STATE.md) e `docs/evidence/`.
+em [STATE.md](../STATE.md) e `docs/evidence/`.
 
 Escrita no GitHub e cache persistente permanecem fora do estado implementado;
 dependências e decisões futuras seguem o roadmap. A caixa de notificações está
