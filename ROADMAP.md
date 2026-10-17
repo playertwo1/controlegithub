@@ -32,6 +32,19 @@ GitLab/Forgejo, múltiplas contas simultâneas, editor de código, clone/push Gi
 merge de PR, disparo de workflows, dashboards avançados e IA ficam depois da 1.0.
 Tablet recebe comportamento utilizável; um layout dedicado fica para evolução.
 
+### Referências e propostas de refinamento
+
+O [registro de ideias OpenHub](docs/IDEIAS.md) e seu
+[detalhamento](docs/superpowers/specs/2026-10-17-openhub-aproveitamento-design.md)
+orientam refinamento futuro de C11 (cache/refresh), C12/C13 (composição) e
+eventuais evoluções de leitura/links. A sequência está no
+[plano de aproveitamento](docs/superpowers/plans/2026-10-17-openhub-aproveitamento.md).
+Ideias OH não são tarefas Cxx e não alteram dependências, estados ou aceites
+agregados. Leitura Markdown formatada, roteador geral, navegador completo de
+código e outras extensões só entram mediante delimitação de contrato e decisão
+de produto quando ampliarem escopo. C08.2 trata arquivos alterados do PR,
+não a árvore geral do repositório.
+
 ## Marcos de entrega
 
 | Marco | Checkpoints exigidos | Resultado demonstrável | Status |

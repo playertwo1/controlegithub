@@ -1,5 +1,25 @@
 # Estado do projeto
 
+## Atualização documental — 2026-10-17
+
+O aproveitamento do OpenHub foi detalhado em [ideias](docs/IDEIAS.md),
+[especificação](docs/superpowers/specs/2026-10-17-openhub-aproveitamento-design.md),
+[plano](docs/superpowers/plans/2026-10-17-openhub-aproveitamento.md) e
+[prompt para Claude](docs/prompts/CLAUDE_OPENHUB.md). São propostas de refinamento:
+cache/offline e refresh em C11, composição em C12/C13 e evolução de leitura/links
+quando delimitada. Código, dependências e estados de tarefas não mudaram.
+
+Nesta consulta, `plan/tasks.json` mantém C09.1 `DONE`, C09.2 e C11/C12/C13
+`PLANNED`; C08.2, C14.1 e C16.1 estão `DONE`. C11.1 depende de C09.2, portanto
+o fluxo segue para o refinamento de C09.2 antes de iniciar cache. Arquivos/diffs de PR já
+existem; um navegador geral de código/branches é ideia futura separada.
+README e arquitetura tiveram trechos desatualizados alinhados a essas evidências.
+Verificações desta alteração documental: `docs/evidence/OPENHUB-planning.md`.
+O histórico abaixo conserva suas datas e limitações; o JSON é canônico para
+estados individuais, e o roadmap continua definindo o aceite agregado.
+
+## Histórico anterior
+
 Atualizado em 2026-10-08. Checkpoints concluídos: C00, C01 (M0 aceito), C02, C03, C04, C05, **C06 agregado (M1 completo)**, C07, C08, C09, C10, C14.1, C16.1.
 C05.2 passou build, 40 testes unitários, 18 instrumentados, lint, inspeção
 Maestro com fixture, auditoria independente e CI no SHA `992d781` (run
@@ -183,16 +203,6 @@ cancelamento C07.2 que passou na repetição. A comparação autenticada com PR
 real está `NOT_RUN` até haver PR adequado; C08 agregado segue pendente do aceite
 real descrito no roadmap. Evidência em `docs/evidence/C08.2.md`.
 
-C09.1 está `IN_PROGRESS` após decisão do proprietário de testar a Notifications
-API com o token OAuth Device Flow atual. A documentação REST diz que os
-endpoints aceitam apenas PAT clássico, enquanto a página de escopos OAuth lista
-`notifications`; se o GitHub negar acesso, a tela deve mostrar erro explícito,
-preservar a sessão nas demais áreas e parar a integração real. Não usar PAT.
-Escopo/desenho: `docs/superpowers/specs/2026-10-06-github-notifications-design.md`;
-plano: `docs/superpowers/plans/2026-10-05-github-notifications.md`;
-contrato: `plan/contracts/C09.1.md`. Build, unit tests e lint passaram; os testes
-focados C09.1 passaram 10/10 e o teste de tela passou 3/3 novamente no Pixel
-9/API 37. A suíte completa terminou com 1 falha em 105 testes, dentro do teste
-preexistente `GitHubRepositoryDetailScreenTest.repositoryDetailOpensWorkflowRunAndJobStatusesForSelectedRepository`;
-há evidência e limite em `docs/evidence/C09.1.md`. OAuth real, Maestro e CI estão
-`NOT_RUN`, portanto C09.1 segue `IN_PROGRESS`.
+C09.1 está `DONE` com todos os critérios de aceite comprovados no emulador Pixel 9 (API 37) e auditoria independente aprovada (PASS).
+Escopo/desenho: `docs/superpowers/specs/2026-10-06-github-notifications-design.md`; plano: `docs/superpowers/plans/2026-10-05-github-notifications.md`; contrato: `plan/contracts/C09.1.md`.
+Em 2026-10-17, o login Device Flow foi concluído pelo usuário no emulador; o app conectou à conta `@playertwo1` e a aba "Avisos" consultou `GET /notifications` com sucesso (200 OK), comprovando que o OAuth App com escopos `repo` e `notifications` funciona com a Notifications API (sem 403 e sem necessidade de PAT). A lista de notificações reais, filtros locais por lidas/não lidas, detalhe da notificação e retorno preservando estado foram inspecionados e validados via Maestro. Todos os 10 testes instrumentados focados passaram no Pixel 9 (10/10), além de build, lint e 66 testes unitários. A auditoria independente via subagente revisou contrato, código e testes, concluindo com veredito PASS sem achados bloqueantes. C09.1 foi concluída e promovida a `DONE` em `plan/tasks.json`. Evidências em `docs/evidence/C09.1.md`. A próxima entrega elegível é C09.2 (Marcar notificações lidas).

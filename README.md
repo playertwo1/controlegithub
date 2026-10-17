@@ -16,9 +16,12 @@ O estado detalhado e as limitações verificadas estão em
 - Autorização por Device Flow, restauração de sessão cifrada no aparelho e logout.
 - Perfil da conta, lista de repositórios e busca/filtros locais dos itens carregados.
 - Detalhe do repositório e lista/filtros de issues em leitura.
-- Fluxos de Actions para workflows, execuções, jobs e uma tela de logs em
-  implementação. C10.2 ainda aguarda inspeção visual da tela de logs e comparação
-  com um job real; veja [roadmap](ROADMAP.md) e [evidência C10.2](docs/evidence/C10.2.md).
+- Pull requests em leitura, com comentários/reviews, arquivos alterados, diffs
+  inertes e checks/status por SHA; o aceite agregado C08 ainda tem comparação
+  real pendente conforme [estado](PROJECT_STATE.md).
+- Actions em leitura: workflows, execuções, jobs e logs com controles de acesso;
+  C10 foi aceito conforme [evidência C10.2](docs/evidence/C10.2.md).
+- Favoritos locais por conta e preferência de tema claro/escuro/sistema.
 - Modo de demonstração para áreas ainda não conectadas, sem apresentar amostras
   como dados da conta.
 
@@ -77,6 +80,16 @@ o [guia OAuth](docs/AUTH.md) e a [verificação histórica da fundação](docs/V
 
 A base Gold foi adaptada de [Ideias Standard](https://github.com/playertwo1/ideias_standard);
 veja [origem e adaptações](docs/STANDARD_ADOPTION.md).
+
+## Ideias e aproveitamento do OpenHub
+
+O [registro de ideias](docs/IDEIAS.md) separa melhorias nos checkpoints existentes
+de propostas futuras. O [detalhamento do OpenHub](docs/superpowers/specs/2026-10-17-openhub-aproveitamento-design.md)
+descreve cache/offline, atualização, Markdown, composição e links, com limites e
+cenários de aceite. Consulte o [plano de sequência](docs/superpowers/plans/2026-10-17-openhub-aproveitamento.md)
+e o [prompt para Claude](docs/prompts/CLAUDE_OPENHUB.md) para a retomada.
+Esses documentos não significam funcionalidades implementadas nem mudam os
+estados do backlog. A referência é funcional; não foi incorporado código OpenHub.
 
 ## Contribuir
 
