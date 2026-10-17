@@ -1,5 +1,23 @@
 # Adoção do Ideias Standard
 
+## Situação atual — v1.2.0 (2026-10-17)
+
+O projeto segue o kit v1.2.0 (sem lock, manifests ou packs): `README`, `PROJECT`,
+`ROADMAP`, `STATE`, `AGENTS`, `CLAUDE` (só `@AGENTS.md`), `CHANGELOG`,
+`.gitignore` e `.editorconfig`. `PROJECT_STATE.md` virou `STATE.md` (original em
+`docs/archive/PROJECT_STATE.md`). Os artefatos do padrão antigo (`standard.lock`,
+`project-manifest.json`, `context-manifest.json`) foram movidos para
+`docs/archive/padrao-antigo/`; o `check.py` v1.2.0 não os usa. Os estados
+canônicos das tarefas continuam em `plan/tasks.json`.
+
+Verificar com o repositório Standard clonado ao lado (sem dependências):
+
+```sh
+python ../ideias_standard/scripts/check.py .
+```
+
+## Histórico — adoção Gold 0.1.0-draft (2026-10-02)
+
 Fonte: https://github.com/playertwo1/ideias_standard
 Revisão: `f546a2a128956e87c7ae89c103ca67aba4054cc4`.
 Base: `templates/gold`, perfil LIGHT, contexto progressivo.

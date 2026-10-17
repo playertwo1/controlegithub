@@ -6,7 +6,7 @@ com recuperação de erros, privacidade e evidência de funcionamento real.
 
 Este documento define o aceite agregado. A execução usa as 42 tarefas de
 [plan/tasks.json](plan/tasks.json) e o [protocolo de execução](docs/EXECUTION.md).
-O estado de execução fica em [PROJECT_STATE.md](PROJECT_STATE.md). Referências das 36 telas:
+O estado de execução fica em [STATE.md](STATE.md). Referências das 36 telas:
 [catálogo visual](docs/design/README.md); regras One UI/menu flutuante:
 [contrato visual](docs/DESIGN.md).
 
@@ -16,7 +16,7 @@ A base existe: Kotlin/Compose, seis telas demonstrativas, busca, menu flutuante,
 wrapper, documentação Gold e referências visuais. Build e testes locais passaram.
 Este é o retrato registrado no início do projeto, antes das integrações. Não
 descreve o estado atual: autenticação e alguns fluxos de leitura já foram
-implementados. Consulte [PROJECT_STATE.md](PROJECT_STATE.md) e os registros em
+implementados. Consulte [STATE.md](STATE.md) e os registros em
 `docs/evidence/` para o estado e as limitações atuais. A verificação original e
 a auditoria da fundação estão em `docs/VERIFICATION.md` e
 `docs/evidence/C00.2-review.md`.
@@ -34,13 +34,29 @@ Tablet recebe comportamento utilizável; um layout dedicado fica para evolução
 
 ## Marcos de entrega
 
-| Marco | Checkpoints exigidos | Resultado demonstrável |
-|---|---|---|
-| M0 — Fundação confiável | C00 + C01 | Protótipo reproduzível, CI verde, navegação validada e auditoria inicial aceita |
-| M1 — Primeiro uso real | C06 | Login, repositórios e painel com dados da conta |
-| M2 — Triagem diária | C11 | Issues, PRs, avisos e Actions com cache e recuperação |
-| M3 — Produtividade completa | C15 | Escrita, revisão, Kanban, favoritos e resumo reais |
-| M4 — Versão 1.0 operante | C20 | Release assinada, beta validado e operação documentada |
+| Marco | Checkpoints exigidos | Resultado demonstrável | Estado | Gate |
+|---|---|---|---|---|
+| M0 — Fundação confiável | C00 + C01 | Protótipo reproduzível, CI verde, navegação validada e auditoria inicial aceita | DONE | Aceito (CI `ebb8fb0`) |
+| M1 — Primeiro uso real | C06 | Login, repositórios e painel com dados da conta | REVIEW | C00–C06 `DONE`; aceite do proprietário pendente |
+| M2 — Triagem diária | C11 | Issues, PRs, avisos e Actions com cache e recuperação | IN_PROGRESS | C07–C11 aceitos |
+| M3 — Produtividade completa | C15 | Escrita, revisão, Kanban, favoritos e resumo reais | BACKLOG | C12–C15 aceitos |
+| M4 — Versão 1.0 operante | C20 | Release assinada, beta validado e operação documentada | BACKLOG | C16–C20 aceitos + aprovação |
+
+Estados em `plan/tasks.json` (canônico); esta tabela resume.
+
+### Marco ativo — M2 — Triagem diária
+**Objetivo de produto:** triagem diária do trabalho real (issues, PRs, notificações, Actions) com cache e recuperação. · **Quem valida:** proprietário (Rafael), com auditoria independente.
+
+| ID | Tarefa | Prioridade | Depende de | Estado | Evidência exigida |
+|---|---|---|---|---|---|
+| C07.1–C07.2 | Issues em leitura | P1 | C06 | DONE | `docs/evidence/C07.1.md`, `C07.2.md` |
+| C08.1–C08.2 | PRs, arquivos e checks em leitura | P1 | C06 | DONE | `docs/evidence/C08.1.md`, `C08.2.md` |
+| C09.1 | Caixa de notificações | P1 | C07, C08 | READY | contrato `plan/contracts/C09.1.md` + build/testes/lint + auditoria + CI |
+| C09.2 | Marcar notificações lidas | P2 | C09.1 | BACKLOG | contrato a criar |
+| C10.1–C10.2 | Actions, execuções e logs | P1 | C06 | DONE | `docs/evidence/C10.1.md`, `C10.2.md` |
+| C11.1–C11.2 | Cache de leituras; refresh e reconexão | P1 | C07–C10 | BACKLOG | contrato a criar |
+
+**Gate de saída:** C07–C11 aceitos (ver "Cada marco fecha…" abaixo). · **Riscos:** compatibilidade da Notifications API com o token do Device Flow.
 
 Cada marco fecha quando todos os checkpoints listados e seus aceites passam.
 Dependências transitivas desses checkpoints também precisam estar aceitas.
@@ -191,7 +207,7 @@ A comparação autenticada com issue real com comentários ficou `NOT_RUN` porqu
 conta de teste não tinha issue adequada; o proprietário (Rafael / playertwo1)
 aceitou o checkpoint agregado C07 dispensando essa evidência pendente. Estados e
 evidências individuais em [`plan/tasks.json`](plan/tasks.json),
-[`PROJECT_STATE.md`](PROJECT_STATE.md),
+[`STATE.md`](STATE.md),
 [`docs/evidence/C07.1.md`](docs/evidence/C07.1.md) e
 [`docs/evidence/C07.2.md`](docs/evidence/C07.2.md).
 
@@ -209,7 +225,7 @@ A comparação autenticada com PR real (arquivos, estados e reviews) ficou
 `NOT_RUN` porque a conta de teste não tinha PR adequado; o proprietário
 (Rafael / playertwo1) aceitou o checkpoint agregado C08 dispensando essa
 evidência pendente. Estados e evidências individuais em
-[`plan/tasks.json`](plan/tasks.json), [`PROJECT_STATE.md`](PROJECT_STATE.md),
+[`plan/tasks.json`](plan/tasks.json), [`STATE.md`](STATE.md),
 [`docs/evidence/C08.1.md`](docs/evidence/C08.1.md) e
 [`docs/evidence/C08.2.md`](docs/evidence/C08.2.md).
 
@@ -238,7 +254,7 @@ fixture 404 de C10.2 também verificou o erro de indisponibilidade. Para o #49,
 o app abriu a tela real de logs e mostrou o aviso de sensibilidade. Nenhum corpo
 de log foi copiado ou persistido. C10.1 e C10.2 estão `DONE` e o aceite
 agregado C10 está concluído. Evidências individuais em
-[`plan/tasks.json`](plan/tasks.json), [`PROJECT_STATE.md`](PROJECT_STATE.md),
+[`plan/tasks.json`](plan/tasks.json), [`STATE.md`](STATE.md),
 [`docs/evidence/C10.1.md`](docs/evidence/C10.1.md) e
 [`docs/evidence/C10.2.md`](docs/evidence/C10.2.md).
 

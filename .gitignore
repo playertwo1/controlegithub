@@ -6,3 +6,8 @@ local.properties
 *.keystore
 .idea/
 *.iml
+
+# Segredos e configuração local (nunca versionar)
+.env
+.env.*
+!.env.example

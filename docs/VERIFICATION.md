@@ -3,7 +3,7 @@
 Este documento registra somente o baseline histórico C00.1, executado antes da
 integração de conta e API. As frases sobre dados demonstrativos e ausência de
 credenciais descrevem aquele teste, não o estado atual do produto. Para o estado
-atual e verificações por entrega, consulte [PROJECT_STATE.md](../PROJECT_STATE.md)
+atual e verificações por entrega, consulte [STATE.md](../STATE.md)
 e [`docs/evidence/`](evidence/).
 
 ## Ambiente
@@ -46,7 +46,7 @@ python ../ideias_standard/scripts/check.py . --kind standard-lock --details
 python ../ideias_standard/scripts/check.py . --kind context-manifest --details
 ```
 
-Três resultados PASS. Links locais do Markdown e assinaturas dos PNGs foram
+Três resultados PASS (histórico; desde 2026-10-17 o lock e os manifests estão em `docs/archive/padrao-antigo/` e a verificação atual é `python ../ideias_standard/scripts/check.py .`, ver `docs/STANDARD_ADOPTION.md`). Links locais do Markdown e assinaturas dos PNGs foram
 verificados; sete pranchas finais e seis capturas reais estão presentes.
 As capturas foram inspecionadas visualmente: entrada, painel, repositórios,
 detalhe, trabalho e notificações. A busca tem teste de estado vazio.
