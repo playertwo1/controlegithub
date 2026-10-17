@@ -1,7 +1,6 @@
 # C09.1 — Design da caixa de notificações
 
-**Estado:** escopo e desenho aprovados; implementação C09.1 em andamento no
-checkout atual. Evidências e gates pendentes estão em `docs/evidence/C09.1.md`.
+**Estado:** escopo e desenho aprovados pelo proprietário em 2026-10-12; implementação e validação empírica concluídas em 2026-10-17 com OAuth Device Flow real e testes instrumentados no Pixel 9. Evidências em `docs/evidence/C09.1.md`.
 
 ## Objetivo
 

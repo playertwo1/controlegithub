@@ -96,3 +96,5 @@ estados do backlog. A referência é funcional; não foi incorporado código Ope
 Abra uma issue descrevendo o problema, altere o mínimo necessário, execute os
 checks e envie um PR com evidência. Nunca inclua credenciais nas capturas ou logs.
 Veja [CONTRIBUTING.md](CONTRIBUTING.md) e [SECURITY.md](SECURITY.md).
+teste do appp
+teste 2 do app

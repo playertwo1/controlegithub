@@ -1,6 +1,6 @@
 # Estado do projeto
 
-## Atualização documental — 2026-10-17
+## Atualização documental e encerramento C09.1 — 2026-10-17
 
 O aproveitamento do OpenHub foi detalhado em [ideias](docs/IDEIAS.md),
 [especificação](docs/superpowers/specs/2026-10-17-openhub-aproveitamento-design.md),
@@ -20,7 +20,7 @@ estados individuais, e o roadmap continua definindo o aceite agregado.
 
 ## Histórico anterior
 
-Atualizado em 2026-10-08. Checkpoints concluídos: C00, C01 (M0 aceito), C02, C03, C04, C05, **C06 agregado (M1 completo)**, C07, C08, C09, C10, C14.1, C16.1.
+Atualizado em 2026-10-12. C03.1, C03.2, C05.1, C05.2, C06.1, C06.2, C07.1, C07.2, C08.1, C08.2, C10.1, C10.2, C14.1 e C16.1 estão concluídas. Os checkpoints agregados C07 e C08 foram aceitos pelo proprietário em 2026-10-12. C06 agregado (M1 completo) e M0 foram aceitos.
 C05.2 passou build, 40 testes unitários, 18 instrumentados, lint, inspeção
 Maestro com fixture, auditoria independente e CI no SHA `992d781` (run
 37200219568). C05.1 passou build,
@@ -138,21 +138,23 @@ visíveis” + “Todas” retornou lista vazia, sem issue real para comparar. M
 MCP ficou indisponível; a hierarquia foi conferida por fallback e a fixture foi
 inspecionada pelo Maestro. Evidências em docs/evidence/C07.2.md.
 
-O checkpoint agregado C07 segue sem aceite até ser possível comparar uma issue
-real com comentários, conforme `ROADMAP.md`; as tarefas C07.1 e C07.2 estão
-concluídas individualmente. C08.1 está `DONE`: contrato de PRs em
+O checkpoint agregado C07 foi aceito pelo proprietário (Rafael /
+playertwo1) em 2026-10-12, dispensando a comparação autenticada com issue real
+com comentários (`NOT_RUN`, sem issue adequada na conta de teste). C07.1 e
+C07.2 permanecem `DONE`. C08.1 está `DONE`: contrato de PRs em
 `plan/contracts/C08.1.md`, com busca global de PRs que envolvem a conta, estados
 aberto/fechado/mesclado e detalhe/comentários/reviews somente leitura já
 implementados. Build/lint, suíte Pixel 9 69/69, auditoria independente e CI
-remoto passaram no commit `4d2c972`. A comparação autenticada real ficou
-`NOT_RUN`; C08 agregado segue pendente do PR real com arquivos, estados e
-reviews, além de C08.2. Contrato e evidência em `plan/contracts/C08.1.md` e
-`docs/evidence/C08.1.md`.
+remoto passaram no commit `4d2c972`. A comparação autenticada real ficou `NOT_RUN`. C08.2 também está
+`DONE`; o checkpoint agregado C08 foi aceito pelo proprietário em 2026-10-12,
+dispensando a evidência de PR real ausente. Contrato e evidência em
+`plan/contracts/C08.1.md` e `docs/evidence/C08.1.md`.
 
 ## Planejamento e retomada
 
 Estados canônicos: plan/tasks.json. Roadmap mantém 21 checkpoints/5 marcos;
-backlog divide em 42 entregas. Nenhum marco foi aceito. Funções API não existem.
+backlog divide em 42 entregas. M0 — Fundação confiável — foi aceito; os demais
+marcos ainda não. Funções API não existem.
 Auditoria C00.2 revisou a fundação em HEAD `daaf60f`; parecer PASS após correção
 e rechecagem documental em docs/evidence/C00.2-review.md. C01.1 implementado,
 verificado localmente e aprovado em auditoria independente; evidência em
@@ -199,9 +201,10 @@ C08.2 está `DONE`. Arquivos, diffs inertes e checks/statuses por SHA foram
 implementados; build, testes unitários, lint e suíte conectada 79/79 no Pixel 9
 passam. Auditoria independente PASS. CI PASS no SHA `96b35b3` (run
 `37298729702`, tentativa 2); a primeira tentativa falhou num teste de
-cancelamento C07.2 que passou na repetição. A comparação autenticada com PR
-real está `NOT_RUN` até haver PR adequado; C08 agregado segue pendente do aceite
-real descrito no roadmap. Evidência em `docs/evidence/C08.2.md`.
+cancelamento C07.2 que passou na repetição. A comparação autenticada com PR real está `NOT_RUN` (sem PR
+adequado na conta de teste). O checkpoint agregado C08 foi aceito pelo
+proprietário em 2026-10-12, dispensando essa evidência. Evidência em
+`docs/evidence/C08.2.md`.
 
 C09.1 está `DONE` com todos os critérios de aceite comprovados no emulador Pixel 9 (API 37) e auditoria independente aprovada (PASS).
 Escopo/desenho: `docs/superpowers/specs/2026-10-06-github-notifications-design.md`; plano: `docs/superpowers/plans/2026-10-05-github-notifications.md`; contrato: `plan/contracts/C09.1.md`.

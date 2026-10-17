@@ -198,7 +198,15 @@ detalhe, descrição Markdown, labels e comentários paginados.
 **Aceite:** links/Markdown tratados com segurança; conteúdo longo acessível;
 paginação e filtros consistentes; resultados respeitam acesso; links internos
 abrem o item correto. PRs não aparecem como issues por engano.
-**Evidência:** testes de mapeamento/paginação e issue real com comentários.
+**Evidência agregada:** PASS por aceitação do proprietário em 2026-10-12.
+C07.1 e C07.2 estão `DONE` com build, testes, lint, auditoria independente e CI.
+A comparação autenticada com issue real com comentários ficou `NOT_RUN` porque a
+conta de teste não tinha issue adequada; o proprietário (Rafael / playertwo1)
+aceitou o checkpoint agregado C07 dispensando essa evidência pendente. Estados e
+evidências individuais em [`plan/tasks.json`](plan/tasks.json),
+[`PROJECT_STATE.md`](PROJECT_STATE.md),
+[`docs/evidence/C07.1.md`](docs/evidence/C07.1.md) e
+[`docs/evidence/C07.2.md`](docs/evidence/C07.2.md).
 
 ### C08 — Pull requests em leitura
 
@@ -208,7 +216,15 @@ e arquivos alterados; indicar quando o diff for grande ou não fornecido.
 **Aceite:** aberto/fechado/mesclado e revisão representados corretamente;
 diff grande não trava a UI; ausência/truncamento explicado; nenhuma edição
 ou merge disponibilizados acidentalmente.
-**Evidência:** PR real com arquivos e testes dos estados/revisões.
+**Evidência agregada:** PASS por aceitação do proprietário em 2026-10-12.
+C08.1 e C08.2 estão `DONE` com build, testes, lint, auditoria independente e CI.
+A comparação autenticada com PR real (arquivos, estados e reviews) ficou
+`NOT_RUN` porque a conta de teste não tinha PR adequado; o proprietário
+(Rafael / playertwo1) aceitou o checkpoint agregado C08 dispensando essa
+evidência pendente. Estados e evidências individuais em
+[`plan/tasks.json`](plan/tasks.json), [`PROJECT_STATE.md`](PROJECT_STATE.md),
+[`docs/evidence/C08.1.md`](docs/evidence/C08.1.md) e
+[`docs/evidence/C08.2.md`](docs/evidence/C08.2.md).
 
 ### C09 — Notificações
 
