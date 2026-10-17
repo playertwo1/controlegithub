@@ -140,3 +140,118 @@ internal class GitHubIssuePager(
     fun loadNext(): GitHubPageResult<GitHubIssue> = pager.loadNext()
     fun cancel() = pager.cancel()
 }
+
+internal sealed interface CreateIssueResult {
+    data class Success(val issue: GitHubIssue) : CreateIssueResult
+    data class Failure(val error: GitHubHttpError, val statusCode: Int? = null) : CreateIssueResult
+    data object EmptyTitle : CreateIssueResult
+    data object Offline : CreateIssueResult
+}
+
+internal fun parseCreatedIssue(json: String, fallbackRepository: String): GitHubIssue {
+    val obj = JSONObject(json)
+    val rawNumber = obj.opt("number") as? Number ?: throw IOException("Issue criada inválida")
+    val number = rawNumber.toInt()
+    val title = obj.requiredIssueString("title")
+    val state = when (obj.requiredIssueString("state")) {
+        "open" -> GitHubIssueState.OPEN
+        "closed" -> GitHubIssueState.CLOSED
+        else -> GitHubIssueState.OPEN
+    }
+    val repository = obj.optJSONObject("repository")?.optionalIssueString("full_name")?.takeIf(String::isNotBlank)
+        ?: fallbackRepository
+    val repositoryParts = repository.split('/')
+    if (repositoryParts.size != 2 || repositoryParts.any { it.isBlank() || it.any(Char::isWhitespace) }) {
+        throw IOException("Repositório da issue inválido")
+    }
+    val author = obj.optJSONObject("user")?.optionalIssueString("login")?.takeIf(String::isNotBlank)
+    val assignees: List<String> = when (val raw = obj.opt("assignees")) {
+        null, JSONObject.NULL -> emptyList()
+        is JSONArray -> buildList<String> {
+            for (index in 0 until raw.length()) {
+                val login = raw.optJSONObject(index)?.optionalIssueString("login")?.takeIf(String::isNotBlank)
+                if (login != null) add(login)
+            }
+        }
+        else -> emptyList()
+    }
+    val labels: List<String> = when (val raw = obj.opt("labels")) {
+        null, JSONObject.NULL -> emptyList()
+        is JSONArray -> buildList<String> {
+            for (index in 0 until raw.length()) {
+                val label = raw.optJSONObject(index)?.optionalIssueString("name")
+                if (!label.isNullOrBlank()) add(label)
+            }
+        }
+        else -> emptyList()
+    }
+    val updatedAt = obj.optionalIssueString("updated_at")?.let { value ->
+        try { Instant.parse(value) } catch (_: Exception) { null }
+    }
+    return GitHubIssue(number, title, state, repository, author, assignees, labels, updatedAt)
+}
+
+internal fun escapeJson(value: String): String = buildString(value.length + 8) {
+    for (char in value) {
+        when (char) {
+            '\\' -> append("\\\\")
+            '"' -> append("\\\"")
+            '\b' -> append("\\b")
+            '\u000C' -> append("\\f")
+            '\n' -> append("\\n")
+            '\r' -> append("\\r")
+            '\t' -> append("\\t")
+            else -> {
+                if (char < ' ') {
+                    append(String.format("\\u%04x", char.code))
+                } else {
+                    append(char)
+                }
+            }
+        }
+    }
+}
+
+internal fun createGitHubIssue(
+    client: GitHubHttpClient,
+    accessToken: String,
+    repository: String,
+    title: String,
+    body: String?,
+    isOffline: Boolean = false
+): CreateIssueResult {
+    if (isOffline) return CreateIssueResult.Offline
+
+    val trimmedTitle = title.trim()
+    if (trimmedTitle.isEmpty()) return CreateIssueResult.EmptyTitle
+
+    val parts = repository.trim().split('/')
+    if (parts.size != 2 || parts.any { it.isBlank() || it.any(Char::isWhitespace) }) {
+        return CreateIssueResult.Failure(GitHubHttpError.UNEXPECTED)
+    }
+
+    val payload = buildString {
+        append("{\"title\":\"").append(escapeJson(trimmedTitle)).append("\"")
+        val trimmedBody = body?.trim()
+        if (!trimmedBody.isNullOrBlank()) {
+            append(",\"body\":\"").append(escapeJson(trimmedBody)).append("\"")
+        }
+        append("}")
+    }
+
+    val path = "/repos/$repository/issues"
+    val call = client.post(path, accessToken = accessToken, jsonBody = payload)
+    return when (val result = call.execute()) {
+        is GitHubHttpResult.Success -> {
+            try {
+                val created = parseCreatedIssue(result.body, repository)
+                CreateIssueResult.Success(created)
+            } catch (_: Exception) {
+                CreateIssueResult.Failure(GitHubHttpError.UNEXPECTED, result.statusCode)
+            }
+        }
+        is GitHubHttpResult.Failure -> {
+            CreateIssueResult.Failure(result.error, result.statusCode)
+        }
+    }
+}

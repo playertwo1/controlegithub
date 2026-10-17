@@ -188,6 +188,37 @@ class GitHubHttpClientTest {
         }
     }
 
+    @Test
+    fun postSendsJsonBodyAndReceives201Created() = fixture(
+        201,
+        "{\"id\":101,\"number\":1,\"title\":\"Bug test\",\"state\":\"open\"}"
+    ).use { fixture ->
+        val payload = "{\"title\":\"Bug test\",\"body\":\"Corpo da issue\"}"
+        val result = fixture.client().post("/repos/owner/repo/issues", TOKEN, jsonBody = payload).execute()
+
+        assertEquals("POST", fixture.requestMethod.get())
+        assertEquals(payload, fixture.requestBody.get())
+        assertEquals("application/json; charset=utf-8", fixture.request.get()?.getFirst("Content-Type"))
+        assertEquals("Bearer $TOKEN", fixture.request.get()?.getFirst("Authorization"))
+        assertTrue(result is GitHubHttpResult.Success)
+        val success = result as GitHubHttpResult.Success
+        assertEquals(201, success.statusCode)
+        assertTrue(success.body.contains("\"number\":1"))
+    }
+
+    @Test
+    fun postFailureReturnsProperError() = fixture(
+        403,
+        "{\"message\":\"Resource not accessible by integration\"}"
+    ).use { fixture ->
+        val result = fixture.client().post("/repos/owner/repo/issues", TOKEN, jsonBody = "{}").execute()
+
+        assertTrue(result is GitHubHttpResult.Failure)
+        val failure = result as GitHubHttpResult.Failure
+        assertEquals(GitHubHttpError.FORBIDDEN, failure.error)
+        assertEquals(403, failure.statusCode)
+    }
+
     private fun fixture(
         status: Int,
         body: String,
@@ -207,6 +238,7 @@ class GitHubHttpClientTest {
         val request = AtomicReference<com.sun.net.httpserver.Headers>()
         val requestPath = AtomicReference("")
         val requestMethod = AtomicReference("")
+        val requestBody = AtomicReference("")
         val requestReceived = CountDownLatch(1)
         @Volatile var requestCount = 0
             private set
@@ -217,6 +249,7 @@ class GitHubHttpClientTest {
                 request.set(exchange.requestHeaders)
                 requestPath.set(exchange.requestURI.toString())
                 requestMethod.set(exchange.requestMethod)
+                requestBody.set(exchange.requestBody.bufferedReader(Charsets.UTF_8).use { it.readText() })
                 requestReceived.countDown()
                 if (delayMillis > 0) Thread.sleep(delayMillis)
                 responseGate?.await(3, TimeUnit.SECONDS)

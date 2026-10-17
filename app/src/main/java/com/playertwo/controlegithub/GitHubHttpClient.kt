@@ -112,6 +112,15 @@ internal class GitHubHttpClient(
         return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate, "PATCH")
     }
 
+    fun post(path: String, accessToken: String? = null, jsonBody: String? = null): GitHubHttpCall {
+        require(path.startsWith('/') && !path.startsWith("//") && '#' !in path)
+        require(accessToken == null || (accessToken.isNotBlank() && accessToken.none(Char::isWhitespace)))
+
+        val target = baseUrl.resolve(path.removePrefix("/"))
+        require(sameOrigin(baseUrl, target))
+        return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate, "POST", jsonBody = jsonBody)
+    }
+
     internal fun pathFromLink(linkUrl: String): String {
         val target = baseUrl.resolve(URI.create(linkUrl))
         require(target.userInfo == null && target.fragment == null && sameOrigin(baseUrl, target))
@@ -136,7 +145,8 @@ internal class GitHubHttpCall internal constructor(
     private val readTimeoutMillis: Int,
     private val rateLimitGate: GitHubRateLimitGate,
     private val method: String = "GET",
-    private val ifNoneMatch: String? = null
+    private val ifNoneMatch: String? = null,
+    private val jsonBody: String? = null
 ) {
     private val cancelled = AtomicBoolean(false)
 
@@ -170,12 +180,20 @@ internal class GitHubHttpCall internal constructor(
                 setRequestProperty("User-Agent", USER_AGENT)
                 accessToken?.let { setRequestProperty("Authorization", "Bearer $it") }
                 ifNoneMatch?.let { setRequestProperty("If-None-Match", it) }
-                if (method == "PATCH" || method == "POST" || method == "PUT") {
+                if (jsonBody != null) {
+                    setRequestProperty("Content-Type", "application/json; charset=utf-8")
+                    doOutput = true
+                    val bytes = jsonBody.toByteArray(Charsets.UTF_8)
+                    setFixedLengthStreamingMode(bytes.size)
+                } else if (method == "PATCH" || method == "POST" || method == "PUT") {
                     doOutput = true
                     setFixedLengthStreamingMode(0)
                 }
             }
-            if (method == "PATCH" || method == "POST" || method == "PUT") {
+            if (jsonBody != null) {
+                val bytes = jsonBody.toByteArray(Charsets.UTF_8)
+                activeConnection.outputStream.use { it.write(bytes) }
+            } else if (method == "PATCH" || method == "POST" || method == "PUT") {
                 activeConnection.outputStream.close()
             }
 

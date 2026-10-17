@@ -1,5 +1,22 @@
 # Estado do projeto
 
+## Atualização e encerramento C12.1 — 2026-10-17
+
+Checkpoint **C12.1** (*Criar issue* — OpenHub OH-04 / escrita de issues) concluído com sucesso e promovido a `DONE`:
+- Suporte a `POST` com streaming UTF-8 (`setFixedLengthStreamingMode`) e cabeçalho `application/json; charset=utf-8` em `GitHubHttpClient.kt`.
+- Sanitização de strings JSON com função pura `escapeJson` sem adicionar bibliotecas externas.
+- Camada de domínio `createGitHubIssue` com validação de título obrigatório, validação de formato de repositório e modelo de resultado `CreateIssueResult`.
+- Analisador `parseCreatedIssue` para decodificar a resposta `201 Created` para a entidade `GitHubIssue`.
+- Tela `GitHubCreateIssueScreen.kt` em Jetpack Compose com UI 100% em português:
+  - Proteção anti-duplo clique: botão desabilitado imediatamente e exibição de `CircularProgressIndicator`.
+  - Preservação integral do rascunho: em caso de erro (403, 404, 5xx, rede), o texto digitado em título e descrição é mantido intacto nos campos.
+  - Validação local: bloqueio imediato se título estiver vazio sem efetuar chamadas HTTP.
+  - Bloqueio offline: alerta informativo e desativação de envio no modo sem conexão (sem fila oculta).
+- Integração na tela `GitHubRepositoryDetailScreen.kt` através do botão "Nova issue".
+- Verificações completas: `python scripts/check_plan.py` PASS (42 tarefas), `git diff --check` PASS, 93/93 testes unitários PASS, `lintDebug` PASS (0 erros), 8/8 testes instrumentados de C12.1 PASS no Pixel 9 (API 37).
+- Auditoria independente via subagente aprovada com veredito **PASS** (sem bloqueios).
+- Evidências registradas em `docs/evidence/C12.1.md`.
+
 ## Atualização e encerramento C11.2 e Milestone 2 (M2) — 2026-10-17
 
 Checkpoint **C11.2** (*Refresh e reconexão* — OpenHub OH-02) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C11** e o **Milestone 2 (M2 — Triagem diária)**:

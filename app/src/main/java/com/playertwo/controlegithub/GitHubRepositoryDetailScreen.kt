@@ -53,7 +53,8 @@ internal fun GitHubRepositoryDetailScreen(
     repository: GitHubRepository,
     onBack: () -> Unit,
     onSessionExpired: (GitHubSession) -> Unit,
-    onAppearance: () -> Unit
+    onAppearance: () -> Unit,
+    isOffline: Boolean = session.isOffline
 ) {
     var refreshVersion by remember(repository.id, session.accessToken) { mutableIntStateOf(0) }
     var result by remember(repository.id, session.accessToken) {
@@ -72,6 +73,24 @@ internal fun GitHubRepositoryDetailScreen(
             accessToken = session.accessToken,
             repository = repository,
             onBack = { actionsOpen = false },
+            onSessionExpired = { onSessionExpired(session) }
+        )
+        return
+    }
+
+    var createIssueOpen by remember(repository.id, session.accessToken) { mutableStateOf(false) }
+    if (createIssueOpen) {
+        GitHubCreateIssueScreen(
+            modifier = modifier,
+            client = client,
+            accessToken = session.accessToken,
+            repositoryFullName = repository.fullName,
+            isOffline = isOffline,
+            onIssueCreated = {
+                createIssueOpen = false
+                refreshVersion++
+            },
+            onCancel = { createIssueOpen = false },
             onSessionExpired = { onSessionExpired(session) }
         )
         return
@@ -138,8 +157,22 @@ internal fun GitHubRepositoryDetailScreen(
                             DetailValue("Último push", current.detail.pushedAt?.let(::formatPushTime))
                         }
                     }
-                    Button(onClick = { actionsOpen = true }, modifier = Modifier.fillMaxWidth()) {
-                        Text("Ver GitHub Actions")
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Button(
+                            onClick = { actionsOpen = true },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text("GitHub Actions")
+                        }
+                        Button(
+                            onClick = { createIssueOpen = true },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text("Nova issue")
+                        }
                     }
                     when (val readme = current.readme) {
                         is GitHubReadmeResult.Found -> Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
