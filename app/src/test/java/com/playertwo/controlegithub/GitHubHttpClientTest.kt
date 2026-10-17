@@ -134,6 +134,33 @@ class GitHubHttpClientTest {
         assertEquals(1, fixture.requestCount)
     }
 
+    @Test
+    fun patchSendsMethodAndHandles205ResetContentWithEmptyBody() = fixture(205, "").use { fixture ->
+        val result = fixture.client().patch("/notifications/threads/123", TOKEN).execute()
+        assertEquals(GitHubHttpResult.Success(205, ""), result)
+        assertEquals("PATCH", fixture.requestMethod.get())
+        assertEquals("Bearer $TOKEN", fixture.request.get()?.getFirst("Authorization"))
+    }
+
+    @Test
+    fun patchHandles304NotModifiedAsSuccess() = fixture(304, "").use { fixture ->
+        val result = fixture.client().patch("/notifications/threads/123", TOKEN).execute()
+        assertEquals(GitHubHttpResult.Success(304, ""), result)
+        assertEquals("PATCH", fixture.requestMethod.get())
+    }
+
+    @Test
+    fun patchHandlesForbiddenAndNotFoundCorrectly() {
+        listOf(403 to GitHubHttpError.FORBIDDEN, 404 to GitHubHttpError.NOT_FOUND).forEach { (status, error) ->
+            fixture(status, "error").use { fixture ->
+                val result = fixture.client().patch("/notifications/threads/123", TOKEN).execute()
+                val failure = result as GitHubHttpResult.Failure
+                assertEquals(error, failure.error)
+                assertEquals(status, failure.statusCode)
+            }
+        }
+    }
+
     private fun fixture(
         status: Int,
         body: String,
@@ -152,6 +179,7 @@ class GitHubHttpClientTest {
         private val server = HttpServer.create(InetSocketAddress("127.0.0.1", 0), 0)
         val request = AtomicReference<com.sun.net.httpserver.Headers>()
         val requestPath = AtomicReference("")
+        val requestMethod = AtomicReference("")
         val requestReceived = CountDownLatch(1)
         @Volatile var requestCount = 0
             private set
@@ -161,13 +189,18 @@ class GitHubHttpClientTest {
                 requestCount++
                 request.set(exchange.requestHeaders)
                 requestPath.set(exchange.requestURI.toString())
+                requestMethod.set(exchange.requestMethod)
                 requestReceived.countDown()
                 if (delayMillis > 0) Thread.sleep(delayMillis)
                 responseGate?.await(3, TimeUnit.SECONDS)
                 val bytes = body.toByteArray(Charsets.UTF_8)
                 headers.forEach { (name, value) -> exchange.responseHeaders.add(name, value) }
-                exchange.sendResponseHeaders(status, bytes.size.toLong())
-                exchange.responseBody.use { it.write(bytes) }
+                if (status == 204 || status == 205 || status == 304) {
+                    exchange.sendResponseHeaders(status, -1)
+                } else {
+                    exchange.sendResponseHeaders(status, bytes.size.toLong())
+                    exchange.responseBody.use { it.write(bytes) }
+                }
             }
             server.start()
         }

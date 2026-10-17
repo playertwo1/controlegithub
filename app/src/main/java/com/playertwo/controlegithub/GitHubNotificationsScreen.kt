@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -87,6 +89,8 @@ internal fun GitHubNotificationsScreen(
     var selectedNotification by remember(token) { mutableStateOf<GitHubNotification?>(null) }
     var showingOrigin by remember(token) { mutableStateOf(false) }
     var sessionExpiryReported by remember(token) { mutableStateOf(false) }
+    var markingReadId by remember(token) { mutableStateOf<String?>(null) }
+    var markReadError by remember(token) { mutableStateOf<String?>(null) }
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
@@ -190,13 +194,53 @@ internal fun GitHubNotificationsScreen(
     }
 
     if (selected != null) {
-        BackHandler { selectedNotification = null }
+        val activeToken = token
+        val onMarkSelectedAsRead: (() -> Unit)? = if (activeToken != null && selected.unread) {
+            {
+                if (markingReadId == null) {
+                    markingReadId = selected.id
+                    markReadError = null
+                    scope.launch {
+                        val result = withContext(Dispatchers.IO) {
+                            markNotificationAsRead(client, activeToken, selected.id)
+                        }
+                        markingReadId = null
+                        when (result) {
+                            is MarkNotificationReadResult.Success -> {
+                                selectedNotification = selected.copy(unread = false)
+                                notifications = notifications.map { item ->
+                                    if (item.id == selected.id) item.copy(unread = false) else item
+                                }
+                            }
+                            is MarkNotificationReadResult.Failure -> {
+                                markReadError = result.error.userMessage
+                                if (result.error == GitHubHttpError.UNAUTHORIZED && !sessionExpiryReported) {
+                                    sessionExpiryReported = true
+                                    onSessionExpired(session)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else null
+
+        BackHandler {
+            selectedNotification = null
+            markReadError = null
+        }
         NotificationDetail(
             modifier = modifier,
             notification = selected,
-            onBack = { selectedNotification = null },
+            onBack = {
+                selectedNotification = null
+                markReadError = null
+            },
             onOpenOrigin = { showingOrigin = true },
-            onAppearance = onAppearance
+            onAppearance = onAppearance,
+            onMarkAsRead = onMarkSelectedAsRead,
+            markingRead = markingReadId == selected.id,
+            markReadError = markReadError
         )
         return
     }
@@ -314,7 +358,10 @@ private fun NotificationDetail(
     notification: GitHubNotification,
     onBack: () -> Unit,
     onOpenOrigin: () -> Unit,
-    onAppearance: () -> Unit
+    onAppearance: () -> Unit,
+    onMarkAsRead: (() -> Unit)? = null,
+    markingRead: Boolean = false,
+    markReadError: String? = null
 ) {
     BackHandler(onBack = onBack)
     Column(modifier.fillMaxSize().padding(PaddingValues(horizontal = 24.dp, vertical = 20.dp)),
@@ -338,6 +385,24 @@ private fun NotificationDetail(
             modifier = Modifier.testTag("notification-open-origin")) { Text("Abrir item de origem") }
         if (notificationDestination(notification) == GitHubNotificationDestination.Unavailable) {
             Text("A origem desta notificação não está disponível.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        if (notification.unread && onMarkAsRead != null) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(
+                    onClick = onMarkAsRead,
+                    enabled = !markingRead,
+                    modifier = Modifier.testTag("notification-mark-read")
+                ) {
+                    if (markingRead) {
+                        CircularProgressIndicator(strokeWidth = 2.dp, modifier = Modifier.size(16.dp))
+                        Spacer(Modifier.width(8.dp))
+                    }
+                    Text("Marcar como lida")
+                }
+            }
+        }
+        markReadError?.let { errorText ->
+            Text(errorText, color = MaterialTheme.colorScheme.error, fontSize = 13.sp)
         }
     }
 }

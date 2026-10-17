@@ -109,6 +109,25 @@ internal class GitHubNotificationPager(client: GitHubHttpClient, accessToken: St
     }
 }
 
+internal sealed interface MarkNotificationReadResult {
+    data object Success : MarkNotificationReadResult
+    data class Failure(val error: GitHubHttpError, val retryAtEpochMillis: Long? = null) : MarkNotificationReadResult
+}
+
+internal fun markNotificationAsRead(
+    client: GitHubHttpClient,
+    accessToken: String,
+    threadId: String
+): MarkNotificationReadResult {
+    require(NOTIFICATION_ID.matches(threadId)) { "ID de notificação inválido" }
+    val call = client.patch("/notifications/threads/$threadId", accessToken)
+    return when (val result = call.execute()) {
+        is GitHubHttpResult.Success -> MarkNotificationReadResult.Success
+        is GitHubHttpResult.Failure -> MarkNotificationReadResult.Failure(result.error, result.retryAtEpochMillis)
+    }
+}
+
+
 private fun JSONObject.requiredNotificationId(): String = when (val value = opt("id")) {
     is String -> value.takeIf { NOTIFICATION_ID.matches(it) }
         ?: throw IOException("Notificação inválida")

@@ -1,22 +1,16 @@
 # Estado do projeto
 
-## Atualização documental e encerramento C09.1 — 2026-10-17
+## Atualização e encerramento C09.2 — 2026-10-17
 
-O aproveitamento do OpenHub foi detalhado em [ideias](docs/IDEIAS.md),
-[especificação](docs/superpowers/specs/2026-10-17-openhub-aproveitamento-design.md),
-[plano](docs/superpowers/plans/2026-10-17-openhub-aproveitamento.md) e
-[prompt para Claude](docs/prompts/CLAUDE_OPENHUB.md). São propostas de refinamento:
-cache/offline e refresh em C11, composição em C12/C13 e evolução de leitura/links
-quando delimitada. Código, dependências e estados de tarefas não mudaram.
-
-Nesta consulta, `plan/tasks.json` mantém C09.1 `DONE`, C09.2 e C11/C12/C13
-`PLANNED`; C08.2, C14.1 e C16.1 estão `DONE`. C11.1 depende de C09.2, portanto
-o fluxo segue para o refinamento de C09.2 antes de iniciar cache. Arquivos/diffs de PR já
-existem; um navegador geral de código/branches é ideia futura separada.
-README e arquitetura tiveram trechos desatualizados alinhados a essas evidências.
-Verificações desta alteração documental: `docs/evidence/OPENHUB-planning.md`.
-O histórico abaixo conserva suas datas e limitações; o JSON é canônico para
-estados individuais, e o roadmap continua definindo o aceite agregado.
+Checkpoint **C09.2** (*Marcar notificações lidas*) concluído com sucesso e promovido a `DONE`:
+- Implementado transporte HTTP com método `PATCH` e `Content-Length: 0` (`GitHubHttpClient.kt`), tratando `205 Reset Content` e `304 Not Modified` como sucesso sem corpo.
+- Fallback seguro por reflexão no JDK para execução em testes da JVM host, com `--add-opens=java.base/java.net=ALL-UNNAMED` no Gradle. No runtime Android (ART), PATCH é suportado nativamente.
+- Implementada função de domínio `markNotificationAsRead` (`GitHubNotifications.kt`) com validação de regex de `threadId` (`^[A-Za-z0-9_-]{1,80}$`).
+- Implementada interface e controle de estado em `GitHubNotificationsScreen.kt`: botão "Marcar como lida" (`notification-mark-read`), prevenção contra toques duplicados e concorrência (`enabled = !markingRead` e indicador de carregamento), atualização de estado para lida, ocultação do botão de marcar quando lida, omissão imediata da lista sob o filtro "Não lidas", preservação do estado não lida e exibição de erro em caso de falha de rede/HTTP, e tratamento de `401 Unauthorized`.
+- Verificações locais completas: `python scripts/check_plan.py` PASS (42 tarefas), `git diff --check` PASS, 69/69 testes unitários PASS, `lintDebug` PASS (0 erros), 13/13 testes instrumentados PASS no Pixel 9 (API 37).
+- Gate de Notificações respeitado: mutação real contra a API mantida como `NOT_RUN` na ausência de alvos explicitamente autorizados pelo usuário.
+- Auditoria independente via subagente aprovada com veredito **PASS** sem ressalvas impeditivas.
+- Evidências registradas em `docs/evidence/C09.2.md`.
 
 ## Histórico anterior
 

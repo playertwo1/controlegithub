@@ -99,7 +99,16 @@ internal class GitHubHttpClient(
 
         val target = baseUrl.resolve(path.removePrefix("/"))
         require(sameOrigin(baseUrl, target))
-        return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate)
+        return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate, "GET")
+    }
+
+    fun patch(path: String, accessToken: String? = null): GitHubHttpCall {
+        require(path.startsWith('/') && !path.startsWith("//") && '#' !in path)
+        require(accessToken == null || (accessToken.isNotBlank() && accessToken.none(Char::isWhitespace)))
+
+        val target = baseUrl.resolve(path.removePrefix("/"))
+        require(sameOrigin(baseUrl, target))
+        return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate, "PATCH")
     }
 
     internal fun pathFromLink(linkUrl: String): String {
@@ -124,7 +133,8 @@ internal class GitHubHttpCall internal constructor(
     private val accessToken: String?,
     private val connectTimeoutMillis: Int,
     private val readTimeoutMillis: Int,
-    private val rateLimitGate: GitHubRateLimitGate
+    private val rateLimitGate: GitHubRateLimitGate,
+    private val method: String = "GET"
 ) {
     private val cancelled = AtomicBoolean(false)
 
@@ -149,7 +159,7 @@ internal class GitHubHttpCall internal constructor(
             if (cancelled.get()) return GitHubHttpResult.Failure(GitHubHttpError.CANCELLED)
 
             activeConnection.apply {
-                requestMethod = "GET"
+                setRequestMethod(this, method)
                 connectTimeout = connectTimeoutMillis
                 readTimeout = readTimeoutMillis
                 instanceFollowRedirects = false
@@ -157,6 +167,13 @@ internal class GitHubHttpCall internal constructor(
                 setRequestProperty("X-GitHub-Api-Version", API_VERSION)
                 setRequestProperty("User-Agent", USER_AGENT)
                 accessToken?.let { setRequestProperty("Authorization", "Bearer $it") }
+                if (method == "PATCH" || method == "POST" || method == "PUT") {
+                    doOutput = true
+                    setFixedLengthStreamingMode(0)
+                }
+            }
+            if (method == "PATCH" || method == "POST" || method == "PUT") {
+                activeConnection.outputStream.close()
             }
 
             val statusCode = activeConnection.responseCode
@@ -169,8 +186,9 @@ internal class GitHubHttpCall internal constructor(
             )
             if (cancelled.get()) {
                 GitHubHttpResult.Failure(GitHubHttpError.CANCELLED)
-            } else if (statusCode in 200..299) {
-                val body = activeConnection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+            } else if (statusCode in 200..299 || statusCode == 304) {
+                val body = if (statusCode == 204 || statusCode == 205 || statusCode == 304) ""
+                else activeConnection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
                 if (cancelled.get()) GitHubHttpResult.Failure(GitHubHttpError.CANCELLED)
                 else GitHubHttpResult.Success(statusCode, body, headers)
             } else {
@@ -206,5 +224,16 @@ internal class GitHubHttpCall internal constructor(
     private companion object {
         const val API_VERSION = "2026-03-10"
         const val USER_AGENT = "ControleGitHub/0.1.0 (Android)"
+    }
+}
+
+private fun setRequestMethod(connection: HttpURLConnection, method: String) {
+    try {
+        connection.requestMethod = method
+    } catch (_: java.net.ProtocolException) {
+        runCatching {
+            val methodField = HttpURLConnection::class.java.getDeclaredField("method").apply { isAccessible = true }
+            methodField.set(connection, method)
+        }
     }
 }

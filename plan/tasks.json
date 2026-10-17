@@ -246,10 +246,10 @@
       "depends_on": [
         "C09.1"
       ],
-      "status": "PLANNED",
+      "status": "DONE",
       "acceptance": "Marcar lida persiste no GitHub; falha não confirma leitura indevidamente.",
-      "contract": null,
-      "evidence": null,
+      "contract": "plan/contracts/C09.2.md",
+      "evidence": "docs/evidence/C09.2.md",
       "blocked_reason": null
     },
     {

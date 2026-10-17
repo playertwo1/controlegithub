@@ -76,6 +76,94 @@ class GitHubNotificationsScreenTest {
         }
     }
 
+    @Test
+    fun markingNotificationAsReadSendsPatchAndUpdatesLocalStateToRead() {
+        NotificationsScreenApi(notificationsJson = NOTIFICATION).use { api ->
+            showNotifications(api)
+            compose.waitUntil(10_000) {
+                api.requests.isNotEmpty() &&
+                    compose.onAllNodesWithText("Fixture notification").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Não lidas").performClick()
+            compose.onNodeWithText("Fixture notification").performClick()
+
+            compose.onNodeWithText("Não lida · Atribuída a você").assertIsDisplayed()
+            compose.onNodeWithText("Marcar como lida").assertIsDisplayed()
+            compose.onNodeWithText("Marcar como lida").performClick()
+
+            compose.waitUntil(10_000) {
+                api.requests.any { it.startsWith("PATCH /notifications/threads/thread-1") } &&
+                    compose.onAllNodesWithText("Lida · Atribuída a você").fetchSemanticsNodes().isNotEmpty()
+            }
+
+            compose.onNodeWithText("Marcar como lida").assertDoesNotExist()
+            compose.onNodeWithContentDescription("Voltar aos avisos").performClick()
+            compose.onNodeWithText("Nenhuma notificação encontrada com estes filtros.").assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun markingNotificationAsReadFailurePreservesUnreadAndDisplaysErrorMessage() {
+        NotificationsScreenApi(notificationsJson = NOTIFICATION, patchStatus = 500).use { api ->
+            showNotifications(api)
+            compose.waitUntil(10_000) {
+                api.requests.isNotEmpty() &&
+                    compose.onAllNodesWithText("Fixture notification").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Fixture notification").performClick()
+            compose.onNodeWithText("Não lida · Atribuída a você").assertIsDisplayed()
+            compose.onNodeWithText("Marcar como lida").performClick()
+
+            compose.waitUntil(10_000) {
+                api.requests.any { it.startsWith("PATCH /notifications/threads/thread-1") } &&
+                    compose.onAllNodesWithText(GitHubHttpError.SERVER.userMessage).fetchSemanticsNodes().isNotEmpty()
+            }
+
+            compose.onNodeWithText("Não lida · Atribuída a você").assertIsDisplayed()
+            compose.onNodeWithText("Marcar como lida").assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun markingNotificationAsReadWith304UpdatesLocalStateToRead() {
+        NotificationsScreenApi(notificationsJson = NOTIFICATION, patchStatus = 304).use { api ->
+            showNotifications(api)
+            compose.waitUntil(10_000) {
+                api.requests.isNotEmpty() &&
+                    compose.onAllNodesWithText("Fixture notification").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Fixture notification").performClick()
+            compose.onNodeWithText("Marcar como lida").performClick()
+
+            compose.waitUntil(10_000) {
+                api.requests.any { it.startsWith("PATCH /notifications/threads/thread-1") } &&
+                    compose.onAllNodesWithText("Lida · Atribuída a você").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Marcar como lida").assertDoesNotExist()
+        }
+    }
+
+    @Test
+    fun markingNotificationAsReadWith401PreservesUnreadAndNotifiesSessionExpiry() {
+        NotificationsScreenApi(notificationsJson = NOTIFICATION, patchStatus = 401).use { api ->
+            var sessionExpired = false
+            showNotifications(api, onSessionExpired = { sessionExpired = true })
+            compose.waitUntil(10_000) {
+                api.requests.isNotEmpty() &&
+                    compose.onAllNodesWithText("Fixture notification").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Fixture notification").performClick()
+            compose.onNodeWithText("Marcar como lida").performClick()
+
+            compose.waitUntil(10_000) {
+                api.requests.any { it.startsWith("PATCH /notifications/threads/thread-1") } &&
+                    compose.onAllNodesWithText(GitHubHttpError.UNAUTHORIZED.userMessage).fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Não lida · Atribuída a você").assertIsDisplayed()
+            assertTrue(sessionExpired)
+        }
+    }
+
     private fun showNotifications(
         api: NotificationsScreenApi,
         session: GitHubSession = notificationFixtureSession(),
@@ -112,7 +200,8 @@ private fun notificationFixtureSession(login: String = "fixture-user") = GitHubS
 private class NotificationsScreenApi(
     private val initialStatus: Int = 200,
     private val notificationsJson: String,
-    private val originResponses: Map<String, String> = emptyMap()
+    private val originResponses: Map<String, String> = emptyMap(),
+    private val patchStatus: Int = 205
 ) : AutoCloseable {
     private val server = ServerSocket(0, 0, InetAddress.getByName("127.0.0.1"))
     val baseUri = java.net.URI.create("http://127.0.0.1:${server.localPort}/")
@@ -133,6 +222,23 @@ private class NotificationsScreenApi(
                 }
                 authorizations += headers.firstOrNull { it.startsWith("Authorization:", ignoreCase = true) }
                     ?.substringAfter(':')?.trim()
+                if (request.startsWith("PATCH /notifications/threads/")) {
+                    val status = patchStatus
+                    val statusText = when (status) {
+                        205 -> "Reset Content"
+                        304 -> "Not Modified"
+                        401 -> "Unauthorized"
+                        403 -> "Forbidden"
+                        404 -> "Not Found"
+                        429 -> "Too Many Requests"
+                        else -> "Server Error"
+                    }
+                    socket.getOutputStream().apply {
+                        write("HTTP/1.1 $status $statusText\r\nConnection: close\r\n\r\n".toByteArray(StandardCharsets.US_ASCII))
+                        flush()
+                    }
+                    return@use
+                }
                 val path = request.substringAfter("GET ").substringBefore(" HTTP")
                 val status = if (path.startsWith("/notifications")) initialStatus else 200
                 val body = if (path.startsWith("/notifications")) notificationsJson else

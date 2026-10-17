@@ -39,3 +39,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
+
+tasks.withType<Test> {
+    jvmArgs("--add-opens=java.base/java.net=ALL-UNNAMED")
+}

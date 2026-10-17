@@ -101,6 +101,20 @@ class GitHubNotificationsTest {
         }
     }
 
+    @Test
+    fun markNotificationAsReadValidatesThreadId() {
+        val client = GitHubHttpClient(java.net.URI.create("http://127.0.0.1:8080/"))
+        assertThrows(IllegalArgumentException::class.java) {
+            markNotificationAsRead(client, "token", "")
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            markNotificationAsRead(client, "token", "invalid id with spaces")
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            markNotificationAsRead(client, "token", "../traversal")
+        }
+    }
+
     private fun JSONObject.toModel() =
         parseGitHubNotifications(fixtureThreads(this)).single()
 }
