@@ -87,9 +87,14 @@ internal fun GitHubIssueDetailScreen(
     var editingIssue by rememberSaveable(issue.identity) { mutableStateOf(false) }
     var editTitle by rememberSaveable(issue.identity) { mutableStateOf("") }
     var editBody by rememberSaveable(issue.identity) { mutableStateOf("") }
+    var editLabels by rememberSaveable(issue.identity) { mutableStateOf("") }
+    var editAssignees by rememberSaveable(issue.identity) { mutableStateOf("") }
     var editSubmitting by remember { mutableStateOf(false) }
     var editError by remember { mutableStateOf<String?>(null) }
     var editTitleError by remember { mutableStateOf<String?>(null) }
+
+    var stateChanging by remember { mutableStateOf(false) }
+    var stateChangeError by remember { mutableStateOf<String?>(null) }
 
     suspend fun loadComments() {
         if (loadingComments || (commentsLoaded && !hasMoreComments && commentsError == null)) return
@@ -117,6 +122,7 @@ internal fun GitHubIssueDetailScreen(
     }
 
     BackHandler(onBack = {
+        if (stateChanging) return@BackHandler
         if (editingIssue) {
             editingIssue = false
             editError = null
@@ -147,14 +153,14 @@ internal fun GitHubIssueDetailScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onBack, enabled = !commentSubmitting && !editSubmitting) {
+            IconButton(onClick = onBack, enabled = !commentSubmitting && !editSubmitting && !stateChanging) {
                 Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Voltar às issues")
             }
             Spacer(Modifier.weight(1f))
-            IconButton(onClick = onAppearance, enabled = !commentSubmitting && !editSubmitting) {
+            IconButton(onClick = onAppearance, enabled = !commentSubmitting && !editSubmitting && !stateChanging) {
                 Icon(Icons.Outlined.Settings, contentDescription = "Configurações de aparência")
             }
-            IconButton(onClick = { refreshVersion++; detail = null }, enabled = !loadingDetail && !commentSubmitting && !editSubmitting) {
+            IconButton(onClick = { refreshVersion++; detail = null }, enabled = !loadingDetail && !commentSubmitting && !editSubmitting && !stateChanging) {
                 Icon(Icons.Outlined.Refresh, contentDescription = "Atualizar issue")
             }
         }
@@ -191,6 +197,20 @@ internal fun GitHubIssueDetailScreen(
                         enabled = !editSubmitting,
                         modifier = Modifier.fillMaxWidth().testTag("issue_edit_body_input")
                     )
+                    OutlinedTextField(
+                        value = editLabels,
+                        onValueChange = { editLabels = it },
+                        label = { Text("Rótulos (separados por vírgula)") },
+                        enabled = !editSubmitting,
+                        modifier = Modifier.fillMaxWidth().testTag("issue_edit_labels_input")
+                    )
+                    OutlinedTextField(
+                        value = editAssignees,
+                        onValueChange = { editAssignees = it },
+                        label = { Text("Responsáveis (logins separados por vírgula)") },
+                        enabled = !editSubmitting,
+                        modifier = Modifier.fillMaxWidth().testTag("issue_edit_assignees_input")
+                    )
                     if (editError != null) {
                         Surface(
                             shape = RoundedCornerShape(12.dp),
@@ -226,6 +246,8 @@ internal fun GitHubIssueDetailScreen(
                                 editTitleError = null
                                 editError = null
                                 editSubmitting = true
+                                val parsedLabels = editLabels.split(',').map(String::trim).filter(String::isNotEmpty)
+                                val parsedAssignees = editAssignees.split(',').map(String::trim).filter(String::isNotEmpty)
                                 scope.launch {
                                     val result = withContext(Dispatchers.IO) {
                                         editGitHubIssue(
@@ -234,6 +256,8 @@ internal fun GitHubIssueDetailScreen(
                                             currentIssue = current.detail.issue,
                                             title = trimmed,
                                             body = editBody.trim().takeIf(String::isNotBlank),
+                                            labels = parsedLabels,
+                                            assignees = parsedAssignees,
                                             isOffline = isOffline
                                         )
                                     }
@@ -292,6 +316,8 @@ internal fun GitHubIssueDetailScreen(
                                 onClick = {
                                     editTitle = current.detail.issue.title
                                     editBody = current.detail.body.orEmpty()
+                                    editLabels = current.detail.issue.labels.joinToString(", ")
+                                    editAssignees = current.detail.issue.assignees.joinToString(", ")
                                     editError = null
                                     editTitleError = null
                                     editingIssue = true
@@ -302,14 +328,95 @@ internal fun GitHubIssueDetailScreen(
                             }
                         }
                     }
-                    Text(
-                        "${current.detail.issue.repository} · #${current.detail.issue.number} · ${if (current.detail.issue.state == GitHubIssueState.OPEN) "Aberta" else "Fechada"}",
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Text("Por ${current.detail.issue.author?.let { "@$it" } ?: "autor indisponível"}", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    if (current.detail.issue.labels.isNotEmpty()) {
-                        Text(current.detail.issue.labels.joinToString(" · "), color = MaterialTheme.colorScheme.secondary)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "${current.detail.issue.repository} · #${current.detail.issue.number} · ${if (current.detail.issue.state == GitHubIssueState.OPEN) "Aberta" else "Fechada"}",
+                            color = if (current.detail.issue.state == GitHubIssueState.OPEN) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        if (!isOffline) {
+                            val isOpen = current.detail.issue.state == GitHubIssueState.OPEN
+                            val actionText = if (isOpen) "Fechar issue" else "Reabrir issue"
+                            val targetState = if (isOpen) GitHubIssueState.CLOSED else GitHubIssueState.OPEN
+                            Button(
+                                onClick = {
+                                    stateChanging = true
+                                    stateChangeError = null
+                                    scope.launch {
+                                        val result = withContext(Dispatchers.IO) {
+                                            updateIssueState(
+                                                client = client,
+                                                accessToken = session.accessToken,
+                                                currentIssue = current.detail.issue,
+                                                newState = targetState,
+                                                isOffline = isOffline
+                                            )
+                                        }
+                                        stateChanging = false
+                                        when (result) {
+                                            is MutateIssueStateResult.Success -> {
+                                                detail = GitHubIssueDetailResult.Loaded(result.detail)
+                                            }
+                                            is MutateIssueStateResult.Failure -> {
+                                                stateChangeError = if (result.statusCode == 403) {
+                                                    "Você não tem permissão para alterar o estado desta issue."
+                                                } else {
+                                                    result.error.userMessage
+                                                }
+                                            }
+                                            MutateIssueStateResult.Offline -> {
+                                                stateChangeError = "Não é possível alterar o estado da issue no modo offline."
+                                            }
+                                        }
+                                    }
+                                },
+                                enabled = !stateChanging && !commentSubmitting && !editSubmitting,
+                                modifier = Modifier.testTag(if (isOpen) "issue_close_button" else "issue_reopen_button")
+                            ) {
+                                if (stateChanging) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(16.dp).testTag("issue_state_progress"),
+                                        strokeWidth = 2.dp,
+                                        color = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                    Spacer(Modifier.size(6.dp))
+                                    Text("Atualizando…")
+                                } else {
+                                    Text(actionText)
+                                }
+                            }
+                        }
                     }
+                    if (stateChangeError != null) {
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = stateChangeError.orEmpty(),
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                modifier = Modifier.padding(14.dp)
+                            )
+                        }
+                    }
+                    Text("Por ${current.detail.issue.author?.let { "@$it" } ?: "autor indisponível"}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    val assigneesText = if (current.detail.issue.assignees.isNotEmpty()) {
+                        "Responsáveis: " + current.detail.issue.assignees.joinToString(", ") { "@$it" }
+                    } else {
+                        "Sem responsáveis"
+                    }
+                    Text(assigneesText, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.testTag("issue_assignees_text"))
+                    val labelsText = if (current.detail.issue.labels.isNotEmpty()) {
+                        "Rótulos: " + current.detail.issue.labels.joinToString(" · ")
+                    } else {
+                        "Sem rótulos"
+                    }
+                    Text(labelsText, color = MaterialTheme.colorScheme.secondary, modifier = Modifier.testTag("issue_labels_text"))
                     Text("Descrição", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                     InertMarkdown(current.detail.body?.takeIf(String::isNotBlank) ?: "Sem descrição.")
                 }

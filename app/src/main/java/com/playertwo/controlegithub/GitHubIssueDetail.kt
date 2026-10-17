@@ -40,6 +40,12 @@ internal sealed interface EditIssueResult {
     data object Offline : EditIssueResult
 }
 
+internal sealed interface MutateIssueStateResult {
+    data class Success(val detail: GitHubIssueDetail) : MutateIssueStateResult
+    data class Failure(val error: GitHubHttpError, val statusCode: Int? = null) : MutateIssueStateResult
+    data object Offline : MutateIssueStateResult
+}
+
 internal class GitHubIssueDetailLoader(
     private val client: GitHubHttpClient,
     private val accessToken: String
@@ -112,9 +118,10 @@ internal fun parseGitHubIssueDetail(json: String, expected: GitHubIssue): GitHub
     ) throw IOException("Issue inválida")
 
     val labels = parseIssueDetailLabels(item.opt("labels"))
+    val assignees = parseIssueDetailAssignees(item.opt("assignees"))
     val updatedAt = item.optionalIssueDetailString("updated_at")?.let { runCatching { Instant.parse(it) }.getOrNull() }
     val author = item.optJSONObject("user")?.optionalIssueDetailString("login")?.takeIf(String::isNotBlank)
-    val mapped = expected.copy(title = title, state = state, author = author, labels = labels, updatedAt = updatedAt)
+    val mapped = expected.copy(title = title, state = state, author = author, assignees = assignees, labels = labels, updatedAt = updatedAt)
     return GitHubIssueDetail(mapped, item.optionalIssueDetailString("body"))
 }
 
@@ -164,6 +171,16 @@ private fun parseIssueDetailLabels(raw: Any?): List<String> = when (raw) {
     is JSONArray -> buildList {
         for (index in 0 until raw.length()) {
             raw.optJSONObject(index)?.optionalIssueDetailString("name")?.takeIf(String::isNotBlank)?.let(::add)
+        }
+    }
+    else -> throw IOException("Issue inválida")
+}
+
+private fun parseIssueDetailAssignees(raw: Any?): List<String> = when (raw) {
+    null, JSONObject.NULL -> emptyList()
+    is JSONArray -> buildList {
+        for (index in 0 until raw.length()) {
+            raw.optJSONObject(index)?.optionalIssueDetailString("login")?.takeIf(String::isNotBlank)?.let(::add)
         }
     }
     else -> throw IOException("Issue inválida")
@@ -241,6 +258,8 @@ internal fun editGitHubIssue(
     currentIssue: GitHubIssue,
     title: String,
     body: String?,
+    labels: List<String>? = null,
+    assignees: List<String>? = null,
     isOffline: Boolean = false
 ): EditIssueResult {
     if (isOffline) return EditIssueResult.Offline
@@ -258,6 +277,16 @@ internal fun editGitHubIssue(
         if (trimmedBody != null) {
             append(",\"body\":\"").append(escapeJson(trimmedBody)).append("\"")
         }
+        if (labels != null) {
+            append(",\"labels\":[")
+            append(labels.joinToString(",") { "\"${escapeJson(it.trim())}\"" })
+            append("]")
+        }
+        if (assignees != null) {
+            append(",\"assignees\":[")
+            append(assignees.joinToString(",") { "\"${escapeJson(it.trim())}\"" })
+            append("]")
+        }
         append("}")
     }
 
@@ -274,6 +303,39 @@ internal fun editGitHubIssue(
         }
         is GitHubHttpResult.Failure -> {
             EditIssueResult.Failure(result.error, result.statusCode)
+        }
+    }
+}
+
+internal fun updateIssueState(
+    client: GitHubHttpClient,
+    accessToken: String,
+    currentIssue: GitHubIssue,
+    newState: GitHubIssueState,
+    isOffline: Boolean = false
+): MutateIssueStateResult {
+    if (isOffline) return MutateIssueStateResult.Offline
+
+    val parts = currentIssue.repository.trim().split('/')
+    if (parts.size != 2 || parts.any { it.isBlank() || it.any(Char::isWhitespace) } || currentIssue.number <= 0) {
+        return MutateIssueStateResult.Failure(GitHubHttpError.UNEXPECTED)
+    }
+
+    val stateString = if (newState == GitHubIssueState.OPEN) "open" else "closed"
+    val payload = "{\"state\":\"$stateString\"}"
+    val path = "/repos/${currentIssue.repository}/issues/${currentIssue.number}"
+    val call = client.patch(path, accessToken = accessToken, jsonBody = payload)
+    return when (val result = call.execute()) {
+        is GitHubHttpResult.Success -> {
+            try {
+                val updatedDetail = parseGitHubIssueDetail(result.body, currentIssue)
+                MutateIssueStateResult.Success(updatedDetail)
+            } catch (_: Exception) {
+                MutateIssueStateResult.Failure(GitHubHttpError.UNEXPECTED, result.statusCode)
+            }
+        }
+        is GitHubHttpResult.Failure -> {
+            MutateIssueStateResult.Failure(result.error, result.statusCode)
         }
     }
 }

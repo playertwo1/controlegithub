@@ -1,5 +1,22 @@
 # Estado do projeto
 
+## Atualização e encerramento C12.3 e Checkpoint C12 — 2026-10-17
+
+Checkpoint **C12.3** (*Metadados e fechar/reabrir issue* — OpenHub OH-04 / ciclo de vida e metadados) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C12 (Operações em Issues)**:
+- Decodificação de lista de responsáveis (`assignees: [{"login": "..."}]`) através do parser `parseIssueDetailAssignees` integrado a `parseGitHubIssueDetail`.
+- Função de domínio `updateIssueState` para alternância de estado da issue (`OPEN` <-> `CLOSED`) via `PATCH /repos/{owner}/{repo}/issues/{number}` com `{"state":"open"}` ou `{"state":"closed"}`.
+- Atualização de `editGitHubIssue` para serializar simultaneamente `labels` e `assignees` no payload `PATCH`.
+- Interface `GitHubIssueDetailScreen.kt` em Jetpack Compose com UI 100% em português:
+  - **STATE-01 (Fechar issue):** Botão "Fechar issue" contextual (`issue_close_button`), envio de `PATCH` e atualização imediata do badge para "Fechada" com transição para botão "Reabrir issue".
+  - **STATE-02 (Reabrir issue):** Botão "Reabrir issue" contextual (`issue_reopen_button`), envio de `PATCH` e atualização imediata do badge para "Aberta" com transição para botão "Fechar issue".
+  - **METADATA-01 (Metadados):** Visualização de responsáveis (`issue_assignees_text`) e rótulos (`issue_labels_text`); formulário de edição com campos para rótulos e responsáveis com persistência no servidor.
+  - **PERMISSION-01 (Permissão negada 403):** Tratamento de HTTP 403 Forbidden com mensagem clara na interface e preservação do estado e metadados anteriores.
+  - **MUTATION-GUARD (Anti-duplo clique e modo offline):** Bloqueio síncrono de botões e exibição de spinner (`issue_state_progress`) durante mutações; bloqueio e ocultação de ações mutativas no modo offline com banner informativo (sem fila oculta).
+- Verificações completas: `python scripts/check_plan.py` PASS (42 tarefas), `git diff --check` PASS, 108/108 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), 8/8 testes instrumentados C12.3 PASS no Pixel 9 (API 37).
+- Auditoria independente via subagente aprovada com veredito **PASS** (sem bloqueios).
+- Evidências registradas em `docs/evidence/C12.3.md`.
+- Conclusão do **Checkpoint C12**: tarefas C12.1, C12.2 e C12.3 concluídas com sucesso (`DONE`).
+
 ## Atualização e encerramento C12.2 — 2026-10-17
 
 Checkpoint **C12.2** (*Editar e comentar issue* — OpenHub OH-04 / edição e comentários) concluído com sucesso e promovido a `DONE`:
