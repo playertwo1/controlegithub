@@ -289,6 +289,7 @@ private fun PullRequestCard(pullRequest: GitHubPullRequest, onClick: () -> Unit)
     }
 }
 
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 internal fun GitHubPullRequestDetailScreen(
     modifier: Modifier,
@@ -326,6 +327,11 @@ internal fun GitHubPullRequestDetailScreen(
     var hasMoreReviews by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
     var loadingReviews by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
     var reviewsError by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf<String?>(null) }
+    var reviewEvent by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(PullRequestReviewEvent.APPROVE) }
+    var reviewBodyText by rememberSaveable(pullRequest.identity, session.accessToken) { mutableStateOf("") }
+    var reviewSubmitting by remember { mutableStateOf(false) }
+    var reviewError by remember { mutableStateOf<String?>(null) }
+    var reviewFieldError by remember { mutableStateOf<String?>(null) }
     var sessionExpiryReported by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val filesPager = remember(client, session.accessToken, pullRequest.identity, refreshVersion) {
@@ -453,7 +459,7 @@ internal fun GitHubPullRequestDetailScreen(
     }
 
     BackHandler(onBack = {
-        if (commentSubmitting) return@BackHandler
+        if (commentSubmitting || reviewSubmitting) return@BackHandler
         onBack()
     })
     LaunchedEffect(loader, pullRequest.identity, refreshVersion) {
@@ -484,10 +490,10 @@ internal fun GitHubPullRequestDetailScreen(
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState())
         .padding(PaddingValues(horizontal = 24.dp, vertical = 20.dp)), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onBack, enabled = !commentSubmitting) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Voltar aos pull requests") }
+            IconButton(onClick = onBack, enabled = !commentSubmitting && !reviewSubmitting) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Voltar aos pull requests") }
             Spacer(Modifier.weight(1f))
-            IconButton(onClick = onAppearance, enabled = !commentSubmitting) { Icon(Icons.Outlined.Settings, contentDescription = "Configurações de aparência") }
-            IconButton(onClick = { refreshVersion++; detail = null }, enabled = !loadingDetail && !commentSubmitting) {
+            IconButton(onClick = onAppearance, enabled = !commentSubmitting && !reviewSubmitting) { Icon(Icons.Outlined.Settings, contentDescription = "Configurações de aparência") }
+            IconButton(onClick = { refreshVersion++; detail = null }, enabled = !loadingDetail && !commentSubmitting && !reviewSubmitting) {
                 Icon(Icons.Outlined.Refresh, contentDescription = "Atualizar pull request")
             }
         }
@@ -682,6 +688,168 @@ internal fun GitHubPullRequestDetailScreen(
                 if (hasMoreReviews && reviewsError == null) {
                     TextButton(onClick = { scope.launch { loadReviews() } }, enabled = !loadingReviews, modifier = Modifier.fillMaxWidth()) {
                         if (loadingReviews) CircularProgressIndicator(strokeWidth = 2.dp) else Text("Carregar mais reviews")
+                    }
+                }
+
+                val isAuthor = session.user.login.equals(value.author, ignoreCase = true)
+                if (isOffline) {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        modifier = Modifier.fillMaxWidth().testTag("pr_review_offline_banner")
+                    ) {
+                        Text(
+                            text = "Modo offline: Conexão necessária para enviar revisões de pull request.",
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            modifier = Modifier.padding(14.dp)
+                        )
+                    }
+                } else {
+                    Text("Nova revisão", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                    if (isAuthor) {
+                        Text(
+                            text = "Você é o autor deste pull request. O GitHub permite apenas pareceres de comentário para o próprio autor.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 13.sp,
+                            modifier = Modifier.testTag("pr_review_author_warning")
+                        )
+                    }
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("pr_review_event_selector")) {
+                        PullRequestReviewEvent.entries.forEach { eventChoice ->
+                            FilterChip(
+                                selected = reviewEvent == eventChoice,
+                                onClick = {
+                                    if (!reviewSubmitting) {
+                                        reviewEvent = eventChoice
+                                        reviewFieldError = null
+                                        reviewError = null
+                                    }
+                                },
+                                label = { Text(eventChoice.label) },
+                                enabled = !reviewSubmitting,
+                                modifier = Modifier.testTag("pr_review_event_${eventChoice.name.lowercase()}")
+                            )
+                        }
+                    }
+                    OutlinedTextField(
+                        value = reviewBodyText,
+                        onValueChange = {
+                            reviewBodyText = it
+                            if (reviewFieldError != null && it.isNotBlank()) reviewFieldError = null
+                        },
+                        label = {
+                            Text(
+                                if (reviewEvent == PullRequestReviewEvent.REQUEST_CHANGES) "Justificativa das alterações (obrigatório)…"
+                                else "Parecer da revisão (opcional)…"
+                            )
+                        },
+                        placeholder = {
+                            Text(
+                                if (reviewEvent == PullRequestReviewEvent.REQUEST_CHANGES) "Explique as mudanças necessárias para aprovação"
+                                else "Deixe considerações sobre o código revisado"
+                            )
+                        },
+                        isError = reviewFieldError != null,
+                        supportingText = reviewFieldError?.let { error -> { Text(error, color = MaterialTheme.colorScheme.error) } },
+                        enabled = !reviewSubmitting,
+                        minLines = 3,
+                        maxLines = 8,
+                        modifier = Modifier.fillMaxWidth().testTag("pr_review_input")
+                    )
+                    if (reviewError != null) {
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = reviewError.orEmpty(),
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                modifier = Modifier.padding(14.dp).testTag("pr_review_error")
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+                            onClick = {
+                                if (reviewSubmitting) return@Button
+                                val trimmed = reviewBodyText.trim()
+                                if (reviewEvent == PullRequestReviewEvent.REQUEST_CHANGES && trimmed.isEmpty()) {
+                                    reviewFieldError = "É obrigatório justificar as alterações solicitadas."
+                                    return@Button
+                                }
+                                if (isOffline) {
+                                    reviewError = "Não é possível enviar revisão no modo offline."
+                                    return@Button
+                                }
+                                if (isAuthor && reviewEvent != PullRequestReviewEvent.COMMENT) {
+                                    reviewError = "Você não pode aprovar ou solicitar alterações no seu próprio pull request."
+                                    return@Button
+                                }
+                                reviewFieldError = null
+                                reviewError = null
+                                reviewSubmitting = true
+                                scope.launch {
+                                    val result = withContext(Dispatchers.IO) {
+                                        submitPullRequestReview(
+                                            client = client,
+                                            accessToken = session.accessToken,
+                                            repository = value.repository,
+                                            pullNumber = value.number,
+                                            event = reviewEvent,
+                                            body = trimmed.takeIf(String::isNotBlank),
+                                            commitId = value.headSha,
+                                            isOffline = isOffline
+                                        )
+                                    }
+                                    when (result) {
+                                        is SubmitPullRequestReviewResult.Success -> {
+                                            reviews = reviews + result.review
+                                            reviewBodyText = ""
+                                            reviewSubmitting = false
+                                        }
+                                        SubmitPullRequestReviewResult.EmptyChangesBody -> {
+                                            reviewFieldError = "É obrigatório justificar as alterações solicitadas."
+                                            reviewSubmitting = false
+                                        }
+                                        SubmitPullRequestReviewResult.SelfReviewForbidden -> {
+                                            reviewError = "Você não pode aprovar ou solicitar alterações no seu próprio pull request."
+                                            reviewSubmitting = false
+                                        }
+                                        SubmitPullRequestReviewResult.Offline -> {
+                                            reviewError = "Não é possível enviar revisão no modo offline."
+                                            reviewSubmitting = false
+                                        }
+                                        is SubmitPullRequestReviewResult.Failure -> {
+                                            reviewSubmitting = false
+                                            if (result.statusCode == 403) {
+                                                reviewError = "Você não tem permissão para enviar revisões neste pull request."
+                                            } else {
+                                                reviewError = result.error.userMessage
+                                            }
+                                            if (result.error == GitHubHttpError.UNAUTHORIZED) {
+                                                reportSessionExpiredOnce()
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            enabled = !reviewSubmitting,
+                            modifier = Modifier.testTag("pr_review_submit_button")
+                        ) {
+                            if (reviewSubmitting) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp).testTag("pr_review_progress"),
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            } else {
+                                Text("Enviar revisão")
+                            }
+                        }
                     }
                 }
             }

@@ -69,6 +69,20 @@ internal data class GitHubPullRequestReview(
     val submittedAt: Instant?
 )
 
+internal enum class PullRequestReviewEvent(val apiValue: String, val label: String) {
+    APPROVE("APPROVE", "Aprovar"),
+    REQUEST_CHANGES("REQUEST_CHANGES", "Solicitar alterações"),
+    COMMENT("COMMENT", "Comentar revisão")
+}
+
+internal sealed interface SubmitPullRequestReviewResult {
+    data class Success(val review: GitHubPullRequestReview) : SubmitPullRequestReviewResult
+    data class Failure(val error: GitHubHttpError, val statusCode: Int? = null) : SubmitPullRequestReviewResult
+    data object EmptyChangesBody : SubmitPullRequestReviewResult
+    data object SelfReviewForbidden : SubmitPullRequestReviewResult
+    data object Offline : SubmitPullRequestReviewResult
+}
+
 internal sealed interface CreatePullRequestCommentResult {
     data class Success(val comment: GitHubPullRequestComment) : CreatePullRequestCommentResult
     data class Failure(val error: GitHubHttpError, val statusCode: Int? = null) : CreatePullRequestCommentResult
@@ -496,6 +510,74 @@ internal fun createPullRequestComment(
         }
         is GitHubHttpResult.Failure -> {
             CreatePullRequestCommentResult.Failure(result.error, result.statusCode)
+        }
+    }
+}
+
+internal fun parseCreatedPullRequestReview(json: String): GitHubPullRequestReview {
+    val obj = JSONObject(json)
+    val id = obj.requiredPositiveLong("id")
+    val author = runCatching {
+        obj.optJSONObject("user")?.optionalString("login")?.takeIf(String::isNotBlank)
+    }.getOrNull()
+    val state = runCatching { obj.requiredNonBlankString("state") }.getOrNull()
+        ?.takeIf { it in REVIEW_STATES } ?: "COMMENTED"
+    val body = obj.optionalString("body")
+    val submittedAt = runCatching {
+        obj.optionalString("submitted_at")?.let(Instant::parse)
+    }.getOrNull() ?: Instant.now()
+    return GitHubPullRequestReview(id, author, state, body, submittedAt)
+}
+
+internal fun submitPullRequestReview(
+    client: GitHubHttpClient,
+    accessToken: String,
+    repository: String,
+    pullNumber: Int,
+    event: PullRequestReviewEvent,
+    body: String?,
+    commitId: String? = null,
+    isOffline: Boolean = false
+): SubmitPullRequestReviewResult {
+    if (isOffline) return SubmitPullRequestReviewResult.Offline
+    val trimmedBody = body?.trim().orEmpty()
+    if (event == PullRequestReviewEvent.REQUEST_CHANGES && trimmedBody.isEmpty()) {
+        return SubmitPullRequestReviewResult.EmptyChangesBody
+    }
+
+    val parts = repository.trim().split('/')
+    if (parts.size != 2 || parts.any { it.isBlank() || it.any(Char::isWhitespace) } || pullNumber <= 0) {
+        return SubmitPullRequestReviewResult.Failure(GitHubHttpError.UNEXPECTED)
+    }
+
+    val payload = buildString {
+        append("{\"event\":\"").append(event.apiValue).append("\"")
+        if (trimmedBody.isNotEmpty()) {
+            append(",\"body\":\"").append(escapeJson(trimmedBody)).append("\"")
+        }
+        if (!commitId.isNullOrBlank()) {
+            append(",\"commit_id\":\"").append(escapeJson(commitId.trim())).append("\"")
+        }
+        append("}")
+    }
+
+    val path = "/repos/${parts[0]}/${parts[1]}/pulls/$pullNumber/reviews"
+    val call = client.post(path, accessToken = accessToken, jsonBody = payload)
+    return when (val result = call.execute()) {
+        is GitHubHttpResult.Success -> {
+            try {
+                val review = parseCreatedPullRequestReview(result.body)
+                SubmitPullRequestReviewResult.Success(review)
+            } catch (_: Exception) {
+                SubmitPullRequestReviewResult.Failure(GitHubHttpError.UNEXPECTED, result.statusCode)
+            }
+        }
+        is GitHubHttpResult.Failure -> {
+            if (result.statusCode == 422) {
+                SubmitPullRequestReviewResult.SelfReviewForbidden
+            } else {
+                SubmitPullRequestReviewResult.Failure(result.error, result.statusCode)
+            }
         }
     }
 }

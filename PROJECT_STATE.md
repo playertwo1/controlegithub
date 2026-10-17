@@ -1,5 +1,25 @@
 # Estado do projeto
 
+## Atualização e encerramento C13.2 e Checkpoint C13 — 2026-10-17
+
+Checkpoint **C13.2** (*Enviar revisão de PR* — OpenHub OH-05 / revisões formais de Pull Requests) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C13 (Comentários e revisão de PR)**:
+- Camada de domínio em `GitHubPullRequests.kt`:
+  - Enum `PullRequestReviewEvent` (`APPROVE`, `REQUEST_CHANGES`, `COMMENT`).
+  - Tipo selado `SubmitPullRequestReviewResult` (`Success`, `Failure`, `EmptyChangesBody`, `SelfReviewForbidden`, `Offline`).
+  - Analisador `parseCreatedPullRequestReview` decodificando a resposta `200 OK` do GitHub (`id`, `user.login`, `state`, `body`, `submitted_at`).
+  - Função `submitPullRequestReview(client, accessToken, repository, pullNumber, event, body, commitId, isOffline)` com sanitização de JSON via `escapeJson` puro e chamada autenticada via `POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews`.
+  - Tratamento de status HTTP 422 mapeando para `SelfReviewForbidden`.
+- Interface e Interações em `GitHubPullRequestsScreen.kt`:
+  - **REVIEW-APPROVE (Aprovação de PR com sucesso):** Seleção de "Aprovar" (`pr_review_event_approve`), envio de parecer (`pr_review_input`) e botão `pr_review_submit_button`. Ao retornar `200 OK`, anexa a nova revisão "Aprovou · @login" e limpa o campo.
+  - **REVIEW-CHANGES (Solicitação de alterações com justificativa obrigatória):** Seleção de "Solicitar alterações" (`pr_review_event_request_changes`). Validação local barra envio com texto vazio ("É obrigatório justificar as alterações solicitadas."). Quando preenchido, anexa com estado "Solicitou alterações".
+  - **REVIEW-SELF (Tratamento de auto-revisão):** Se o usuário for o autor do PR, exibe aviso explicativo prévio (`pr_review_author_warning`) e bloqueia aprovação ou solicitação de alterações para o próprio autor com mensagem amigável ("Você não pode aprovar ou solicitar alterações no seu próprio pull request."), preservando o rascunho digitado.
+  - **REVIEW-ANTI-DOUBLE-TAP (Proteção contra toques repetidos):** Desativação síncrona do botão de envio com indicador de progresso `pr_review_progress` e bloqueio de navegação superior durante o envio.
+  - **MUTATION-GUARD (Preservação de rascunho em falha e bloqueio offline):** Texto digitado permanece preservado em erros de rede ou 403 Forbidden; no modo offline, o formulário é substituído por `pr_review_offline_banner` ("Modo offline: Conexão necessária para enviar revisões de pull request.") sem fila oculta de mutações offline.
+- Verificações completas: `python scripts/check_plan.py` PASS (42 tarefas), `git diff --check` PASS, 118/118 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), 7/7 testes instrumentados C13.2 PASS no Pixel 9 (API 37).
+- Auditoria independente via subagente aprovada com veredito **PASS** (sem bloqueios).
+- Evidências registradas em `docs/evidence/C13.2.md`.
+- Conclusão do **Checkpoint C13**: tarefas C13.1 e C13.2 concluídas com sucesso (`DONE`).
+
 ## Atualização e encerramento C13.1 — 2026-10-17
 
 Checkpoint **C13.1** (*Comentar PR* — OpenHub OH-05 / comentários de discussão em Pull Requests) concluído com sucesso e promovido a `DONE`:
