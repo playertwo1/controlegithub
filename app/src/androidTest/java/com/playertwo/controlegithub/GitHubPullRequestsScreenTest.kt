@@ -241,6 +241,9 @@ class GitHubPullRequestsScreenTest {
                     )
                 }
             }
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Fixture pull request").fetchSemanticsNodes().isNotEmpty()
+            }
             compose.onNodeWithText("Fixture pull request").performClick()
             compose.waitUntil(10_000) { api.requests.any { it.startsWith("GET /repos/owner/project/pulls/27/files") } }
             compose.onNodeWithText("Carregar mais arquivos").performClick()

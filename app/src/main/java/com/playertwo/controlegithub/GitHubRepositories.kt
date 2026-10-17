@@ -56,6 +56,8 @@ private fun JSONObject.optionalString(key: String): String? = when (val value = 
 internal class GitHubRepositoryPager(
     client: GitHubHttpClient,
     accessToken: String,
+    cacheStore: GitHubCacheStore? = null,
+    accountLogin: String? = null,
     decode: (String) -> List<GitHubRepository> = ::parseGitHubRepositories
 ) {
     private val pager = GitHubPaginator(
@@ -63,7 +65,9 @@ internal class GitHubRepositoryPager(
         firstPath = FIRST_PAGE_PATH,
         accessToken = accessToken,
         decode = decode,
-        itemKey = { it.id.toString() }
+        itemKey = { it.id.toString() },
+        cacheStore = cacheStore,
+        accountLogin = accountLogin
     )
 
     fun loadNext(): GitHubPageResult<GitHubRepository> = pager.loadNext()

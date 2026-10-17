@@ -72,16 +72,28 @@ internal fun GitHubNotificationsScreen(
     session: GitHubSession?,
     sessionRestoring: Boolean,
     onSessionExpired: (GitHubSession) -> Unit,
-    onAppearance: () -> Unit
+    onAppearance: () -> Unit,
+    cacheStore: GitHubCacheStore? = null
 ) {
     val login = session?.user?.login
     val token = session?.accessToken
     var refreshVersion by remember(token) { mutableIntStateOf(0) }
-    val pager = remember(client, token, refreshVersion) { token?.let { GitHubNotificationPager(client, it) } }
-    var notifications by remember(pager) { mutableStateOf(emptyList<GitHubNotification>()) }
+    val pager = remember(client, token, refreshVersion, cacheStore) {
+        token?.let {
+            GitHubNotificationPager(
+                client = client,
+                accessToken = it,
+                cacheStore = cacheStore,
+                accountLogin = login
+            )
+        }
+    }
+    var notifications by remember(client, login) { mutableStateOf(emptyList<GitHubNotification>()) }
     var hasNext by remember(pager) { mutableStateOf(false) }
     var loaded by remember(pager) { mutableStateOf(false) }
     var loading by remember(pager) { mutableStateOf(false) }
+    var isOfflineCache by remember(client, login) { mutableStateOf(false) }
+    var cachedAtMillis by remember(client, login) { mutableStateOf<Long?>(null) }
     var errorMessage by remember(pager) { mutableStateOf<String?>(null) }
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
     var readFilter by rememberSaveable(login) { mutableStateOf(NotificationReadFilter.ALL) }
@@ -106,14 +118,20 @@ internal fun GitHubNotificationsScreen(
                     notifications = result.items
                     hasNext = result.hasNext
                     loaded = true
+                    isOfflineCache = result.isOfflineCache
+                    cachedAtMillis = result.cachedAtMillis
                 }
                 is GitHubPageResult.RateLimited -> {
-                    notifications = result.items
+                    if (result.items.isNotEmpty() || notifications.isEmpty()) {
+                        notifications = result.items
+                    }
                     retryAt = result.retryAtEpochMillis
                     errorMessage = GitHubHttpError.RATE_LIMITED.userMessage
                 }
                 is GitHubPageResult.Failed -> {
-                    notifications = result.items
+                    if (result.items.isNotEmpty() || notifications.isEmpty()) {
+                        notifications = result.items
+                    }
                     errorMessage = if (result.error == GitHubHttpError.FORBIDDEN) {
                         "O GitHub não aceitou o acesso OAuth às notificações."
                     } else result.message
@@ -270,6 +288,11 @@ internal fun GitHubNotificationsScreen(
             }
             FilterRow(typeFilter.label, NotificationTypeFilter.entries.map { it.label }) { label ->
                 typeFilter = NotificationTypeFilter.entries.first { it.label == label }
+            }
+        }
+        item {
+            if (isOfflineCache) {
+                OfflineCacheBadge(cachedAtMillis)
             }
         }
         if (sessionRestoring) item { Text("Restaurando sessão…") }

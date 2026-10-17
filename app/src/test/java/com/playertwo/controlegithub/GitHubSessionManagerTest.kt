@@ -35,7 +35,7 @@ class GitHubSessionManagerTest {
 
         assertTrue(result is SessionRestoreResult.Restored)
         assertEquals("new-access", profileToken)
-        assertEquals(rotated, store.value)
+        assertEquals(rotated.copy(userLogin = "octocat", userProfileUrl = "https://github.com/octocat"), store.value)
     }
 
     @Test
@@ -110,6 +110,45 @@ class GitHubSessionManagerTest {
         assertEquals(SessionRestoreResult.Retry, manager.restore())
         assertEquals(stored, store.value)
         assertEquals(0, store.clearCalls)
+    }
+
+    @Test
+    fun restoresOfflineSessionWhenNetworkFailsAndProfileIsCachedAndTokenValid() = runBlocking {
+        val stored = SessionCredentials(
+            accessToken = "access",
+            refreshToken = "refresh",
+            accessExpiresAtMillis = 800_000,
+            refreshExpiresAtMillis = 900_000,
+            userLogin = "octocat",
+            userProfileUrl = "https://github.com/octocat"
+        )
+        val store = FakeStore(stored)
+        val manager = manager(store, now = 100_000, load = { GitHubHttpResult.Failure(GitHubHttpError.NETWORK) })
+
+        val result = manager.restore()
+        assertTrue(result is SessionRestoreResult.Restored)
+        val session = (result as SessionRestoreResult.Restored).session
+        assertEquals("octocat", session.user.login)
+        assertEquals("https://github.com/octocat", session.user.profileUrl)
+        assertTrue(session.isOffline)
+        assertEquals(stored, store.value)
+    }
+
+    @Test
+    fun failsOfflineRestoreWhenTokenHasExpired() = runBlocking {
+        val stored = SessionCredentials(
+            accessToken = "access",
+            refreshToken = "refresh",
+            accessExpiresAtMillis = 100_000,
+            refreshExpiresAtMillis = 900_000,
+            userLogin = "octocat",
+            userProfileUrl = "https://github.com/octocat"
+        )
+        val store = FakeStore(stored)
+        val manager = manager(store, now = 200_000, load = { GitHubHttpResult.Failure(GitHubHttpError.NETWORK) })
+
+        val result = manager.restore()
+        assertEquals(SessionRestoreResult.SignedOut, result)
     }
 
     @Test

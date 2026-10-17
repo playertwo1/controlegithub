@@ -1,5 +1,35 @@
 # Estado do projeto
 
+## Atualização e encerramento C11.2 e Milestone 2 (M2) — 2026-10-17
+
+Checkpoint **C11.2** (*Refresh e reconexão* — OpenHub OH-02) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C11** e o **Milestone 2 (M2 — Triagem diária)**:
+- Revalidação condicional HTTP via cabeçalhos `If-None-Match` e `ETag` (`GitHubHttpClient.kt`), economizando banda e cota de rate limit do usuário.
+- Tratamento nativo de `HTTP 304 Not Modified`: preserva itens em cache, atualiza carimbo de revalidação e ETag no SQLite, e define `isOfflineCache = false` (sem badge de offline).
+- Tratamento de `HTTP 200 OK`: substitui dados em memória e no SQLite com a nova geração e novo ETag, deduplicando por ID sem entradas repetidas.
+- Resiliência na falha de refresh (erro de rede, timeout, 5xx): preserva os itens já visíveis na tela, exibe mensagem clara de erro com botão "Tentar novamente", sem apagar a lista ou deixar a tela vazia.
+- Respeito ao Rate Limit (429/403): aguarda o tempo informado pelo `GitHubRateLimitGate`, exibe o tempo restante de reset na interface e impede loops infinitos de retry.
+- Cancelamento limpo de requisições ativas ao navegar para outra tela ou realizar logout.
+- Atualização do schema SQLite para versão 2 adicionando coluna `etag TEXT` e método `updateTimestamp` para revalidações 304.
+- Verificações completas: `python scripts/check_plan.py` PASS (42 tarefas), `git diff --check` PASS, 88/88 testes unitários PASS, `lintDebug` PASS (0 erros), 124/124 testes instrumentados no Pixel 9 (API 37) PASS sem falhas.
+- Auditoria independente via subagente aprovada com veredito **PASS** (sem bloqueios).
+- Evidências registradas em `docs/evidence/C11.2.md`.
+- Conclusão do **Milestone 2 (M2)**: todos os checkpoints C07, C08, C09, C10 e C11 estão concluídos (`DONE`). O aplicativo está apto para triagem diária no celular.
+
+## Atualização e encerramento C11.1 — 2026-10-17
+
+Checkpoint **C11.1** (*Cache de leituras* — OpenHub OH-01) concluído com sucesso e promovido a `DONE`:
+- Implementado armazenamento de cache local via SQLite nativo (`android.database.sqlite.SQLiteOpenHelper`) no arquivo privado `controlegithub_cache.db`, sem adicionar bibliotecas externas (zero dependências adicionais).
+- Tabela `response_cache` com chave composta `(account_login, resource_key)` com normalização estrita de login em minúsculas para isolamento absoluto entre contas de usuário.
+- Proteção contra dados sensíveis via `isCacheableResource`: rejeição estrita de rotas de autenticação/tokens (`/login`, `/oauth`, `/device`, `/authorizations`, `/tokens`), logs de Actions (`/actions/.../logs`), payloads contendo tokens (`access_token`, `refresh_token`, `client_secret`) e respostas com mais de 1 MB.
+- Capacidade LRU de até 300 entradas por conta (`MAX_ENTRIES_PER_ACCOUNT`) e descarte automático de entradas expiradas por TTL (padrão de 24 horas para leituras).
+- Limpeza atômica no logout por `cacheStore.clear(accountLogin)` em `MainActivity`.
+- Restauração de sessão offline em `GitHubSessionManager`: recuperação de perfil local em `SecureSessionStore` (formato v2 com chave AES no AndroidKeyStore) permitindo navegação offline sem estender a validade temporal do token.
+- Integração centralizada no `GitHubPaginator`: gravação em HTTP 200, recuperação transparente do cache em falha de rede (`GitHubHttpError.NETWORK`), e mensagem amigável sem dados mock (`"Sem conexão com a rede e nenhum dado salvo para esta consulta."`) quando sem cache prévio.
+- Componente `OfflineCacheBadge` com `testTag("cache-offline-indicator")` integrado em `Repositories`, `Issues`, `PullRequests` e `Notifications`.
+- Verificações completas: `python scripts/check_plan.py` PASS (42 tarefas), `git diff --check` PASS, 81/81 testes unitários PASS, `lintDebug` PASS (0 erros), 120/120 testes instrumentados no Pixel 9 (API 37) PASS sem falhas.
+- Auditoria independente via subagente aprovada com veredito **PASS** (sem bloqueios).
+- Evidências registradas em `docs/evidence/C11.1.md`.
+
 ## Atualização e encerramento C09.2 — 2026-10-17
 
 Checkpoint **C09.2** (*Marcar notificações lidas*) concluído com sucesso e promovido a `DONE`:

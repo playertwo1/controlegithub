@@ -143,7 +143,13 @@ internal object GitHubPullRequestArtifacts {
 internal class GitHubPullRequestFilesPager(client: GitHubHttpClient, token: String, pullRequest: GitHubPullRequest) {
     private var loadedPages = 0
     private var currentFiles = emptyList<GitHubPullRequestFile>()
-    private val pager = GitHubPaginator(client, GitHubPullRequestArtifacts.filesPath(pullRequest), token, ::parseGitHubPullRequestFiles) { it.filename }
+    private val pager = GitHubPaginator(
+        client = client,
+        firstPath = GitHubPullRequestArtifacts.filesPath(pullRequest),
+        accessToken = token,
+        decode = ::parseGitHubPullRequestFiles,
+        itemKey = { it.filename }
+    )
 
     fun loadNext(): GitHubPullRequestFilesPageResult {
         if (loadedPages >= MAX_FILE_PAGES) return GitHubPullRequestFilesPageResult.Loaded(GitHubPullRequestFilesPage(currentFiles, false, true))
@@ -171,7 +177,13 @@ internal sealed interface GitHubPullRequestFilesPageResult {
 internal class GitHubPullRequestCheckPager(client: GitHubHttpClient, token: String, pullRequest: GitHubPullRequest, headSha: String) {
     private var pages = 0
     private var currentItems = emptyList<GitHubPullRequestCheck>()
-    private val pager = GitHubPaginator(client, GitHubPullRequestArtifacts.checkRunsPath(pullRequest, headSha), token, { parseGitHubPullRequestChecks(it, headSha) }) { it.id.toString() }
+    private val pager = GitHubPaginator(
+        client = client,
+        firstPath = GitHubPullRequestArtifacts.checkRunsPath(pullRequest, headSha),
+        accessToken = token,
+        decode = { parseGitHubPullRequestChecks(it, headSha) },
+        itemKey = { it.id.toString() }
+    )
     fun loadNext(): GitHubLimitedPageResult<GitHubPullRequestCheck> {
         if (pages >= MAX_CHECK_PAGES) return GitHubLimitedPageResult.Loaded(GitHubLimitedPage(currentItems, false, true))
         val result = pager.loadNext()
@@ -186,9 +198,15 @@ internal class GitHubCommitStatusPager(client: GitHubHttpClient, token: String, 
     private var currentItems = emptyList<GitHubCommitStatus>()
     @Volatile var summaryState: String? = null
         private set
-    private val pager = GitHubPaginator(client, GitHubPullRequestArtifacts.statusPath(pullRequest, headSha), token, { json ->
-        parseGitHubCommitStatuses(json, headSha).also { summaryState = it.state }.statuses
-    }) { it.id.toString() }
+    private val pager = GitHubPaginator(
+        client = client,
+        firstPath = GitHubPullRequestArtifacts.statusPath(pullRequest, headSha),
+        accessToken = token,
+        decode = { json ->
+            parseGitHubCommitStatuses(json, headSha).also { summaryState = it.state }.statuses
+        },
+        itemKey = { it.id.toString() }
+    )
     fun loadNext(): GitHubLimitedPageResult<GitHubCommitStatus> {
         if (pages >= MAX_CHECK_PAGES) return GitHubLimitedPageResult.Loaded(GitHubLimitedPage(currentItems, false, true))
         val result = pager.loadNext()

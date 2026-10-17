@@ -288,10 +288,10 @@
         "C09.2",
         "C10.2"
       ],
-      "status": "PLANNED",
+      "status": "DONE",
       "acceptance": "Offline mostra último dado com data/origem; cache não cruza contas.",
-      "contract": null,
-      "evidence": null,
+      "contract": "plan/contracts/C11.1.md",
+      "evidence": "docs/evidence/C11.1.md",
       "blocked_reason": null
     },
     {
@@ -301,10 +301,10 @@
       "depends_on": [
         "C11.1"
       ],
-      "status": "PLANNED",
+      "status": "DONE",
       "acceptance": "Reconectar atualiza sem duplicar; erro mantém cache sinalizado e permite retry.",
-      "contract": null,
-      "evidence": null,
+      "contract": "plan/contracts/C11.2.md",
+      "evidence": "docs/evidence/C11.2.md",
       "blocked_reason": null
     },
     {

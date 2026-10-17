@@ -72,34 +72,44 @@ internal fun GitHubRepositoriesScreen(
     onAppearance: () -> Unit,
     favoritesStore: RepositoryFavoritesStore? = null,
     favoriteCleanupError: Boolean = false,
-    favoriteOperations: Mutex = remember { Mutex() }
+    favoriteOperations: Mutex = remember { Mutex() },
+    cacheStore: GitHubCacheStore? = null
 ) {
     var refreshVersion by remember(session?.accessToken) { mutableIntStateOf(0) }
-    val pager = remember(client, session?.accessToken, refreshVersion) {
-        session?.let { GitHubRepositoryPager(client, it.accessToken) }
+    val pager = remember(client, session?.accessToken, refreshVersion, cacheStore) {
+        session?.let {
+            GitHubRepositoryPager(
+                client = client,
+                accessToken = it.accessToken,
+                cacheStore = cacheStore,
+                accountLogin = it.user.login
+            )
+        }
     }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val favoriteStore = remember(context, favoritesStore) {
         favoritesStore ?: DataStoreRepositoryFavoritesStore(context)
     }
-    var repositories by remember(pager) { mutableStateOf(emptyList<GitHubRepository>()) }
+    var repositories by remember(client, session?.user?.login) { mutableStateOf(emptyList<GitHubRepository>()) }
     var hasNext by remember(pager) { mutableStateOf(false) }
     var loaded by remember(pager) { mutableStateOf(false) }
     var loading by remember(pager) { mutableStateOf(false) }
     var retryPending by remember(pager) { mutableStateOf(false) }
+    var isOfflineCache by remember(client, session?.user?.login) { mutableStateOf(false) }
+    var cachedAtMillis by remember(client, session?.user?.login) { mutableStateOf<Long?>(null) }
     var errorMessage by remember(pager) { mutableStateOf<String?>(null) }
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
     var selectedRepository by remember(pager) { mutableStateOf<GitHubRepository?>(null) }
-    var searchQuery by remember(session?.user?.login) { mutableStateOf("") }
-    var visibilityFilter by remember(session?.user?.login) { mutableStateOf(RepositoryVisibilityFilter.ALL) }
-    var languageFilter by remember(session?.user?.login) { mutableStateOf<String?>(null) }
-    var favoriteIds by remember(session?.user?.login) { mutableStateOf<Set<Long>?>(null) }
-    var favoritesLoadError by remember(session?.user?.login) { mutableStateOf(false) }
-    var favoritesWriteError by remember(session?.user?.login) { mutableStateOf(false) }
-    var favoritesSaving by remember(session?.user?.login) { mutableStateOf(false) }
-    var favoritesOnly by remember(session?.user?.login) { mutableStateOf(false) }
-    var favoritesRetry by remember(session?.user?.login) { mutableIntStateOf(0) }
+    var searchQuery by remember(client, session?.user?.login) { mutableStateOf("") }
+    var visibilityFilter by remember(client, session?.user?.login) { mutableStateOf(RepositoryVisibilityFilter.ALL) }
+    var languageFilter by remember(client, session?.user?.login) { mutableStateOf<String?>(null) }
+    var favoriteIds by remember(client, session?.user?.login) { mutableStateOf<Set<Long>?>(null) }
+    var favoritesLoadError by remember(client, session?.user?.login) { mutableStateOf(false) }
+    var favoritesWriteError by remember(client, session?.user?.login) { mutableStateOf(false) }
+    var favoritesSaving by remember(client, session?.user?.login) { mutableStateOf(false) }
+    var favoritesOnly by remember(client, session?.user?.login) { mutableStateOf(false) }
+    var favoritesRetry by remember(client, session?.user?.login) { mutableIntStateOf(0) }
     val accountLogin = session?.user?.login
     LaunchedEffect(favoriteStore, accountLogin, favoritesRetry) {
         if (accountLogin == null) {
@@ -176,15 +186,21 @@ internal fun GitHubRepositoriesScreen(
                     hasNext = result.hasNext
                     loaded = true
                     retryPending = false
+                    isOfflineCache = result.isOfflineCache
+                    cachedAtMillis = result.cachedAtMillis
                 }
                 is GitHubPageResult.RateLimited -> {
-                    repositories = result.items
+                    if (result.items.isNotEmpty() || repositories.isEmpty()) {
+                        repositories = result.items
+                    }
                     retryPending = true
                     retryAt = result.retryAtEpochMillis
                     errorMessage = GitHubHttpError.RATE_LIMITED.userMessage
                 }
                 is GitHubPageResult.Failed -> {
-                    repositories = result.items
+                    if (result.items.isNotEmpty() || repositories.isEmpty()) {
+                        repositories = result.items
+                    }
                     if (result.error == GitHubHttpError.UNAUTHORIZED && session != null) {
                         retryPending = false
                         onSessionExpired(session)
@@ -271,6 +287,12 @@ internal fun GitHubRepositoriesScreen(
                     IconButton(onClick = { refreshVersion++ }, enabled = !loading) {
                         Icon(Icons.Outlined.Refresh, contentDescription = "Atualizar repositórios")
                     }
+                }
+            }
+
+            item {
+                if (isOfflineCache) {
+                    OfflineCacheBadge(cachedAtMillis)
                 }
             }
 

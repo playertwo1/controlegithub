@@ -27,7 +27,13 @@ internal class GitHubSessionManager(
         parseUser
     )
 
-    suspend fun persist(session: GitHubSession) = store.save(session.credentials)
+    suspend fun persist(session: GitHubSession) {
+        val updated = session.credentials.copy(
+            userLogin = session.user.login,
+            userProfileUrl = session.user.profileUrl
+        )
+        store.save(updated)
+    }
 
     suspend fun logout() = store.clear()
 
@@ -57,8 +63,24 @@ internal class GitHubSessionManager(
         }
 
         when (val profile = loadProfile(credentials.accessToken)) {
-            is ProfileOutcome.Valid -> return SessionRestoreResult.Restored(GitHubSession(profile.user, credentials))
-            ProfileOutcome.Unavailable -> return SessionRestoreResult.Retry
+            is ProfileOutcome.Valid -> {
+                if (credentials.userLogin != profile.user.login || credentials.userProfileUrl != profile.user.profileUrl) {
+                    saveAfterRefresh(credentials.copy(userLogin = profile.user.login, userProfileUrl = profile.user.profileUrl))
+                }
+                return SessionRestoreResult.Restored(GitHubSession(profile.user, credentials))
+            }
+            ProfileOutcome.Unavailable -> {
+                val cachedLogin = credentials.userLogin
+                val cachedUrl = credentials.userProfileUrl
+                if (cachedLogin != null && cachedUrl != null &&
+                    (credentials.accessExpiresAtMillis == null || credentials.accessExpiresAtMillis > now)
+                ) {
+                    return SessionRestoreResult.Restored(
+                        GitHubSession(GitHubUser(cachedLogin, cachedUrl), credentials, isOffline = true)
+                    )
+                }
+                return SessionRestoreResult.Retry
+            }
             ProfileOutcome.Unauthorized -> {
                 if (refreshAttempted) {
                     return if (clearAndSignOut()) SessionRestoreResult.SignedOut else SessionRestoreResult.CleanupFailed
@@ -71,11 +93,28 @@ internal class GitHubSessionManager(
                 credentials = result.credentials
                 if (!saveAfterRefresh(credentials)) return SessionRestoreResult.Retry
                 when (val profile = loadProfile(credentials.accessToken)) {
-                    is ProfileOutcome.Valid -> SessionRestoreResult.Restored(GitHubSession(profile.user, credentials))
+                    is ProfileOutcome.Valid -> {
+                        if (credentials.userLogin != profile.user.login || credentials.userProfileUrl != profile.user.profileUrl) {
+                            saveAfterRefresh(credentials.copy(userLogin = profile.user.login, userProfileUrl = profile.user.profileUrl))
+                        }
+                        SessionRestoreResult.Restored(GitHubSession(profile.user, credentials))
+                    }
                     ProfileOutcome.Unauthorized -> {
                         if (clearAndSignOut()) SessionRestoreResult.SignedOut else SessionRestoreResult.CleanupFailed
                     }
-                    ProfileOutcome.Unavailable -> SessionRestoreResult.Retry
+                    ProfileOutcome.Unavailable -> {
+                        val cachedLogin = credentials.userLogin
+                        val cachedUrl = credentials.userProfileUrl
+                        if (cachedLogin != null && cachedUrl != null &&
+                            (credentials.accessExpiresAtMillis == null || credentials.accessExpiresAtMillis > nowMillis())
+                        ) {
+                            SessionRestoreResult.Restored(
+                                GitHubSession(GitHubUser(cachedLogin, cachedUrl), credentials, isOffline = true)
+                            )
+                        } else {
+                            SessionRestoreResult.Retry
+                        }
+                    }
                 }
             }
             RefreshOutcome.Reauthenticate -> {

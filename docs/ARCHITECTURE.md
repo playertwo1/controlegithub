@@ -127,12 +127,69 @@ nem o transporte HttpURLConnection. Sua GPL-3.0 e atribuições precisam ser
 avaliadas antes de qualquer incorporação de material protegido.
 
 O [detalhamento](superpowers/specs/2026-10-17-openhub-aproveitamento-design.md)
-propõe cache privado cifrado, chave por conta/autorização/recurso/consulta e
-gravação atômica; formato, limites e cobertura serão fixados no contrato C11.1.
-Reinício offline exige tratar a restauração de sessão, que hoje consulta perfil
-na rede. Logs Actions e credenciais ficam fora do cache de conteúdo.
-ETag/Last-Modified/304 exigem extensão explícita do transporte se selecionados;
-não são suporte já implementado.
+orientou o cache privado SQLite nativo, isolamento por conta, retenção LRU,
+restauração de sessão offline e revalidação HTTP condicional com ETag/304,
+concluídos com sucesso em C11.1 e C11.2 (fechando o Milestone 2).
+
+## Cache Local e Revalidação Condicional HTTP (C11)
+
+Concluído em C11.1 e C11.2, o subsistema de cache offline e revalidação condicional fornece resiliência e economia de largura de banda para todas as telas de leitura do aplicativo (`Repositories`, `Issues`, `PullRequests` e `Notifications`):
+
+### Características de Implementação
+1. **Armazenamento Privado:** SQLite nativo via `SQLiteGitHubCacheStore` (`controlegithub_cache.db`), sem bibliotecas externas (zero novas dependências).
+2. **Isolamento de Contas:** Chave primária composta `(account_login, resource_key)` com normalização do login em minúsculas.
+3. **Segurança de Dados Sensíveis:** `isCacheableResource` filtra e bloqueia o armazenamento de credenciais, tokens OAuth, códigos temporários e logs de Actions.
+4. **Revalidação Condicional:** Suporte a cabeçalhos `If-None-Match` e `ETag` via `HttpURLConnection`. Resposta `304 Not Modified` atualiza o timestamp e o ETag sem retransmitir o payload, desativando a badge de offline.
+5. **Deduplicação e Atualização:** Resposta `200 OK` atualiza o banco e a memória atomicamente sem duplicações de IDs.
+6. **Preservação de Conteúdo no Erro:** Falha de rede ou erro 5xx durante refresh preserva a lista já renderizada na tela e oferece botão de "Tentar novamente".
+7. **Limpeza no Logout:** Descarte imediato e atômico do cache da conta desconectada.
+
+### Diagrama de Sequência de Refresh Condicional
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Desenvolvedor
+    participant UI as Telas Compose (Repos/Issues/PRs/Avisos)
+    participant Pager as GitHubPaginator
+    participant Cache as SQLiteGitHubCacheStore
+    participant Client as GitHubHttpClient
+    participant API as GitHub REST API
+
+    User->>UI: Dispara Refresh (Swipe / Botão)
+    UI->>Pager: refresh()
+    Pager->>Cache: get(account, resourceKey)
+    alt Cache existe com ETag
+        Cache-->>Pager: CachedResponse(items, etag="\"abc123\"")
+        Pager->>Client: get(url, token, ifNoneMatch="\"abc123\"")
+    else Sem cache ou sem ETag
+        Pager->>Client: get(url, token, ifNoneMatch=null)
+    end
+    Client->>API: GET /repos/... (If-None-Match: "abc123")
+    alt HTTP 304 Not Modified
+        API-->>Client: 304 Not Modified
+        Client-->>Pager: Success(304, empty body, etag)
+        Pager->>Cache: updateTimestamp(account, resourceKey, revalidatedAt, ttl, etag)
+        Pager-->>UI: Emite itens em cache atualizados (isOfflineCache=false)
+        UI->>UI: Preserva lista, remove badge offline, fecha indicador de refresh
+    else HTTP 200 OK
+        API-->>Client: 200 OK (novos dados, novo ETag)
+        Client-->>Pager: Success(200, json, newEtag)
+        Pager->>Cache: put(account, resourceKey, json, newEtag)
+        Pager-->>UI: Emite nova lista sem duplicar IDs (isOfflineCache=false)
+        UI->>UI: Renderiza novos dados, atualiza lista
+    else Erro de Rede ou 5xx
+        API-->>Client: Network Failure / Timeout / 500
+        Client-->>Pager: Failure(NETWORK / SERVER)
+        Pager-->>UI: Emite RefreshError(error)
+        UI->>UI: PRESERVA itens visíveis na tela! Exibe Aviso de erro + Botão "Tentar novamente"
+    else Rate Limit (403/429)
+        API-->>Client: 403 / 429 com x-ratelimit-reset
+        Client-->>Pager: Failure(RATE_LIMIT)
+        Pager-->>UI: Emite RateLimitError
+        UI->>UI: Exibe tempo de espera; bloqueia novas requisições em loop
+    end
+```
 
 Markdown formatado e prévia local segura são propostas; o conteúdo atual é
 inerte. Roteador reutilizável deve preservar destinos existentes, validar URLs

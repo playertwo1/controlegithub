@@ -123,6 +123,8 @@ internal class GitHubIssuePager(
     accessToken: String,
     scope: GitHubIssueScope,
     state: GitHubIssueState,
+    cacheStore: GitHubCacheStore? = null,
+    accountLogin: String? = null,
     decode: (String) -> List<GitHubIssue> = ::parseGitHubIssues
 ) {
     private val pager = GitHubPaginator(
@@ -130,7 +132,9 @@ internal class GitHubIssuePager(
         firstPath = githubIssuesPath(scope, state),
         accessToken = accessToken,
         decode = decode,
-        itemKey = GitHubIssue::identity
+        itemKey = GitHubIssue::identity,
+        cacheStore = cacheStore,
+        accountLogin = accountLogin
     )
 
     fun loadNext(): GitHubPageResult<GitHubIssue> = pager.loadNext()

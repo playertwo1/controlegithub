@@ -28,9 +28,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +43,7 @@ class MainActivity : ComponentActivity() {
             val favoritesStore = remember(context) { DataStoreRepositoryFavoritesStore(context) }
             val favoriteOperations = remember { Mutex() }
             val apiClient = remember(context) { GitHubHttpClient() }
+            val cacheStore = remember(context) { SQLiteGitHubCacheStore(context) }
             val sessions = remember(context) {
                 GitHubSessionManager(
                     SecureSessionStore(context),
@@ -93,6 +96,7 @@ class MainActivity : ComponentActivity() {
                     favoriteCleanupError = favoriteCleanupError,
                     favoritesStore = favoritesStore,
                     favoriteOperations = favoriteOperations,
+                    cacheStore = cacheStore,
                     onRetrySession = { scope.launch { restoreSession() } },
                     onRetrySessionCleanup = {
                         scope.launch {
@@ -122,6 +126,10 @@ class MainActivity : ComponentActivity() {
                     onSessionExpired = { expired ->
                         scope.launch {
                             if (session?.accessToken == expired.accessToken) {
+                                val login = expired.user.login
+                                withContext(Dispatchers.IO) {
+                                    try { cacheStore.clear(login) } catch (_: Exception) {}
+                                }
                                 try {
                                     sessions.logout()
                                     sessionStorageError = false
@@ -136,6 +144,11 @@ class MainActivity : ComponentActivity() {
                     onLogout = {
                         scope.launch {
                             val login = session?.user?.login
+                            if (login != null) {
+                                withContext(Dispatchers.IO) {
+                                    try { cacheStore.clear(login) } catch (_: Exception) {}
+                                }
+                            }
                             if (login == null) {
                                 try {
                                     sessions.logout()
@@ -198,7 +211,8 @@ internal fun ControleApp(
     onConnected: suspend (GitHubSession) -> Boolean,
     onSessionExpired: (GitHubSession) -> Unit,
     onLogout: () -> Unit,
-    onThemeModeChange: (AppThemeMode) -> Unit
+    onThemeModeChange: (AppThemeMode) -> Unit,
+    cacheStore: GitHubCacheStore? = null
 ) {
     var started by rememberSaveable { mutableStateOf(false) }
     var appearanceOpen by rememberSaveable { mutableStateOf(false) }
@@ -260,6 +274,7 @@ internal fun ControleApp(
             favoritesStore = favoritesStore,
             favoriteCleanupError = favoriteCleanupError,
             favoriteOperations = favoriteOperations,
+            cacheStore = cacheStore,
             onConnected = connectAndPersist,
             onSessionExpired = { expired ->
                 repositorySessionExpired = true
@@ -284,6 +299,7 @@ internal fun ControleApp(
             session = session,
             sessionRestoring = sessionRestoring,
             sessionStorageError = sessionStorageError,
+            cacheStore = cacheStore,
             onConnected = connectAndPersist,
             onSessionExpired = onSessionExpired,
             onAppearance = { appearanceOpen = true },
@@ -295,6 +311,7 @@ internal fun ControleApp(
             session = session,
             sessionRestoring = sessionRestoring,
             sessionStorageError = sessionStorageError,
+            cacheStore = cacheStore,
             onConnected = connectAndPersist,
             onSessionExpired = onSessionExpired,
             onAppearance = { appearanceOpen = true },
@@ -305,6 +322,7 @@ internal fun ControleApp(
             client = apiClient,
             session = session,
             sessionRestoring = sessionRestoring,
+            cacheStore = cacheStore,
             onSessionExpired = onSessionExpired,
             onAppearance = { appearanceOpen = true }
         )

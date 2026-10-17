@@ -31,22 +31,30 @@ internal data class SessionCredentials(
     val accessToken: String,
     val refreshToken: String? = null,
     val accessExpiresAtMillis: Long? = null,
-    val refreshExpiresAtMillis: Long? = null
+    val refreshExpiresAtMillis: Long? = null,
+    val userLogin: String? = null,
+    val userProfileUrl: String? = null
 ) {
     init {
         require(accessToken.isNotBlank())
         require(refreshToken == null || refreshToken.isNotBlank())
         require(accessExpiresAtMillis == null || accessExpiresAtMillis > 0)
         require(refreshExpiresAtMillis == null || refreshExpiresAtMillis > 0)
+        require(userLogin == null || userLogin.isNotBlank())
+        require(userProfileUrl == null || userProfileUrl.isNotBlank())
     }
 
-    override fun toString() = "SessionCredentials(hasRefreshToken=${refreshToken != null}, hasExpiry=${accessExpiresAtMillis != null})"
+    override fun toString() = "SessionCredentials(hasRefreshToken=${refreshToken != null}, hasExpiry=${accessExpiresAtMillis != null}, hasUser=${userLogin != null})"
 }
 
-internal class GitHubSession(val user: GitHubUser, val credentials: SessionCredentials) {
+internal class GitHubSession(
+    val user: GitHubUser,
+    val credentials: SessionCredentials,
+    val isOffline: Boolean = false
+) {
     val accessToken: String get() = credentials.accessToken
 
-    override fun toString() = "GitHubSession(userPresent=true, credentials=$credentials)"
+    override fun toString() = "GitHubSession(userPresent=true, credentials=$credentials, isOffline=$isOffline)"
 }
 
 internal interface SessionCredentialStore {
@@ -146,18 +154,23 @@ internal class SecureSessionStore(context: Context) : SessionCredentialStore {
             output.writeNullable(credentials.refreshToken)
             output.writeNullableLong(credentials.accessExpiresAtMillis)
             output.writeNullableLong(credentials.refreshExpiresAtMillis)
+            output.writeNullable(credentials.userLogin)
+            output.writeNullable(credentials.userProfileUrl)
         }
         bytes.toByteArray()
     }
 
     private fun decode(plaintext: ByteArray): SessionCredentials = DataInputStream(ByteArrayInputStream(plaintext)).use { input ->
-        if (input.readInt() != FORMAT_VERSION.toInt()) throw IOException("Session data invalid")
+        val version = input.readInt()
+        if (version != 1 && version != 2) throw IOException("Session data invalid")
         val accessToken = input.readUTF().takeIf(String::isNotBlank) ?: throw IOException("Session data invalid")
         val refreshToken = input.readNullable()?.takeIf(String::isNotBlank)
         val accessExpiry = input.readNullableLong()
         val refreshExpiry = input.readNullableLong()
+        val userLogin = if (version >= 2) input.readNullable()?.takeIf(String::isNotBlank) else null
+        val userProfileUrl = if (version >= 2) input.readNullable()?.takeIf(String::isNotBlank) else null
         if (input.available() != 0) throw IOException("Session data invalid")
-        SessionCredentials(accessToken, refreshToken, accessExpiry, refreshExpiry)
+        SessionCredentials(accessToken, refreshToken, accessExpiry, refreshExpiry, userLogin, userProfileUrl)
     }
 
     private fun DataOutputStream.writeNullable(value: String?) {
@@ -179,7 +192,7 @@ internal class SecureSessionStore(context: Context) : SessionCredentialStore {
         const val KEYSTORE_PROVIDER = "AndroidKeyStore"
         const val KEY_ALIAS = "com.playertwo.controlegithub.session.aes"
         const val TRANSFORMATION = "AES/GCM/NoPadding"
-        const val FORMAT_VERSION: Byte = 1
+        const val FORMAT_VERSION: Byte = 2
         const val KEY_SIZE_BITS = 256
         const val IV_LENGTH = 12
         const val GCM_TAG_LENGTH_BITS = 128

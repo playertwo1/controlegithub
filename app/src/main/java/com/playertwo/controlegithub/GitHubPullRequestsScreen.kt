@@ -67,18 +67,29 @@ internal fun GitHubPullRequestsScreen(
     onConnected: suspend (GitHubSession) -> Boolean,
     onSessionExpired: (GitHubSession) -> Unit,
     onAppearance: () -> Unit,
-    onShowIssues: () -> Unit
+    onShowIssues: () -> Unit,
+    cacheStore: GitHubCacheStore? = null
 ) {
     var selectedFilter by rememberSaveable(session?.user?.login) { mutableStateOf(GitHubPullRequestFilter.OPEN) }
     var refreshVersion by rememberSaveable(session?.user?.login) { mutableIntStateOf(0) }
-    val pager = remember(client, session?.accessToken, selectedFilter, refreshVersion) {
-        session?.let { GitHubPullRequestPager(client, it.accessToken, selectedFilter) }
+    val pager = remember(client, session?.accessToken, selectedFilter, refreshVersion, cacheStore) {
+        session?.let {
+            GitHubPullRequestPager(
+                client = client,
+                accessToken = it.accessToken,
+                filter = selectedFilter,
+                cacheStore = cacheStore,
+                accountLogin = it.user.login
+            )
+        }
     }
     val scope = rememberCoroutineScope()
-    var pullRequests by remember(pager) { mutableStateOf(emptyList<GitHubPullRequest>()) }
+    var pullRequests by remember(client, session?.user?.login, selectedFilter) { mutableStateOf(emptyList<GitHubPullRequest>()) }
     var hasNext by remember(pager) { mutableStateOf(false) }
     var loaded by remember(pager) { mutableStateOf(false) }
     var loading by remember(pager) { mutableStateOf(false) }
+    var isOfflineCache by remember(client, session?.user?.login, selectedFilter) { mutableStateOf(false) }
+    var cachedAtMillis by remember(client, session?.user?.login, selectedFilter) { mutableStateOf<Long?>(null) }
     var errorMessage by remember(pager) { mutableStateOf<String?>(null) }
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
     var incomplete by remember(pager) { mutableStateOf(false) }
@@ -98,15 +109,21 @@ internal fun GitHubPullRequestsScreen(
                     hasNext = result.page.hasNext
                     incomplete = result.page.incomplete || result.page.totalCount >= 1_000
                     loaded = true
+                    isOfflineCache = result.page.isOfflineCache
+                    cachedAtMillis = result.page.cachedAtMillis
                 }
                 is GitHubPullRequestPageResult.RateLimited -> {
-                    pullRequests = result.page.items
+                    if (result.page.items.isNotEmpty() || pullRequests.isEmpty()) {
+                        pullRequests = result.page.items
+                    }
                     incomplete = result.page.incomplete || result.page.totalCount >= 1_000
                     retryAt = result.retryAtEpochMillis
                     errorMessage = GitHubHttpError.RATE_LIMITED.userMessage
                 }
                 is GitHubPullRequestPageResult.Failed -> {
-                    pullRequests = result.page.items
+                    if (result.page.items.isNotEmpty() || pullRequests.isEmpty()) {
+                        pullRequests = result.page.items
+                    }
                     incomplete = result.page.incomplete || result.page.totalCount >= 1_000
                     errorMessage = result.message
                     if (result.error == GitHubHttpError.UNAUTHORIZED && session != null) onSessionExpired(session)
@@ -191,6 +208,11 @@ internal fun GitHubPullRequestsScreen(
                         IconButton(onClick = { refreshVersion++ }, enabled = !loading) {
                             Icon(Icons.Outlined.Refresh, contentDescription = "Atualizar pull requests")
                         }
+                    }
+                }
+                item(key = "pull-requests-offline-cache") {
+                    if (isOfflineCache) {
+                        OfflineCacheBadge(cachedAtMillis)
                     }
                 }
                 item(key = "pull-requests-state-filter") {

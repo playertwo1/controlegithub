@@ -73,7 +73,9 @@ internal data class GitHubPullRequestPage(
     val items: List<GitHubPullRequest>,
     val hasNext: Boolean,
     val totalCount: Int,
-    val incomplete: Boolean
+    val incomplete: Boolean,
+    val isOfflineCache: Boolean = false,
+    val cachedAtMillis: Long? = null
 )
 
 internal sealed interface GitHubPullRequestPageResult {
@@ -202,7 +204,9 @@ internal fun parseGitHubPullRequestReviews(json: String): List<GitHubPullRequest
 internal class GitHubPullRequestPager(
     client: GitHubHttpClient,
     accessToken: String,
-    filter: GitHubPullRequestFilter
+    filter: GitHubPullRequestFilter,
+    cacheStore: GitHubCacheStore? = null,
+    accountLogin: String? = null
 ) {
     @Volatile private var metadata = GitHubPullRequestSearch(0, false, emptyList())
     @Volatile private var currentItems = emptyList<GitHubPullRequest>()
@@ -214,7 +218,9 @@ internal class GitHubPullRequestPager(
         decode = { json ->
             parseGitHubPullRequestSearch(json, filter).also { metadata = it }.items
         },
-        itemKey = GitHubPullRequest::identity
+        itemKey = GitHubPullRequest::identity,
+        cacheStore = cacheStore,
+        accountLogin = accountLogin
     )
 
     fun loadNext(): GitHubPullRequestPageResult {
@@ -239,7 +245,16 @@ internal class GitHubPullRequestPager(
             }
             else -> false
         }
-        val page = GitHubPullRequestPage(result.items, hasNext, current.totalCount, current.incomplete)
+        val isOffline = (result as? GitHubPageResult.Loaded)?.isOfflineCache ?: false
+        val cachedAt = (result as? GitHubPageResult.Loaded)?.cachedAtMillis
+        val page = GitHubPullRequestPage(
+            items = result.items,
+            hasNext = hasNext,
+            totalCount = current.totalCount,
+            incomplete = current.incomplete,
+            isOfflineCache = isOffline,
+            cachedAtMillis = cachedAt
+        )
         return when (result) {
             is GitHubPageResult.Loaded -> GitHubPullRequestPageResult.Loaded(page)
             is GitHubPageResult.RateLimited -> GitHubPullRequestPageResult.RateLimited(page, result.retryAtEpochMillis)
@@ -248,7 +263,6 @@ internal class GitHubPullRequestPager(
     }
 
     fun cancel() = pager.cancel()
-
 }
 
 internal class GitHubPullRequestLoader(
@@ -304,13 +318,25 @@ internal class GitHubPullRequestLoader(
 }
 
 internal class GitHubPullRequestCommentPager(client: GitHubHttpClient, accessToken: String, pullRequest: GitHubPullRequest) {
-    private val pager = GitHubPaginator(client, GitHubPullRequestLoader.commentsPath(pullRequest), accessToken, ::parseGitHubPullRequestComments) { it.id.toString() }
+    private val pager = GitHubPaginator(
+        client = client,
+        firstPath = GitHubPullRequestLoader.commentsPath(pullRequest),
+        accessToken = accessToken,
+        decode = ::parseGitHubPullRequestComments,
+        itemKey = { it.id.toString() }
+    )
     fun loadNext() = pager.loadNext()
     fun cancel() = pager.cancel()
 }
 
 internal class GitHubPullRequestReviewPager(client: GitHubHttpClient, accessToken: String, pullRequest: GitHubPullRequest) {
-    private val pager = GitHubPaginator(client, GitHubPullRequestLoader.reviewsPath(pullRequest), accessToken, ::parseGitHubPullRequestReviews) { it.id.toString() }
+    private val pager = GitHubPaginator(
+        client = client,
+        firstPath = GitHubPullRequestLoader.reviewsPath(pullRequest),
+        accessToken = accessToken,
+        decode = ::parseGitHubPullRequestReviews,
+        itemKey = { it.id.toString() }
+    )
     fun loadNext() = pager.loadNext()
     fun cancel() = pager.cancel()
 }

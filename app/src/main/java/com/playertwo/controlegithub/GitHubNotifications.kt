@@ -91,13 +91,20 @@ internal fun notificationDestination(item: GitHubNotification): GitHubNotificati
     }
 }
 
-internal class GitHubNotificationPager(client: GitHubHttpClient, accessToken: String) {
+internal class GitHubNotificationPager(
+    client: GitHubHttpClient,
+    accessToken: String,
+    cacheStore: GitHubCacheStore? = null,
+    accountLogin: String? = null
+) {
     private val pager = GitHubPaginator(
         client = client,
         firstPath = FIRST_PAGE_PATH,
         accessToken = accessToken,
         decode = ::parseGitHubNotifications,
-        itemKey = GitHubNotification::id
+        itemKey = GitHubNotification::id,
+        cacheStore = cacheStore,
+        accountLogin = accountLogin
     )
 
     fun loadNext(): GitHubPageResult<GitHubNotification> = pager.loadNext()

@@ -50,6 +50,33 @@ class GitHubHttpClientTest {
     }
 
     @Test
+    fun sendsIfNoneMatchHeaderAndParsesEtag() = fixture(
+        200,
+        "[]",
+        headers = mapOf("ETag" to "\"new-etag-123\"")
+    ).use { fixture ->
+        val result = fixture.client().get("/user/repos", TOKEN, ifNoneMatch = "\"old-etag-999\"").execute()
+
+        assertEquals("\"old-etag-999\"", fixture.request.get()?.getFirst("If-None-Match"))
+        val success = result as GitHubHttpResult.Success
+        assertEquals("\"new-etag-123\"", success.headers.etag)
+    }
+
+    @Test
+    fun notModified304ReturnsSuccessWithEmptyBodyAndEtag() = fixture(
+        304,
+        "",
+        headers = mapOf("ETag" to "\"etag-304\"")
+    ).use { fixture ->
+        val result = fixture.client().get("/user/repos", TOKEN, ifNoneMatch = "\"etag-304\"").execute()
+
+        val success = result as GitHubHttpResult.Success
+        assertEquals(304, success.statusCode)
+        assertEquals("", success.body)
+        assertEquals("\"etag-304\"", success.headers.etag)
+    }
+
+    @Test
     fun httpFailuresHaveDistinctSafeMessages() {
         val expected = mapOf(
             401 to GitHubHttpError.UNAUTHORIZED,

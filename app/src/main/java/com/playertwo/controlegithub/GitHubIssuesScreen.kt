@@ -59,19 +59,31 @@ internal fun GitHubIssuesScreen(
     onConnected: suspend (GitHubSession) -> Boolean,
     onSessionExpired: (GitHubSession) -> Unit,
     onAppearance: () -> Unit,
-    onShowPullRequests: () -> Unit = {}
+    onShowPullRequests: () -> Unit = {},
+    cacheStore: GitHubCacheStore? = null
 ) {
     var selectedScope by rememberSaveable(session?.user?.login) { mutableStateOf(GitHubIssueScope.ASSIGNED) }
     var selectedState by rememberSaveable(session?.user?.login) { mutableStateOf(GitHubIssueState.OPEN) }
     var refreshVersion by rememberSaveable(session?.user?.login) { mutableIntStateOf(0) }
-    val pager = remember(client, session?.accessToken, selectedScope, selectedState, refreshVersion) {
-        session?.let { GitHubIssuePager(client, it.accessToken, selectedScope, selectedState) }
+    val pager = remember(client, session?.accessToken, selectedScope, selectedState, refreshVersion, cacheStore) {
+        session?.let {
+            GitHubIssuePager(
+                client = client,
+                accessToken = it.accessToken,
+                scope = selectedScope,
+                state = selectedState,
+                cacheStore = cacheStore,
+                accountLogin = it.user.login
+            )
+        }
     }
     val scope = rememberCoroutineScope()
-    var issues by remember(pager) { mutableStateOf(emptyList<GitHubIssue>()) }
+    var issues by remember(client, session?.user?.login, selectedScope, selectedState) { mutableStateOf(emptyList<GitHubIssue>()) }
     var hasNext by remember(pager) { mutableStateOf(false) }
     var loaded by remember(pager) { mutableStateOf(false) }
     var loading by remember(pager) { mutableStateOf(false) }
+    var isOfflineCache by remember(client, session?.user?.login, selectedScope, selectedState) { mutableStateOf(false) }
+    var cachedAtMillis by remember(client, session?.user?.login, selectedScope, selectedState) { mutableStateOf<Long?>(null) }
     var errorMessage by remember(pager) { mutableStateOf<String?>(null) }
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
     var openedIssue by remember { mutableStateOf<GitHubIssue?>(null) }
@@ -89,14 +101,20 @@ internal fun GitHubIssuesScreen(
                     issues = result.items
                     hasNext = result.hasNext
                     loaded = true
+                    isOfflineCache = result.isOfflineCache
+                    cachedAtMillis = result.cachedAtMillis
                 }
                 is GitHubPageResult.RateLimited -> {
-                    issues = result.items
+                    if (result.items.isNotEmpty() || issues.isEmpty()) {
+                        issues = result.items
+                    }
                     retryAt = result.retryAtEpochMillis
                     errorMessage = GitHubHttpError.RATE_LIMITED.userMessage
                 }
                 is GitHubPageResult.Failed -> {
-                    issues = result.items
+                    if (result.items.isNotEmpty() || issues.isEmpty()) {
+                        issues = result.items
+                    }
                     errorMessage = result.message
                     if (result.error == GitHubHttpError.UNAUTHORIZED && session != null) {
                         onSessionExpired(session)
@@ -185,6 +203,11 @@ internal fun GitHubIssuesScreen(
                         IconButton(onClick = { refreshVersion++ }, enabled = !loading) {
                             Icon(Icons.Outlined.Refresh, contentDescription = "Atualizar issues")
                         }
+                    }
+                }
+                item(key = "issues-offline-cache") {
+                    if (isOfflineCache) {
+                        OfflineCacheBadge(cachedAtMillis)
                     }
                 }
                 item(key = "issues-filters") {

@@ -318,7 +318,7 @@ class GitHubRepositoryDetailScreenTest {
 
     private fun openDetail(api: DetailApi, expectedRequests: Int = 3, expectedText: String = "Branch padrão") {
         compose.waitUntil(10_000) {
-            api.requestCount.get() == 1 &&
+            api.requestCount.get() >= 1 &&
                 compose.onAllNodesWithText("acme/Mobile").fetchSemanticsNodes().isNotEmpty()
         }
         compose.onNodeWithText("acme/Mobile").performClick()

@@ -15,8 +15,8 @@ Handoff: [prompt para Claude](prompts/CLAUDE_OPENHUB.md).
 
 | Ideia | Benefício e fronteira | Encaminhamento |
 |---|---|---|
-| OH-01 — Cache privado de leituras | Consultar conteúdo já carregado após reinício e sem rede, com origem e horário; nunca mostrar demo como cache | Refinar C11.1 após seus pré-requisitos; prioridade funcional mais alta |
-| OH-02 — Refresh e reconexão | Preservar conteúdo útil no erro, revalidar sem duplicar e respeitar rate limit | Refinar C11.2 após C11.1 |
+| OH-01 — Cache privado de leituras | Consultar conteúdo já carregado após reinício e sem rede, com origem e horário; nunca mostrar demo como cache | Concluído em C11.1; base estabelecida para C11.2 |
+| OH-02 — Refresh e reconexão | Preservar conteúdo útil no erro, revalidar sem duplicar e respeitar rate limit | Concluído em C11.2; conclui M2 (Checkpoint C11) |
 | OH-03 — Markdown de leitura | Formatar README, descrições e comentários com links controlados e fallback textual | Proposta de evolução dos fluxos de leitura; não reabrir C06/C07/C08 automaticamente |
 | OH-04 — Editor e prévia local | Escrever issues/comentários com atalhos e prévia sem transmitir rascunho para renderização | C12.1/C12.2/C13.1; revisão posicional permanece em C13.2 |
 | OH-05 — Links para destinos nativos | Reaproveitar navegação existente para repo, issue e PR; fallback explícito | C09.1 apenas no escopo contratado; roteador geral exige refinamento próprio |
