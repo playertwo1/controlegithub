@@ -219,6 +219,23 @@ class GitHubHttpClientTest {
         assertEquals(403, failure.statusCode)
     }
 
+    @Test
+    fun patchSendsJsonBodyAndReceives200Ok() = fixture(
+        200,
+        "{\"title\":\"Updated\"}"
+    ).use { fixture ->
+        val payload = "{\"title\":\"Updated\"}"
+        val result = fixture.client().patch("/repos/owner/repo/issues/1", TOKEN, jsonBody = payload).execute()
+
+        assertEquals("PATCH", fixture.requestMethod.get())
+        assertEquals("/repos/owner/repo/issues/1", fixture.requestPath.get())
+        assertEquals(payload, fixture.requestBody.get())
+        assertEquals("application/json; charset=utf-8", fixture.request.get()?.getFirst("Content-Type"))
+        assertTrue(result is GitHubHttpResult.Success)
+        val success = result as GitHubHttpResult.Success
+        assertEquals(200, success.statusCode)
+    }
+
     private fun fixture(
         status: Int,
         body: String,

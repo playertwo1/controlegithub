@@ -170,7 +170,8 @@ internal fun GitHubNotificationsScreen(
                 ),
                 onBack = { showingOrigin = false },
                 onSessionExpired = onSessionExpired,
-                onAppearance = onAppearance
+                onAppearance = onAppearance,
+                isOffline = isOfflineCache || session.isOffline
             )
             is GitHubNotificationDestination.PullRequest -> GitHubPullRequestDetailScreen(
                 modifier = modifier,

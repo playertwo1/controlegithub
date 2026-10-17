@@ -1,5 +1,20 @@
 # Estado do projeto
 
+## Atualização e encerramento C12.2 — 2026-10-17
+
+Checkpoint **C12.2** (*Editar e comentar issue* — OpenHub OH-04 / edição e comentários) concluído com sucesso e promovido a `DONE`:
+- Suporte a `PATCH` com streaming de payload JSON (`setFixedLengthStreamingMode` e cabeçalho `application/json; charset=utf-8`) em `GitHubHttpClient.kt`.
+- Camada de domínio em `GitHubIssueDetail.kt`: funções `createIssueComment` e `editGitHubIssue` com resultados estruturados (`CreateIssueCommentResult` e `EditIssueResult`), sanitização JSON pura com `escapeJson` e analisador `parseCreatedIssueComment` para decodificação da resposta `201 Created`.
+- Tela `GitHubIssueDetailScreen.kt` em Jetpack Compose com UI 100% em português:
+  - **COMMENT-01 (Envio de comentário):** Campo de texto para comentário, submissão via `POST /repos/{owner}/{repo}/issues/{number}/comments`, inserção instantânea na lista e limpeza do campo.
+  - **COMMENT-02 (Anti-duplo clique):** Desativação síncrona do botão "Comentar" e exibição de `CircularProgressIndicator` com texto "Enviando...", travando requisições duplicadas.
+  - **COMMENT-03 (Preservação do rascunho de comentário):** Em caso de erro (403, rede, timeout, 5xx), o texto digitado permanece no campo e a mensagem de erro é exibida.
+  - **EDIT-01 (Edição de cabeçalho da issue):** Modo de edição para alterar título e descrição via `PATCH /repos/{owner}/{repo}/issues/{number}`, atualizando o cabeçalho imediatamente com resposta `200 OK`. Em caso de erro, o formulário e textos são preservados.
+  - **MUTATION-GUARD (Validação local e bloqueio offline):** Comentário vazio e título vazio são bloqueados localmente sem tráfego de rede; quando offline, campos e botões de escrita são ocultados e banner de aviso offline é exibido.
+- Verificações completas: `python scripts/check_plan.py` PASS (42 tarefas), `git diff --check` PASS, 102/102 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), 9/9 testes instrumentados C12.2 PASS no Pixel 9 (API 37).
+- Auditoria independente via subagente aprovada com veredito **PASS** (sem bloqueios).
+- Evidências registradas em `docs/evidence/C12.2.md`.
+
 ## Atualização e encerramento C12.1 — 2026-10-17
 
 Checkpoint **C12.1** (*Criar issue* — OpenHub OH-04 / escrita de issues) concluído com sucesso e promovido a `DONE`:

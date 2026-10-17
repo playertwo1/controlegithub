@@ -103,13 +103,13 @@ internal class GitHubHttpClient(
         return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate, "GET", ifNoneMatch)
     }
 
-    fun patch(path: String, accessToken: String? = null): GitHubHttpCall {
+    fun patch(path: String, accessToken: String? = null, jsonBody: String? = null): GitHubHttpCall {
         require(path.startsWith('/') && !path.startsWith("//") && '#' !in path)
         require(accessToken == null || (accessToken.isNotBlank() && accessToken.none(Char::isWhitespace)))
 
         val target = baseUrl.resolve(path.removePrefix("/"))
         require(sameOrigin(baseUrl, target))
-        return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate, "PATCH")
+        return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate, "PATCH", jsonBody = jsonBody)
     }
 
     fun post(path: String, accessToken: String? = null, jsonBody: String? = null): GitHubHttpCall {

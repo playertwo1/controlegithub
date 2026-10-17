@@ -26,6 +26,20 @@ internal sealed interface GitHubIssueDetailResult {
     data class Failed(val error: GitHubHttpError, val retryAtEpochMillis: Long? = null) : GitHubIssueDetailResult
 }
 
+internal sealed interface CreateIssueCommentResult {
+    data class Success(val comment: GitHubIssueComment) : CreateIssueCommentResult
+    data class Failure(val error: GitHubHttpError, val statusCode: Int? = null) : CreateIssueCommentResult
+    data object EmptyBody : CreateIssueCommentResult
+    data object Offline : CreateIssueCommentResult
+}
+
+internal sealed interface EditIssueResult {
+    data class Success(val detail: GitHubIssueDetail) : EditIssueResult
+    data class Failure(val error: GitHubHttpError, val statusCode: Int? = null) : EditIssueResult
+    data object EmptyTitle : EditIssueResult
+    data object Offline : EditIssueResult
+}
+
 internal class GitHubIssueDetailLoader(
     private val client: GitHubHttpClient,
     private val accessToken: String
@@ -169,3 +183,97 @@ private fun JSONObject.optionalIssueDetailString(key: String): String? = when (v
 }
 
 private fun encodeSegment(value: String) = URLEncoder.encode(value, StandardCharsets.UTF_8.name()).replace("+", "%20")
+
+internal fun parseCreatedIssueComment(json: String): GitHubIssueComment {
+    val obj = JSONObject(json)
+    val id = obj.requiredPositiveLong("id")
+    val author = runCatching {
+        obj.optJSONObject("user")?.optionalIssueDetailString("login")?.takeIf(String::isNotBlank)
+    }.getOrNull()
+    val body = runCatching { obj.optionalIssueDetailString("body") }.getOrNull()
+    val createdAt = runCatching {
+        obj.optionalIssueDetailString("created_at")?.let(Instant::parse)
+    }.getOrNull()
+    return GitHubIssueComment(id, author, body, createdAt)
+}
+
+internal fun createIssueComment(
+    client: GitHubHttpClient,
+    accessToken: String,
+    repository: String,
+    issueNumber: Int,
+    body: String,
+    isOffline: Boolean = false
+): CreateIssueCommentResult {
+    if (isOffline) return CreateIssueCommentResult.Offline
+    val trimmedBody = body.trim()
+    if (trimmedBody.isEmpty()) return CreateIssueCommentResult.EmptyBody
+
+    val parts = repository.trim().split('/')
+    if (parts.size != 2 || parts.any { it.isBlank() || it.any(Char::isWhitespace) } || issueNumber <= 0) {
+        return CreateIssueCommentResult.Failure(GitHubHttpError.UNEXPECTED)
+    }
+
+    val payload = buildString {
+        append("{\"body\":\"").append(escapeJson(trimmedBody)).append("\"}")
+    }
+
+    val path = "/repos/$repository/issues/$issueNumber/comments"
+    val call = client.post(path, accessToken = accessToken, jsonBody = payload)
+    return when (val result = call.execute()) {
+        is GitHubHttpResult.Success -> {
+            try {
+                val created = parseCreatedIssueComment(result.body)
+                CreateIssueCommentResult.Success(created)
+            } catch (_: Exception) {
+                CreateIssueCommentResult.Failure(GitHubHttpError.UNEXPECTED, result.statusCode)
+            }
+        }
+        is GitHubHttpResult.Failure -> {
+            CreateIssueCommentResult.Failure(result.error, result.statusCode)
+        }
+    }
+}
+
+internal fun editGitHubIssue(
+    client: GitHubHttpClient,
+    accessToken: String,
+    currentIssue: GitHubIssue,
+    title: String,
+    body: String?,
+    isOffline: Boolean = false
+): EditIssueResult {
+    if (isOffline) return EditIssueResult.Offline
+    val trimmedTitle = title.trim()
+    if (trimmedTitle.isEmpty()) return EditIssueResult.EmptyTitle
+
+    val parts = currentIssue.repository.trim().split('/')
+    if (parts.size != 2 || parts.any { it.isBlank() || it.any(Char::isWhitespace) } || currentIssue.number <= 0) {
+        return EditIssueResult.Failure(GitHubHttpError.UNEXPECTED)
+    }
+
+    val payload = buildString {
+        append("{\"title\":\"").append(escapeJson(trimmedTitle)).append("\"")
+        val trimmedBody = body?.trim()
+        if (trimmedBody != null) {
+            append(",\"body\":\"").append(escapeJson(trimmedBody)).append("\"")
+        }
+        append("}")
+    }
+
+    val path = "/repos/${currentIssue.repository}/issues/${currentIssue.number}"
+    val call = client.patch(path, accessToken = accessToken, jsonBody = payload)
+    return when (val result = call.execute()) {
+        is GitHubHttpResult.Success -> {
+            try {
+                val updatedDetail = parseGitHubIssueDetail(result.body, currentIssue)
+                EditIssueResult.Success(updatedDetail)
+            } catch (_: Exception) {
+                EditIssueResult.Failure(GitHubHttpError.UNEXPECTED, result.statusCode)
+            }
+        }
+        is GitHubHttpResult.Failure -> {
+            EditIssueResult.Failure(result.error, result.statusCode)
+        }
+    }
+}
