@@ -25,11 +25,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -148,7 +150,8 @@ internal fun GitHubPullRequestsScreen(
             pullRequest = selected,
             onBack = { selectedPullRequest = null },
             onSessionExpired = onSessionExpired,
-            onAppearance = onAppearance
+            onAppearance = onAppearance,
+            isOffline = session.isOffline
         )
         return
     }
@@ -294,7 +297,8 @@ internal fun GitHubPullRequestDetailScreen(
     pullRequest: GitHubPullRequest,
     onBack: () -> Unit,
     onSessionExpired: (GitHubSession) -> Unit,
-    onAppearance: () -> Unit
+    onAppearance: () -> Unit,
+    isOffline: Boolean = session.isOffline
 ) {
     var refreshVersion by remember(pullRequest.identity, session.accessToken) { mutableIntStateOf(0) }
     val loader = remember(client, session.accessToken, pullRequest.identity, refreshVersion) {
@@ -313,6 +317,10 @@ internal fun GitHubPullRequestDetailScreen(
     var hasMoreComments by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
     var loadingComments by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
     var commentsError by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf<String?>(null) }
+    var newCommentText by rememberSaveable(pullRequest.identity, session.accessToken) { mutableStateOf("") }
+    var commentSubmitting by remember { mutableStateOf(false) }
+    var commentError by remember { mutableStateOf<String?>(null) }
+    var commentFieldError by remember { mutableStateOf<String?>(null) }
     var reviews by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(emptyList<GitHubPullRequestReview>()) }
     var reviewsLoaded by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
     var hasMoreReviews by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
@@ -444,7 +452,10 @@ internal fun GitHubPullRequestDetailScreen(
         } finally { loadingStatuses = false }
     }
 
-    BackHandler(onBack = onBack)
+    BackHandler(onBack = {
+        if (commentSubmitting) return@BackHandler
+        onBack()
+    })
     LaunchedEffect(loader, pullRequest.identity, refreshVersion) {
         loadingDetail = true
         val result = withContext(Dispatchers.IO) { loader.load(pullRequest) }
@@ -473,10 +484,10 @@ internal fun GitHubPullRequestDetailScreen(
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState())
         .padding(PaddingValues(horizontal = 24.dp, vertical = 20.dp)), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Voltar aos pull requests") }
+            IconButton(onClick = onBack, enabled = !commentSubmitting) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Voltar aos pull requests") }
             Spacer(Modifier.weight(1f))
-            IconButton(onClick = onAppearance) { Icon(Icons.Outlined.Settings, contentDescription = "Configurações de aparência") }
-            IconButton(onClick = { refreshVersion++; detail = null }, enabled = !loadingDetail) {
+            IconButton(onClick = onAppearance, enabled = !commentSubmitting) { Icon(Icons.Outlined.Settings, contentDescription = "Configurações de aparência") }
+            IconButton(onClick = { refreshVersion++; detail = null }, enabled = !loadingDetail && !commentSubmitting) {
                 Icon(Icons.Outlined.Refresh, contentDescription = "Atualizar pull request")
             }
         }
@@ -546,6 +557,121 @@ internal fun GitHubPullRequestDetailScreen(
                 if (hasMoreComments && commentsError == null) {
                     TextButton(onClick = { scope.launch { loadComments() } }, enabled = !loadingComments, modifier = Modifier.fillMaxWidth()) {
                         if (loadingComments) CircularProgressIndicator(strokeWidth = 2.dp) else Text("Carregar mais comentários")
+                    }
+                }
+
+                if (isOffline) {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        modifier = Modifier.fillMaxWidth().testTag("pr_comment_offline_banner")
+                    ) {
+                        Text(
+                            text = "Modo offline: Conexão necessária para comentar em pull requests.",
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            modifier = Modifier.padding(14.dp)
+                        )
+                    }
+                } else {
+                    Text("Novo comentário", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                    OutlinedTextField(
+                        value = newCommentText,
+                        onValueChange = {
+                            newCommentText = it
+                            if (commentFieldError != null && it.isNotBlank()) commentFieldError = null
+                        },
+                        label = { Text("Escreva um comentário…") },
+                        placeholder = { Text("Deixe sua resposta ou atualização") },
+                        isError = commentFieldError != null,
+                        supportingText = commentFieldError?.let { error -> { Text(error, color = MaterialTheme.colorScheme.error) } },
+                        enabled = !commentSubmitting,
+                        minLines = 3,
+                        maxLines = 8,
+                        modifier = Modifier.fillMaxWidth().testTag("pr_comment_input")
+                    )
+                    if (commentError != null) {
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = commentError.orEmpty(),
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                modifier = Modifier.padding(14.dp).testTag("pr_comment_error")
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+                            onClick = {
+                                val trimmed = newCommentText.trim()
+                                if (trimmed.isEmpty()) {
+                                    commentFieldError = "O comentário não pode ficar em branco."
+                                    return@Button
+                                }
+                                if (isOffline) {
+                                    commentError = "Não é possível comentar no modo offline."
+                                    return@Button
+                                }
+                                commentFieldError = null
+                                commentError = null
+                                commentSubmitting = true
+                                scope.launch {
+                                    val result = withContext(Dispatchers.IO) {
+                                        createPullRequestComment(
+                                            client = client,
+                                            accessToken = session.accessToken,
+                                            repository = value.repository,
+                                            pullNumber = value.number,
+                                            body = trimmed,
+                                            isOffline = isOffline
+                                        )
+                                    }
+                                    when (result) {
+                                        is CreatePullRequestCommentResult.Success -> {
+                                            comments = comments + result.comment
+                                            newCommentText = ""
+                                            commentSubmitting = false
+                                        }
+                                        CreatePullRequestCommentResult.EmptyBody -> {
+                                            commentFieldError = "O comentário não pode ficar em branco."
+                                            commentSubmitting = false
+                                        }
+                                        CreatePullRequestCommentResult.Offline -> {
+                                            commentError = "Não é possível comentar no modo offline."
+                                            commentSubmitting = false
+                                        }
+                                        is CreatePullRequestCommentResult.Failure -> {
+                                            commentSubmitting = false
+                                            if (result.statusCode == 403) {
+                                                commentError = "Você não tem permissão para comentar neste pull request."
+                                            } else {
+                                                commentError = result.error.userMessage
+                                            }
+                                            if (result.error == GitHubHttpError.UNAUTHORIZED) {
+                                                reportSessionExpiredOnce()
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            enabled = !commentSubmitting,
+                            modifier = Modifier.testTag("pr_comment_submit_button")
+                        ) {
+                            if (commentSubmitting) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp).testTag("pr_comment_progress"),
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            } else {
+                                Text("Comentar")
+                            }
+                        }
                     }
                 }
                 Text("Reviews", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)

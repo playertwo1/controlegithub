@@ -69,6 +69,13 @@ internal data class GitHubPullRequestReview(
     val submittedAt: Instant?
 )
 
+internal sealed interface CreatePullRequestCommentResult {
+    data class Success(val comment: GitHubPullRequestComment) : CreatePullRequestCommentResult
+    data class Failure(val error: GitHubHttpError, val statusCode: Int? = null) : CreatePullRequestCommentResult
+    data object EmptyBody : CreatePullRequestCommentResult
+    data object Offline : CreatePullRequestCommentResult
+}
+
 internal data class GitHubPullRequestPage(
     val items: List<GitHubPullRequest>,
     val hasNext: Boolean,
@@ -444,3 +451,51 @@ private fun encodePullRequestSegment(value: String) =
     URLEncoder.encode(value, StandardCharsets.UTF_8.name()).replace("+", "%20")
 
 private val REVIEW_STATES = setOf("APPROVED", "CHANGES_REQUESTED", "COMMENTED", "DISMISSED", "PENDING")
+
+internal fun parseCreatedPullRequestComment(json: String): GitHubPullRequestComment {
+    val obj = JSONObject(json)
+    val id = obj.requiredPositiveLong("id")
+    val author = runCatching {
+        obj.optJSONObject("user")?.optionalString("login")?.takeIf(String::isNotBlank)
+    }.getOrNull()
+    val body = obj.optionalString("body")
+    val createdAt = runCatching {
+        obj.optionalString("created_at")?.let(Instant::parse)
+    }.getOrNull()
+    return GitHubPullRequestComment(id, author, body, createdAt)
+}
+
+internal fun createPullRequestComment(
+    client: GitHubHttpClient,
+    accessToken: String,
+    repository: String,
+    pullNumber: Int,
+    body: String,
+    isOffline: Boolean = false
+): CreatePullRequestCommentResult {
+    if (isOffline) return CreatePullRequestCommentResult.Offline
+    val trimmed = body.trim()
+    if (trimmed.isEmpty()) return CreatePullRequestCommentResult.EmptyBody
+
+    val parts = repository.trim().split('/')
+    if (parts.size != 2 || parts.any { it.isBlank() || it.any(Char::isWhitespace) } || pullNumber <= 0) {
+        return CreatePullRequestCommentResult.Failure(GitHubHttpError.UNEXPECTED)
+    }
+
+    val payload = "{\"body\":\"${escapeJson(trimmed)}\"}"
+    val path = "/repos/${parts[0]}/${parts[1]}/issues/$pullNumber/comments"
+    val call = client.post(path, accessToken = accessToken, jsonBody = payload)
+    return when (val result = call.execute()) {
+        is GitHubHttpResult.Success -> {
+            try {
+                val comment = parseCreatedPullRequestComment(result.body)
+                CreatePullRequestCommentResult.Success(comment)
+            } catch (_: Exception) {
+                CreatePullRequestCommentResult.Failure(GitHubHttpError.UNEXPECTED, result.statusCode)
+            }
+        }
+        is GitHubHttpResult.Failure -> {
+            CreatePullRequestCommentResult.Failure(result.error, result.statusCode)
+        }
+    }
+}

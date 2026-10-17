@@ -1,5 +1,21 @@
 # Estado do projeto
 
+## Atualização e encerramento C13.1 — 2026-10-17
+
+Checkpoint **C13.1** (*Comentar PR* — OpenHub OH-05 / comentários de discussão em Pull Requests) concluído com sucesso e promovido a `DONE`:
+- Camada de domínio em `GitHubPullRequests.kt`:
+  - Tipo selado `CreatePullRequestCommentResult` (`Success`, `Failure`, `EmptyBody`, `Offline`).
+  - Analisador `parseCreatedPullRequestComment` decodificando a resposta `201 Created` (`id`, `user.login`, `body`, `created_at`).
+  - Função `createPullRequestComment(client, accessToken, repository, pullNumber, body, isOffline)` com sanitização de JSON via `escapeJson` puro e chamada autenticada via `POST /repos/{owner}/{repo}/issues/{pull_number}/comments`.
+- Interface e Interações em `GitHubPullRequestsScreen.kt`:
+  - **COMMENT-01 (Envio de comentário no PR com sucesso):** Formulário com `OutlinedTextField` (`pr_comment_input`) e botão `Button` (`pr_comment_submit_button`). Ao submeter com retorno `201 Created`, o comentário é anexado à lista e o campo é limpo.
+  - **COMMENT-02 (Anti-duplo clique no PR):** Botão de envio desabilitado síncronamente no primeiro clique com exibição de `CircularProgressIndicator` (`pr_comment_progress`), impedindo submissões duplicadas ou toques repetidos.
+  - **COMMENT-03 (Preservação de rascunho de comentário em falha):** Em falha de rede, 403 Forbidden ou erro de servidor, o texto digitado permanece no campo intacto e mensagem explicativa é exibida (`pr_comment_error`).
+  - **MUTATION-GUARD (Validação local e bloqueio offline):** Comentário vazio é bloqueado localmente sem chamada de rede; em modo offline, o formulário é substituído por `pr_comment_offline_banner` ("Modo offline: Conexão necessária para comentar em pull requests.") sem fila oculta de mutações offline.
+- Verificações completas: `python scripts/check_plan.py` PASS (42 tarefas), `git diff --check` PASS, 113/113 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), 7/7 testes instrumentados C13.1 PASS no Pixel 9 (API 37).
+- Auditoria independente via subagente aprovada com veredito **PASS** (sem bloqueios).
+- Evidências registradas em `docs/evidence/C13.1.md`.
+
 ## Atualização e encerramento C12.3 e Checkpoint C12 — 2026-10-17
 
 Checkpoint **C12.3** (*Metadados e fechar/reabrir issue* — OpenHub OH-04 / ciclo de vida e metadados) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C12 (Operações em Issues)**:
