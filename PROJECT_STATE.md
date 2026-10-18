@@ -1,5 +1,23 @@
 # Estado do projeto
 
+## Atualização e encerramento C17.2 e Checkpoint C17 (Robustez e desempenho) — 2026-10-18
+
+Checkpoint **C17.2** (*Desempenho e falhas prolongadas* — Orçamento de painel ≤ 2 s, tolerância a falhas severas de rede e estabilidade de recomposição) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C17 (Robustez e desempenho)**:
+- **Orçamento de Desempenho do Painel (PERF-BUDGET-DASHBOARD):**
+  - Medição do carregamento e decodificação do cache local SQLite executada no emulador Pixel 9 (API 37) com fixture de repositórios.
+  - Resultados em 5 repetições consecutivas: média de ~8 ms e tempo máximo de ~15 ms, cumprindo o teto orçamentário de ≤ 2.000 ms com margem superior a 99%.
+- **Tolerância a Falhas Prolongadas de Rede (PERF-NETWORK-FAILURE-RESILIENCE):**
+  - Simulação de indisponibilidade severa de rede / servidor inacessível.
+  - O aplicativo retém com fidelidade os itens previamente exibidos na tela, sem tela branca, sem crash e sem travamentos da thread principal (0 ANRs).
+  - Exibição de componente contextual de falha e botão "Tentar novamente" totalmente funcional.
+- **Estabilidade de Recomposição (PERF-RECOMPOSITION-STABILITY):**
+  - Controle do ciclo de vida das requisições via `remember(client, session?.accessToken, refreshVersion, cacheStore)` e `LaunchedEffect`, impedindo requisições de rede repetidas em recomposições puramente cosméticas.
+- **Verificações completas:** `python scripts/check_plan.py` PASS (42 tarefas; eligible: none), `git diff --check` PASS, 132/132 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), 2/2 testes instrumentados C17.2 PASS no Pixel 9 (API 37).
+- **Auditoria independente via subagente:** Aprovada com veredito **PASS** (sem ressalvas impeditivas).
+- **Evidências registradas em:** `docs/evidence/C17.2.md`.
+- **Conclusão do Checkpoint C17:** Tarefas C17.1 e C17.2 concluídas com sucesso (`DONE`).
+- **Próxima tarefa:** `C18.1` (Privacidade, licença e segurança).
+
 ## Atualização e encerramento C17.1 — 2026-10-18
 
 Checkpoint **C17.1** (*Matriz Android e layouts* — Validação de compatibilidade minSdk 26, rotação de tela, layouts compactos/expandidos e recriação de Activity) concluído com sucesso e promovido a `DONE`:

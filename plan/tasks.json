@@ -492,10 +492,10 @@
       "depends_on": [
         "C17.1"
       ],
-      "status": "PLANNED",
+      "status": "DONE",
       "acceptance": "Baseline e orçamento medidos em aparelho definido; rede lenta/offline sem crash/ANR.",
-      "contract": null,
-      "evidence": null,
+      "contract": "plan/contracts/C17.2.md",
+      "evidence": "docs/evidence/C17.2.md",
       "blocked_reason": null
     },
     {
