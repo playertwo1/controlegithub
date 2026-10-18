@@ -1,5 +1,20 @@
 # Estado do projeto
 
+## Atualização e encerramento C17.1 — 2026-10-18
+
+Checkpoint **C17.1** (*Matriz Android e layouts* — Validação de compatibilidade minSdk 26, rotação de tela, layouts compactos/expandidos e recriação de Activity) concluído com sucesso e promovido a `DONE`:
+- **Compatibilidade Android minSdk 26 a 36:**
+  - `minSdk = 26`, `compileSdk = 36` e `targetSdk = 36` no `app/build.gradle.kts`.
+  - Suporte nativo e desugaring para APIs Java 8+ / Time com 0 erros de lint (`NewApi`).
+- **Resiliência a Rotação e Ciclo de Vida:**
+  - **MATRIX-ORIENTATION-ROTATION:** Transição fluida Retrato ↔ Paisagem sem crashes, preservando páginas ativas, abas e o dock inferior com suas respectivas seleções.
+  - **MATRIX-COMPACT-AND-EXPANDED:** Dimensionamento adaptável em larguras compactas (< 600 dp) e expandidas (≥ 600 dp) com alvos de toque mantidos em 48 x 48 dp e semântica legível.
+  - **MATRIX-PROCESS-DEATH-RESTORATION:** Preservação estrita de fluxo e preferências através de `rememberSaveable` e Preferences DataStore após `ActivityScenario.recreate()`.
+- **Verificações completas:** `python scripts/check_plan.py` PASS (42 tarefas; eligible: none), `git diff --check` PASS, 132/132 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), 3/3 testes instrumentados C17.1 PASS no Pixel 9 (API 37).
+- **Auditoria independente via subagente:** Aprovada com veredito **PASS** (sem ressalvas impeditivas).
+- **Evidências registradas em:** `docs/evidence/C17.1.md`.
+- **Próxima tarefa:** `C17.2` (Desempenho e falhas prolongadas).
+
 ## Atualização e encerramento C16.2 e Conclusão da Fase 3 (Milestone 3) — 2026-10-17
 
 Checkpoint **C16.2** (*Acessibilidade do conjunto* — Catálogo visual 01–36, TalkBack, fontes ampliadas, teclado virtual e contraste WCAG AA) concluído com sucesso e promovido a `DONE`, consolidando o fechamento de 100% da **Fase 3 (Milestone 3 — Ações e produtividade: C12–C16)**:
