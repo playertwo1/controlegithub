@@ -50,10 +50,10 @@ não a árvore geral do repositório.
 | Marco | Checkpoints exigidos | Resultado demonstrável | Status |
 |---|---|---|---|
 | M0 — Fundação confiável | C00 + C01 | Protótipo reproduzível, CI verde, navegação validada e auditoria inicial aceita | ✅ ACEITO |
-| **M1 — Primeiro uso real** | **C06** | **Login, repositórios e painel com dados da conta** | **✅ CONCLUÍDO (2026-10-08)** |
-| M2 — Triagem diária | C11 | Issues, PRs, avisos e Actions com cache e recuperação | ⏳ PRÓXIMO |
-| M3 — Produtividade completa | C15 | Escrita, revisão, Kanban, favoritos e resumo reais | ⏳ PLANEJADO |
-| M4 — Versão 1.0 operante | C20 | Release assinada, beta validado e operação documentada | ⏳ PLANEJADO |
+| M1 — Primeiro uso real | C06 | Login, repositórios e painel com dados da conta | ✅ CONCLUÍDO (2026-10-08) |
+| M2 — Triagem diária | C11 | Issues, PRs, avisos e Actions com cache e recuperação | ✅ CONCLUÍDO (2026-10-17) |
+| M3 — Produtividade completa | C15 | Escrita, revisão, Kanban, favoritos e resumo reais | ✅ CONCLUÍDO (2026-10-17) |
+| M4 — Versão 1.0 operante | C20 | Release assinada, beta validado e operação documentada | ✅ CONCLUÍDO (2026-10-18) |
 
 Cada marco fecha quando todos os checkpoints listados e seus aceites passam.
 Dependências transitivas desses checkpoints também precisam estar aceitas.
