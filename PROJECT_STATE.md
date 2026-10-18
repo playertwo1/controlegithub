@@ -1,5 +1,24 @@
 # Estado do projeto
 
+## Atualização e encerramento C20.2 e Checkpoint C20 (Entrega e operação) — Conclusão da Versão 1.0.0 e Marco 4 — 2026-10-18
+
+Checkpoint **C20.2** (*Entrega e operação* — Formalização de canal oficial de entrega, artefatos assinados, manual do usuário, guias operacionais de revogação/rollback e validação automatizada) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C20 (Aplicativo totalmente operante)**, o **Marco 4 (M4 — Versão 1.0 operante)** e **100% dos 21 checkpoints (C00 a C20) e 42 tarefas do roadmap do projeto**:
+- **Artefatos e Notas no Canal Autorizado (OPER-DELIVERY-CHANNEL-ARTIFACTS):**
+  - Publicação oficial configurada para o canal autorizado [GitHub Releases](https://github.com/playertwo1/controlegithub/releases).
+  - Elaboração das Notas de Lançamento completas em `docs/RELEASE_NOTES_v1.0.0.md`, sintetizando todas as entregas dos marcos M1 a M4, requisitos de sistema (Android 8.0 Oreo, minSdk 26 a 36) e comandos de verificação de integridade no Windows e Linux/macOS.
+  - Geração do arquivo canônico de integridade `SHA256SUMS.txt` na raiz contendo o hash do binário assinado oficial `app-release.apk`: `3DDEA18E2B37F20036091C351BE10BA7178D5ABA05EE7828379F2B13FA74841F`.
+- **Manual do Usuário e Guia de Operações (OPER-MANUAL-AND-SUPPORT):**
+  - Criação de `docs/MANUAL_DO_USUARIO.md` em português brasileiro orientando o usuário final sobre instalação, autorização via OAuth Device Flow, navegação principal (Painel, Repositórios, Demandas, Kanban de 4 colunas, Notificações), modo offline com indicação de data/hora, preferências de acessibilidade e logout com expurgo imediato.
+  - Criação de `docs/OPERACAO_E_SUPORTE.md` detalhando os canais oficiais de suporte técnico (GitHub Issues), tratamento de falhas e manutenção da API do GitHub, procedimento de revogação de credenciais local e remota através do portal web do GitHub (`github.com/settings/applications`) e rotação de chaves.
+- **Compatibilidade e Procedimento de Rollback (OPER-ROLLBACK-AND-COMPATIBILITY):**
+  - Diretrizes documentadas de compatibilidade: o banco de dados local SQLite (`controlegithub_cache.db`) é estritamente descartável e recriado automaticamente no downgrade de esquema (`onDowngrade`), enquanto o Preferences DataStore utiliza tipos primitivos retrocompatíveis, prevenindo travamentos ou corrupção de dados.
+- **Verificação Automatizada de Entrega (OPER-AUTOMATED-VERIFICATION):**
+  - Criação e execução de `ReleaseDeliveryVerificationTest.kt` na JVM (4/4 testes aprovados sem falhas).
+- **Verificações globais completas:** `python scripts/check_plan.py` PASS (42 tarefas, 42 concluídas, 100% DONE), `git diff --check` PASS, 151/151 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), `assembleDebug` BUILD SUCCESSFUL.
+- **Auditoria independente via subagente:** Aprovada com veredito **PASS** (sem ressalvas impeditivas).
+- **Evidências registradas em:** `docs/evidence/C20.2.md`.
+- **Conclusão Geral do Projeto:** 42/42 tarefas concluídas com sucesso (`DONE`). Versão 1.0.0 pronta e operante.
+
 ## Atualização e encerramento C20.1 (Aceite ponta a ponta da 1.0) — 2026-10-18
 
 Checkpoint **C20.1** (*Aceite ponta a ponta da 1.0* — Validação de cobertura exaustiva de marcos prévios, jornada real no SHA-256 da release e integridade da bateria automatizada) concluído com sucesso e promovido a `DONE`:
