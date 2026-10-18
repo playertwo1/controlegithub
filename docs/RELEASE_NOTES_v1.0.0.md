@@ -55,7 +55,7 @@ O aplicativo conecta-se diretamente à API oficial do GitHub (`https://api.githu
 | **minSdkVersion** | `26` (Android 8.0 Oreo) |
 | **targetSdkVersion** | `36` (Android 16+) |
 | **Algoritmo de Hash** | SHA-256 |
-| **Checksum SHA-256** | `3DDEA18E2B37F20036091C351BE10BA7178D5ABA05EE7828379F2B13FA74841F` |
+| **Checksum SHA-256** | `F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71` |
 | **Esquema de Assinatura** | APK Signature Scheme v2 (Verificado via `apksigner`) |
 
 ---
@@ -76,7 +76,7 @@ sha256sum app-release.apk
 
 O resultado deve ser exatamente igual a:
 ```text
-3DDEA18E2B37F20036091C351BE10BA7178D5ABA05EE7828379F2B13FA74841F
+F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71
 ```
 
 ---

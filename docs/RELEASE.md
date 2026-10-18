@@ -60,7 +60,7 @@ sha256sum app/build/outputs/apk/release/app-release.apk
 
 ### Checksum Oficial da Versão 1.0.0
 - **Algoritmo:** SHA-256
-- **Hash:** `3DDEA18E2B37F20036091C351BE10BA7178D5ABA05EE7828379F2B13FA74841F`
+- **Hash:** `F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71`
 
 O hash gerado deve acompanhar as notas de lançamento para que o usuário final possa auditar a autenticidade do binário baixado.
 

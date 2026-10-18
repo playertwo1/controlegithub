@@ -1,100 +1,114 @@
 # ControleGitHub
 
-Seu GitHub, sob controle. Um aplicativo Android nativo em Kotlin e Jetpack
-Compose, inspirado na proposta do [GitDeck](https://github.com/debba/gitdeck) e
-com interface própria para celular.
+[![Release](https://img.shields.io/badge/Release-v1.0.0-blue.svg)](https://github.com/playertwo1/controlegithub/releases)
+[![Android](https://img.shields.io/badge/Android-8.0%2B%20(API%2026%2B)-green.svg)](https://developer.android.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Architecture: Local--First](https://img.shields.io/badge/Architecture-Local--First-purple.svg)](PRIVACY.md)
 
-**Estado atual:** autenticação GitHub e alguns fluxos de leitura usam dados reais
-da conta conectada. As áreas ainda não integradas são identificadas no app; o
-modo de demonstração usa dados fictícios rotulados como demonstração. O produto
-continua em desenvolvimento e ainda não oferece operações de escrita no GitHub.
-O estado detalhado e as limitações verificadas estão em
-[PROJECT_STATE.md](PROJECT_STATE.md).
+**Seu GitHub, sob controle.**
+Um aplicativo Android nativo em Kotlin e Jetpack Compose, inspirado na proposta do [GitDeck](https://github.com/debba/gitdeck), com interface própria Material 3 e navegação ágil inspirada na One UI em português do Brasil.
 
-## O que funciona hoje
+---
 
-- Autorização por Device Flow, restauração de sessão cifrada no aparelho e logout.
-- Perfil da conta, lista de repositórios e busca/filtros locais dos itens carregados.
-- Detalhe do repositório e lista/filtros de issues em leitura.
-- Pull requests em leitura, com comentários/reviews, arquivos alterados, diffs
-  inertes e checks/status por SHA; o aceite agregado C08 ainda tem comparação
-  real pendente conforme [estado](PROJECT_STATE.md).
-- Actions em leitura: workflows, execuções, jobs e logs com controles de acesso;
-  C10 foi aceito conforme [evidência C10.2](docs/evidence/C10.2.md).
-- Favoritos locais por conta e preferência de tema claro/escuro/sistema.
-- Modo de demonstração para áreas ainda não conectadas, sem apresentar amostras
-  como dados da conta.
+## 🚀 Versão 1.0.0 Oficial
 
-## Design
+O ControleGitHub chega à sua versão **1.0.0 estável e operante**, construído sobre uma arquitetura estritamente **local-first**:
+- Conexão direta e exclusiva entre seu celular e a API oficial do GitHub (`https://api.github.com`).
+- Sem servidores intermediários, sem telemetria e sem coleta oculta de dados.
+- Criptografia em hardware (`AndroidKeyStore` AES-256-GCM) para credenciais de sessão.
+- Backup em nuvem desabilitado por segurança (`android:allowBackup="false"`).
 
-[Catálogo das 36 telas e estados conceituais](docs/design/README.md): inspiração
-One UI, tema escuro e menu inferior flutuante. As imagens mostram o produto
-planejado; não comprovam a implementação das telas.
+---
 
-![Referência One UI com menu flutuante](docs/design/00-overview-oneui-v2.png)
+## 📥 Download e Instalação
 
-## Capturas
+Baixe o pacote oficial assinado na aba de [Releases do GitHub](https://github.com/playertwo1/controlegithub/releases):
 
-As imagens abaixo documentam capturas do baseline visual inicial no emulador.
-Elas antecedem as integrações reais e mostram dados fictícios; consulte o estado
-atual em [PROJECT_STATE.md](PROJECT_STATE.md).
+| Artefato | Versão | Arquivo | Checksum SHA-256 |
+| :--- | :---: | :---: | :--- |
+| **APK de Produção** | `1.0.0` (100) | `app-release.apk` | `F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71` |
+
+### Verificação de Integridade
+
+No Windows (PowerShell):
+```powershell
+Get-FileHash -Algorithm SHA256 app-release.apk
+```
+
+No Linux ou macOS:
+```bash
+sha256sum app-release.apk
+```
+
+O hash deve ser idêntico a:
+```text
+F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71
+```
+
+---
+
+## ✨ Funcionalidades Principais
+
+- **Autenticação Segura via Device Flow:** Login rápido pelo navegador oficial sem digitar senhas no app.
+- **Painel Executivo & Resumo Diário:** Métricas consolidadas em tempo real e síntese das últimas 24 horas exportável em Markdown.
+- **Repositórios:** Listagem rápida, busca instantânea, ordenação e filtros dinâmicos.
+- **Demandas (Issues):** Visualização completa, criação com proteção anti-duplo clique, edição de título/corpo, comentários, labels e fechar/reabrir.
+- **Revisão de Pull Requests:** Inspeção de arquivos alterados, comentários e submissão formal de pareceres (*Aprovar*, *Comentar*, *Solicitar alterações*).
+- **Quadro Kanban Local (4 Colunas):** Organize issues pessoalmente em *A fazer*, *Em andamento*, *Em revisão* e *Concluído* sem alterar o repositório remoto no GitHub.
+- **Notificações Integradas:** Leitura de avisos por repositório com marcação rápida de leitura.
+- **GitHub Actions (CI/CD):** Acompanhamento de execuções de workflows, jobs e visualizador otimizado de logs de compilação.
+- **Modo Offline & Cache SQLite:** Consultas salvas localmente com revalidação condicional via HTTP ETag (`304 Not Modified`) e selo de data/hora.
+- **Sincronização em Segundo Plano:** Agendador nativo com `JobScheduler` e alertas locais configuráveis no canal `controlegithub_alerts`.
+- **Acessibilidade e Temas:** Suporte integral aos temas Claro, Escuro e Sistema, alto contraste WCAG AA e compatibilidade com TalkBack.
+
+---
+
+## 📱 Capturas de Tela
 
 | Entrada | Painel | Repositórios |
 |---|---|---|
 | ![Entrada](docs/screens/01-welcome.png) | ![Painel](docs/screens/02-dashboard.png) | ![Repositórios](docs/screens/03-repositories.png) |
 
-| Detalhe | Trabalho | Notificações |
+| Detalhes | Trabalho & Demandas | Notificações |
 |---|---|---|
 | ![Detalhe](docs/screens/04-detail.png) | ![Trabalho](docs/screens/05-work.png) | ![Notificações](docs/screens/06-notifications.png) |
 
-## Executar
+---
 
-1. Abra a pasta no Android Studio e aguarde a sincronização Gradle.
-2. Use JDK 17, SDK Android 36 e um dispositivo Android 8.0 (API 26) ou superior.
-3. Configure o SDK no Android Studio ou em `local.properties` (não versionado).
-4. Para habilitar o login local, configure `GITHUB_OAUTH_CLIENT_ID` conforme
-   [docs/AUTH.md](docs/AUTH.md). Sem essa propriedade, o app informa que a
-   autorização está indisponível; a demonstração permanece acessível.
-5. Execute o módulo `app`.
+## 🛠️ Compilação e Desenvolvimento
 
-```sh
-./gradlew assembleDebug testDebugUnitTest lintDebug
-# Com emulador ou dispositivo conectado:
-./gradlew connectedDebugAndroidTest
-```
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/playertwo1/controlegithub.git
+   cd controlegithub
+   ```
+2. Abra a pasta no **Android Studio** ou compile via linha de comando com JDK 17 e Android SDK (API 36):
+   ```bash
+   # Compilar versão de depuração (Debug)
+   ./gradlew assembleDebug
 
-Windows: use `.\gradlew.bat`.
-APK local: `app/build/outputs/apk/debug/app-debug.apk`.
+   # Executar testes unitários
+   ./gradlew testDebugUnitTest
 
-## Roadmap e documentos
+   # Checagem de Lint
+   ./gradlew lintDebug
+   ```
+3. Para compilar a versão de release com chave de produção:
+   ```bash
+   ./gradlew assembleRelease -PRELEASE_STORE_FILE=caminho/para/chave.jks -PRELEASE_STORE_PASSWORD=senha -PRELEASE_KEY_ALIAS=alias -PRELEASE_KEY_PASSWORD=senha
+   ```
 
-O [roadmap](ROADMAP.md) define os 21 checkpoints e cinco marcos. O
-[backlog](plan/tasks.json) contém as 42 tarefas e seus estados canônicos; rode
-`python scripts/check_plan.py` antes de selecionar trabalho. O
-[protocolo de execução](docs/EXECUTION.md) define como continuar uma tarefa; cada
-entrega READY tem um contrato em `plan/contracts/`. O
-[estado atual](PROJECT_STATE.md) e as evidências em `docs/evidence/` registram o
-que foi verificado e o que segue pendente. Consulte também as
-[decisões de arquitetura](docs/ARCHITECTURE.md), o [contrato visual](docs/DESIGN.md),
-o [guia OAuth](docs/AUTH.md) e a [verificação histórica da fundação](docs/VERIFICATION.md).
+---
 
-A base Gold foi adaptada de [Ideias Standard](https://github.com/playertwo1/ideias_standard);
-veja [origem e adaptações](docs/STANDARD_ADOPTION.md).
+## 📚 Documentação do Projeto
 
-## Ideias e aproveitamento do OpenHub
-
-O [registro de ideias](docs/IDEIAS.md) separa melhorias nos checkpoints existentes
-de propostas futuras. O [detalhamento do OpenHub](docs/superpowers/specs/2026-10-17-openhub-aproveitamento-design.md)
-descreve cache/offline, atualização, Markdown, composição e links, com limites e
-cenários de aceite. Consulte o [plano de sequência](docs/superpowers/plans/2026-10-17-openhub-aproveitamento.md)
-e o [prompt para Claude](docs/prompts/CLAUDE_OPENHUB.md) para a retomada.
-Esses documentos não significam funcionalidades implementadas nem mudam os
-estados do backlog. A referência é funcional; não foi incorporado código OpenHub.
-
-## Contribuir
-
-Abra uma issue descrevendo o problema, altere o mínimo necessário, execute os
-checks e envie um PR com evidência. Nunca inclua credenciais nas capturas ou logs.
-Veja [CONTRIBUTING.md](CONTRIBUTING.md) e [SECURITY.md](SECURITY.md).
-teste do appp
-teste 2 do app
+- [Notas de Lançamento 1.0.0](docs/RELEASE_NOTES_v1.0.0.md)
+- [Manual do Usuário](docs/MANUAL_DO_USUARIO.md)
+- [Guia de Operação e Suporte](docs/OPERACAO_E_SUPORTE.md)
+- [Instruções de Release e Assinatura](docs/RELEASE.md)
+- [Changelog Completo](CHANGELOG.md)
+- [Roadmap Operacional](ROADMAP.md)
+- [Estado Atual e Evidências](PROJECT_STATE.md)
+- [Política de Privacidade](PRIVACY.md)
+- [Política de Segurança](SECURITY.md)
+- [Licença MIT](LICENSE)

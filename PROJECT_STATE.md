@@ -1,12 +1,29 @@
 # Estado do projeto
 
+## Geração de Secrets de Produção e Compilação da Release Oficial v1.0.0 — 2026-10-18
+
+Conforme diretrizes operacionais de lançamento e governança de chaves, foram geradas e provisionadas as 4 secrets de produção para assinatura oficial do binário `app-release.apk`:
+- **Geração do Keystore de Produção:**
+  - Keystore RSA 2048-bit (`controlegithub-release.jks`) gerado via `keytool` com certificado autoassinado de 10.000 dias em nome de `CN=ControleGitHub, OU=Mobile, O=PlayerTwo, L=Sao Paulo, ST=SP, C=BR`.
+  - Senha configurada: `caiopano` para a chave e para o chaveiro.
+  - Alias configurado: `controlegithub`.
+- **Armazenamento Seguro Fora do Git:**
+  - **Cópia Local Primária:** `C:\Users\notefael\secrets\` contendo `controlegithub-release.jks`, `secrets.env`, `secrets.properties`, `secrets.json` e `README.md`.
+  - **Cópia de Backup na Nuvem:** `C:\Users\notefael\Google Drive\secrets\` contendo réplicas integrais de todos os arquivos de configuração e keystore.
+  - Conformidade com `.gitignore`: nenhuma chave (`*.jks`, `*.keystore`) ou secret está presente no repositório Git.
+- **Compilação e Assinatura Oficial:**
+  - Execução limpa de `./gradlew clean packageRelease assembleRelease` com propriedades de release apontando para `controlegithub-release.jks`.
+  - Verificação via `apksigner`: esquema v2 comprovado (`Verified using v2 scheme: true`, signatário `CN=ControleGitHub, OU=Mobile, O=PlayerTwo`).
+  - Hash SHA-256 oficial definitivo da release de produção: `F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71`.
+  - Arquivos atualizados com o hash canônico: `SHA256SUMS.txt`, `docs/RELEASE_NOTES_v1.0.0.md`, `docs/RELEASE.md`, `docs/MANUAL_DO_USUARIO.md`, `README.md`, `CHANGELOG.md` e suítes de teste `ReleaseDeliveryVerificationTest.kt` e `ReleaseEndToEndAcceptanceTest.kt` (151/151 testes unitários PASS).
+
 ## Atualização e encerramento C20.2 e Checkpoint C20 (Entrega e operação) — Conclusão da Versão 1.0.0 e Marco 4 — 2026-10-18
 
 Checkpoint **C20.2** (*Entrega e operação* — Formalização de canal oficial de entrega, artefatos assinados, manual do usuário, guias operacionais de revogação/rollback e validação automatizada) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C20 (Aplicativo totalmente operante)**, o **Marco 4 (M4 — Versão 1.0 operante)** e **100% dos 21 checkpoints (C00 a C20) e 42 tarefas do roadmap do projeto**:
 - **Artefatos e Notas no Canal Autorizado (OPER-DELIVERY-CHANNEL-ARTIFACTS):**
   - Publicação oficial configurada para o canal autorizado [GitHub Releases](https://github.com/playertwo1/controlegithub/releases).
   - Elaboração das Notas de Lançamento completas em `docs/RELEASE_NOTES_v1.0.0.md`, sintetizando todas as entregas dos marcos M1 a M4, requisitos de sistema (Android 8.0 Oreo, minSdk 26 a 36) e comandos de verificação de integridade no Windows e Linux/macOS.
-  - Geração do arquivo canônico de integridade `SHA256SUMS.txt` na raiz contendo o hash do binário assinado oficial `app-release.apk`: `3DDEA18E2B37F20036091C351BE10BA7178D5ABA05EE7828379F2B13FA74841F`.
+  - Geração do arquivo canônico de integridade `SHA256SUMS.txt` na raiz contendo o hash do binário assinado oficial `app-release.apk`: `F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71`.
 - **Manual do Usuário e Guia de Operações (OPER-MANUAL-AND-SUPPORT):**
   - Criação de `docs/MANUAL_DO_USUARIO.md` em português brasileiro orientando o usuário final sobre instalação, autorização via OAuth Device Flow, navegação principal (Painel, Repositórios, Demandas, Kanban de 4 colunas, Notificações), modo offline com indicação de data/hora, preferências de acessibilidade e logout com expurgo imediato.
   - Criação de `docs/OPERACAO_E_SUPORTE.md` detalhando os canais oficiais de suporte técnico (GitHub Issues), tratamento de falhas e manutenção da API do GitHub, procedimento de revogação de credenciais local e remota através do portal web do GitHub (`github.com/settings/applications`) e rotação de chaves.

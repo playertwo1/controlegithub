@@ -56,7 +56,7 @@ class ReleaseEndToEndAcceptanceTest {
         val hashBytes = digest.digest(releaseApk.readBytes())
         val hex = hashBytes.joinToString("") { "%02x".format(it) }
 
-        val expectedHash = "3ddea18e2b37f20036091c351be10ba7178d5aba05ee7828379f2b13fa74841f"
+        val expectedHash = "f2a51d35ad2c4603b5dcf7a29d2a4f65dc00734dad79cfe4db2e9b40fac04f71"
         assertEquals("O hash SHA-256 do APK de release deve corresponder ao auditado", expectedHash, hex.lowercase())
     }
 
@@ -67,7 +67,7 @@ class ReleaseEndToEndAcceptanceTest {
         assertTrue("docs/RELEASE.md deve existir", releaseDoc.exists())
         val docText = releaseDoc.readText(Charsets.UTF_8)
 
-        val expectedHash = "3DDEA18E2B37F20036091C351BE10BA7178D5ABA05EE7828379F2B13FA74841F"
+        val expectedHash = "F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71"
         assertTrue("docs/RELEASE.md deve documentar o hash SHA-256 oficial", docText.contains(expectedHash))
 
         val buildGradle = File(root, "app/build.gradle.kts")

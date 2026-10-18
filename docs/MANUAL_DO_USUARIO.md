@@ -21,7 +21,7 @@ Bem-vindo ao **ControleGitHub**, sua ferramenta nativa Android para acompanhamen
    sha256sum app-release.apk
    ```
    O valor deve corresponder rigorosamente ao hash oficial:
-   `3DDEA18E2B37F20036091C351BE10BA7178D5ABA05EE7828379F2B13FA74841F`
+   `F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71`
 4. No seu dispositivo Android, toque no arquivo baixado para iniciar o instalador do pacote. Se solicitado, permita a instalação a partir do navegador ou gerenciador de arquivos ("Permitir desta fonte").
 5. Conclua a instalação tocando em **Instalar** (ou **Atualizar**, caso já possua uma versão prévia).
 
