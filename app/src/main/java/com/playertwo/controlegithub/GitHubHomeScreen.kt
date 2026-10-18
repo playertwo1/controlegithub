@@ -20,6 +20,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -32,12 +33,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -50,7 +57,9 @@ internal fun GitHubHomeScreen(
     onOpenRepositories: () -> Unit,
     onSessionExpired: (GitHubSession) -> Unit,
     onLogout: () -> Unit,
-    onAppearance: () -> Unit
+    onAppearance: () -> Unit,
+    cacheStore: GitHubCacheStore? = null,
+    providedSummary: DailySummary? = null
 ) {
     val uriHandler = LocalUriHandler.current
     var refreshVersion by remember(session.accessToken) { mutableIntStateOf(0) }
@@ -58,6 +67,7 @@ internal fun GitHubHomeScreen(
     var loading by remember(session.accessToken) { mutableStateOf(false) }
     var error by remember(session.accessToken) { mutableStateOf<String?>(null) }
     var unauthorized by remember(session.accessToken) { mutableStateOf(false) }
+    var summary by remember(session.accessToken, providedSummary) { mutableStateOf(providedSummary) }
 
     LaunchedEffect(session.accessToken, refreshVersion, sessionRestoring) {
         if (sessionRestoring || unauthorized) return@LaunchedEffect
@@ -85,6 +95,62 @@ internal fun GitHubHomeScreen(
         } finally {
             loading = false
         }
+    }
+
+    LaunchedEffect(session.accessToken, refreshVersion, sessionRestoring, providedSummary) {
+        if (providedSummary != null) {
+            summary = providedSummary
+            return@LaunchedEffect
+        }
+        if (sessionRestoring || unauthorized) return@LaunchedEffect
+        val now = Instant.now()
+        val windowStart = now.minusSeconds(86400)
+        val windowEnd = now
+        val zone = ZoneId.systemDefault()
+        var notifs = emptyList<GitHubNotification>()
+        var isOffline = session.isOffline
+        var cachedAt: Long? = null
+        var partialFailure = false
+
+        try {
+            when (val res = withContext(Dispatchers.IO) { client.get("/notifications", session.accessToken).await() }) {
+                is GitHubHttpResult.Success -> {
+                    notifs = parseGitHubNotifications(res.body)
+                    cacheStore?.put(session.user.login, "/notifications", res.body)
+                }
+                is GitHubHttpResult.Failure -> {
+                    val cached = cacheStore?.get(session.user.login, "/notifications")
+                        ?: cacheStore?.get(session.user.login, "/notifications?all=true&per_page=50")
+                    if (cached != null) {
+                        notifs = parseGitHubNotifications(cached.payload)
+                        isOffline = true
+                        cachedAt = cached.createdAtMillis
+                    } else {
+                        partialFailure = true
+                    }
+                }
+            }
+        } catch (_: Exception) {
+            val cached = cacheStore?.get(session.user.login, "/notifications")
+                ?: cacheStore?.get(session.user.login, "/notifications?all=true&per_page=50")
+            if (cached != null) {
+                notifs = parseGitHubNotifications(cached.payload)
+                isOffline = true
+                cachedAt = cached.createdAtMillis
+            } else {
+                partialFailure = true
+            }
+        }
+
+        summary = buildDailySummary(
+            notifications = notifs,
+            windowStart = windowStart,
+            windowEnd = windowEnd,
+            zoneId = zone,
+            isOfflineCache = isOffline,
+            cachedAtMillis = cachedAt,
+            hasPartialFailure = partialFailure
+        )
     }
 
     Column(
@@ -153,6 +219,13 @@ internal fun GitHubHomeScreen(
             )
         }
 
+        summary?.let { currentSummary ->
+            DailySummaryCard(
+                summary = currentSummary,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
         if (loading && profile != null) Text("Atualizando perfil…", color = MaterialTheme.colorScheme.onSurfaceVariant)
         error?.let {
             Text(it, color = MaterialTheme.colorScheme.error)
@@ -175,6 +248,170 @@ internal fun GitHubHomeScreen(
             }
         }
         Spacer(Modifier.height(4.dp))
+    }
+}
+
+@Composable
+internal fun DailySummaryCard(
+    summary: DailySummary,
+    modifier: Modifier = Modifier
+) {
+    val clipboardManager = LocalClipboardManager.current
+    var copied by remember { mutableStateOf(false) }
+    val dateFormatter = remember(summary.zoneId) {
+        DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(summary.zoneId)
+    }
+
+    Surface(
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 2.dp,
+        modifier = modifier.testTag("daily_summary_card")
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    "RESUMO DIÁRIO",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 11.sp,
+                    letterSpacing = 1.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = when (summary.dataSource) {
+                        DailySummaryDataSource.ONLINE -> MaterialTheme.colorScheme.primaryContainer
+                        DailySummaryDataSource.CACHED -> MaterialTheme.colorScheme.secondaryContainer
+                        DailySummaryDataSource.PARTIAL -> MaterialTheme.colorScheme.errorContainer
+                    }
+                ) {
+                    Text(
+                        summary.dataSource.label,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = when (summary.dataSource) {
+                            DailySummaryDataSource.ONLINE -> MaterialTheme.colorScheme.onPrimaryContainer
+                            DailySummaryDataSource.CACHED -> MaterialTheme.colorScheme.onSecondaryContainer
+                            DailySummaryDataSource.PARTIAL -> MaterialTheme.colorScheme.onErrorContainer
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                            .testTag("daily_summary_source")
+                    )
+                }
+            }
+
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(
+                    "Período: ${dateFormatter.format(summary.windowStart)} até ${dateFormatter.format(summary.windowEnd)}",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.testTag("daily_summary_period")
+                )
+                Text(
+                    "Fuso horário: ${summary.zoneId.id}",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.testTag("daily_summary_timezone")
+                )
+                if (summary.dataSource == DailySummaryDataSource.CACHED && summary.cachedAtMillis != null) {
+                    Text(
+                        "Cache atualizado em: ${dateFormatter.format(Instant.ofEpochMilli(summary.cachedAtMillis))}",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.testTag("daily_summary_cached_timestamp")
+                    )
+                }
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                DailyMetricBox(
+                    title = "Notificações",
+                    count = "${summary.metrics.totalNotifications}",
+                    detail = "${summary.metrics.unreadNotifications} não lidas",
+                    modifier = Modifier.weight(1f)
+                )
+                DailyMetricBox(
+                    title = "Revisões PR",
+                    count = "${summary.metrics.reviewRequests}",
+                    detail = "solicitações",
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                DailyMetricBox(
+                    title = "CI / Workflows",
+                    count = "${summary.metrics.successfulWorkflows} / ${summary.metrics.failedWorkflows}",
+                    detail = "sucesso / falha",
+                    modifier = Modifier.weight(1f)
+                )
+                DailyMetricBox(
+                    title = "Issues ativas",
+                    count = "${summary.metrics.activeIssues}",
+                    detail = "no período",
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            OutlinedButton(
+                onClick = {
+                    val markdown = exportDailySummaryToMarkdown(summary)
+                    clipboardManager.setText(AnnotatedString(markdown))
+                    copied = true
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("daily_summary_export_button")
+            ) {
+                Text("Exportar Markdown")
+            }
+
+            if (copied) {
+                Text(
+                    "Resumo copiado em formato Markdown!",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.testTag("daily_summary_export_feedback")
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DailyMetricBox(
+    title: String,
+    count: String,
+    detail: String,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+        modifier = modifier
+    ) {
+        Column(
+            modifier = Modifier.padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(title, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(count, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+            Text(detail, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
     }
 }
 

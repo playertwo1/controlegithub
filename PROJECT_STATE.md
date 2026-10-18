@@ -1,5 +1,26 @@
 # Estado do projeto
 
+## Atualização e encerramento C15.1 — 2026-10-17
+
+Checkpoint **C15.1** (*Resumo diário* — Agregação consolidada de atividades e eventos) concluído com sucesso e promovido a `DONE`:
+- Camada de domínio em `DailySummary.kt`:
+  - Enums e modelos: `DailySummaryDataSource` (`ONLINE`, `CACHED`, `PARTIAL`), `DailySummaryMetrics`, `DailySummaryItem`, `DailySummary`.
+  - Função pura `buildDailySummary(notifications, workflowRuns, issues, windowStart, windowEnd, zoneId, isOfflineCache, cachedAtMillis, hasPartialFailure)`:
+    - Janela temporal estrita (últimas 24h) com fuso horário local configurado (`ZoneId.systemDefault()`).
+    - Deduplicação rigorosa de eventos por identificador único (`distinctBy`), eliminando dupla contagem em métricas.
+    - Contabilização precisa de notificações recebidas, não lidas, solicitações de revisão, menções, workflows com sucesso/falha e issues ativas.
+  - Função pura `exportDailySummaryToMarkdown(summary)`:
+    - Gera documento estruturado em Markdown com cabeçalho, período e fuso horário explícitos, nota de origem de dados, tabela de métricas consolidadas e cronologia dos principais eventos.
+- Interface e Integração em `GitHubHomeScreen.kt`:
+  - Componente `DailySummaryCard` exibido no centro de comando da tela Inicial.
+  - **SUMMARY-PERIOD-TIMEZONE:** Exibição explícita do período (`dd/MM/yyyy HH:mm`) e do fuso horário (`daily_summary_timezone`).
+  - **SUMMARY-SOURCE-TRANSPARENCY:** Badges coloridos indicando a origem dos dados: "Ao vivo do GitHub", "Cache local" (com timestamp exato de atualização) e "Cobertura parcial".
+  - **SUMMARY-MARKDOWN-EXPORT:** Botão "Exportar Markdown" copiando o texto para a área de transferência (`LocalClipboardManager`) com feedback visual imediato ("Resumo copiado em formato Markdown!").
+  - **SUMMARY-OFFLINE-CONSISTENCY:** Suporte resiliente a execução offline consultando o cache SQLite via `GitHubCacheStore` (com suporte às chaves `/notifications` e `/notifications?all=true&per_page=50`).
+- Verificações completas: `python scripts/check_plan.py` PASS (42 tarefas), `git diff --check` PASS, 125/125 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), 4/4 testes instrumentados C15.1 PASS no Pixel 9 (API 37).
+- Auditoria independente via subagente aprovada com veredito **PASS**.
+- Evidências registradas em `docs/evidence/C15.1.md`.
+
 ## Atualização e encerramento C14.2 e Checkpoint C14 — 2026-10-17
 
 Checkpoint **C14.2** (*Kanban local de issues* — GitKraken GK-04 / organização visual ágil) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C14 (Organização e produtividade local)**:

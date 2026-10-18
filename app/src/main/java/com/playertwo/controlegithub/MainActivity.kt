@@ -297,7 +297,8 @@ internal fun ControleApp(
             onOpenRepositories = { page = 1 },
             onSessionExpired = onSessionExpired,
             onLogout = { logoutConfirm = true },
-            onAppearance = { appearanceOpen = true }
+            onAppearance = { appearanceOpen = true },
+            cacheStore = cacheStore
         )
         else if (page == 2 && selected == null && workAreaPullRequests) GitHubPullRequestsScreen(
             modifier = Modifier.padding(padding),
