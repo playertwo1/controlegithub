@@ -179,6 +179,24 @@ class BackgroundSyncJobService : JobService() {
                                 statusCode = response.statusCode,
                                 etag = response.headers.etag
                             )
+                            if (response.body.isNotBlank()) {
+                                try {
+                                    val notifications = parseGitHubNotifications(response.body)
+                                    val alertPrefs = AlertPreferences(applicationContext)
+                                    val alertsEnabled = alertPrefs.alertsEnabled.first()
+                                    if (alertsEnabled) {
+                                        val notifiedIds = alertPrefs.notifiedThreadIds.first()
+                                        val mentionsOnly = alertPrefs.alertMentionsOnly.first()
+                                        val candidates = filterAlertCandidates(notifications, notifiedIds, mentionsOnly)
+                                        if (candidates.isNotEmpty()) {
+                                            LocalNotificationManager.notifyNewEvents(applicationContext, candidates)
+                                            alertPrefs.markNotified(candidates.map { it.id }.toSet())
+                                        }
+                                    }
+                                } catch (_: Exception) {
+                                    // Non-fatal if alert dispatch fails
+                                }
+                            }
                         }
                     }
                     else -> Unit

@@ -436,10 +436,10 @@
       "depends_on": [
         "C15.2"
       ],
-      "status": "PLANNED",
+      "status": "DONE",
       "acceptance": "Permissão negada mantém app utilizável; preferências evitam alertas duplicados.",
-      "contract": null,
-      "evidence": null,
+      "contract": "plan/contracts/C15.3.md",
+      "evidence": "docs/evidence/C15.3.md",
       "blocked_reason": null
     },
     {

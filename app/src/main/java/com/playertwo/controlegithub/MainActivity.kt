@@ -83,7 +83,10 @@ class MainActivity : ComponentActivity() {
                 }
                 sessionRestoring = false
             }
-            LaunchedEffect(sessions) { restoreSession() }
+            LaunchedEffect(sessions) {
+                LocalNotificationManager.ensureChannel(this@MainActivity)
+                restoreSession()
+            }
             val darkSystemBars = appIsDark(themeMode, androidx.compose.foundation.isSystemInDarkTheme())
             DisposableEffect(darkSystemBars) {
                 enableEdgeToEdge(
@@ -113,6 +116,7 @@ class MainActivity : ComponentActivity() {
                         scope.launch {
                             try {
                                 SyncScheduler.cancel(this@MainActivity)
+                                LocalNotificationManager.cancelAll(this@MainActivity)
                                 sessions.logout()
                                 sessionStorageError = false
                                 sessionRetry = false
@@ -145,6 +149,7 @@ class MainActivity : ComponentActivity() {
                         scope.launch {
                             if (session?.accessToken == expired.accessToken) {
                                 SyncScheduler.cancel(this@MainActivity)
+                                LocalNotificationManager.cancelAll(this@MainActivity)
                                 val login = expired.user.login
                                 withContext(Dispatchers.IO) {
                                     try { cacheStore.clear(login) } catch (_: Exception) {}
@@ -163,6 +168,7 @@ class MainActivity : ComponentActivity() {
                     onLogout = {
                         scope.launch {
                             SyncScheduler.cancel(this@MainActivity)
+                            LocalNotificationManager.cancelAll(this@MainActivity)
                             val login = session?.user?.login
                             if (login != null) {
                                 withContext(Dispatchers.IO) {

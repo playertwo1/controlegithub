@@ -1,5 +1,26 @@
 # Estado do projeto
 
+## Atualização e encerramento C15.3 e Checkpoint C15 — 2026-10-17
+
+Checkpoint **C15.3** (*Alertas locais configuráveis* — Notificações locais com canais, resiliência de permissão e deduplicação) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C15 (Resumo diário e sincronização)**:
+- Camada de alertas e gerenciamento do sistema em `LocalAlerts.kt`:
+  - `AlertPreferences`: preferências de alertas persistidas no Preferences DataStore (`alerts_enabled`, `alert_mentions_only`, `notified_thread_ids`).
+  - Funções puras `isMentionOrAssignment` e `filterAlertCandidates(notifications, notifiedIds, mentionsOnly)`.
+  - `LocalNotificationManager`:
+    - Criação de canal de notificações dedicado `controlegithub_alerts` ("Alertas do GitHub", importância padrão `IMPORTANCE_DEFAULT`).
+    - Disparo resiliente de notificações (`notifyNewEvents`) usando `Notification.Builder` nativo do Android e `PendingIntent` com `FLAG_IMMUTABLE`.
+    - Resiliência contra ausência ou negação de permissão (`POST_NOTIFICATIONS`), capturando `SecurityException` e verificando `areNotificationsEnabled` sem travar a aplicação.
+    - Cancelamento imediato de alertas ativos na bandeja via `cancelAll()`.
+- Integração em `BackgroundSyncJobService`:
+  - Ao receber notificações atualizadas da API do GitHub, se os alertas estiverem ativados, filtra candidatos inéditos e dispara alertas locais, gravando os IDs processados no DataStore (`takeLast(100)`).
+- Integração em `MainActivity.kt`:
+  - `LocalNotificationManager.ensureChannel(this@MainActivity)` chamado na inicialização.
+  - `LocalNotificationManager.cancelAll(this@MainActivity)` chamado em `onLogout`, `onSessionExpired` e `onRetrySessionCleanup`.
+- Verificações completas: `python scripts/check_plan.py` PASS (42 tarefas, 1 elegível: C16.2), `git diff --check` PASS, 132/132 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), 4/4 testes instrumentados C15.3 PASS no Pixel 9 (API 37).
+- Auditoria independente via subagente aprovada com veredito **PASS**.
+- Evidências registradas em `docs/evidence/C15.3.md`.
+- Conclusão do **Checkpoint C15**: tarefas C15.1, C15.2 e C15.3 concluídas com sucesso (`DONE`).
+
 ## Atualização e encerramento C15.2 — 2026-10-17
 
 Checkpoint **C15.2** (*Sincronização em segundo plano* — Agendador nativo com respeito a bateria, Wi-Fi e Doze Mode) concluído com sucesso e promovido a `DONE`:
