@@ -1,5 +1,27 @@
 # Estado do projeto
 
+## Atualização e encerramento C19.1 e Checkpoint C19 (Beta e correção de defeitos) — 2026-10-18
+
+Checkpoint **C19.1** (*Beta e correção de defeitos* — Validação de cenários reais de uso, blindagem contra campos nulos/incompletos e reteste de estabilidade) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C19 (Beta em uso real)**:
+- **Cenários Reais Registrados (BETA-SCENARIOS-LOGGED):**
+  - Registro e validação dos 4 cenários essenciais no APK de release 1.0.0 (`versionCode = 100`) no Pixel 9:
+    1. Sessão & Repositórios (OAuth device flow, busca, filtros e ordenação);
+    2. Demandas & Trabalho (Issues, PRs, alternância de visualização Lista/Kanban de 4 colunas em DataStore);
+    3. Resiliência Operacional & Offline (Cache local SQLite com badge de data/hora, revalidação ETag 304 e recuperação graciosa de falhas de rede sem ANR);
+    4. Eficiência em Segundo Plano (`BackgroundSyncJobService` com JobScheduler e deduplicação de alertas locais).
+- **Ausência Comprovada de Defeitos Bloqueantes (BETA-ZERO-BLOCKERS):**
+  - Proteção contra `NullPointerException` em payloads JSON do GitHub com campos opcionais ou omitidos (`description`, `language`, `body`, `assignees`, `labels`, `headRepository`).
+  - Fechamento estrito de streams HTTP (`.use { }` e `disconnect()` no `finally` de `GitHubHttpClient.kt`) sem vazamento de descritores de arquivo ou conexões pendentes.
+  - Resiliência na geração de Resumo Diário mesmo sob ausência total de eventos (0 notificações, 0 workflows, 0 issues), produzindo Markdown válido e estruturado.
+- **Reteste e Estabilidade (BETA-RETEST-VERIFIED):**
+  - Testes unitários puros na JVM em `BetaRobustnessTest.kt` (resumo diário com zero eventos e formatação com múltiplos eventos) 100% aprovados.
+  - Testes instrumentados no Android runtime em `BetaRobustnessAndroidTest.kt` (parsing de repositórios, issues e pull requests com campos omitidos) 100% aprovados no emulador Pixel 9.
+- **Verificações completas:** `python scripts/check_plan.py` PASS (42 tarefas; eligible: none), `git diff --check` PASS, 144/144 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), 3/3 testes instrumentados C19.1 PASS no Pixel 9.
+- **Auditoria independente via subagente:** Aprovada com veredito **PASS** (recomendações de documentação acolhidas).
+- **Evidências registradas em:** `docs/evidence/C19.1.md`.
+- **Conclusão do Checkpoint C19:** Tarefa C19.1 concluída com sucesso (`DONE`).
+- **Próxima tarefa:** `C20.1` (Aceite ponta a ponta da 1.0).
+
 ## Atualização e encerramento C18.2 e Checkpoint C18 (Release, privacidade e atualização) — 2026-10-18
 
 Checkpoint **C18.2** (*Release assinada e atualização* — Configuração segura de assinatura Gradle, versionamento 1.0.0, integridade de dados na atualização e canal documentado) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C18 (Release, privacidade e atualização)**:
