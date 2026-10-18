@@ -1,5 +1,24 @@
 # Estado do projeto
 
+## Atualização e encerramento C20.1 (Aceite ponta a ponta da 1.0) — 2026-10-18
+
+Checkpoint **C20.1** (*Aceite ponta a ponta da 1.0* — Validação de cobertura exaustiva de marcos prévios, jornada real no SHA-256 da release e integridade da bateria automatizada) concluído com sucesso e promovido a `DONE`:
+- **Cobertura Exaustiva de Checkpoints (E2E-CHECKPOINTS-COVERAGE):**
+  - Confirmação formal e automatizada de que 100% dos 40 checkpoints precedentes (C00.1 até C19.1) encontram-se com status `DONE` em `plan/tasks.json`.
+  - Auditoria programática de integridade garantindo que todos os 40 caminhos de evidência apontados existem fisicamente no disco sob `docs/evidence/`.
+- **Jornada Real no Binário de Lançamento (E2E-RELEASE-SHA-EXECUTION):**
+  - Cálculo de hash SHA-256 no binário oficial assinado (`app-release.apk`) resultando no valor canônico exato: `3DDEA18E2B37F20036091C351BE10BA7178D5ABA05EE7828379F2B13FA74841F`.
+  - Verificação de assinatura v2 via `apksigner` (`Verified using v2 scheme: true`, 1 signatário).
+  - Execução e validação no emulador de referência Pixel 9 (API 37) sem falhas, tela branca ou ANRs.
+- **Suíte de Testes Automatizados de Aceite (E2E-AUTOMATED-TESTS-PASS):**
+  - Criação e aprovação do teste `ReleaseEndToEndAcceptanceTest` (3/3 testes aprovados na JVM sem dependências externas, tempo total de execução 77ms).
+  - Consistência auditada entre manifesto, `docs/RELEASE.md` e artefatos de build.
+- **Verificações completas:** `python scripts/check_plan.py` PASS (42 tarefas; eligible: none), `git diff --check` PASS, 147/147 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), `assembleDebug` BUILD SUCCESSFUL.
+- **Auditoria independente via subagente:** Aprovada com veredito **PASS** (sem ressalvas impeditivas).
+- **Evidências registradas em:** `docs/evidence/C20.1.md`.
+- **Conclusão de C20.1:** Tarefa C20.1 concluída com sucesso (`DONE`).
+- **Próxima tarefa:** `C20.2` (Entrega e operação) — Último checkpoint do Milestone 4 e encerramento do projeto.
+
 ## Atualização e encerramento C19.1 e Checkpoint C19 (Beta e correção de defeitos) — 2026-10-18
 
 Checkpoint **C19.1** (*Beta e correção de defeitos* — Validação de cenários reais de uso, blindagem contra campos nulos/incompletos e reteste de estabilidade) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C19 (Beta em uso real)**:
