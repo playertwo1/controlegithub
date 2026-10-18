@@ -1,5 +1,24 @@
 # Estado do projeto
 
+## Atualização e encerramento C14.2 e Checkpoint C14 — 2026-10-17
+
+Checkpoint **C14.2** (*Kanban local de issues* — GitKraken GK-04 / organização visual ágil) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C14 (Organização e produtividade local)**:
+- Camada de domínio e armazenamento em `KanbanStore.kt`:
+  - Enum `KanbanColumn` (`TODO` - "A fazer", `IN_PROGRESS` - "Em andamento", `IN_REVIEW` - "Em revisão", `DONE` - "Concluído").
+  - Interface `KanbanStore` e implementação `DataStoreKanbanStore` gravando mapeamentos no Preferences DataStore sob a chave `kanban_issue_columns_${accountLogin.lowercase()}`.
+  - Função pura `resolveKanbanColumn(issue, mapping)` com resolução padrão inteligente: issues fechadas no GitHub iniciam em "Concluído", abertas em "A fazer", e mapeamentos salvos têm precedência.
+  - Função segura `clearKanbanBeforeLogout(accountLogin, store)` com preservação estrita de `CancellationException`.
+- Interface e Interações em `GitHubIssuesScreen.kt`:
+  - **KANBAN-VIEW (Exibição do quadro e aviso local):** Alternador no topo da tela Trabalho com chip "Quadro" (`filter_chip_kanban`), renderizando as 4 colunas horizontais com contador de issues e banner explicativo explícito (`kanban_local_banner`: *"Organização local: mover os cartões organiza seu trabalho neste aparelho e não altera o estado da issue no GitHub."*).
+  - **KANBAN-MOVE (Movimentação de cartão entre colunas):** Botão "Mover" (`kanban_move_card_${number}`) em cada cartão abre diálogo acessível `AlertDialog` para seleção da coluna de destino (`kanban_move_target_${col}`), transferindo o cartão instantaneamente com **zero chamadas de mutação HTTP** para a API do GitHub.
+  - **KANBAN-PERSIST (Persistência após reinício):** As colunas personalizadas persistem no DataStore e são restauradas em reinício do app/activity.
+  - **KANBAN-ACCOUNT-ISOLATION (Isolamento por conta e limpeza no logout):** Contas diferentes possuem chaves isoladas no DataStore; ao realizar logout na tela de perfil, `clearKanbanBeforeLogout` limpa os dados locais do quadro da conta encerrada.
+  - **KANBAN-MISSING-ITEM (Resiliência a itens ausentes):** Itens armazenados no DataStore cuja issue não mais conste no retorno da API ou tenha sido excluída não quebram o quadro e são ignorados de forma resiliente.
+- Verificações completas: `python scripts/check_plan.py` PASS (42 tarefas), `git diff --check` PASS, 122/122 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), 5/5 testes instrumentados C14.2 PASS no Pixel 9 (API 37).
+- Auditoria independente via subagente aprovada com veredito **PASS** (sem bloqueios).
+- Evidências registradas em `docs/evidence/C14.2.md`.
+- Conclusão do **Checkpoint C14**: tarefas C14.1 e C14.2 concluídas com sucesso (`DONE`).
+
 ## Atualização e encerramento C13.2 e Checkpoint C13 — 2026-10-17
 
 Checkpoint **C13.2** (*Enviar revisão de PR* — OpenHub OH-05 / revisões formais de Pull Requests) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C13 (Comentários e revisão de PR)**:

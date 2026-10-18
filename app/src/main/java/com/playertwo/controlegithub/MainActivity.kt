@@ -41,6 +41,7 @@ class MainActivity : ComponentActivity() {
             val context = LocalContext.current
             val preferences = remember(context) { ThemePreferences(context) }
             val favoritesStore = remember(context) { DataStoreRepositoryFavoritesStore(context) }
+            val kanbanStore = remember(context) { DataStoreKanbanStore(context) }
             val favoriteOperations = remember { Mutex() }
             val apiClient = remember(context) { GitHubHttpClient() }
             val cacheStore = remember(context) { SQLiteGitHubCacheStore(context) }
@@ -97,6 +98,7 @@ class MainActivity : ComponentActivity() {
                     favoritesStore = favoritesStore,
                     favoriteOperations = favoriteOperations,
                     cacheStore = cacheStore,
+                    kanbanStore = kanbanStore,
                     onRetrySession = { scope.launch { restoreSession() } },
                     onRetrySessionCleanup = {
                         scope.launch {
@@ -159,7 +161,10 @@ class MainActivity : ComponentActivity() {
                                 }
                                 return@launch
                             }
-                            when (logoutWithFavoriteCleanup(login, favoritesStore, favoriteOperations) { sessions.logout() }) {
+                            when (logoutWithFavoriteCleanup(login, favoritesStore, favoriteOperations) {
+                                clearKanbanBeforeLogout(login, kanbanStore)
+                                sessions.logout()
+                            }) {
                                 FavoriteLogoutResult.LOGGED_OUT -> {
                                     favoriteCleanupError = false
                                     sessionStorageError = false
@@ -212,7 +217,8 @@ internal fun ControleApp(
     onSessionExpired: (GitHubSession) -> Unit,
     onLogout: () -> Unit,
     onThemeModeChange: (AppThemeMode) -> Unit,
-    cacheStore: GitHubCacheStore? = null
+    cacheStore: GitHubCacheStore? = null,
+    kanbanStore: KanbanStore? = null
 ) {
     var started by rememberSaveable { mutableStateOf(false) }
     var appearanceOpen by rememberSaveable { mutableStateOf(false) }
@@ -315,7 +321,8 @@ internal fun ControleApp(
             onConnected = connectAndPersist,
             onSessionExpired = onSessionExpired,
             onAppearance = { appearanceOpen = true },
-            onShowPullRequests = { workAreaPullRequests = true }
+            onShowPullRequests = { workAreaPullRequests = true },
+            kanbanStore = kanbanStore
         )
         else if (page == 3 && session != null) GitHubNotificationsScreen(
             modifier = Modifier.padding(padding),
