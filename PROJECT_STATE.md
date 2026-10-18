@@ -1,5 +1,20 @@
 # Estado do projeto
 
+## Atualização e encerramento C15.2 — 2026-10-17
+
+Checkpoint **C15.2** (*Sincronização em segundo plano* — Agendador nativo com respeito a bateria, Wi-Fi e Doze Mode) concluído com sucesso e promovido a `DONE`:
+- Camada de agendamento e persistência em `BackgroundSync.kt`:
+  - `SyncPreferences`: persistência das opções de sincronização no Preferences DataStore (`sync_enabled`, `sync_interval_minutes`, `sync_wifi_only`, `sync_requires_battery_not_low`).
+  - `SyncScheduler`: métodos `buildJobInfo`, `schedule(context, enabled, interval, wifiOnly, batteryNotLow)`, `schedule(context, preferences)` e `cancel(context)`.
+  - **SYNC-CONSTRAINTS:** Mapeamento estrito de conectividade exigindo `NETWORK_TYPE_UNMETERED` quando `wifiOnly = true` e `setRequiresBatteryNotLow(true)`.
+  - **SYNC-INEXACT-SCHEDULE:** Agendamento periódico inexato do Android com limite mínimo de 15 minutos (`calculatePeriodMillis`), sem alarmes forçados que degradem a bateria.
+  - **SYNC-LOGOUT-CANCEL:** Integração em `MainActivity.kt` chamando `SyncScheduler.cancel(context)` em `onLogout`, `onSessionExpired` e `onRetrySessionCleanup`. Abortamento seguro no `BackgroundSyncJobService` se não houver credenciais ativas ou se o token estiver expirado.
+  - **SYNC-PREFERENCES-PERSIST:** Integração em `MainActivity.kt` no reinício (`restoreSession`) e login (`onConnected`) lendo as preferências configuradas e refletindo-as no `JobScheduler`.
+  - **SYNC-EXECUTION-SAFE:** `BackgroundSyncJobService` operando de forma assíncrona em `Dispatchers.IO`, revalidando cache SQLite com `If-None-Match` (ETag), cancelando chamadas ativas em `onStopJob` e finalizando com `jobFinished(params, false)`. Registrado no `AndroidManifest.xml` com permissão `BIND_JOB_SERVICE` e `ACCESS_NETWORK_STATE`.
+- Verificações completas: `python scripts/check_plan.py` PASS (42 tarefas, 1 elegível: C15.3), `git diff --check` PASS, 128/128 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), 6/6 testes instrumentados C15.2 PASS no Pixel 9 (API 37).
+- Auditoria independente via subagente aprovada com veredito **PASS**.
+- Evidências registradas em `docs/evidence/C15.2.md`.
+
 ## Atualização e encerramento C15.1 — 2026-10-17
 
 Checkpoint **C15.1** (*Resumo diário* — Agregação consolidada de atividades e eventos) concluído com sucesso e promovido a `DONE`:

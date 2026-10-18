@@ -40,6 +40,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val preferences = remember(context) { ThemePreferences(context) }
+            val syncPreferences = remember(context) { SyncPreferences(context) }
             val favoritesStore = remember(context) { DataStoreRepositoryFavoritesStore(context) }
             val kanbanStore = remember(context) { DataStoreKanbanStore(context) }
             val favoriteOperations = remember { Mutex() }
@@ -64,7 +65,15 @@ class MainActivity : ComponentActivity() {
                 sessionRetry = false
                 sessionStorageError = false
                 when (val result = sessions.restore()) {
-                    is SessionRestoreResult.Restored -> session = result.session
+                    is SessionRestoreResult.Restored -> {
+                        session = result.session
+                        if (!result.session.isOffline) {
+                            SyncScheduler.schedule(
+                                context = this@MainActivity,
+                                preferences = syncPreferences
+                            )
+                        }
+                    }
                     SessionRestoreResult.SignedOut -> session = null
                     SessionRestoreResult.Retry -> sessionRetry = true
                     SessionRestoreResult.CleanupFailed -> {
@@ -103,6 +112,7 @@ class MainActivity : ComponentActivity() {
                     onRetrySessionCleanup = {
                         scope.launch {
                             try {
+                                SyncScheduler.cancel(this@MainActivity)
                                 sessions.logout()
                                 sessionStorageError = false
                                 sessionRetry = false
@@ -119,6 +129,12 @@ class MainActivity : ComponentActivity() {
                             session = connected
                             sessionStorageError = false
                             favoriteCleanupError = false
+                            scope.launch {
+                                SyncScheduler.schedule(
+                                    context = this@MainActivity,
+                                    preferences = syncPreferences
+                                )
+                            }
                             true
                         } catch (_: Exception) {
                             sessionStorageError = true
@@ -128,6 +144,7 @@ class MainActivity : ComponentActivity() {
                     onSessionExpired = { expired ->
                         scope.launch {
                             if (session?.accessToken == expired.accessToken) {
+                                SyncScheduler.cancel(this@MainActivity)
                                 val login = expired.user.login
                                 withContext(Dispatchers.IO) {
                                     try { cacheStore.clear(login) } catch (_: Exception) {}
@@ -145,6 +162,7 @@ class MainActivity : ComponentActivity() {
                     },
                     onLogout = {
                         scope.launch {
+                            SyncScheduler.cancel(this@MainActivity)
                             val login = session?.user?.login
                             if (login != null) {
                                 withContext(Dispatchers.IO) {
