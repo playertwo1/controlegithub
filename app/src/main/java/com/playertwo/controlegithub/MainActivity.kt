@@ -541,7 +541,7 @@ private fun WorkCard(badge: String, title: String, subtitle: String) {
 }
 
 @Composable
-private fun AppearanceScreen(
+internal fun AppearanceScreen(
     modifier: Modifier,
     selectedMode: AppThemeMode,
     preferenceError: Boolean,

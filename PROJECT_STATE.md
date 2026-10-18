@@ -1,5 +1,20 @@
 # Estado do projeto
 
+## Atualização e encerramento C16.2 e Conclusão da Fase 3 (Milestone 3) — 2026-10-17
+
+Checkpoint **C16.2** (*Acessibilidade do conjunto* — Catálogo visual 01–36, TalkBack, fontes ampliadas, teclado virtual e contraste WCAG AA) concluído com sucesso e promovido a `DONE`, consolidando o fechamento de 100% da **Fase 3 (Milestone 3 — Ações e produtividade: C12–C16)**:
+- **Matriz de Rastreabilidade Exaustiva do Catálogo Visual (01–36):**
+  - Mapeamento completo dos 36 IDs conceituais definidos em `docs/design/README.md` para rotas e componentes ativos no aplicativo 1.0 (01–06: autenticação e sessão; 07–12: painel, repositórios e favoritos; 13–18: issues, PRs, criação e revisões; 19–24: notificações, ações e confirmações; 25–30: kanban, resumo diário, perfil e aparência; 31–36: sincronização, offline, busca, conexão, loading e rate limit). Sem omissões de escopo.
+- **Acessibilidade e Usabilidade:**
+  - **A11Y-TALKBACK-LABELS:** Rótulos semânticos (`contentDescription`) em português em todos os botões de ação, chips e itens do dock inferior; alvos de toque com dimensão mínima de 48 x 48 dp.
+  - **A11Y-LARGE-FONT:** Resiliência da interface com suporte a escala de fontes ampliadas (até 200%) usando unidades `sp` escaláveis e containers com rolagem responsiva.
+  - **A11Y-KEYBOARD-DOCK:** Ocultação automática do dock inferior flutuante durante a exibição do teclado virtual (`WindowInsets.isImeVisible`), liberando a área útil de tela para formulários.
+  - **A11Y-CONTRAST-RATIO:** Contraste em conformidade com WCAG AA (≥ 4,5:1 para texto normal e ≥ 3,0:1 para componentes gráficos) em ambos os esquemas de cores (`LightColors` e `DarkColors`).
+- **Verificações completas:** `python scripts/check_plan.py` PASS (42 tarefas; eligible: none), `git diff --check` PASS, 132/132 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), 3/3 testes instrumentados C16.2 PASS no Pixel 9 (API 37).
+- **Auditoria independente via subagente:** Aprovada com veredito **PASS** (sem ressalvas impeditivas).
+- **Evidências registradas em:** `docs/evidence/C16.2.md`.
+- **Conclusão da Fase 3 (Milestone 3):** Todos os checkpoints da fase (C12.1, C12.2, C12.3, C13.1, C13.2, C14.1, C14.2, C15.1, C15.2, C15.3, C16.1, C16.2) estão integralmente concluídos (`DONE`).
+
 ## Atualização e encerramento C15.3 e Checkpoint C15 — 2026-10-17
 
 Checkpoint **C15.3** (*Alertas locais configuráveis* — Notificações locais com canais, resiliência de permissão e deduplicação) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C15 (Resumo diário e sincronização)**:
