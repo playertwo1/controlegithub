@@ -1,5 +1,24 @@
 # Estado do projeto
 
+## Atualização e encerramento C18.1 — 2026-10-18
+
+Checkpoint **C18.1** (*Privacidade, licença e segurança* — Política correspondente aos dados reais, licença MIT aprovada e salvaguardas técnicas auditadas) concluído com sucesso e promovido a `DONE`:
+- **Fidelidade da Política aos Dados Reais (POLICY-DATA-MATCH):**
+  - Elaboração de `PRIVACY.md` estabelecendo a arquitetura *local-first*, ausência de servidores próprios, ausência de telemetria/rastreamento e comunicação direta exclusiva HTTPS com `https://api.github.com`.
+  - Mapeamento estrito das 3 únicas permissões necessárias: `INTERNET`, `ACCESS_NETWORK_STATE` e `POST_NOTIFICATIONS` (com resiliência e não-bloqueio se negada).
+  - Ausência explícita de solicitação de permissões invasivas (localização, contatos, câmera, microfone, armazenamento externo).
+- **Licença Formal de Código Aberto (LICENSE-RESOLVED):**
+  - Licença **MIT** formalmente aprovada pelo proprietário do produto e registrada em `LICENSE` na raiz, com direitos de uso e copyright canônico de 2026.
+- **Salvaguardas Técnicas de Segurança Auditadas (SECURITY-SAFEGUARDS):**
+  - Desativação explícita de backup em nuvem e transferências: `android:allowBackup="false"`, `android:fullBackupContent="false"` e `@xml/data_extraction_rules` excluindo todos os 5 domínios (`root`, `file`, `database`, `sharedpref`, `external`).
+  - Bloqueio ativo no cache SQLite (`isCacheableResource`) para endpoints OAuth/tokens (`/login`, `/oauth`, `/device`, `/tokens`, `/authorizations`), logs do Actions e payloads contendo tokens (`access_token`, `refresh_token`, `client_secret`).
+  - Criptografia AES-256-GCM via hardware `AndroidKeyStore` para credenciais de sessão e expurgo atômico no logout.
+  - Atualização de `SECURITY.md` com diretrizes responsáveis de divulgação de vulnerabilidades via GitHub Security Advisories privados.
+- **Verificações completas:** `python scripts/check_plan.py` PASS (42 tarefas; eligible: none), `git diff --check` PASS, 138/138 testes unitários PASS na JVM, `lintDebug` PASS (0 erros), 3/3 testes instrumentados C18.1 PASS no Pixel 9 (API 37).
+- **Auditoria independente via subagente:** Aprovada com veredito **PASS** (sem ressalvas impeditivas).
+- **Evidências registradas em:** `docs/evidence/C18.1.md`.
+- **Próxima tarefa:** `C18.2` (Release assinada e atualização).
+
 ## Atualização e encerramento C17.2 e Checkpoint C17 (Robustez e desempenho) — 2026-10-18
 
 Checkpoint **C17.2** (*Desempenho e falhas prolongadas* — Orçamento de painel ≤ 2 s, tolerância a falhas severas de rede e estabilidade de recomposição) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C17 (Robustez e desempenho)**:
