@@ -518,10 +518,10 @@
       "depends_on": [
         "C18.1"
       ],
-      "status": "PLANNED",
+      "status": "DONE",
       "acceptance": "Assinada instala/atualiza sem perder dados; chaves fora do Git; canal documentado.",
-      "contract": null,
-      "evidence": null,
+      "contract": "plan/contracts/C18.2.md",
+      "evidence": "docs/evidence/C18.2.md",
       "blocked_reason": null
     },
     {

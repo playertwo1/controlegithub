@@ -1,5 +1,26 @@
 # Estado do projeto
 
+## Atualização e encerramento C18.2 e Checkpoint C18 (Release, privacidade e atualização) — 2026-10-18
+
+Checkpoint **C18.2** (*Release assinada e atualização* — Configuração segura de assinatura Gradle, versionamento 1.0.0, integridade de dados na atualização e canal documentado) concluído com sucesso e promovido a `DONE`, concluindo integralmente o **Checkpoint C18 (Release, privacidade e atualização)**:
+- **Configuração Segura de Assinatura (RELEASE-SIGNING-CONFIG):**
+  - Implementação em `app/build.gradle.kts` de `signingConfigs.release` com leitura dinâmica de propriedades/variáveis de ambiente (`RELEASE_STORE_FILE`, `RELEASE_STORE_PASSWORD`, `RELEASE_KEY_ALIAS`, `RELEASE_KEY_PASSWORD`) e fallback seguro para chave de desenvolvimento/CI.
+  - Versionamento formal de lançamento definido em `defaultConfig`: `versionCode = 100`, `versionName = "1.0.0"`.
+  - Auditoria estrita do Git: `.gitignore` ignorando `*.keystore` e `*.jks`, com verificação confirmando zero arquivos de chave privada commitados no repositório.
+  - Validação do artefato release via `apksigner`: assinatura oficial comprovada no esquema APK Signature Scheme v2 (`Verified using v2 scheme: true`, 1 signatário).
+- **Preservação de Dados em Atualização (RELEASE-UPGRADE-PRESERVES-DATA):**
+  - Instalação e atualização do APK de release (`app-release.apk`, 11,9 MB) executadas no emulador Pixel 9 (API 37) via `adb install -r` com retorno `Success`.
+  - Verificação de runtime via `dumpsys package` confirmando `versionCode=100`, `versionName=1.0.0` e assinatura v2 ativa.
+  - Preservação do sandbox do Android sem reset ou corrupção de credenciais, cache SQLite ou preferências DataStore, com captura de tela registrada em `docs/evidence/images/M4-release-upgrade.png`.
+- **Documentação do Canal de Distribuição (RELEASE-DISTRIBUTION-CHANNEL):**
+  - Elaboração de `docs/RELEASE.md` contendo guia completo de compilação reproduzível (`assembleRelease`), instruções de conferência de hash SHA-256 no Windows e Linux/macOS, canal oficial de entrega (GitHub Releases: `playertwo1/controlegithub/releases`) e procedimentos de atualização para o usuário.
+  - Checksum oficial SHA-256 do binário de release: `3DDEA18E2B37F20036091C351BE10BA7178D5ABA05EE7828379F2B13FA74841F`.
+- **Verificações completas:** `python scripts/check_plan.py` PASS (42 tarefas; eligible: none), `git diff --check` PASS, 142/142 testes unitários PASS na JVM (incluindo `ReleaseUpgradePersistenceTest`), `lintDebug` PASS (0 erros), `assembleRelease` BUILD SUCCESSFUL e testes instrumentados operacionais no Pixel 9.
+- **Auditoria independente via subagente:** Aprovada com veredito **PASS** (sem ressalvas impeditivas).
+- **Evidências registradas em:** `docs/evidence/C18.2.md`.
+- **Conclusão do Checkpoint C18:** Tarefas C18.1 e C18.2 concluídas com sucesso (`DONE`).
+- **Próxima tarefa:** `C19.1` (Beta e correção de defeitos).
+
 ## Atualização e encerramento C18.1 — 2026-10-18
 
 Checkpoint **C18.1** (*Privacidade, licença e segurança* — Política correspondente aos dados reais, licença MIT aprovada e salvaguardas técnicas auditadas) concluído com sucesso e promovido a `DONE`:
