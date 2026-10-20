@@ -4,7 +4,8 @@
 
 - Senha do keystore e caminhos locais removidos deste arquivo (continuam no histórico do Git; recomenda-se rotacionar).
 - Implementado: tela "Releases e APKs" no detalhe do repositório (lista paginada, selos Mais recente/Pré-release/Rascunho, assets com tamanho e downloads, APKs destacados, "Baixar" via navegador) e saúde dos repositórios (dias sem push e status) na lista e no detalhe.
-- Testes novos: `GitHubReleasesTest`, `RepositoryHealthTest`.
+- Filtro por saúde e ordenação (Nome, Mais parados, Push recente, Estrelas) na lista de repositórios.
+- Testes novos: `GitHubReleasesTest`, `RepositoryHealthTest`, `RepositorySortTest`.
 - Verificação: `assembleDebug testDebugUnitTest lintDebug` e `connectedDebugAndroidTest` **NOT_RUN** (ambiente sem Android SDK). Pendente: cache offline das releases.
 
 ## Geração de Secrets de Produção e Compilação da Release Oficial v1.0.0 — 2026-10-18

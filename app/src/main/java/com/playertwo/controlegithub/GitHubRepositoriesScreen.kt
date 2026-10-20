@@ -104,6 +104,8 @@ internal fun GitHubRepositoriesScreen(
     var searchQuery by remember(client, session?.user?.login) { mutableStateOf("") }
     var visibilityFilter by remember(client, session?.user?.login) { mutableStateOf(RepositoryVisibilityFilter.ALL) }
     var languageFilter by remember(client, session?.user?.login) { mutableStateOf<String?>(null) }
+    var healthFilter by remember(client, session?.user?.login) { mutableStateOf<RepositoryHealthStatus?>(null) }
+    var sortOrder by remember(client, session?.user?.login) { mutableStateOf(RepositorySort.NAME) }
     var favoriteIds by remember(client, session?.user?.login) { mutableStateOf<Set<Long>?>(null) }
     var favoritesLoadError by remember(client, session?.user?.login) { mutableStateOf(false) }
     var favoritesWriteError by remember(client, session?.user?.login) { mutableStateOf(false) }
@@ -134,20 +136,26 @@ internal fun GitHubRepositoriesScreen(
             .distinctBy { it.lowercase(Locale.ROOT) }
             .sortedBy { it.lowercase(Locale.ROOT) }
     }
-    val visibleRepositories = remember(repositories, searchQuery, visibilityFilter, languageFilter, favoriteIds, favoritesOnly) {
-        filterGitHubRepositories(
+    val visibleRepositories = remember(
+        repositories, searchQuery, visibilityFilter, languageFilter, favoriteIds, favoritesOnly, healthFilter, sortOrder
+    ) {
+        val filtered = filterGitHubRepositories(
             repositories, searchQuery, visibilityFilter, languageFilter,
             favoriteIds.orEmpty(), favoritesOnly && favoriteIds != null
         )
+        sortGitHubRepositories(filterByHealth(filtered, healthFilter), sortOrder)
     }
     val hasActiveFilters = searchQuery.isNotBlank() ||
-        visibilityFilter != RepositoryVisibilityFilter.ALL || languageFilter != null || favoritesOnly
+        visibilityFilter != RepositoryVisibilityFilter.ALL || languageFilter != null || favoritesOnly ||
+        healthFilter != null || sortOrder != RepositorySort.NAME
 
     fun clearFilters() {
         searchQuery = ""
         visibilityFilter = RepositoryVisibilityFilter.ALL
         languageFilter = null
         favoritesOnly = false
+        healthFilter = null
+        sortOrder = RepositorySort.NAME
     }
 
     fun setFavorite(repository: GitHubRepository, favorite: Boolean) {
@@ -386,6 +394,37 @@ internal fun GitHubRepositoriesScreen(
                                         languageFilter = if (languageFilter.equals(language, ignoreCase = true)) null else language
                                     },
                                     label = { Text(language) }
+                                )
+                            }
+                        }
+                        Row(
+                            modifier = Modifier.horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            FilterChip(
+                                selected = healthFilter == null,
+                                onClick = { healthFilter = null },
+                                label = { Text("Qualquer saúde") }
+                            )
+                            RepositoryHealthStatus.entries.forEach { status ->
+                                FilterChip(
+                                    selected = healthFilter == status,
+                                    onClick = { healthFilter = if (healthFilter == status) null else status },
+                                    label = { Text(status.label) }
+                                )
+                            }
+                        }
+                        Row(
+                            modifier = Modifier.horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Ordenar:", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                            RepositorySort.entries.forEach { sort ->
+                                FilterChip(
+                                    selected = sortOrder == sort,
+                                    onClick = { sortOrder = sort },
+                                    label = { Text(sort.label) }
                                 )
                             }
                         }

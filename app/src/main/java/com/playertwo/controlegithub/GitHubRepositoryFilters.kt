@@ -31,3 +31,27 @@ internal fun filterGitHubRepositories(
         matchesQuery && matchesVisibility && matchesLanguage && matchesFavorite
     }
 }
+
+internal enum class RepositorySort(val label: String) {
+    NAME("Nome"),
+    MOST_STALE("Mais parados"),
+    RECENT("Push recente"),
+    STARS("Estrelas")
+}
+
+internal fun filterByHealth(
+    repositories: List<GitHubRepository>,
+    health: RepositoryHealthStatus?
+): List<GitHubRepository> =
+    if (health == null) repositories else repositories.filter { it.health.status == health }
+
+/** NAME preserva a ordem da API; sem push registrado vai sempre para o fim. */
+internal fun sortGitHubRepositories(
+    repositories: List<GitHubRepository>,
+    sort: RepositorySort
+): List<GitHubRepository> = when (sort) {
+    RepositorySort.NAME -> repositories
+    RepositorySort.MOST_STALE -> repositories.sortedWith(compareBy(nullsLast()) { it.pushedAt })
+    RepositorySort.RECENT -> repositories.sortedWith(compareByDescending(nullsFirst()) { it.pushedAt })
+    RepositorySort.STARS -> repositories.sortedByDescending(GitHubRepository::stars)
+}
