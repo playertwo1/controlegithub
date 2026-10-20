@@ -565,6 +565,32 @@
       "contract": "plan/contracts/C20.2.md",
       "evidence": "docs/evidence/C20.2.md",
       "blocked_reason": null
+    },
+    {
+      "id": "C21.1",
+      "checkpoint": "C21",
+      "title": "Releases do repositório",
+      "depends_on": [
+        "C20.2"
+      ],
+      "status": "READY",
+      "acceptance": "Lista e detalhe de releases reais com assets e APKs destacados; vazio/erro sem demo.",
+      "contract": "plan/contracts/C21.1.md",
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C21.2",
+      "checkpoint": "C21",
+      "title": "Baixar e instalar APK",
+      "depends_on": [
+        "C21.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Download com progresso, verificação SHA-256 e instalação via instalador do Android, inclusive em repo privado.",
+      "contract": "plan/contracts/C21.2.md",
+      "evidence": null,
+      "blocked_reason": null
     }
   ]
 }
