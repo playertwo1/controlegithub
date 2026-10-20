@@ -239,7 +239,8 @@ internal fun GitHubRepositoriesScreen(
             onBack = { selectedRepository = null },
             onSessionExpired = onSessionExpired,
             onAppearance = onAppearance,
-            isOffline = isOfflineCache || session.isOffline
+            isOffline = isOfflineCache || session.isOffline,
+            cacheStore = cacheStore
         )
     } else LazyColumn(
         modifier.fillMaxSize(),

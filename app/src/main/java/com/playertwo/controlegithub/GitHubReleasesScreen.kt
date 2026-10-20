@@ -56,12 +56,14 @@ internal fun GitHubReleasesScreen(
     client: GitHubHttpClient,
     accessToken: String,
     repository: GitHubRepository,
+    cacheStore: GitHubCacheStore? = null,
+    accountLogin: String? = null,
     onBack: () -> Unit,
     onSessionExpired: () -> Unit
 ) {
     var refreshVersion by remember(repository.id, accessToken) { mutableIntStateOf(0) }
     val pager = remember(client, accessToken, repository.id, refreshVersion) {
-        GitHubReleasePager(client, accessToken, repository)
+        GitHubReleasePager(client, accessToken, repository, cacheStore, accountLogin)
     }
     var result by remember(pager) { mutableStateOf<GitHubPageResult<GitHubRelease>?>(null) }
     var loading by remember(pager) { mutableStateOf(false) }
@@ -112,6 +114,9 @@ internal fun GitHubReleasesScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             item { Text(repository.fullName, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            (result as? GitHubPageResult.Loaded)?.takeIf { it.isOfflineCache }?.let { page ->
+                item { OfflineCacheBadge(page.cachedAtMillis) }
+            }
             when (val page = result) {
                 null -> item {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {

@@ -87,8 +87,9 @@ class ReleaseDeliveryVerificationTest {
         assertTrue("plan/tasks.json deve existir", tasksFile.exists())
         val json = tasksFile.readText(Charsets.UTF_8)
 
-        val idMatches = "\"id\"\\s*:\\s*\"(C\\d{2}\\.\\d+)\"".toRegex().findAll(json).map { it.groupValues[1] }.toList()
-        assertEquals("O backlog completo deve conter exatamente 42 tarefas", 42, idMatches.size)
+        val idMatches = "\"id\"\\s*:\\s*\"(C\\d{2}\\.\\d+)\"".toRegex().findAll(json).map { it.groupValues[1] }
+            .filter { it.substring(1, 3).toInt() <= 20 }.toList()
+        assertEquals("O backlog da v1.0 (C00–C20) deve conter exatamente 42 tarefas", 42, idMatches.size)
         assertTrue("Deve conter a tarefa inicial C00.1", idMatches.contains("C00.1"))
         assertTrue("Deve conter a tarefa final C20.2", idMatches.contains("C20.2"))
     }

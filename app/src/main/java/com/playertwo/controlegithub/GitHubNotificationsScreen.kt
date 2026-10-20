@@ -203,6 +203,7 @@ internal fun GitHubNotificationsScreen(
                     onBack = { showingOrigin = false },
                     onSessionExpired = onSessionExpired,
                     onAppearance = onAppearance,
+                    cacheStore = cacheStore,
                     isOffline = isOfflineCache || session.isOffline
                 ) else NotificationOriginUnavailable(modifier) { showingOrigin = false }
             }

@@ -35,7 +35,8 @@ class ReleaseEndToEndAcceptanceTest {
             val status = match.groupValues[2]
             val evidenceRaw = match.groupValues[3]
 
-            if (id == "C20.1" || id == "C20.2") continue
+            // v2.0 (C21+) tem aceite próprio; aqui só o escopo da v1.0
+            if (id == "C20.1" || id == "C20.2" || id.substring(1, 3).toInt() > 20) continue
 
             assertEquals("Tarefa $id deve estar com status DONE", "DONE", status)
             assertTrue("Tarefa $id deve possuir arquivo de evidência", evidenceRaw.startsWith("\""))

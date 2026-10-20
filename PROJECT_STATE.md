@@ -6,7 +6,10 @@
 - Implementado: tela "Releases e APKs" no detalhe do repositório (lista paginada, selos Mais recente/Pré-release/Rascunho, assets com tamanho e downloads, APKs destacados, "Baixar" via navegador) e saúde dos repositórios (dias sem push e status) na lista e no detalhe.
 - Filtro por saúde e ordenação (Nome, Mais parados, Push recente, Estrelas) na lista de repositórios.
 - Testes novos: `GitHubReleasesTest`, `RepositoryHealthTest`, `RepositorySortTest`.
-- Verificação: `assembleDebug testDebugUnitTest lintDebug` e `connectedDebugAndroidTest` **NOT_RUN** (ambiente sem Android SDK). Pendente: cache offline das releases.
+- Cache offline das releases ligado (`GitHubCacheStore` + selo `OfflineCacheBadge`), repassado pelo detalhe do repositório.
+- Testes corrigidos: `org.json` real como `testImplementation` (parsing falhava na JVM); testes de backlog da v1.0 limitados a C00–C20; rótulo "GitHub Actions" no `GitHubRepositoryDetailScreenTest` (desatualizado desde C12.1).
+- 2026-10-20, emulador Pixel_9 API 17: `assembleDebug testDebugUnitTest lintDebug` **PASS**. `connectedDebugAndroidTest` **FAIL**: `repositoryActionsCanShowAllRecentRuns` e `repositoryDetailOpensWorkflowRunAndJobStatusesForSelectedRepository` (execuções do fixture não aparecem na tela de Actions; defeito da v1.0, mascarado pelo rótulo errado) e o processo cai na suíte completa com `IndexOutOfBoundsException` dentro de LazyList do Compose (sem frame do app).
+- Próxima ação: investigar a tela de Actions e o crash do LazyList; depois rodar a suíte instrumentada completa, registrar `docs/evidence/C21.1.md` e fazer a auditoria independente.
 
 ## Geração de Secrets de Produção e Compilação da Release Oficial v1.0.0 — 2026-10-18
 

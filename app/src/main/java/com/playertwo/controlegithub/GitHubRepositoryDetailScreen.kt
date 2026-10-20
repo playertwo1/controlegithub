@@ -54,7 +54,8 @@ internal fun GitHubRepositoryDetailScreen(
     onBack: () -> Unit,
     onSessionExpired: (GitHubSession) -> Unit,
     onAppearance: () -> Unit,
-    isOffline: Boolean = session.isOffline
+    isOffline: Boolean = session.isOffline,
+    cacheStore: GitHubCacheStore? = null
 ) {
     var refreshVersion by remember(repository.id, session.accessToken) { mutableIntStateOf(0) }
     var result by remember(repository.id, session.accessToken) {
@@ -103,6 +104,8 @@ internal fun GitHubRepositoryDetailScreen(
             client = client,
             accessToken = session.accessToken,
             repository = repository,
+            cacheStore = cacheStore,
+            accountLogin = session.user.login,
             onBack = { releasesOpen = false },
             onSessionExpired = { onSessionExpired(session) }
         )

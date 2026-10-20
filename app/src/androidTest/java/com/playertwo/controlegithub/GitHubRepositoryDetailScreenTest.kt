@@ -89,7 +89,7 @@ class GitHubRepositoryDetailScreenTest {
             showRepositories(api)
             openDetail(api)
 
-            compose.onNodeWithText("Ver GitHub Actions").performScrollTo().performClick()
+            compose.onNodeWithText("GitHub Actions").performScrollTo().performClick()
             compose.waitUntil(10_000) {
                 api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/actions/workflows?") }
             }
@@ -330,7 +330,7 @@ class GitHubRepositoryDetailScreenTest {
 
     private fun openActions(api: DetailApi) {
         openDetail(api)
-        compose.onNodeWithText("Ver GitHub Actions").performScrollTo().performClick()
+        compose.onNodeWithText("GitHub Actions").performScrollTo().performClick()
         compose.waitUntil(10_000) {
             api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/actions/workflows?") }
         }
