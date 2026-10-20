@@ -591,6 +591,45 @@
       "contract": "plan/contracts/C21.2.md",
       "evidence": null,
       "blocked_reason": null
+    },
+    {
+      "id": "C22.1",
+      "checkpoint": "C22",
+      "title": "Markdown de leitura (OH-03)",
+      "depends_on": [
+        "C21.2"
+      ],
+      "status": "PLANNED",
+      "acceptance": "README, descrições de issue/PR e comentários renderizados em Markdown com links controlados e fallback textual.",
+      "contract": "plan/contracts/C22.1.md",
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C23.1",
+      "checkpoint": "C23",
+      "title": "Editor Markdown com prévia (OH-04)",
+      "depends_on": [
+        "C22.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Editor de issues/comentários com barra de formatação, prévia, rascunho local e sugestão de @menções.",
+      "contract": "plan/contracts/C23.1.md",
+      "evidence": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "C24.1",
+      "checkpoint": "C24",
+      "title": "Navegador de código",
+      "depends_on": [
+        "C23.1"
+      ],
+      "status": "PLANNED",
+      "acceptance": "Árvore de arquivos, visualizador com destaque de sintaxe e troca de branch/tag.",
+      "contract": "plan/contracts/C24.1.md",
+      "evidence": null,
+      "blocked_reason": null
     }
   ]
 }
