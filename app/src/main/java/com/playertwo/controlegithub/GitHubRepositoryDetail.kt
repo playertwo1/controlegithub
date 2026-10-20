@@ -19,7 +19,8 @@ internal data class GitHubRepositoryDetail(
     val stars: Long?,
     val forks: Long?,
     val openIssuesAndPullRequests: Long?,
-    val pushedAt: Instant?
+    val pushedAt: Instant?,
+    val archived: Boolean = false
 )
 
 internal sealed interface GitHubReadmeResult {
@@ -119,7 +120,8 @@ internal fun parseGitHubRepositoryDetail(json: String): GitHubRepositoryDetail {
         stars = repository.optionalNonNegativeLong("stargazers_count"),
         forks = repository.optionalNonNegativeLong("forks_count"),
         openIssuesAndPullRequests = repository.optionalNonNegativeLong("open_issues_count"),
-        pushedAt = pushedAt
+        pushedAt = pushedAt,
+        archived = repository.opt("archived") as? Boolean ?: false
     )
 }
 

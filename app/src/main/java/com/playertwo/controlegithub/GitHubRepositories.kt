@@ -3,6 +3,8 @@ package com.playertwo.controlegithub
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
+import java.time.Instant
+import java.time.format.DateTimeParseException
 
 internal data class GitHubRepository(
     val id: Long,
@@ -12,8 +14,13 @@ internal data class GitHubRepository(
     val isPrivate: Boolean,
     val description: String?,
     val language: String?,
-    val stars: Int
+    val stars: Int,
+    val pushedAt: Instant? = null,
+    val archived: Boolean = false,
+    val openIssues: Int? = null
 ) {
+    val health: RepositoryHealth get() = repositoryHealth(pushedAt, archived)
+
     override fun toString() = "GitHubRepository(id=$id, isPrivate=$isPrivate)"
 }
 
@@ -33,13 +40,25 @@ internal fun parseGitHubRepositories(json: String): List<GitHubRepository> {
             ?: throw IOException("Resposta de repositórios inválida")
         val description = repository.optionalString("description")
         val language = repository.optionalString("language")
+        val pushedAt = repository.optionalString("pushed_at")?.let { value ->
+            try {
+                Instant.parse(value)
+            } catch (_: DateTimeParseException) {
+                null
+            }
+        }
+        val archived = repository.opt("archived") as? Boolean ?: false
+        val openIssues = (repository.opt("open_issues_count") as? Number)?.toInt()?.takeIf { it >= 0 }
         val idValue = id.toLong()
         val starsValue = stars.toInt()
         if (idValue <= 0 || id.toDouble() != idValue.toDouble() || starsValue < 0 ||
             stars.toDouble() != starsValue.toDouble() ||
             !fullName.equals("$owner/$name", ignoreCase = true)
         ) throw IOException("Resposta de repositórios inválida")
-        GitHubRepository(idValue, name, fullName, owner, isPrivate, description, language, starsValue)
+        GitHubRepository(
+            idValue, name, fullName, owner, isPrivate, description, language, starsValue,
+            pushedAt, archived, openIssues
+        )
     }
 }
 

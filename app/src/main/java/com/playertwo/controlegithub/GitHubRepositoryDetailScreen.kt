@@ -96,6 +96,19 @@ internal fun GitHubRepositoryDetailScreen(
         return
     }
 
+    var releasesOpen by remember(repository.id, session.accessToken) { mutableStateOf(false) }
+    if (releasesOpen) {
+        GitHubReleasesScreen(
+            modifier = modifier,
+            client = client,
+            accessToken = session.accessToken,
+            repository = repository,
+            onBack = { releasesOpen = false },
+            onSessionExpired = { onSessionExpired(session) }
+        )
+        return
+    }
+
     BackHandler(onBack = onBack)
     LaunchedEffect(loader, repository.id, refreshVersion) {
         loading = true
@@ -155,6 +168,7 @@ internal fun GitHubRepositoryDetailScreen(
                             DetailValue("Forks", current.detail.forks?.toString())
                             DetailValue("Issues + PRs abertas", current.detail.openIssuesAndPullRequests?.toString())
                             DetailValue("Último push", current.detail.pushedAt?.let(::formatPushTime))
+                            DetailValue("Saúde", repositoryHealth(current.detail.pushedAt, current.detail.archived).summary)
                         }
                     }
                     Row(
@@ -173,6 +187,9 @@ internal fun GitHubRepositoryDetailScreen(
                         ) {
                             Text("Nova issue")
                         }
+                    }
+                    Button(onClick = { releasesOpen = true }, modifier = Modifier.fillMaxWidth()) {
+                        Text("Releases e APKs")
                     }
                     when (val readme = current.readme) {
                         is GitHubReadmeResult.Found -> Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {

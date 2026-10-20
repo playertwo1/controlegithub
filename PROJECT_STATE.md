@@ -1,15 +1,21 @@
 # Estado do projeto
 
+## C21.1 em andamento — Releases e saúde dos repositórios — 2026-10-20
+
+- Senha do keystore e caminhos locais removidos deste arquivo (continuam no histórico do Git; recomenda-se rotacionar).
+- Implementado: tela "Releases e APKs" no detalhe do repositório (lista paginada, selos Mais recente/Pré-release/Rascunho, assets com tamanho e downloads, APKs destacados, "Baixar" via navegador) e saúde dos repositórios (dias sem push e status) na lista e no detalhe.
+- Testes novos: `GitHubReleasesTest`, `RepositoryHealthTest`.
+- Verificação: `assembleDebug testDebugUnitTest lintDebug` e `connectedDebugAndroidTest` **NOT_RUN** (ambiente sem Android SDK). Pendente: cache offline das releases.
+
 ## Geração de Secrets de Produção e Compilação da Release Oficial v1.0.0 — 2026-10-18
 
 Conforme diretrizes operacionais de lançamento e governança de chaves, foram geradas e provisionadas as 4 secrets de produção para assinatura oficial do binário `app-release.apk`:
 - **Geração do Keystore de Produção:**
   - Keystore RSA 2048-bit (`controlegithub-release.jks`) gerado via `keytool` com certificado autoassinado de 10.000 dias em nome de `CN=ControleGitHub, OU=Mobile, O=PlayerTwo, L=Sao Paulo, ST=SP, C=BR`.
-  - Senha configurada: `caiopano` para a chave e para o chaveiro.
+  - Senha: definida pelo responsável e guardada fora do repositório (não registrar aqui).
   - Alias configurado: `controlegithub`.
 - **Armazenamento Seguro Fora do Git:**
-  - **Cópia Local Primária:** `C:\Users\notefael\secrets\` contendo `controlegithub-release.jks`, `secrets.env`, `secrets.properties`, `secrets.json` e `README.md`.
-  - **Cópia de Backup na Nuvem:** `C:\Users\notefael\Google Drive\secrets\` contendo réplicas integrais de todos os arquivos de configuração e keystore.
+  - **Armazenamento:** keystore e secrets guardados fora do Git, em local privado do responsável.
   - Conformidade com `.gitignore`: nenhuma chave (`*.jks`, `*.keystore`) ou secret está presente no repositório Git.
 - **Compilação e Assinatura Oficial:**
   - Execução limpa de `./gradlew clean packageRelease assembleRelease` com propriedades de release apontando para `controlegithub-release.jks`.

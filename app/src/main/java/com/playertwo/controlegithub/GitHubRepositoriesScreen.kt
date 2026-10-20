@@ -505,6 +505,12 @@ private fun GitHubRepositoryCard(
                 }
                 Text("  ·  ★ ${repository.stars}", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
             }
+            Text(
+                repository.health.summary,
+                color = repository.health.status.color(),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium
+            )
             repository.description?.takeIf(String::isNotBlank)?.let { description ->
                 Text(description, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, lineHeight = 19.sp)
             }
