@@ -1,5 +1,11 @@
 # Estado do projeto
 
+## C24.1 — Navegador de código (DONE, 2026-10-22)
+
+- Botão Código no cabeçalho do detalhe. Pastas, breadcrumb, texto com número de linha e destaque local. Markdown usa o componente de C22.1. Binário ou arquivo maior que 1 MB mostra aviso, sem token no link.
+- `testDebugUnitTest lintDebug connectedDebugAndroidTest` **PASS**: 193/193 JVM e 210/210 no `Medium_Phone`, Android 17/API 37. Uma tentativa anterior da suíte falhou por layout e um aborto `SlotTable`; o teste isolado passou e a suíte seguinte passou. Sem correção especulativa.
+- Auditoria: ESCALATE pelo lint antigo, depois **PASS** com lint refeito (0 erros). Evidência em `docs/evidence/C24.1.md`. C21.3 continua **NOT_RUN**.
+
 ## C23.1 — Editor Markdown com prévia (DONE, 2026-10-22)
 
 - Editor nos corpos de nova issue, edição de issue, comentário de issue e comentário de pull request. Barra de formatação, abas Escrever/Prévia pelo mesmo componente de C22.1, rascunho local por conta e item, e sugestão de `@` com colaboradores ou participantes já carregados. Sem usuários fictícios e sem `POST /markdown`.

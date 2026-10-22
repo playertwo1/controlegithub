@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -100,6 +101,22 @@ internal fun GitHubRepositoryDetailScreen(
     }
 
     var releasesOpen by remember(repository.id, session.accessToken) { mutableStateOf(false) }
+    var codeOpen by remember(repository.id, session.accessToken) { mutableStateOf(false) }
+    var codeBranch by remember(repository.id, session.accessToken) { mutableStateOf<String?>(null) }
+    if (codeOpen) {
+        GitHubCodeBrowserScreen(
+            modifier = modifier,
+            client = client,
+            accessToken = session.accessToken,
+            owner = repository.owner,
+            name = repository.name,
+            defaultBranch = codeBranch,
+            isOffline = isOffline,
+            onBack = { codeOpen = false },
+            onSessionExpired = { onSessionExpired(session) }
+        )
+        return
+    }
     if (releasesOpen) {
         GitHubReleasesScreen(
             modifier = modifier,
@@ -141,6 +158,16 @@ internal fun GitHubRepositoryDetailScreen(
                 Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Voltar aos repositórios")
             }
             Spacer(Modifier.weight(1f))
+            TextButton(
+                onClick = {
+                    codeBranch = (result as? GitHubRepositoryDetailResult.Loaded)?.detail?.defaultBranch
+                    codeOpen = true
+                },
+                enabled = result is GitHubRepositoryDetailResult.Loaded,
+                modifier = Modifier.testTag("code_browser_button")
+            ) {
+                Text("Código")
+            }
             IconButton(onClick = onAppearance) {
                 Icon(Icons.Outlined.Settings, contentDescription = "Configurações de aparência")
             }
