@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuites tests="2" failures="0" errors="0" skipped="0" time="10.001" timestamp="2026-10-22T20:17:46" hostname="localhost">
+  <testsuite name="com.playertwo.controlegithub.MarkdownEditorUiTest" tests="2" failures="0" errors="0" skipped="0" time="8.577" timestamp="2026-10-22T20:17:46" hostname="localhost">
+    <properties>
+      <property name="device" value="Medium_Phone(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="previewRendersWithTheReadingComponent" classname="com.playertwo.controlegithub.MarkdownEditorUiTest" time="5.669" />
+    <testcase name="draftRestoresAfterLeavingTheEditor" classname="com.playertwo.controlegithub.MarkdownEditorUiTest" time="2.908" />
+  </testsuite>
+</testsuites>

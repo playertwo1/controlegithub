@@ -1,5 +1,11 @@
 # Estado do projeto
 
+## C23.1 — Editor Markdown com prévia (DONE, 2026-10-22)
+
+- Editor nos corpos de nova issue, edição de issue, comentário de issue e comentário de pull request. Barra de formatação, abas Escrever/Prévia pelo mesmo componente de C22.1, rascunho local por conta e item, e sugestão de `@` com colaboradores ou participantes já carregados. Sem usuários fictícios e sem `POST /markdown`.
+- `assembleDebug testDebugUnitTest lintDebug` **PASS** (188/188 JVM). `MarkdownEditorUiTest` **PASS** (2/2) em `Medium_Phone`, Android 17/API 37. A suíte conectada integral ficou **NOT_RUN**: não houve rota nova. C21.3 continua **NOT_RUN**.
+- Duas auditorias independentes **FAIL** (lista/citação só na primeira linha; cursor no início de texto que começa com quebra de linha). As correções foram retestadas. A terceira auditoria foi **PASS, sem achados materiais**. Evidência em `docs/evidence/C23.1.md`.
+
 ## C21.1 concluída — 2026-10-20
 
 - Senha do keystore e caminhos locais removidos deste arquivo (continuam no histórico do Git; recomenda-se rotacionar).

@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
             val favoriteOperations = remember { Mutex() }
             val apiClient = remember(context) { GitHubHttpClient() }
             val cacheStore = remember(context) { SQLiteGitHubCacheStore(context) }
+            val draftStore = remember(context) { DataStoreMarkdownDraftStore(context) }
             val sessions = remember(context) {
                 GitHubSessionManager(
                     SecureSessionStore(context),
@@ -100,6 +101,7 @@ class MainActivity : ComponentActivity() {
                 onDispose {}
             }
             ControleTheme(themeMode) {
+                CompositionLocalProvider(LocalMarkdownDraftStore provides draftStore) {
                 ControleApp(
                     themeMode = themeMode,
                     preferenceError = preferenceError,
@@ -157,6 +159,7 @@ class MainActivity : ComponentActivity() {
                                 val login = expired.user.login
                                 withContext(Dispatchers.IO) {
                                     try { cacheStore.clear(login) } catch (_: Exception) {}
+                                    try { draftStore.clearAccount(login) } catch (_: Exception) {}
                                 }
                                 try {
                                     sessions.logout()
@@ -178,6 +181,7 @@ class MainActivity : ComponentActivity() {
                             if (login != null) {
                                 withContext(Dispatchers.IO) {
                                     try { cacheStore.clear(login) } catch (_: Exception) {}
+                                    try { draftStore.clearAccount(login) } catch (_: Exception) {}
                                 }
                             }
                             if (login == null) {
@@ -222,6 +226,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 )
+                }
             }
         }
     }

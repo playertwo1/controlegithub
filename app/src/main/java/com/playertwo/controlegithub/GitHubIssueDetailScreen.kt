@@ -93,6 +93,27 @@ internal fun GitHubIssueDetailScreen(
     var editSubmitting by remember { mutableStateOf(false) }
     var editError by remember { mutableStateOf<String?>(null) }
     var editTitleError by remember { mutableStateOf<String?>(null) }
+    val drafts = LocalMarkdownDraftStore.current
+    val commentDraftKey = markdownDraftKey(session.user.login, issue.repository, "issue-${issue.number}-comment")
+    val editDraftKey = markdownDraftKey(session.user.login, issue.repository, "issue-${issue.number}-edit")
+    val mentionParticipants = buildList {
+        issue.author?.let(::add)
+        addAll(issue.assignees)
+        addAll(comments.mapNotNull(GitHubIssueComment::author))
+        (detail as? GitHubIssueDetailResult.Loaded)?.detail?.issue?.let { loaded ->
+            loaded.author?.let(::add)
+            addAll(loaded.assignees)
+        }
+    }
+    val mentions = rememberMentionLogins(
+        client = client,
+        accessToken = session.accessToken,
+        accountLogin = session.user.login,
+        repository = issue.repository,
+        participants = mentionParticipants,
+        enabled = !isOffline,
+        onUnauthorized = { onSessionExpired(session) }
+    )
 
     var stateChanging by remember { mutableStateOf(false) }
     var stateChangeError by remember { mutableStateOf<String?>(null) }
@@ -189,14 +210,15 @@ internal fun GitHubIssueDetailScreen(
                         enabled = !editSubmitting,
                         modifier = Modifier.fillMaxWidth().testTag("issue_edit_title_input")
                     )
-                    OutlinedTextField(
+                    MarkdownEditor(
                         value = editBody,
                         onValueChange = { editBody = it },
-                        label = { Text("Descrição (opcional)") },
-                        minLines = 4,
-                        maxLines = 10,
+                        label = "Descrição (opcional)",
+                        fieldTag = "issue_edit_body_input",
                         enabled = !editSubmitting,
-                        modifier = Modifier.fillMaxWidth().testTag("issue_edit_body_input")
+                        draftKey = editDraftKey,
+                        mentionLogins = mentions.logins,
+                        mentionsLoading = mentions.loading
                     )
                     OutlinedTextField(
                         value = editLabels,
@@ -264,6 +286,7 @@ internal fun GitHubIssueDetailScreen(
                                     }
                                     when (result) {
                                         is EditIssueResult.Success -> {
+                                            drafts?.delete(editDraftKey)
                                             detail = GitHubIssueDetailResult.Loaded(result.detail)
                                             editingIssue = false
                                             editSubmitting = false
@@ -459,20 +482,22 @@ internal fun GitHubIssueDetailScreen(
                     }
                 } else {
                     Text("Novo comentário", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
-                    OutlinedTextField(
+                    MarkdownEditor(
                         value = newCommentText,
                         onValueChange = {
                             newCommentText = it
                             if (commentFieldError != null && it.isNotBlank()) commentFieldError = null
                         },
-                        label = { Text("Escreva um comentário…") },
-                        placeholder = { Text("Deixe sua resposta ou atualização") },
+                        label = "Escreva um comentário…",
+                        placeholder = "Deixe sua resposta ou atualização",
+                        fieldTag = "issue_comment_input",
                         isError = commentFieldError != null,
-                        supportingText = commentFieldError?.let { error -> { Text(error, color = MaterialTheme.colorScheme.error) } },
+                        supportingText = commentFieldError,
                         enabled = !commentSubmitting,
                         minLines = 3,
-                        maxLines = 8,
-                        modifier = Modifier.fillMaxWidth().testTag("issue_comment_input")
+                        draftKey = commentDraftKey,
+                        mentionLogins = mentions.logins,
+                        mentionsLoading = mentions.loading
                     )
                     if (commentError != null) {
                         Surface(
@@ -514,6 +539,7 @@ internal fun GitHubIssueDetailScreen(
                                     }
                                     when (result) {
                                         is CreateIssueCommentResult.Success -> {
+                                            drafts?.delete(commentDraftKey)
                                             comments = comments + result.comment
                                             newCommentText = ""
                                             commentSubmitting = false

@@ -326,6 +326,21 @@ internal fun GitHubPullRequestDetailScreen(
     var commentSubmitting by remember { mutableStateOf(false) }
     var commentError by remember { mutableStateOf<String?>(null) }
     var commentFieldError by remember { mutableStateOf<String?>(null) }
+    val drafts = LocalMarkdownDraftStore.current
+    val commentDraftKey = markdownDraftKey(session.user.login, pullRequest.repository, "pr-${pullRequest.number}-comment")
+    val mentionParticipants = buildList {
+        pullRequest.author?.let(::add)
+        addAll(comments.mapNotNull(GitHubPullRequestComment::author))
+    }
+    val mentions = rememberMentionLogins(
+        client = client,
+        accessToken = session.accessToken,
+        accountLogin = session.user.login,
+        repository = pullRequest.repository,
+        participants = mentionParticipants,
+        enabled = !isOffline,
+        onUnauthorized = { onSessionExpired(session) }
+    )
     var reviews by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(emptyList<GitHubPullRequestReview>()) }
     var reviewsLoaded by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
     var hasMoreReviews by remember(pullRequest.identity, session.accessToken, refreshVersion) { mutableStateOf(false) }
@@ -584,20 +599,22 @@ internal fun GitHubPullRequestDetailScreen(
                     }
                 } else {
                     Text("Novo comentário", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
-                    OutlinedTextField(
+                    MarkdownEditor(
                         value = newCommentText,
                         onValueChange = {
                             newCommentText = it
                             if (commentFieldError != null && it.isNotBlank()) commentFieldError = null
                         },
-                        label = { Text("Escreva um comentário…") },
-                        placeholder = { Text("Deixe sua resposta ou atualização") },
+                        label = "Escreva um comentário…",
+                        placeholder = "Deixe sua resposta ou atualização",
+                        fieldTag = "pr_comment_input",
                         isError = commentFieldError != null,
-                        supportingText = commentFieldError?.let { error -> { Text(error, color = MaterialTheme.colorScheme.error) } },
+                        supportingText = commentFieldError,
                         enabled = !commentSubmitting,
                         minLines = 3,
-                        maxLines = 8,
-                        modifier = Modifier.fillMaxWidth().testTag("pr_comment_input")
+                        draftKey = commentDraftKey,
+                        mentionLogins = mentions.logins,
+                        mentionsLoading = mentions.loading
                     )
                     if (commentError != null) {
                         Surface(
@@ -643,6 +660,7 @@ internal fun GitHubPullRequestDetailScreen(
                                     }
                                     when (result) {
                                         is CreatePullRequestCommentResult.Success -> {
+                                            drafts?.delete(commentDraftKey)
                                             comments = comments + result.comment
                                             newCommentText = ""
                                             commentSubmitting = false

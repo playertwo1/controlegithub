@@ -87,6 +87,7 @@ internal fun GitHubRepositoryDetailScreen(
             client = client,
             accessToken = session.accessToken,
             repositoryFullName = repository.fullName,
+            accountLogin = session.user.login,
             isOffline = isOffline,
             onIssueCreated = {
                 createIssueOpen = false

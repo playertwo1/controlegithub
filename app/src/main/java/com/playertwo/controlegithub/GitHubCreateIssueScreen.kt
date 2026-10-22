@@ -48,6 +48,7 @@ internal fun GitHubCreateIssueScreen(
     client: GitHubHttpClient,
     accessToken: String,
     repositoryFullName: String,
+    accountLogin: String? = null,
     isOffline: Boolean = false,
     onIssueCreated: (GitHubIssue) -> Unit,
     onCancel: () -> Unit,
@@ -59,6 +60,17 @@ internal fun GitHubCreateIssueScreen(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var titleError by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
+    val drafts = LocalMarkdownDraftStore.current
+    val draftKey = accountLogin?.let { markdownDraftKey(it, repositoryFullName, "issue-new") }
+    val mentions = rememberMentionLogins(
+        client = client,
+        accessToken = accessToken,
+        accountLogin = accountLogin.orEmpty(),
+        repository = repositoryFullName,
+        participants = emptyList(),
+        enabled = !isOffline && !accountLogin.isNullOrBlank(),
+        onUnauthorized = onSessionExpired
+    )
 
     BackHandler(enabled = !submitting, onBack = onCancel)
 
@@ -125,17 +137,17 @@ internal fun GitHubCreateIssueScreen(
                 .testTag("create_issue_title_input")
         )
 
-        OutlinedTextField(
+        MarkdownEditor(
             value = body,
             onValueChange = { body = it },
-            label = { Text("Descrição (opcional)") },
-            placeholder = { Text("Descreva contexto, passos para reproduzir ou detalhes adicionais") },
+            label = "Descrição (opcional)",
+            placeholder = "Descreva contexto, passos para reproduzir ou detalhes adicionais",
+            fieldTag = "create_issue_body_input",
             minLines = 5,
-            maxLines = 10,
             enabled = !submitting && !isOffline,
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag("create_issue_body_input")
+            draftKey = draftKey,
+            mentionLogins = mentions.logins,
+            mentionsLoading = mentions.loading
         )
 
         if (errorMessage != null) {
@@ -194,6 +206,7 @@ internal fun GitHubCreateIssueScreen(
 
                         when (result) {
                             is CreateIssueResult.Success -> {
+                                draftKey?.let { drafts?.delete(it) }
                                 submitting = false
                                 onIssueCreated(result.issue)
                             }
