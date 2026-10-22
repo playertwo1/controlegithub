@@ -1,0 +1,118 @@
+10-21 20:56:52.767  1151  1283 I TestRunner: started: filesPagerEnforcesTheThirtyPageAndThreeThousandFileHttpCap(com.playertwo.controlegithub.GitHubPullRequestMappingTest)
+10-21 20:56:52.769  3417  3417 E libnfc_nci: Timeout waiting for NFC AIDL service (future).
+10-21 20:56:52.769  3417  3417 I libnfc_nci: NfcAdaptation::InitializeHalDeviceContext: Failed to retrieve the NFC AIDL!
+10-21 20:56:52.769  3417  3417 E libnfc_nci: Exit current process to recover.
+10-21 20:56:52.778   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.779   719  1374 V GrammaticalInflectionUtils: AttributionSource: android.content.AttributionSource@aa231c5d does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+10-21 20:56:52.787   475   475 D Zygote  : Forked child process 3450
+10-21 20:56:52.789   719   764 I libprocessgroup: Removed cgroup /sys/fs/cgroup/system/uid_1027/pid_3417
+10-21 20:56:52.790   475   475 I Zygote  : Process 3417 exited cleanly (0)
+10-21 20:56:52.791   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.791  3450  3450 I libprocessgroup: Created cgroup /sys/fs/cgroup/system/uid_1027/pid_3450
+10-21 20:56:52.794   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.799   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.806   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.808  3450  3450 I Zygote  : Process 3450 created for com.google.android.nfc
+10-21 20:56:52.808  3450  3450 I gle.android.nfc: Using generational CollectorTypeCMC GC.
+10-21 20:56:52.809  3450  3450 W gle.android.nfc: Unexpected CPU variant for x86: x86_64.
+10-21 20:56:52.809  3450  3450 W gle.android.nfc: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, alderlake, pantherlake, default
+10-21 20:56:52.811   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.812   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.818   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.819  3450  3450 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+10-21 20:56:52.823   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.827   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.830  3450  3450 D CompatChangeReporter: Compat change id reported: 333566037; UID 1027; state: ENABLED
+10-21 20:56:52.833   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.840  3450  3450 D nativeloader: Configuring clns-shared-9 for other apk /apex/com.android.nfcservices/priv-app/NfcNciApexGoogle@CP41.260828.004.A7/NfcNciApexGoogle.apk. target_sdk_version=37, uses_libraries=, library_path=/apex/com.android.nfcservices/priv-app/NfcNciApexGoogle@CP41.260828.004.A7/lib/x86_64:/system/lib64:/system_ext/lib64, permitted_path=/data:/mnt/expand:/data/user_de/0/com.google.android.nfc:/apex/com.android.nfcservices/priv-app/NfcNciApexGoogle@CP41.260828.004.A7:/system/lib64:/system_ext/lib64
+10-21 20:56:52.841  3450  3450 D nativeloader: InitApexLibraries:
+10-21 20:56:52.841  3450  3450 D nativeloader:   com_android_adservices: libhpke_jni.so:libtflite_support_classifiers_native.so
+10-21 20:56:52.841  3450  3450 D nativeloader:   com_android_appsearch: libappsearchservice.so:libicing_anywhere.so
+10-21 20:56:52.841  3450  3450 D nativeloader:   com_android_art: libartservice.so
+10-21 20:56:52.841  3450  3450 D nativeloader:   com_android_bt: libbluetooth_jni.so
+10-21 20:56:52.841  3450  3450 D nativeloader:   com_android_conscrypt: libjavacrypto.so
+10-21 20:56:52.841  3450  3450 D nativeloader:   com_android_extservices: libtflite_support_classifiers_native.so
+10-21 20:56:52.841  3450  3450 D nativeloader:   com_android_mediaprovider: libpdfclient.so
+10-21 20:56:52.841  3450  3450 D nativeloader:   com_android_nfcservices: libnfc_nci_jni.so:libnfc_rust_jni.so
+10-21 20:56:52.841  3450  3450 D nativeloader:   com_android_npumanager: libnpumanager_service_jni.so
+10-21 20:56:52.841  3450  3450 D nativeloader:   com_android_ondevicepersonalization: libfcp_cpp_dep_jni.so:libfcp_hpke_jni.so
+10-21 20:56:52.841  3450  3450 D nativeloader:   com_android_os_statsd: libstats_jni.so
+10-21 20:56:52.841  3450  3450 D nativeloader:   com_android_profiling: libanomaly_detector_service_jni.so
+10-21 20:56:52.841  3450  3450 D nativeloader:   com_android_tethering: libandroid_net_connectivity_com_android_net_module_util_jni.so:libandroid_net_connectivity_com_android_net_module_util_jni_CommonConnectivityJni.so:libcrypto_httpengine.so:libframework-connectivity-jni.so:libframework-connectivity-tiramisu-jni.so:libhttpengine.so:libservice-connectivity.so:libservice
+10-21 20:56:52.843   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.851  3450  3450 V GraphicsEnvironment: Currently set values for:
+10-21 20:56:52.851  3450  3450 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+10-21 20:56:52.851  3450  3450 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+10-21 20:56:52.851  3450  3450 V GraphicsEnvironment: com.google.android.nfc is not listed in per-application setting
+10-21 20:56:52.852  3450  3450 V GraphicsEnvironment: No special selections for ANGLE, returning default driver choice
+10-21 20:56:52.853   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.854  3450  3450 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-21 20:56:52.857  3450  3450 D CompatChangeReporter: Compat change id reported: 407952621; UID 1027; state: ENABLED
+10-21 20:56:52.858  3450  3450 D CompatChangeReporter: Compat change id reported: 419020719; UID 1027; state: ENABLED
+10-21 20:56:52.859   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.860   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.868   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.873  3450  3450 I RegisteredComponentCache: generateComponentsList: New Components =>
+10-21 20:56:52.874   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.874  3450  3450 I RegisteredComponentCache: ComponentInfo: ResolveInfo{68ecb96 com.google.android.tag/com.android.apps.tag.TagViewer m=0x108000 userHandle=UserHandle{0}}, techs: android.nfc.tech.Ndef,
+10-21 20:56:52.874  3450  3450 I RegisteredComponentCache: generateComponentsList: Removed Components =>
+10-21 20:56:52.875  3450  3462 D CompatChangeReporter: Compat change id reported: 458413887; UID 1027; state: ENABLED
+10-21 20:56:52.877   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.881   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.890  3450  3463 I NfcEventLog: readListFromLogFile: No NFC events found in log file
+10-21 20:56:52.891   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.893  3450  3450 I NfcService: Starting NFC service
+10-21 20:56:52.893  3450  3450 I NativeNfcManager: Loading C NFC Support
+10-21 20:56:52.894   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.896   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.898  3450  3450 D nativeloader: Load libnfc_nci_jni.so using class loader ns clns-shared-9 (caller=/apex/com.android.nfcservices/priv-app/NfcNciApexGoogle@CP41.260828.004.A7/NfcNciApexGoogle.apk): ok
+10-21 20:56:52.898  3450  3450 I libnfc_nci: JNI_OnLoad: NFC Service: loading nci JNI
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - Parsing file '/etc/libnfc-nci.conf'
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [NFC_DEBUG_ENABLED] = 0
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [NFA_STORAGE] = "/data/nfc"
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [PRESERVE_STORAGE] = 0x01
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [POLLING_TECH_MASK] = 0x0F
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [UICC_LISTEN_TECH_MASK] = 0x07
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [NFA_MAX_EE_SUPPORTED] = 0x02
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [AID_FOR_EMPTY_SELECT] = {08:A0:00:00:01:51:00:00:00}
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [AID_MATCHING_MODE] = 0x01
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [NCI_RESET_TYPE] = 0x00
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [PRESENCE_CHECK_RETRY_COUNT] = 0
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [EUICC_MEP_MODE] = 0x03
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [NFCEE_EVENT_RF_DISCOVERY_OPTION] = 0x00
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [OPTIMIZE_ROUTING_TABLE_UPDATE] = 0x00
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [NFA_EE_ROUTE_DEBOUNCE_TIMER] = 0x01
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [KOVIO_PRESENCE_CHECK_TYPE] = 0x00
+10-21 20:56:52.898  3450  3450 I libnfc_nci: ConfigFile - [RECOVERY_OPTION] = 1
+10-21 20:56:52.900  3450  3450 I libnfc_nci: NfcAdaptation:440
+10-21 20:56:52.900  3450  3450 I libnfc_nci: NfcAdaptation::InitializeHalDeviceContext: INfc::getService()
+10-21 20:56:52.901   314   314 I hwservicemanager: getTransport: Cannot find entry android.hardware.nfc@1.2::INfc/default in either framework or device VINTF manifest.
+10-21 20:56:52.902   314   314 I hwservicemanager: getTransport: Cannot find entry android.hardware.nfc@1.1::INfc/default in either framework or device VINTF manifest.
+10-21 20:56:52.905   314   314 I hwservicemanager: getTransport: Cannot find entry android.hardware.nfc@1.0::INfc/default in either framework or device VINTF manifest.
+10-21 20:56:52.906   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.911   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.921   313  3465 W libc    : Unable to set property "ctl.interface_start" to "aidl/android.hardware.nfc.INfc/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+10-21 20:56:52.927   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.931   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.942   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.944   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.957   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.960   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.966   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.971   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.977   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.991   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:52.993   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:52.996   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:53.003   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:53.006   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:53.011   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:53.011   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:53.024   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:53.027   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:53.027   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:53.030   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:53.034   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:53.037   719   972 D TcpMetricsLogger: connect: uid=10285 netId=103 dst=[127.0.0.1]:41687 latencyMs=0 err=0
+10-21 20:56:53.044   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:56:53.053  1151  1283 I TestRunner: finished: filesPagerEnforcesTheThirtyPageAndThreeThousandFileHttpCap(com.playertwo.controlegithub.GitHubPullRequestMappingTest)

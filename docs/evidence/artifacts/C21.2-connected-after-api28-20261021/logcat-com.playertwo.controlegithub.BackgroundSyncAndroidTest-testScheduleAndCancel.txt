@@ -1,0 +1,31 @@
+10-21 20:44:33.468 25510 25547 I TestRunner: started: testScheduleAndCancel(com.playertwo.controlegithub.BackgroundSyncAndroidTest)
+10-21 20:44:33.477   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.477   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.477   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.477   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.477   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.478   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.478   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.478   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.479   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.479   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.479 25625 26024 I dspp    : BroadcastReceiverAsyncWorkTracker: Acknowledging broadcast of doty@734fc9f
+10-21 20:44:33.490 26021 26021 I android.hardware.uwb: uwb_default_hal: UWB HAL starting up
+10-21 20:44:33.489 25625 25678 I dowb    : Lock acquired for updating phone SIMs state with update trigger: 1.
+10-21 20:44:33.491 25625 25678 I dowb    : subscriptionUtilsList subIds: [1]
+10-21 20:44:33.492 26021 26021 E android.hardware.uwb: uwb_default_hal: panicked at hardware/interfaces/uwb/aidl/default/src/uwb_chip.rs:56:14:
+10-21 20:44:33.492 26021 26021 E android.hardware.uwb: failed to open the serial device: Os { code: 6, kind: Uncategorized, message: "No such device or address" }
+10-21 20:44:33.492 26021 26021 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 26021 (android.hardwar), pid 26021 (android.hardwar)
+10-21 20:44:33.494   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.494   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.494   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.494   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.494   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.494   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.494   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.495   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.495   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.496   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.511   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.511   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.511 25510 25547 I TestRunner: finished: testScheduleAndCancel(com.playertwo.controlegithub.BackgroundSyncAndroidTest)

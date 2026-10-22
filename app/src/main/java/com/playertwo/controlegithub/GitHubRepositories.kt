@@ -6,6 +6,8 @@ import java.io.IOException
 import java.time.Instant
 import java.time.format.DateTimeParseException
 
+internal const val UNRESOLVED_GITHUB_REPOSITORY_ID = 0L
+
 internal data class GitHubRepository(
     val id: Long,
     val name: String,

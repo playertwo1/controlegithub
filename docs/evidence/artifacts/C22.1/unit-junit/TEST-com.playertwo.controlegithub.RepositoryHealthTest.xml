@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.playertwo.controlegithub.RepositoryHealthTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-22T12:06:06.458Z" hostname="BOOKFAEL" time="0.007">
+  <properties/>
+  <testcase name="archivedAndUnknownAreExplicit" classname="com.playertwo.controlegithub.RepositoryHealthTest" time="0.003"/>
+  <testcase name="repositoryListParsesHealthFields" classname="com.playertwo.controlegithub.RepositoryHealthTest" time="0.003"/>
+  <testcase name="summaryShowsDays" classname="com.playertwo.controlegithub.RepositoryHealthTest" time="0.001"/>
+  <testcase name="classifiesByDaysWithoutPush" classname="com.playertwo.controlegithub.RepositoryHealthTest" time="0.0"/>
+  <testcase name="futurePushIsClampedToZero" classname="com.playertwo.controlegithub.RepositoryHealthTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

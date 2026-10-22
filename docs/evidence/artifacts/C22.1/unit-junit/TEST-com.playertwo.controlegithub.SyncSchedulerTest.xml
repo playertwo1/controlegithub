@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.playertwo.controlegithub.SyncSchedulerTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-22T12:06:06.594Z" hostname="BOOKFAEL" time="0.003">
+  <properties/>
+  <testcase name="resolveRequiredNetworkType_mapsCorrectly" classname="com.playertwo.controlegithub.SyncSchedulerTest" time="0.002"/>
+  <testcase name="calculatePeriodMillis_enforcesMinimum15Minutes" classname="com.playertwo.controlegithub.SyncSchedulerTest" time="0.001"/>
+  <testcase name="calculatePeriodMillis_calculatesCorrectlyForLargerIntervals" classname="com.playertwo.controlegithub.SyncSchedulerTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -120,7 +120,8 @@ internal fun GitHubIssuesScreen(
     LaunchedEffect(session?.user?.login, activeKanbanStore) {
         val login = session?.user?.login
         if (login != null) {
-            kanbanMapping = withContext(Dispatchers.IO) { activeKanbanStore.load(login) }
+            val mapping = withContext(Dispatchers.IO) { activeKanbanStore.load(login) }
+            withContext(Dispatchers.Main.immediate) { kanbanMapping = mapping }
         } else {
             kanbanMapping = emptyMap()
         }
@@ -133,33 +134,36 @@ internal fun GitHubIssuesScreen(
         errorMessage = null
         retryAt = null
         try {
-            when (val result = withContext(Dispatchers.IO) { activePager.loadNext() }) {
-                is GitHubPageResult.Loaded -> {
-                    issues = result.items
-                    hasNext = result.hasNext
-                    loaded = true
-                    isOfflineCache = result.isOfflineCache
-                    cachedAtMillis = result.cachedAtMillis
-                }
-                is GitHubPageResult.RateLimited -> {
-                    if (result.items.isNotEmpty() || issues.isEmpty()) {
+            val result = withContext(Dispatchers.IO) { activePager.loadNext() }
+            withContext(Dispatchers.Main.immediate) {
+                when (result) {
+                    is GitHubPageResult.Loaded -> {
                         issues = result.items
+                        hasNext = result.hasNext
+                        loaded = true
+                        isOfflineCache = result.isOfflineCache
+                        cachedAtMillis = result.cachedAtMillis
                     }
-                    retryAt = result.retryAtEpochMillis
-                    errorMessage = GitHubHttpError.RATE_LIMITED.userMessage
-                }
-                is GitHubPageResult.Failed -> {
-                    if (result.items.isNotEmpty() || issues.isEmpty()) {
-                        issues = result.items
+                    is GitHubPageResult.RateLimited -> {
+                        if (result.items.isNotEmpty() || issues.isEmpty()) {
+                            issues = result.items
+                        }
+                        retryAt = result.retryAtEpochMillis
+                        errorMessage = GitHubHttpError.RATE_LIMITED.userMessage
                     }
-                    errorMessage = result.message
-                    if (result.error == GitHubHttpError.UNAUTHORIZED && session != null) {
-                        onSessionExpired(session)
+                    is GitHubPageResult.Failed -> {
+                        if (result.items.isNotEmpty() || issues.isEmpty()) {
+                            issues = result.items
+                        }
+                        errorMessage = result.message
+                        if (result.error == GitHubHttpError.UNAUTHORIZED && session != null) {
+                            onSessionExpired(session)
+                        }
                     }
                 }
             }
         } finally {
-            loading = false
+            withContext(Dispatchers.Main.immediate) { loading = false }
         }
     }
 

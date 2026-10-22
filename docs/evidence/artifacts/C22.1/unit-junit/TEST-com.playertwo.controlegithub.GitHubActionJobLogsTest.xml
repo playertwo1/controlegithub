@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.playertwo.controlegithub.GitHubActionJobLogsTest" tests="17" skipped="0" failures="0" errors="0" timestamp="2026-10-22T12:05:50.280Z" hostname="BOOKFAEL" time="2.683">
+  <properties/>
+  <testcase name="cancellationDuringTemporaryDownloadDiscardsTheLateResult" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.02"/>
+  <testcase name="rejectsChunkedBodyMissingTheEndOfTrailerSection" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.002"/>
+  <testcase name="socketPublishedAfterCancellationIsClosedImmediately" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.001"/>
+  <testcase name="readsBoundedHttpBodiesAndRejectsUnsupportedRedirectResponses" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.001"/>
+  <testcase name="rejectsPrivateOrLocalRedirectAddressesBeforeOpeningConnection" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.011"/>
+  <testcase name="registrationAfterCancellationCancelsTheApiCallInsteadOfStartingIt" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.0"/>
+  <testcase name="downloadsTextThroughTemporaryRedirectWithoutForwardingToken" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.01"/>
+  <testcase name="cancellationDuringDnsResolutionCancelsTheQueryAndReturnsPromptly" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.002"/>
+  <testcase name="tlsParametersRequireHttpsHostnameVerificationAndDnsSni" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.015"/>
+  <testcase name="opensTcpOnlyForAnAddressFromTheValidatedDnsSet" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.202"/>
+  <testcase name="validatesRedirectUriShapeAndPort" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.003"/>
+  <testcase name="truncationTrimsOnlyAValidIncompleteUtf8CodePoint" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.004"/>
+  <testcase name="pinnedDownloaderCompletesVerifiedTlsAndParsesTheHttpLogResponse" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="2.373"/>
+  <testcase name="successfulHttpDownloadUsesSignedPathWithoutAuthorizationAndParsesTheLog" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.007"/>
+  <testcase name="splitsRenderedLogIntoBoundedChunksWithoutBreakingSurrogatePairs" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.003"/>
+  <testcase name="acceptsOnlyPlainUtf8AndReportsEmptyOrTruncatedBodiesExplicitly" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.003"/>
+  <testcase name="legacyDnsFallbackKeepsBlockedSystemLookupsBounded" classname="com.playertwo.controlegithub.GitHubActionJobLogsTest" time="0.024"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

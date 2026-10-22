@@ -1,0 +1,82 @@
+# proto-message: google.testing.platform.proto.api.core.TestSuiteResult
+# 2026-10-21T20:26:22.701091Z:
+test_suite_meta_data {
+  scheduled_test_case_count: 1
+  device {
+    id: "emulator-5556"
+    friendly_name: "primary"
+  }
+}
+test_status: FAILED
+test_result {
+  test_case {
+    test_class: "GitHubRepositoryDetailScreenTest"
+    test_package: "com.playertwo.controlegithub"
+    test_method: "cancellingSafDestinationPickerDoesNotQueueDownload"
+    start_time {
+      seconds: 1792614341
+      nanos: 222000000
+    }
+    end_time {
+      seconds: 1792614357
+      nanos: 827000000
+    }
+    device {
+      id: "emulator-5556"
+      friendly_name: "primary"
+    }
+  }
+  test_status: FAILED
+  error {
+    error_message: "androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 10000 ms\nat androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)\nat androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)\nat com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest.openDetail(GitHubRepositoryDetailScreenTest.kt:610)\nat com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest.openDetail$default(GitHubRepositoryDetailScreenTest.kt:609)\nat com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest.cancellingSafDestinationPickerDoesNotQueueDownload(GitHubRepositoryDetailScreenTest.kt:143)\n"
+    error_type: "androidx.compose.ui.test.ComposeTimeoutException"
+    stack_trace: "androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 10000 ms\nat androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)\nat androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)\nat com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest.openDetail(GitHubRepositoryDetailScreenTest.kt:610)\nat com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest.openDetail$default(GitHubRepositoryDetailScreenTest.kt:609)\nat com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest.cancellingSafDestinationPickerDoesNotQueueDownload(GitHubRepositoryDetailScreenTest.kt:143)\n"
+  }
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "C:\\Users\\notefael\\projetos\\controlegithub\\app\\build\\outputs\\androidTest-results\\connected\\debug\\C21_2_API28(AVD) - 9\\logcat-com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest-cancellingSafDestinationPickerDoesNotQueueDownload.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "C:\\Users\\notefael\\projetos\\controlegithub\\app\\build\\outputs\\androidTest-results\\connected\\debug\\C21_2_API28(AVD) - 9\\device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "C:\\Users\\notefael\\projetos\\controlegithub\\app\\build\\outputs\\androidTest-results\\connected\\debug\\C21_2_API28(AVD) - 9\\meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "C:\\Users\\notefael\\projetos\\controlegithub\\app\\build\\outputs\\androidTest-results\\connected\\debug\\C21_2_API28(AVD) - 9\\cpuinfo"
+    }
+  }
+}
+output_artifact {
+  label {
+    label: "test-results.log"
+    namespace: "com.google.testing.platform.runtime.android.driver.AndroidInstrumentationDriver"
+  }
+  source_path {
+    path: "C:\\Users\\notefael\\projetos\\controlegithub\\app\\build\\outputs\\androidTest-results\\connected\\debug\\C21_2_API28(AVD) - 9\\testlog\\test-results.log"
+  }
+  type: TEST_DATA
+  mime_type: "text/plain"
+}

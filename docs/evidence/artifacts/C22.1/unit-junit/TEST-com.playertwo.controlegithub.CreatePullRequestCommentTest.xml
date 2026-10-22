@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.playertwo.controlegithub.CreatePullRequestCommentTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-22T12:05:49.896Z" hostname="BOOKFAEL" time="0.049">
+  <properties/>
+  <testcase name="createPullRequestCommentEmptyBodyReturnsEmptyBodyWithoutNetworkCall" classname="com.playertwo.controlegithub.CreatePullRequestCommentTest" time="0.011"/>
+  <testcase name="createPullRequestCommentNotFoundReturnsFailure" classname="com.playertwo.controlegithub.CreatePullRequestCommentTest" time="0.013"/>
+  <testcase name="createPullRequestCommentInvalidRepoOrNumberReturnsFailureWithoutNetworkCall" classname="com.playertwo.controlegithub.CreatePullRequestCommentTest" time="0.006"/>
+  <testcase name="createPullRequestCommentForbiddenReturnsFailureAndSendsPost" classname="com.playertwo.controlegithub.CreatePullRequestCommentTest" time="0.007"/>
+  <testcase name="createPullRequestCommentOfflineReturnsOfflineWithoutNetworkCall" classname="com.playertwo.controlegithub.CreatePullRequestCommentTest" time="0.01"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

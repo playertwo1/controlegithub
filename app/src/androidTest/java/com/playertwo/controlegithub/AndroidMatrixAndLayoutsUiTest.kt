@@ -36,7 +36,8 @@ class AndroidMatrixAndLayoutsUiTest {
         // Rotate to Landscape
         compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         compose.waitUntil(5_000) {
-            compose.onAllNodesWithText("Seus repositórios").fetchSemanticsNodes().isNotEmpty()
+            compose.onAllNodesWithText("Seus repositórios")
+                .fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty()
         }
         compose.onNodeWithText("Seus repositórios").assertIsDisplayed()
         compose.onNodeWithText("Repos").assertIsSelected()
@@ -49,7 +50,8 @@ class AndroidMatrixAndLayoutsUiTest {
         // Rotate back to Portrait
         compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         compose.waitUntil(5_000) {
-            compose.onAllNodesWithText("Notificações").fetchSemanticsNodes().isNotEmpty()
+            compose.onAllNodesWithText("Notificações")
+                .fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty()
         }
         compose.onNodeWithText("Notificações").assertIsDisplayed()
         compose.onNodeWithText("Avisos").assertIsSelected()
@@ -65,7 +67,8 @@ class AndroidMatrixAndLayoutsUiTest {
         // Recreate Activity (simulating process recreation / config change)
         compose.activityRule.scenario.recreate()
         compose.waitUntil(5_000) {
-            compose.onAllNodesWithText("Seu trabalho").fetchSemanticsNodes().isNotEmpty()
+            compose.onAllNodesWithText("Seu trabalho")
+                .fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty()
         }
 
         // Verify state is preserved

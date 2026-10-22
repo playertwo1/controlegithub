@@ -1,16 +1,36 @@
 # Estado do projeto
 
-## C21.1 em andamento — Releases e saúde dos repositórios — 2026-10-20
+## C21.1 concluída — 2026-10-20
 
 - Senha do keystore e caminhos locais removidos deste arquivo (continuam no histórico do Git; recomenda-se rotacionar).
-- Implementado: tela "Releases e APKs" no detalhe do repositório (lista paginada, selos Mais recente/Pré-release/Rascunho, assets com tamanho e downloads, APKs destacados, "Baixar" via navegador) e saúde dos repositórios (dias sem push e status) na lista e no detalhe.
-- Filtro por saúde e ordenação (Nome, Mais parados, Push recente, Estrelas) na lista de repositórios.
-- Testes novos: `GitHubReleasesTest`, `RepositoryHealthTest`, `RepositorySortTest`.
-- Cache offline das releases ligado (`GitHubCacheStore` + selo `OfflineCacheBadge`), repassado pelo detalhe do repositório.
-- Testes corrigidos: `org.json` real como `testImplementation` (parsing falhava na JVM); testes de backlog da v1.0 limitados a C00–C20; rótulo "GitHub Actions" no `GitHubRepositoryDetailScreenTest` (desatualizado desde C12.1).
-- 2026-10-20, emulador Pixel_9 API 17: `assembleDebug testDebugUnitTest lintDebug` **PASS**. `connectedDebugAndroidTest` **FAIL**: `repositoryActionsCanShowAllRecentRuns` e `repositoryDetailOpensWorkflowRunAndJobStatusesForSelectedRepository` (execuções do fixture não aparecem na tela de Actions; defeito da v1.0, mascarado pelo rótulo errado) e o processo cai na suíte completa com `IndexOutOfBoundsException` dentro de LazyList do Compose (sem frame do app).
-- Investigação (2026-10-20): as falhas de Actions são intermitentes. Os mesmos testes passam isolados e, na mesma classe, falham testes diferentes a cada execução. O log mostra `pager.loadNext()` retornando `Loaded` em ~50 ms enquanto a tela segue em "Carregando dados do GitHub…" por 20 s, ou seja, o resultado não chega à UI. `key(pager)` no `ActionsPagedList` não resolveu (revertido). A v1.0 nunca rodou a suíte instrumentada completa (C19/C20 rodaram subconjuntos), então isso é débito anterior a C21.
-- Próxima ação: investigar a tela de Actions e o crash do LazyList; depois rodar a suíte instrumentada completa, registrar `docs/evidence/C21.1.md` e fazer a auditoria independente.
+- Implementado: Releases paginadas no detalhe, selos Mais recente/Pré-release/Rascunho, notas e assets com APK/checksum destacados, link oficial de download via navegador, cache offline e selo `OfflineCacheBadge`.
+- Saúde dos repositórios (dias sem push e status), filtro e ordenação na lista e no detalhe.
+- Corrigida a publicação de resultados Compose após IO nos pagers de Actions, Issues, Notifications e Pull Requests; as atualizações do estado agora são despachadas para `Dispatchers.Main.immediate`. Chaves estáveis por ID nos itens de Actions.
+- Testes instrumentados de Releases cobrem resposta com APK/checksum/notas, lista vazia e erro/retry sem dados de demonstração.
+- Gates finais no checkout base `67c9385` mais alterações locais: `assembleDebug testDebugUnitTest lintDebug` **PASS** (166/166 JVM); `connectedDebugAndroidTest` **PASS** (199/199, Pixel_9, Android 17 / API 37); `python scripts/check_plan.py` **PASS** (47 tarefas; nenhuma READY elegível); `git diff --check` **PASS**.
+- Um primeiro gate JVM teve falha transitória em `GitHubHttpClientTest.cancelDisconnectsInFlightRequest`; o teste isolado passou e a repetição integral terminou PASS. Durante a investigação, a suíte conectada também passou após corrigir a atualização de estado; o relatório final registra 199/199.
+- Evidência completa, relatórios e auditoria independente final **PASS, sem achados materiais** em `docs/evidence/C21.1.md`; estado canônico registrado como `DONE` em `plan/tasks.json`. O checkpoint C21 continua aberto até C21.2.
+
+## C21.2 concluída para implementação/emulador — validação física adiada (atualizado em 2026-10-22)
+
+- Implementado download foreground com `CoroutineWorker`, validação SHA-256 antes da publicação, destino MediaStore em API 29+ e seletor SAF em API 26–28, cancelamento, progresso e abertura manual do instalador.
+- Corrigida a fixture HTTP do teste SAF API 28: o build debug permite cleartext somente para `127.0.0.1` (`includeSubdomains=false`). O manifesto release foi reprocessado depois da mudança, não contém `networkSecurityConfig` nem `usesCleartextTraffic=true`; snapshot e log estão em `docs/evidence/C21.2.md`.
+- Gates do código final: `assembleDebug testDebugUnitTest lintDebug --no-configuration-cache --console=plain` **PASS**; `connectedDebugAndroidTest --no-configuration-cache --console=plain` **PASS** (204/204 no Pixel_9, API 37); `cancellingSafDestinationPickerDoesNotQueueDownload` **PASS** (1/1 no AVD API 28); os 173 testes JVM passaram na execução anterior e ficaram `UP-TO-DATE` na execução final. Relatórios e logs estão vinculados em `docs/evidence/C21.2.md`.
+- A suíte conectada teve falhas intermitentes anteriores: espera prematura de Actions, timeouts em `openDetail`, erros `IndexOutOfBoundsException: Index 4, size 4` em `MutableIntervalList` e sete falhas distribuídas em um lote. A última tentativa antes do PASS integral caiu em 133/204 durante `actionsPaginationLoadsOnlyTheNextValidatedPageAndDeduplicates`; o teste passou isoladamente 1/1 e o lote seguinte terminou 204/204. A causa da intermitência do Compose ainda não foi confirmada; nenhuma mudança de produção ou dependência foi feita para contorná-la.
+- Quatro testes focados de C21.2 passaram: divergência de hash, cancelamento enfileirado, falha antes da transferência e limpeza no logout. `completedReleaseAssetShowsManualInstallAction` validou permissão negada e diálogo/cancelamento. O AVD perdeu o serviço Android `package`; foi encerrado e reiniciado sem wipe, depois checksum e cancelamento passaram isoladamente. A rotação passou isolada e no lote após corrigir a consulta Compose durante a recriação da Activity. A repetição final também passou os testes de release e paginação. Settings e instalador real seguem sem prova.
+- Auditoria independente final do log, HTML/JUnit, hashes e estado canônico **PASS, sem achados materiais**; confirmou a falha anterior em 133/204 e o PASS final 204/204.
+- `python scripts/check_plan.py` e `git diff --check` passaram após atualizar a evidência; auditoria independente desta atualização **PASS, sem achados materiais** após regenerar e arquivar o manifesto release.
+- Evidências, relatórios HTML/JUnit e hashes estão em `docs/evidence/C21.2.md`. Aparelho físico, seleção e gravação SAF em dispositivo real API 26–28, sessão GitHub real, abertura do instalador e cota de `JobScheduler` para `dataSync` no Android 16+ permanecem `NOT_RUN`.
+- Por decisão explícita do usuário em 2026-10-22, a validação em aparelho físico foi adiada para depois do avanço do roadmap; os cenários continuam `NOT_RUN`, sem serem apresentados como PASS.
+- C21.2 está `DONE` com `docs/evidence/C21.2.md`; C21.3 foi criada como `PLANNED` para o aceite físico. O checkpoint C21 permanece aberto até C21.3 passar.
+
+## C22.1 — Markdown de leitura (em andamento, 2026-10-22)
+
+- Implementados parser CommonMark/GFM com limites, renderer Compose selecionável, fallback textual, HTML literal, imagens sem download e classificação segura de links. Links GitHub canônicos abrem detalhes internos com retorno por Back; HTTPS externo exige confirmação.
+- `assembleDebug testDebugUnitTest lintDebug` **PASS** (181/181 JVM); build e lint também **PASS**. Execuções focadas de Markdown, navegação/Back e expiração foram reportadas como aprovadas, mas os respectivos XMLs individuais não foram arquivados.
+- A suíte conectada integral do estado atual **não passou**: a primeira tentativa registrou crash em `MutableIntervalList`; a segunda perdeu ADB/UTP após 175 testes concluídos; a quinta foi interrompida no AVD API 28 após 62/205 registros e 10 falhas de UI. As tentativas terceira e quarta não executaram testes por falha/indisponibilidade do ADB e uso do AVD Pixel 9 compartilhado. O resultado antigo de 205/205 antecede o delta atual e não é gate válido.
+- Nenhuma causa do crash em `MutableIntervalList` no código do app foi confirmada; o teste isolado passou e nenhuma correção especulativa foi aplicada. Evidências por tentativa e relatórios ficam em `docs/evidence/C22.1.md` e `docs/evidence/artifacts/C22.1/`.
+- Auditoria independente final do diff e da evidência: **PASS, sem achados materiais**. C22.1 permanece `IN_PROGRESS`, com `evidence: null` em `plan/tasks.json`, até uma execução integral conectada válida. A validação física de C21.3 continua `NOT_RUN`, conforme adiamento explícito do usuário, e não é gate de C22.1.
 
 ## Geração de Secrets de Produção e Compilação da Release Oficial v1.0.0 — 2026-10-18
 

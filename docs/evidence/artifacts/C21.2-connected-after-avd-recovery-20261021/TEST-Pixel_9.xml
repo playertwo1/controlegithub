@@ -1,0 +1,520 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuites tests="204" failures="1" errors="0" skipped="0" time="287.898" timestamp="2026-10-21T19:30:40" hostname="localhost">
+  <testsuite name="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" tests="3" failures="0" errors="0" skipped="0" time="4.955" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testBottomDockSemanticsAndTouchTargets" classname="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" time="2.334" />
+    <testcase name="testKanbanAndWorkAccessibility" classname="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" time="1.399" />
+    <testcase name="testThemeSwitchingAccessibility" classname="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" time="1.222" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" tests="3" failures="1" errors="0" skipped="0" time="4.737" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testScreenRotationPreservesNavigationAndDock" classname="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" time="1.593">
+      <failure>java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
+at androidx.compose.ui.test.TestContext.getAllSemanticsNodes$ui_test_release(TestOwner.kt:87)
+at androidx.compose.ui.test.TestContext.getAllSemanticsNodes$ui_test_release$default(TestOwner.kt:81)
+at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes(SemanticsNodeInteraction.kt:256)
+at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes$default(SemanticsNodeInteraction.kt:249)
+at com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest.testScreenRotationPreservesNavigationAndDock$lambda$0(AndroidMatrixAndLayoutsUiTest.kt:39)
+at com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:434)
+at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
+at com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest.testScreenRotationPreservesNavigationAndDock(AndroidMatrixAndLayoutsUiTest.kt:38)
+</failure>
+    </testcase>
+    <testcase name="testActivityRecreationPreservesFlowAndState" classname="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" time="1.508" />
+    <testcase name="testCompactAndExpandedLayoutAdaptation" classname="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" time="1.636" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.BackgroundSyncAndroidTest" tests="6" failures="0" errors="0" skipped="0" time="0.255" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testScheduleWithPreferencesReflectsConfiguredSettings" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.107" />
+    <testcase name="testScheduleAndCancel" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.029" />
+    <testcase name="testSyncPreferencesPersistence" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.106" />
+    <testcase name="testScheduleDisabledCancelsJob" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.004" />
+    <testcase name="testBuildJobInfo_anyNetworkAndDisabled" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.004" />
+    <testcase name="testBuildJobInfo_wifiOnlyAndBatteryConstraints" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.005" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.BetaRobustnessAndroidTest" tests="3" failures="0" errors="0" skipped="0" time="0.035" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="scenario3_pullRequestDetailParsingWithNullBodyAndMinimalData" classname="com.playertwo.controlegithub.BetaRobustnessAndroidTest" time="0.003" />
+    <testcase name="scenario2_issueParsingWithMissingOptionalFieldsDoesNotCrash" classname="com.playertwo.controlegithub.BetaRobustnessAndroidTest" time="0.028" />
+    <testcase name="scenario1_repositoryParsingWithMissingOptionalFieldsDoesNotCrash" classname="com.playertwo.controlegithub.BetaRobustnessAndroidTest" time="0.004" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreateIssueAndroidTest" tests="3" failures="0" errors="0" skipped="0" time="0.011" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseCreatedIssueRejectsMissingTitleOrNumber" classname="com.playertwo.controlegithub.CreateIssueAndroidTest" time="0.004" />
+    <testcase name="parseCreatedIssueMapsFieldsCorrectly" classname="com.playertwo.controlegithub.CreateIssueAndroidTest" time="0.004" />
+    <testcase name="parseCreatedIssueHandlesMissingRepositoryByFallback" classname="com.playertwo.controlegithub.CreateIssueAndroidTest" time="0.003" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreateIssueUiTest" tests="5" failures="0" errors="0" skipped="0" time="8.899" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="createIssueOfflineModeDisablesSubmissionAndShowsBanner" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="1.032" />
+    <testcase name="createIssueAntiDoubleTapDisablesButtonDuringSubmission" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="3.073" />
+    <testcase name="createIssueFailureDisplaysErrorAndPreservesDraft" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="1.746" />
+    <testcase name="createIssueSuccessSubmitsPostAndInvokesCallback" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="1.88" />
+    <testcase name="createIssueEmptyTitleShowsValidationErrorWithoutNetworkCall" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="1.168" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest" tests="2" failures="0" errors="0" skipped="0" time="0.006" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseCreatedPullRequestCommentRejectsMissingId" classname="com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest" time="0.003" />
+    <testcase name="parseCreatedPullRequestCommentMapsFieldsCorrectly" classname="com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest" time="0.003" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" tests="5" failures="0" errors="0" skipped="0" time="14.193" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="commentAntiDoubleTapDisablesButtonDuringSubmission" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="3.68" />
+    <testcase name="commentSuccessSubmitsPostAppendsToUiAndClearsInput" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="3.58" />
+    <testcase name="mutationGuardEmptyValidation" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="2.367" />
+    <testcase name="commentFailurePreservesDraftTextAndDisplaysError" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="2.795" />
+    <testcase name="mutationGuardOfflineBlocked" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="1.771" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.DailySummaryUiTest" tests="4" failures="0" errors="0" skipped="0" time="8.375" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="dailySummaryDisplaysCachedSourceWhenOffline" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="1.799" />
+    <testcase name="dailySummaryDisplaysPartialCoverageSource" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="1.808" />
+    <testcase name="dailySummaryExportMarkdownCopiesToClipboardAndShowsFeedback" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="3.011" />
+    <testcase name="dailySummaryDisplaysPeriodTimezoneAndMetrics" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="1.757" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.EditAndCommentIssueAndroidTest" tests="2" failures="0" errors="0" skipped="0" time="0.019" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseCreatedIssueCommentRejectsMissingId" classname="com.playertwo.controlegithub.EditAndCommentIssueAndroidTest" time="0.005" />
+    <testcase name="parseCreatedIssueCommentMapsFieldsCorrectly" classname="com.playertwo.controlegithub.EditAndCommentIssueAndroidTest" time="0.014" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.EditAndCommentIssueUiTest" tests="7" failures="0" errors="0" skipped="0" time="20.22" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="commentAntiDoubleTapDisablesButtonDuringSubmission" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.886" />
+    <testcase name="commentSuccessSubmitsPostAppendsToUiAndClearsInput" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="2.935" />
+    <testcase name="editIssueSuccessSubmitsPatchAndUpdatesHeader" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="2.982" />
+    <testcase name="mutationGuardEmptyValidation" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.073" />
+    <testcase name="editIssueFailurePreservesDraftAndDisplaysError" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.237" />
+    <testcase name="commentFailurePreservesDraftTextAndDisplaysError" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="2.481" />
+    <testcase name="mutationGuardOfflineBlocked" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="1.626" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubAccountProfileMappingTest" tests="3" failures="0" errors="0" skipped="0" time="0.028" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="rejectsAnotherIdentityAndMalformedCounts" classname="com.playertwo.controlegithub.GitHubAccountProfileMappingTest" time="0.012" />
+    <testcase name="parsesAccountIdentityAndZeroCounts" classname="com.playertwo.controlegithub.GitHubAccountProfileMappingTest" time="0.007" />
+    <testcase name="absentAndNullCountsStayUnavailableAndBlankNameFallsBackToLogin" classname="com.playertwo.controlegithub.GitHubAccountProfileMappingTest" time="0.009" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubActionsMappingTest" tests="3" failures="0" errors="0" skipped="0" time="0.026" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="jobsCannotBeAttributedToAnotherWorkflowRun" classname="com.playertwo.controlegithub.GitHubActionsMappingTest" time="0.008" />
+    <testcase name="incompleteAndUnknownStatesNeverBecomeSuccess" classname="com.playertwo.controlegithub.GitHubActionsMappingTest" time="0.009" />
+    <testcase name="selectedWorkflowRunUsesTheFilteredEndpointAndAcceptsItsRun" classname="com.playertwo.controlegithub.GitHubActionsMappingTest" time="0.009" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubHomeScreenTest" tests="8" failures="0" errors="0" skipped="0" time="17.734" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="authenticatedWorkAndNoticesShowUnintegratedState" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="1.748" />
+    <testcase name="serverFailureCanRecoverThroughRetry" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="2.171" />
+    <testcase name="demonstrationDataIsLabeledAcrossHomeWorkAndNotices" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="2.768" />
+    <testcase name="rateLimitedProfileShowsExplicitRetry" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="1.746" />
+    <testcase name="forbiddenProfileKeepsSessionIdentitySeparateAndOffersRetry" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="1.987" />
+    <testcase name="authenticatedHomeLoadsOnlyAuthenticatedUserAndRefreshesWithoutDemoValues" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="3.878" />
+    <testcase name="unauthorizedProfileExpiresSessionOnceAndDoesNotShowLoadedProfile" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="1.712" />
+    <testcase name="networkFailureCanRecoverThroughRetry" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="1.724" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" tests="4" failures="0" errors="0" skipped="0" time="0.028" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="buildsIssueAndCommentRoutesFromValidatedIdentity" classname="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" time="0.006" />
+    <testcase name="absentBodyAndAuthorRemainEmptyAndPullRequestOrMismatchedIdentityAreRejected" classname="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" time="0.005" />
+    <testcase name="mapsSelectedIssueBodyLabelsAndInertMarkdownWithoutChangingIdentity" classname="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" time="0.009" />
+    <testcase name="mapsCommentsInResponseOrderAndSkipsMalformedEntries" classname="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" time="0.008" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubIssuesScreenTest" tests="13" failures="0" errors="0" skipped="0" time="25.952" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="failedNextCommentPagePreservesLoadedCommentsAndCanRetry" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="2.38" />
+    <testcase name="filtersIssuesPaginatesAndExcludesPullRequestsAndDuplicates" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="1.987" />
+    <testcase name="notFoundIssueStaysPrivateSafe" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="1.658" />
+    <testcase name="selectedParticipationAndStateRestartQueryAndShowEmptyState" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="2.152" />
+    <testcase name="rateLimitShowsExplicitRetryAndRecovers" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="2.886" />
+    <testcase name="opensSelectedIssueAndLoadsPagedCommentsAsInertText" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="2.311" />
+    <testcase name="serverFailureCanRetry" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="1.126" />
+    <testcase name="unauthorizedExpiresSessionOnce" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="2.274" />
+    <testcase name="backFromDetailPreservesFiltersAndLoadedIssues" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="3.966" />
+    <testcase name="missingSessionOffersConnectionWithoutDemoIssues" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="1.112" />
+    <testcase name="networkFailureCanRetry" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="1.404" />
+    <testcase name="removedIssueHasOwnState" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="1.202" />
+    <testcase name="forbiddenCanRetry" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="1.494" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubIssuesTest" tests="4" failures="0" errors="0" skipped="0" time="0.011" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="mapsIssueAndOptionalFieldsWithoutRenderingMarkdown" classname="com.playertwo.controlegithub.GitHubIssuesTest" time="0.003" />
+    <testcase name="dropsInvalidIssuesAndAcceptsEmptyResponse" classname="com.playertwo.controlegithub.GitHubIssuesTest" time="0.002" />
+    <testcase name="buildsAccountIssueQueriesWithIssueOnlyFilterAndPagination" classname="com.playertwo.controlegithub.GitHubIssuesTest" time="0.003" />
+    <testcase name="excludesPullRequestsDeduplicatesSeparatelyAndAcceptsOptionalDataMissing" classname="com.playertwo.controlegithub.GitHubIssuesTest" time="0.003" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubNotificationPagerTest" tests="2" failures="0" errors="0" skipped="0" time="0.087" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="preservesUnauthorizedForbiddenRateLimitAndMalformedResponseStates" classname="com.playertwo.controlegithub.GitHubNotificationPagerTest" time="0.056" />
+    <testcase name="requestsAllNotificationsAndDeduplicatesAcrossPages" classname="com.playertwo.controlegithub.GitHubNotificationPagerTest" time="0.031" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubNotificationsScreenTest" tests="7" failures="0" errors="0" skipped="0" time="15.352" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="markingNotificationAsReadWith304UpdatesLocalStateToRead" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="1.337" />
+    <testcase name="markingNotificationAsReadSendsPatchAndUpdatesLocalStateToRead" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="1.535" />
+    <testcase name="emptyStateAppearsOnlyAfterAValidSuccessfulResponse" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="2.683" />
+    <testcase name="forbiddenOAuthIsExplicitAndNeverRendersEmptyState" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="1.945" />
+    <testcase name="opensOriginAndBackReturnsToNotificationAndPreservesFilters" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="3.032" />
+    <testcase name="markingNotificationAsReadWith401PreservesUnreadAndNotifiesSessionExpiry" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="2.696" />
+    <testcase name="markingNotificationAsReadFailurePreservesUnreadAndDisplaysErrorMessage" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="2.124" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubNotificationsTest" tests="6" failures="0" errors="0" skipped="0" time="0.02" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="rejectsMalformedCollectionOrThreadInsteadOfReturningPartialItems" classname="com.playertwo.controlegithub.GitHubNotificationsTest" time="0.004" />
+    <testcase name="acceptsOptionalTitleTypeUrlAndDate" classname="com.playertwo.controlegithub.GitHubNotificationsTest" time="0.003" />
+    <testcase name="parsesRequiredFieldsAndPreservesUnknownValues" classname="com.playertwo.controlegithub.GitHubNotificationsTest" time="0.003" />
+    <testcase name="markNotificationAsReadValidatesThreadId" classname="com.playertwo.controlegithub.GitHubNotificationsTest" time="0.003" />
+    <testcase name="rejectsUntrustedOrInconsistentSubjectUrls" classname="com.playertwo.controlegithub.GitHubNotificationsTest" time="0.004" />
+    <testcase name="mapsOnlyValidatedIssuePullRequestAndRepositoryDestinations" classname="com.playertwo.controlegithub.GitHubNotificationsTest" time="0.003" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubOAuthProfileTest" tests="1" failures="0" errors="0" skipped="0" time="0.004" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="acceptsOnlyAValidGitHubLoginFromTheUserResponse" classname="com.playertwo.controlegithub.GitHubOAuthProfileTest" time="0.004" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubPullRequestMappingTest" tests="7" failures="0" errors="0" skipped="0" time="1.654" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="filesChecksAndStatusesMapDiffAndCommitResults" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="0.003" />
+    <testcase name="commitStatusPagerEnforcesTheHundredPageHttpCap" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="0.862" />
+    <testcase name="detailDistinguishesClosedAndMergedAndPreservesForkBranches" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="0.003" />
+    <testcase name="filesPagerEnforcesTheThirtyPageAndThreeThousandFileHttpCap" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="0.237" />
+    <testcase name="searchKeepsOnlyValidPullRequestsAndDeduplicatesRepositoryNumber" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="0.003" />
+    <testcase name="paginationCapsAreReportedEvenWhenTheServerOmitsNextLinkAtTheBoundary" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="0.004" />
+    <testcase name="checkRunPagerEnforcesTheHundredPageHttpCap" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="0.542" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" tests="9" failures="0" errors="0" skipped="0" time="16.967" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="reportsSearchLimitWhenTotalCountIsExactlyOneThousand" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="1.729" />
+    <testcase name="emptyCheckAndStatusListsDoNotClaimCombinedSuccess" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="1.682" />
+    <testcase name="expandingFileWithoutPatchExplainsWhyDiffIsUnavailable" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="2.156" />
+    <testcase name="doesNotRevealWhetherMissingOrGonePullRequestWasAccessible" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="1.423" />
+    <testcase name="statusFailureKeepsChecksAndRetryLoadsOnlyFailedSection" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="1.823" />
+    <testcase name="filesPaginationFollowsNextAndDeduplicatesPaths" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="2.245" />
+    <testcase name="opensPullRequestDetailWithCommentsAndReviews" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="2.324" />
+    <testcase name="expandingLongFilePatchExplainsLocalTruncation" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="2.108" />
+    <testcase name="filtersGlobalPullRequestsByOpenClosedAndMergedStates" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="1.477" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubRepositoriesEmptyStateTest" tests="1" failures="0" errors="0" skipped="0" time="1.164" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="emptyApiResponseShowsEmptyStateAndRefreshRequestsAgain" classname="com.playertwo.controlegithub.GitHubRepositoriesEmptyStateTest" time="1.164" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" tests="9" failures="0" errors="0" skipped="0" time="18.135" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="favoriteToggleFiltersLoadedRepositoriesWithoutRemoteRequest" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="1.748" />
+    <testcase name="searchAndCombinedFiltersStayLocalAndCanBeCleared" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="4.411" />
+    <testcase name="logoutIsDisabledWhileFavoriteIsBeingSaved" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="1.672" />
+    <testcase name="loadedRepositoryListOffersFavoritesFilter" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="1.318" />
+    <testcase name="failedFavoriteWriteKeepsThePersistedStarState" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="1.384" />
+    <testcase name="searchByLanguageAppliesToNextPageAndRefreshKeepsCriteria" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="2.226" />
+    <testcase name="filteredEmptyStateIsDistinctAndCanBeCleared" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="2.154" />
+    <testcase name="favoriteReadFailureDisablesControlsAndRetryRestoresThem" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="1.364" />
+    <testcase name="favoritesStayIsolatedWhenTheConnectedAccountChanges" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="1.858" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubRepositoryDetailMappingTest" tests="4" failures="0" errors="0" skipped="0" time="0.013" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="rejectsMismatchedIdentityAndInvalidCounts" classname="com.playertwo.controlegithub.GitHubRepositoryDetailMappingTest" time="0.003" />
+    <testcase name="absentCountsAndInvalidTimestampStayUnavailable" classname="com.playertwo.controlegithub.GitHubRepositoryDetailMappingTest" time="0.003" />
+    <testcase name="decodesReadmeBase64AsPlainUtf8AndRejectsOtherEncodings" classname="com.playertwo.controlegithub.GitHubRepositoryDetailMappingTest" time="0.004" />
+    <testcase name="mapsDetailCountsVisibilityBranchAndLastPush" classname="com.playertwo.controlegithub.GitHubRepositoryDetailMappingTest" time="0.003" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" tests="23" failures="0" errors="0" skipped="0" time="44.135" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="unauthorizedActionsRequestExpiresSessionOnce" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.709" />
+    <testcase name="repositoryActionsCanShowAllRecentRuns" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.999" />
+    <testcase name="serverFailureCanBeRetriedSuccessfully" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="2.701" />
+    <testcase name="logoutCancellationDeletesQueuedDownloadDestination" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.381" />
+    <testcase name="forbiddenActionsRequestIsNotPresentedAsAnEmptyList" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.689" />
+    <testcase name="completedReleaseAssetShowsManualInstallAction" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="2.422" />
+    <testcase name="metadataFailureIsNotPresentedAsAnEmptyReadme" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.686" />
+    <testcase name="workerFailureBeforeTransferDeletesSelectedDestination" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.33" />
+    <testcase name="actionsPaginationLoadsOnlyTheNextValidatedPageAndDeduplicates" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.923" />
+    <testcase name="unauthorizedMetadataExpiresSessionAndStopsBeforeReadme" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="2.071" />
+    <testcase name="repositoryWithoutReleasesShowsAnHonestEmptyState" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.494" />
+    <testcase name="rateLimitedReadmeShowsRetryDeadlineAndAction" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.724" />
+    <testcase name="missingReadmeKeepsMetadataVisible" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.47" />
+    <testcase name="transientNetworkFailureCanBeRetriedSuccessfully" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.478" />
+    <testcase name="repositoryReleasesShowLatestApkChecksumAndNotes" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.479" />
+    <testcase name="repositoryReleaseFailureOffersRetryWithoutDemoData" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.346" />
+    <testcase name="forbiddenReadmeOffersRetryWithoutExpiringSession" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.164" />
+    <testcase name="unauthorizedReadmeExpiresSessionWhileKeepingMetadata" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="2.057" />
+    <testcase name="repositoryDetailOpensWorkflowRunAndJobStatusesForSelectedRepository" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="2.591" />
+    <testcase name="actionsEmptyStateIsNotAnError" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="2.121" />
+    <testcase name="checksumMismatchShowsSourceAndBlocksInstall" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="2.349" />
+    <testcase name="opensRealSelectionShowsInertReadmeRefreshesAndReturnsWithSearch" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="3.22" />
+    <testcase name="cancellingQueuedDownloadDeletesSelectedDestination" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="2.731" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubRepositoryMappingTest" tests="2" failures="0" errors="0" skipped="0" time="0.066" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="acceptsEmptyListAndRejectsMalformedRequiredFields" classname="com.playertwo.controlegithub.GitHubRepositoryMappingTest" time="0.063" />
+    <testcase name="mapsRepositoryAndAcceptsNullOptionalFields" classname="com.playertwo.controlegithub.GitHubRepositoryMappingTest" time="0.003" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.IssueMetadataAndStateAndroidTest" tests="2" failures="0" errors="0" skipped="0" time="0.019" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseGitHubIssueDetailHandlesEmptyAssigneesAndLabels" classname="com.playertwo.controlegithub.IssueMetadataAndStateAndroidTest" time="0.012" />
+    <testcase name="parseGitHubIssueDetailMapsAssigneesAndLabelsCorrectly" classname="com.playertwo.controlegithub.IssueMetadataAndStateAndroidTest" time="0.007" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.IssueMetadataAndStateUiTest" tests="6" failures="0" errors="0" skipped="0" time="15.148" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="permissionForbidden403DisplaysErrorAndPreservesState" classname="com.playertwo.controlegithub.IssueMetadataAndStateUiTest" time="1.951" />
+    <testcase name="editIssueMetadataUpdatesLabelsAndAssignees" classname="com.playertwo.controlegithub.IssueMetadataAndStateUiTest" time="2.937" />
+    <testcase name="closeIssueSuccessSendsPatchAndUpdatesUiToClosed" classname="com.playertwo.controlegithub.IssueMetadataAndStateUiTest" time="1.943" />
+    <testcase name="mutationGuardAntiDoubleTapDisablesButtonDuringStateChange" classname="com.playertwo.controlegithub.IssueMetadataAndStateUiTest" time="3.724" />
+    <testcase name="reopenIssueSuccessSendsPatchAndUpdatesUiToOpen" classname="com.playertwo.controlegithub.IssueMetadataAndStateUiTest" time="2.057" />
+    <testcase name="mutationGuardOfflineHidesMutationButtons" classname="com.playertwo.controlegithub.IssueMetadataAndStateUiTest" time="2.536" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.KanbanUiTest" tests="5" failures="0" errors="0" skipped="0" time="11.525" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="kanbanPersistenceRestoresPosition" classname="com.playertwo.controlegithub.KanbanUiTest" time="3.454" />
+    <testcase name="kanbanMissingItemHandledGracefully" classname="com.playertwo.controlegithub.KanbanUiTest" time="1.631" />
+    <testcase name="kanbanViewDisplaysFourColumnsAndLocalBanner" classname="com.playertwo.controlegithub.KanbanUiTest" time="2.34" />
+    <testcase name="kanbanMoveTransfersCardBetweenColumnsWithoutNetworkMutation" classname="com.playertwo.controlegithub.KanbanUiTest" time="2.535" />
+    <testcase name="kanbanAccountIsolationAndClear" classname="com.playertwo.controlegithub.KanbanUiTest" time="1.565" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.LocalAlertsAndroidTest" tests="4" failures="0" errors="0" skipped="0" time="0.385" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testEnsureNotificationChannel" classname="com.playertwo.controlegithub.LocalAlertsAndroidTest" time="0.105" />
+    <testcase name="testAlertPreferencesPersistence" classname="com.playertwo.controlegithub.LocalAlertsAndroidTest" time="0.169" />
+    <testcase name="testAreNotificationsEnabledResilience" classname="com.playertwo.controlegithub.LocalAlertsAndroidTest" time="0.044" />
+    <testcase name="testNotifyNewEventsAndCancelAll" classname="com.playertwo.controlegithub.LocalAlertsAndroidTest" time="0.067" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.NavigationTest" tests="5" failures="0" errors="0" skipped="0" time="10.927" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="selectedDestinationSurvivesActivityRecreation" classname="com.playertwo.controlegithub.NavigationTest" time="2.238" />
+    <testcase name="repositoriesTabRequiresAnAccountAndDoesNotShowDemoRows" classname="com.playertwo.controlegithub.NavigationTest" time="2.277" />
+    <testcase name="eachFloatingDestinationSelectsItsPage" classname="com.playertwo.controlegithub.NavigationTest" time="2.595" />
+    <testcase name="missingOAuthConfigurationIsDisclosed" classname="com.playertwo.controlegithub.NavigationTest" time="1.384" />
+    <testcase name="dockExposesAccessibleTabsInOrderWithLargeTouchTargets" classname="com.playertwo.controlegithub.NavigationTest" time="2.433" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.OfflineCacheUiTest" tests="3" failures="0" errors="0" skipped="0" time="5.217" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="offlineEmptyCache_showsNoSavedDataMessage" classname="com.playertwo.controlegithub.OfflineCacheUiTest" time="1.574" />
+    <testcase name="offlineCachedRepositories_showsOfflineBadgeAndCachedItems" classname="com.playertwo.controlegithub.OfflineCacheUiTest" time="2.046" />
+    <testcase name="accountIsolationInUi_userBCannotSeeUserACache" classname="com.playertwo.controlegithub.OfflineCacheUiTest" time="1.597" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.PerformanceAndFaultToleranceUiTest" tests="2" failures="0" errors="0" skipped="0" time="3.628" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testProlongedNetworkFailureRetainsContentAndShowsRetryWithoutAnr" classname="com.playertwo.controlegithub.PerformanceAndFaultToleranceUiTest" time="2.038" />
+    <testcase name="testDashboardCacheLoadingPerformanceBudget" classname="com.playertwo.controlegithub.PerformanceAndFaultToleranceUiTest" time="1.59" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.RefreshUiTest" tests="3" failures="0" errors="0" skipped="0" time="5.872" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="revalidation304_preservesItemsOnScreen_andNoOfflineBadge" classname="com.playertwo.controlegithub.RefreshUiTest" time="1.945" />
+    <testcase name="refreshFailure_preservesExistingItemsOnScreen_andShowsErrorWithRetry" classname="com.playertwo.controlegithub.RefreshUiTest" time="1.825" />
+    <testcase name="refresh200_updatesListWithoutDuplication" classname="com.playertwo.controlegithub.RefreshUiTest" time="2.102" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.RepositoryFavoritesDataStoreTest" tests="1" failures="0" errors="0" skipped="0" time="0.134" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="favoriteIdsPersistPerNormalizedLoginAndClearOnlyThatAccount" classname="com.playertwo.controlegithub.RepositoryFavoritesDataStoreTest" time="0.134" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.SQLiteGitHubCacheStoreTest" tests="8" failures="0" errors="0" skipped="0" time="3.765" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="putWithEtag_and_updateTimestamp_preservesEtagAndUpdatesExpiration" classname="com.playertwo.controlegithub.SQLiteGitHubCacheStoreTest" time="0.107" />
+    <testcase name="putAndGet_storesAndRetrievesPayload" classname="com.playertwo.controlegithub.SQLiteGitHubCacheStoreTest" time="0.124" />
+    <testcase name="get_expiredEntry_returnsNull" classname="com.playertwo.controlegithub.SQLiteGitHubCacheStoreTest" time="0.047" />
+    <testcase name="clearAll_removesAllEntries" classname="com.playertwo.controlegithub.SQLiteGitHubCacheStoreTest" time="0.074" />
+    <testcase name="pruneAccount_capsEntriesAtMaximumLimit" classname="com.playertwo.controlegithub.SQLiteGitHubCacheStoreTest" time="3.226" />
+    <testcase name="clearAccount_removesOnlyTargetAccountData" classname="com.playertwo.controlegithub.SQLiteGitHubCacheStoreTest" time="0.072" />
+    <testcase name="sensitiveEndpointsAndTokens_areRejectedByPut" classname="com.playertwo.controlegithub.SQLiteGitHubCacheStoreTest" time="0.039" />
+    <testcase name="accountIsolation_userBCannotAccessUserAEntries" classname="com.playertwo.controlegithub.SQLiteGitHubCacheStoreTest" time="0.076" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.SecureSessionStoreTest" tests="2" failures="0" errors="0" skipped="0" time="0.171" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="encryptedCredentialsRestoreAndLogoutDeletesDataAndKey" classname="com.playertwo.controlegithub.SecureSessionStoreTest" time="0.068" />
+    <testcase name="corruptedCiphertextFailsClosedAndRemovesStoredValue" classname="com.playertwo.controlegithub.SecureSessionStoreTest" time="0.103" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.SecurityAndPrivacyUiTest" tests="3" failures="0" errors="0" skipped="0" time="0.088" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="runtimeApplicationInfoConfirmsAllowBackupIsDisabled" classname="com.playertwo.controlegithub.SecurityAndPrivacyUiTest" time="0.007" />
+    <testcase name="secureSessionStoreEncryptsAndDecryptsViaAndroidKeyStore" classname="com.playertwo.controlegithub.SecurityAndPrivacyUiTest" time="0.074" />
+    <testcase name="runtimePackageDeclaresOnlyMinimalPermissions" classname="com.playertwo.controlegithub.SecurityAndPrivacyUiTest" time="0.007" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.SubmitPullRequestReviewAndroidTest" tests="2" failures="0" errors="0" skipped="0" time="0.011" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseCreatedPullRequestReviewMapsFieldsCorrectly" classname="com.playertwo.controlegithub.SubmitPullRequestReviewAndroidTest" time="0.006" />
+    <testcase name="parseCreatedPullRequestReviewRejectsMissingId" classname="com.playertwo.controlegithub.SubmitPullRequestReviewAndroidTest" time="0.005" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.SubmitPullRequestReviewUiTest" tests="5" failures="0" errors="0" skipped="0" time="14.5" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="reviewSelfReviewForbiddenDisplaysExplanatoryMessage" classname="com.playertwo.controlegithub.SubmitPullRequestReviewUiTest" time="2.905" />
+    <testcase name="reviewRequestChangesRequiresJustificationAndSubmitsWhenFilled" classname="com.playertwo.controlegithub.SubmitPullRequestReviewUiTest" time="2.766" />
+    <testcase name="reviewAntiDoubleTapDisablesButtonDuringSubmission" classname="com.playertwo.controlegithub.SubmitPullRequestReviewUiTest" time="3.968" />
+    <testcase name="mutationGuardOfflineBlocked" classname="com.playertwo.controlegithub.SubmitPullRequestReviewUiTest" time="2.098" />
+    <testcase name="reviewApproveSuccessSubmitsPostAppendsToUiAndClearsInput" classname="com.playertwo.controlegithub.SubmitPullRequestReviewUiTest" time="2.763" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.ThemePreferencesTest" tests="4" failures="0" errors="0" skipped="0" time="8.995" timestamp="2026-10-21T19:30:40" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="supportedThemeColorRolesMeetNormalTextContrast" classname="com.playertwo.controlegithub.ThemePreferencesTest" time="1.811" />
+    <testcase name="systemModeTracksSystemAndExplicitModesOverrideIt" classname="com.playertwo.controlegithub.ThemePreferencesTest" time="1.686" />
+    <testcase name="appearanceCanBeOpenedFromDashboardAndReturnsToDock" classname="com.playertwo.controlegithub.ThemePreferencesTest" time="3.222" />
+    <testcase name="appearanceSelectionPersistsAfterActivityRecreationAndBackReturns" classname="com.playertwo.controlegithub.ThemePreferencesTest" time="2.276" />
+  </testsuite>
+</testsuites>

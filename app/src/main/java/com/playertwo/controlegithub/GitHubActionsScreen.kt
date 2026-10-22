@@ -139,6 +139,7 @@ internal fun GitHubActionsScreen(
                 ActionsPagedList(
                     modifier = Modifier.weight(1f),
                     pager = pager,
+                    itemKey = { it.id },
                     emptyMessage = "Esta execução ainda não tem jobs disponíveis.",
                     onSessionExpired = onSessionExpired
                 ) { job ->
@@ -162,6 +163,7 @@ internal fun GitHubActionsScreen(
                 ActionsPagedList(
                     modifier = Modifier.weight(1f),
                     pager = pager,
+                    itemKey = { it.id },
                     emptyMessage = "Este workflow ainda não tem execuções.",
                     onSessionExpired = onSessionExpired
                 ) { run ->
@@ -178,6 +180,7 @@ internal fun GitHubActionsScreen(
                     ActionsPagedList(
                         modifier = Modifier.weight(1f),
                         pager = workflowPager,
+                        itemKey = { it.id },
                         emptyMessage = "Este repositório não tem workflows do GitHub Actions.",
                         onSessionExpired = onSessionExpired
                     ) { workflow ->
@@ -211,6 +214,7 @@ private fun RunCard(run: GitHubWorkflowRun, fallbackWorkflowName: String, onClic
 private fun <T> ActionsPagedList(
     modifier: Modifier,
     pager: GitHubPaginator<T>,
+    itemKey: (T) -> Any,
     emptyMessage: String,
     onSessionExpired: () -> Unit,
     item: @Composable (T) -> Unit
@@ -224,42 +228,46 @@ private fun <T> ActionsPagedList(
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
     var sessionExpiryReported by remember(pager) { mutableStateOf(false) }
     val listState = remember(pager) { LazyListState() }
-
     suspend fun loadNext() {
         if (loading) return
         loading = true
         error = null
         retryAt = null
         try {
-            when (val result = withContext(Dispatchers.IO) { pager.loadNext() }) {
-                is GitHubPageResult.Loaded -> {
-                    values = result.items
-                    hasNext = result.hasNext
-                    loaded = true
-                }
-                is GitHubPageResult.RateLimited -> {
-                    values = result.items
-                    loaded = true
-                    retryAt = result.retryAtEpochMillis
-                    error = GitHubHttpError.RATE_LIMITED.userMessage
-                }
-                is GitHubPageResult.Failed -> {
-                    values = result.items
-                    loaded = true
-                    error = result.message
-                    if (result.error == GitHubHttpError.UNAUTHORIZED && !sessionExpiryReported) {
-                        sessionExpiryReported = true
-                        onSessionExpired()
+            val result = withContext(Dispatchers.IO) { pager.loadNext() }
+            withContext(Dispatchers.Main.immediate) {
+                when (result) {
+                    is GitHubPageResult.Loaded -> {
+                        values = result.items
+                        hasNext = result.hasNext
+                        loaded = true
+                    }
+                    is GitHubPageResult.RateLimited -> {
+                        values = result.items
+                        loaded = true
+                        retryAt = result.retryAtEpochMillis
+                        error = GitHubHttpError.RATE_LIMITED.userMessage
+                    }
+                    is GitHubPageResult.Failed -> {
+                        values = result.items
+                        loaded = true
+                        error = result.message
+                        if (result.error == GitHubHttpError.UNAUTHORIZED && !sessionExpiryReported) {
+                            sessionExpiryReported = true
+                            onSessionExpired()
+                        }
                     }
                 }
             }
         } catch (cancelled: CancellationException) {
             throw cancelled
         } catch (_: Exception) {
-            loaded = true
-            error = GitHubHttpError.UNEXPECTED.userMessage
+            withContext(Dispatchers.Main.immediate) {
+                loaded = true
+                error = GitHubHttpError.UNEXPECTED.userMessage
+            }
         } finally {
-            loading = false
+            withContext(Dispatchers.Main.immediate) { loading = false }
         }
     }
 
@@ -267,7 +275,11 @@ private fun <T> ActionsPagedList(
         listState.scrollToItem(0)
         loadNext()
     }
-    DisposableEffect(pager) { onDispose { pager.cancel() } }
+    DisposableEffect(pager) {
+        onDispose {
+            pager.cancel()
+        }
+    }
 
     LazyColumn(
         modifier,
@@ -284,7 +296,7 @@ private fun <T> ActionsPagedList(
         if (loaded && values.isEmpty() && error == null) item {
             Text(emptyMessage, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        items(values) { value -> item(value) }
+        items(values, key = itemKey) { value -> item(value) }
         error?.let { message -> item {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(message, color = MaterialTheme.colorScheme.error)

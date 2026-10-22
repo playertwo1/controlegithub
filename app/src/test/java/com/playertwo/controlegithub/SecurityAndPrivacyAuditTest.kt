@@ -35,6 +35,9 @@ class SecurityAndPrivacyAuditTest {
         assertTrue(privacyContent.contains("INTERNET"))
         assertTrue(privacyContent.contains("ACCESS_NETWORK_STATE"))
         assertTrue(privacyContent.contains("POST_NOTIFICATIONS"))
+        assertTrue(privacyContent.contains("REQUEST_INSTALL_PACKAGES"))
+        assertTrue(privacyContent.contains("FOREGROUND_SERVICE_DATA_SYNC"))
+        assertTrue(privacyContent.contains("sem encaminhar o token"))
 
         // Verifica ausência explícita de permissões invasivas
         assertTrue(privacyContent.contains("Localização geográfica"))
@@ -56,9 +59,12 @@ class SecurityAndPrivacyAuditTest {
         val expectedPermissions = setOf(
             "android.permission.INTERNET",
             "android.permission.ACCESS_NETWORK_STATE",
-            "android.permission.POST_NOTIFICATIONS"
+            "android.permission.POST_NOTIFICATIONS",
+            "android.permission.FOREGROUND_SERVICE",
+            "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
+            "android.permission.REQUEST_INSTALL_PACKAGES"
         )
-        assertEquals("Manifesto deve declarar estritamente as permissões mínimas essenciais", expectedPermissions, declaredPermissions)
+        assertEquals("Manifesto deve declarar somente permissões explicadas na política de privacidade", expectedPermissions, declaredPermissions)
 
         // Verifica proteções contra backup e extração
         assertTrue(manifestContent.contains("android:allowBackup=\"false\""))

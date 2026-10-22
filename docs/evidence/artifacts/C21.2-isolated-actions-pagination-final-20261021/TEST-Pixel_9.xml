@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuites tests="1" failures="0" errors="0" skipped="0" time="8.814" timestamp="2026-10-21T20:01:12" hostname="localhost">
+  <testsuite name="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" tests="1" failures="0" errors="0" skipped="0" time="6.407" timestamp="2026-10-21T20:01:12" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="actionsPaginationLoadsOnlyTheNextValidatedPageAndDeduplicates" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="6.407" />
+  </testsuite>
+</testsuites>

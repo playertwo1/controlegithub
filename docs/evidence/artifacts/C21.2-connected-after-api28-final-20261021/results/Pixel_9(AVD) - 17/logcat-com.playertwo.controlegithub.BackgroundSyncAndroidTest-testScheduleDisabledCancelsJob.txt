@@ -1,0 +1,19 @@
+10-21 20:55:09.125  1151  1283 I TestRunner: started: testScheduleDisabledCancelsJob(com.playertwo.controlegithub.BackgroundSyncAndroidTest)
+10-21 20:55:09.127   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:09.127   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:09.127   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:09.127   719  1048 I Surface : Creating surface for consumer unnamed-719-1867 with slotExpansion=1 for 64 slots
+10-21 20:55:09.127   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:09.127   719  1048 I Surface : Creating surface for consumer ImageReader-864x1939f1m1-719-1867 with slotExpansion=1 for 64 slots
+10-21 20:55:09.127   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:09.127   719  1048 W ImageReader_JNI: Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
+10-21 20:55:09.136 25719 25719 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.neuralnetworks' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+10-21 20:55:09.144   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:09.144   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:09.144   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:09.144   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:09.144   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:09.144   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:09.149 25719 25719 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.webapp' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+10-21 20:55:09.150   719  1048 E ConsumerBase: [ImageReader-864x1939f1m1-719-1867] abandonLocked: ConsumerBase is abandoned!
+10-21 20:55:09.152  1151  1283 I TestRunner: finished: testScheduleDisabledCancelsJob(com.playertwo.controlegithub.BackgroundSyncAndroidTest)

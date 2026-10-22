@@ -1,0 +1,318 @@
+10-21 20:48:28.159 25510 25547 I TestRunner: started: pruneAccount_capsEntriesAtMaximumLimit(com.playertwo.controlegithub.SQLiteGitHubCacheStoreTest)
+10-21 20:48:28.161   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.177   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.194   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.211   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.227   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.244   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.260   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.277   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.294   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.311   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.327   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.344   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.360   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.377   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.394   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.410   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.417 29243 29243 E libnfc_nci: Timeout waiting for NFC AIDL service (future).
+10-21 20:48:28.417 29243 29243 I libnfc_nci: NfcAdaptation::InitializeHalDeviceContext: Failed to retrieve the NFC AIDL!
+10-21 20:48:28.417 29243 29243 E libnfc_nci: Exit current process to recover.
+10-21 20:48:28.424   475   475 I Zygote  : Process 29243 exited cleanly (0)
+10-21 20:48:28.424   719   764 I libprocessgroup: Removed cgroup /sys/fs/cgroup/system/uid_1027/pid_29243
+10-21 20:48:28.427   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.433   719  1054 V GrammaticalInflectionUtils: AttributionSource: android.content.AttributionSource@aa231c5d does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+10-21 20:48:28.443   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.445   475   475 D Zygote  : Forked child process 29273
+10-21 20:48:28.448 29273 29273 I libprocessgroup: Created cgroup /sys/fs/cgroup/system/uid_1027/pid_29273
+10-21 20:48:28.461   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.463 29273 29273 I Zygote  : Process 29273 created for com.google.android.nfc
+10-21 20:48:28.463 29273 29273 I gle.android.nfc: Using generational CollectorTypeCMC GC.
+10-21 20:48:28.464 29273 29273 W gle.android.nfc: Unexpected CPU variant for x86: x86_64.
+10-21 20:48:28.464 29273 29273 W gle.android.nfc: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, alderlake, pantherlake, default
+10-21 20:48:28.473 29273 29273 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+10-21 20:48:28.477   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.491 29273 29273 D CompatChangeReporter: Compat change id reported: 333566037; UID 1027; state: ENABLED
+10-21 20:48:28.493   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.494 29273 29273 D nativeloader: Configuring clns-shared-9 for other apk /apex/com.android.nfcservices/priv-app/NfcNciApexGoogle@CP41.260828.004.A7/NfcNciApexGoogle.apk. target_sdk_version=37, uses_libraries=, library_path=/apex/com.android.nfcservices/priv-app/NfcNciApexGoogle@CP41.260828.004.A7/lib/x86_64:/system/lib64:/system_ext/lib64, permitted_path=/data:/mnt/expand:/data/user_de/0/com.google.android.nfc:/apex/com.android.nfcservices/priv-app/NfcNciApexGoogle@CP41.260828.004.A7:/system/lib64:/system_ext/lib64
+10-21 20:48:28.495 29273 29273 D nativeloader: InitApexLibraries:
+10-21 20:48:28.495 29273 29273 D nativeloader:   com_android_adservices: libhpke_jni.so:libtflite_support_classifiers_native.so
+10-21 20:48:28.495 29273 29273 D nativeloader:   com_android_appsearch: libappsearchservice.so:libicing_anywhere.so
+10-21 20:48:28.495 29273 29273 D nativeloader:   com_android_art: libartservice.so
+10-21 20:48:28.495 29273 29273 D nativeloader:   com_android_bt: libbluetooth_jni.so
+10-21 20:48:28.495 29273 29273 D nativeloader:   com_android_conscrypt: libjavacrypto.so
+10-21 20:48:28.495 29273 29273 D nativeloader:   com_android_extservices: libtflite_support_classifiers_native.so
+10-21 20:48:28.495 29273 29273 D nativeloader:   com_android_mediaprovider: libpdfclient.so
+10-21 20:48:28.495 29273 29273 D nativeloader:   com_android_nfcservices: libnfc_nci_jni.so:libnfc_rust_jni.so
+10-21 20:48:28.495 29273 29273 D nativeloader:   com_android_npumanager: libnpumanager_service_jni.so
+10-21 20:48:28.495 29273 29273 D nativeloader:   com_android_ondevicepersonalization: libfcp_cpp_dep_jni.so:libfcp_hpke_jni.so
+10-21 20:48:28.495 29273 29273 D nativeloader:   com_android_os_statsd: libstats_jni.so
+10-21 20:48:28.495 29273 29273 D nativeloader:   com_android_profiling: libanomaly_detector_service_jni.so
+10-21 20:48:28.495 29273 29273 D nativeloader:   com_android_tethering: libandroid_net_connectivity_com_android_net_module_util_jni.so:libandroid_net_connectivity_com_android_net_module_util_jni_CommonConnectivityJni.so:libcrypto_httpengine.so:libframework-connectivity-jni.so:libframework-connectivity-tiramisu-jni.so:libhttpengine.so:libservice-connectivity.so:libservice
+10-21 20:48:28.497 29273 29273 V GraphicsEnvironment: Currently set values for:
+10-21 20:48:28.497 29273 29273 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+10-21 20:48:28.497 29273 29273 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+10-21 20:48:28.497 29273 29273 V GraphicsEnvironment: com.google.android.nfc is not listed in per-application setting
+10-21 20:48:28.497 29273 29273 V GraphicsEnvironment: No special selections for ANGLE, returning default driver choice
+10-21 20:48:28.500 29273 29273 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-21 20:48:28.501 29273 29273 D CompatChangeReporter: Compat change id reported: 407952621; UID 1027; state: ENABLED
+10-21 20:48:28.501 29273 29273 D CompatChangeReporter: Compat change id reported: 419020719; UID 1027; state: ENABLED
+10-21 20:48:28.510   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.521 29273 29273 I RegisteredComponentCache: generateComponentsList: New Components =>
+10-21 20:48:28.521 29273 29273 I RegisteredComponentCache: ComponentInfo: ResolveInfo{68ecb96 com.google.android.tag/com.android.apps.tag.TagViewer m=0x108000 userHandle=UserHandle{0}}, techs: android.nfc.tech.Ndef,
+10-21 20:48:28.521 29273 29273 I RegisteredComponentCache: generateComponentsList: Removed Components =>
+10-21 20:48:28.522 29273 29284 D CompatChangeReporter: Compat change id reported: 458413887; UID 1027; state: ENABLED
+10-21 20:48:28.527   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.527 29273 29285 I NfcEventLog: readListFromLogFile: No NFC events found in log file
+10-21 20:48:28.532 29273 29273 I NfcService: Starting NFC service
+10-21 20:48:28.532 29273 29273 I NativeNfcManager: Loading C NFC Support
+10-21 20:48:28.538 29273 29273 D nativeloader: Load libnfc_nci_jni.so using class loader ns clns-shared-9 (caller=/apex/com.android.nfcservices/priv-app/NfcNciApexGoogle@CP41.260828.004.A7/NfcNciApexGoogle.apk): ok
+10-21 20:48:28.538 29273 29273 I libnfc_nci: JNI_OnLoad: NFC Service: loading nci JNI
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - Parsing file '/etc/libnfc-nci.conf'
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [NFC_DEBUG_ENABLED] = 0
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [NFA_STORAGE] = "/data/nfc"
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [PRESERVE_STORAGE] = 0x01
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [POLLING_TECH_MASK] = 0x0F
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [UICC_LISTEN_TECH_MASK] = 0x07
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [NFA_MAX_EE_SUPPORTED] = 0x02
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [AID_FOR_EMPTY_SELECT] = {08:A0:00:00:01:51:00:00:00}
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [AID_MATCHING_MODE] = 0x01
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [NCI_RESET_TYPE] = 0x00
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [PRESENCE_CHECK_RETRY_COUNT] = 0
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [EUICC_MEP_MODE] = 0x03
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [NFCEE_EVENT_RF_DISCOVERY_OPTION] = 0x00
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [OPTIMIZE_ROUTING_TABLE_UPDATE] = 0x00
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [NFA_EE_ROUTE_DEBOUNCE_TIMER] = 0x01
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [KOVIO_PRESENCE_CHECK_TYPE] = 0x00
+10-21 20:48:28.538 29273 29273 I libnfc_nci: ConfigFile - [RECOVERY_OPTION] = 1
+10-21 20:48:28.538 29273 29273 I libnfc_nci: NfcAdaptation:440
+10-21 20:48:28.538 29273 29273 I libnfc_nci: NfcAdaptation::InitializeHalDeviceContext: INfc::getService()
+10-21 20:48:28.540   314   314 I hwservicemanager: getTransport: Cannot find entry android.hardware.nfc@1.2::INfc/default in either framework or device VINTF manifest.
+10-21 20:48:28.541   314   314 I hwservicemanager: getTransport: Cannot find entry android.hardware.nfc@1.1::INfc/default in either framework or device VINTF manifest.
+10-21 20:48:28.541   314   314 I hwservicemanager: getTransport: Cannot find entry android.hardware.nfc@1.0::INfc/default in either framework or device VINTF manifest.
+10-21 20:48:28.544   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.555   313 29287 W libc    : Unable to set property "ctl.interface_start" to "aidl/android.hardware.nfc.INfc/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+10-21 20:48:28.563   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.577   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.594   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.611   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.627   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.643   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.660   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.677   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.694   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.710   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.727   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.744   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.752 29288 29288 I android.hardware.uwb: uwb_default_hal: UWB HAL starting up
+10-21 20:48:28.756 29288 29288 E android.hardware.uwb: uwb_default_hal: panicked at hardware/interfaces/uwb/aidl/default/src/uwb_chip.rs:56:14:
+10-21 20:48:28.756 29288 29288 E android.hardware.uwb: failed to open the serial device: Os { code: 6, kind: Uncategorized, message: "No such device or address" }
+10-21 20:48:28.756 29288 29288 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 29288 (android.hardwar), pid 29288 (android.hardwar)
+10-21 20:48:28.760   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.774 29296 29296 I crash_dump64: obtaining output fd from tombstoned, type: kDebuggerdTombstoneProto
+10-21 20:48:28.774   379   379 I tombstoned: received crash request for pid 29288
+10-21 20:48:28.774 29296 29296 I crash_dump64: performing dump of process 29288 (target tid = 29288)
+10-21 20:48:28.777   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.790 29296 29296 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+10-21 20:48:28.790 29296 29296 F DEBUG   : Build fingerprint: 'google/sdk_gphone16k_x86_64/emu64xa16k:17/CP41.260828.004.A7/16296984:user/dev-keys'
+10-21 20:48:28.790 29296 29296 F DEBUG   : Kernel Release: '6.12.81-android16-6-g4f69fc7b210c-ab16167562'
+10-21 20:48:28.790 29296 29296 F DEBUG   : Revision: '0'
+10-21 20:48:28.790 29296 29296 F DEBUG   : ABI: 'x86_64'
+10-21 20:48:28.790 29296 29296 F DEBUG   : Timestamp: 2026-10-21 20:48:28.774857260+0000
+10-21 20:48:28.790 29296 29296 F DEBUG   : Process uptime: 1s
+10-21 20:48:28.790 29296 29296 F DEBUG   : Page size: 16384 bytes
+10-21 20:48:28.790 29296 29296 F DEBUG   : Executable: /vendor/bin/hw/android.hardware.uwb-service
+10-21 20:48:28.790 29296 29296 F DEBUG   : Cmdline: /vendor/bin/hw/android.hardware.uwb-service /dev/uwb0
+10-21 20:48:28.790 29296 29296 F DEBUG   : pid: 29288, ppid: 1, tid: 29288, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.uwb-service <<<
+10-21 20:48:28.790 29296 29296 F DEBUG   : uid: 1083
+10-21 20:48:28.790 29296 29296 F DEBUG   : signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+10-21 20:48:28.790 29296 29296 F DEBUG   : Abort message: 'failed to open the serial device: Os { code: 6, kind: Uncategorized, message: "No such device or address" }'
+10-21 20:48:28.790 29296 29296 F DEBUG   :
+10-21 20:48:28.790 29296 29296 F DEBUG   :     rax 0000000000000000  rbx 0000000000007268  rcx 0000767c1e4b306d  rdx 0000000000000006
+10-21 20:48:28.790 29296 29296 F DEBUG   :     r8  00007ff27e473590  r9  00007ff27e473590  r10 00007ff27e473350  r11 0000000000000207
+10-21 20:48:28.790 29296 29296 F DEBUG   :     r12 0000000000000000  r13 00007ff27e4734f0  r14 0000000000007268  r15 00007ff27e473350
+10-21 20:48:28.790 29296 29296 F DEBUG   :     rdi 0000000000007268  rsi 0000000000007268
+10-21 20:48:28.790 29296 29296 F DEBUG   :     rbp 00007ff27e473400  rsp 00007ff27e473350  rip 0000767c1e4b306d  err 0000000000000000
+10-21 20:48:28.790 29296 29296 F DEBUG   :
+10-21 20:48:28.790 29296 29296 F DEBUG   : 18 total frames
+10-21 20:48:28.790 29296 29296 F DEBUG   : backtrace:
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #00 pc 000000000005b06d  /apex/com.android.runtime/lib64/bionic/libc.so (abort+189) (BuildId: 6a12fb8c62f84cd3689f4044ef042df1)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #01 pc 000000000003ed09  /vendor/bin/hw/android.hardware.uwb-service (std::sys::pal::unix::abort_internal+9) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #02 pc 000000000003c488  /vendor/bin/hw/android.hardware.uwb-service (std::process::abort+8) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #03 pc 0000000000038e89  /vendor/bin/hw/android.hardware.uwb-service (__rustc::__rust_abort+9) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #04 pc 000000000002d262  /vendor/bin/hw/android.hardware.uwb-service (__rustc::__rust_start_panic+18) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #05 pc 0000000000038e79  /vendor/bin/hw/android.hardware.uwb-service (__rustc::rust_panic+9) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #06 pc 000000000003c72f  /vendor/bin/hw/android.hardware.uwb-service (std::panicking::panic_with_hook+260) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #07 pc 0000000000038516  /vendor/bin/hw/android.hardware.uwb-service (std::panicking::panic_handler::{closure#0}+70) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #08 pc 0000000000038eab  /vendor/bin/hw/android.hardware.uwb-service (__rustc::rust_begin_unwind+27) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #09 pc 00000000000253db  /vendor/bin/hw/android.hardware.uwb-service (core::panicking::panic_fmt+43) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #10 pc 0000000000025261  /vendor/bin/hw/android.hardware.uwb-service (core::result::unwrap_failed+81) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #11 pc 00000000000641af  /vendor/bin/hw/android.hardware.uwb-service (<uwb_default_hal::uwb_chip::UwbChip>::new::{closure#0}+7999) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #12 pc 000000000006865a  /vendor/bin/hw/android.hardware.uwb-service (<core::iter::adapters::map::Map<core::iter::adapters::map::Map<core::iter::adapters::enumerate::Enumerate<core::iter::adapters::skip::Skip<std::env::Args>>, uwb_default_hal::main::{closure#1}>, <uwb_default_hal::uwb::Uwb>::from_chips<core::iter::adapters::map::Map<core::iter::adapters::enumerate::Enumerate<core::iter::adapters::skip::Skip<std::env::Args>>, uwb_default_hal::main::{closure#1}>>::{closure#0}> as core::iter::traits::iterator::Iterator>::next+3434) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #13 pc 0000000000065c77  /vendor/bin/hw/android.hardware.uwb-service (uwb_default_hal::main+791) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #14 pc 00000000000619fb  /vendor/bin/hw/android.hardware.uwb-service (std::rt::lang_start::<core::result::Result<(), anyhow::Error>>::{closure#0}+27) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #15 pc 000000000003bce6  /vendor/bin/hw/android.hardware.uwb-service (std::rt::lang_start_internal+534) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #16 pc 000000000006b193  /vendor/bin/hw/android.hardware.uwb-service (main+51) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:48:28.790 29296 29296 F DEBUG   :       #17 pc 00000000000c3c10  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+112) (BuildId: 6a12fb8c62f84cd3689f4044ef042df1)
+10-21 20:48:28.790 29296 29296 F DEBUG   :
+10-21 20:48:28.790 29296 29296 F DEBUG   : Note: To display stack pointer information, use the pbtombstone tool:
+10-21 20:48:28.790 29296 29296 F DEBUG   :         pbtombstone --display-sp tombstone_XX.pb
+10-21 20:48:28.793   379   379 E tombstoned: Tombstone written to: tombstone_03
+10-21 20:48:28.793   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.800   719  1734 W libbinder.ServiceManagerCppClient: Waited one second for android.hardware.uwb.IUwb/default (is service started? Number of threads started in the threadpool: 32. Are binder threads started and available?)
+10-21 20:48:28.811   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.823   313 29299 W libc    : Unable to set property "ctl.interface_start" to "aidl/android.hardware.uwb.IUwb/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+10-21 20:48:28.828   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.843   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.855 29300 29300 I flags_health_check: ServerConfigurableFlagsReset reset_mode value: 1
+10-21 20:48:28.856 29300 29300 I flags_health_check: ServerConfigurableFlagsReset updatable crashing detected, resetting flags.
+10-21 20:48:28.862   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.877   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.893   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.911   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.927   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.943   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.960   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.978   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:28.993   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.010   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.027   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.044   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.060   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.077   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.094   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.110   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.127   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.144   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.161   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.177   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.194   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.210   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.227   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.243   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.260   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.369   483 27140 W android.hardware.audio@7.1-impl.ranchu: consumeThread: timeout waiting for tinyalsa, error: ''
+10-21 20:48:29.369   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.377   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.393   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.410   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.427   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.443   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.460   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.466   530   555 D AudioFlinger: mixer(0x7f350fa03790) throttle end: throttle time(39)
+10-21 20:48:29.477   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.494   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.510   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.527   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.543   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.548 29273 29286 W libbinder.ServiceManagerCppClient: Waited one second for android.hardware.nfc.INfc/default (is service started? Number of threads started in the threadpool: 16. Are binder threads started and available?)
+10-21 20:48:29.561   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.561   313 29301 W libc    : Unable to set property "ctl.interface_start" to "aidl/android.hardware.nfc.INfc/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+10-21 20:48:29.577   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.594   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.611   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.627   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.643   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.660   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.677   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.694   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.710   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.727   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.743   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.760   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.777   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.794   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.811   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.827   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.840   719  1734 W libbinder.ServiceManagerCppClient: Waited one second for android.hardware.uwb.IUwb/default (is service started? Number of threads started in the threadpool: 32. Are binder threads started and available?)
+10-21 20:48:29.844   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.855   313 29302 W libc    : Unable to set property "ctl.interface_start" to "aidl/android.hardware.uwb.IUwb/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+10-21 20:48:29.861   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.878   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.894   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.895   530   555 D AudioFlinger: mixer(0x7f350fa03790) throttle end: throttle time(25)
+10-21 20:48:29.910   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.927   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.944   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.948   719   966 E WifiDataStall: Ignore this poll. newStats: null txLinkSpeedMbps: 1 rxLinkSpeedMbps: 2 rssi: -50 connectionCapabilities: com.android.server.wifi.WifiNative$ConnectionCapabilities@e3669dc
+10-21 20:48:29.949   719   966 I MlConnectedScorer: 1. stats.getStatusDataStall()=0
+10-21 20:48:29.949   719   966 I MlConnectedScorer: 2. stats.getStatusDataStall()=0
+10-21 20:48:29.949   719   966 I MlConnectedScorer: handleL2DataStallInMlScorer is true, shouldBlockBssid=false mBlockCurrentBssid=false
+10-21 20:48:29.961   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.977   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:29.994   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.011   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.027   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.044   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.060   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.077   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.094   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.111   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.127   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.144   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.160   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.177   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.194   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.211   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.227   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.244   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.260   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.277   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.293   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.311   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.327   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.344   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.360   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.377   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.380  1062  1062 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS
+10-21 20:48:30.394   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.411   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.427   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.443   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.460   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.477   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.494   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.511   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.527   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.544   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.559 29273 29286 W libbinder.ServiceManagerCppClient: Waited one second for android.hardware.nfc.INfc/default (is service started? Number of threads started in the threadpool: 16. Are binder threads started and available?)
+10-21 20:48:30.560   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.573   313 29303 W libc    : Unable to set property "ctl.interface_start" to "aidl/android.hardware.nfc.INfc/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+10-21 20:48:30.577   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.594   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.602  1450  1450 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.feedback.internal.IFeedbackService dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsBoundBrokerService }
+10-21 20:48:30.610   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.627   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.643   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.660   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.677   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.694   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.710   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.727   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.744   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.761   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.777   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.794   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.810   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.827   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.843   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.849   719  1734 W libbinder.ServiceManagerCppClient: Waited one second for android.hardware.uwb.IUwb/default (is service started? Number of threads started in the threadpool: 32. Are binder threads started and available?)
+10-21 20:48:30.858   313 29304 W libc    : Unable to set property "ctl.interface_start" to "aidl/android.hardware.uwb.IUwb/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+10-21 20:48:30.862   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.877   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.894   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.911   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.927   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.944   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.960   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.977   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:30.993   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:31.010   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:31.027   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:31.041   719   970 E Nl80211Native: getChannelsMhzForBand: Wiphy index not recorded for band 8
+10-21 20:48:31.041   719   970 E Nl80211Native: getChannelsMhzForBand: Wiphy index not recorded for band 16
+10-21 20:48:31.041   719   970 D Nl80211Native: Ignoring unsupported scan type 2
+10-21 20:48:31.041   719   970 I Nl80211Proxy: Sending Nl80211 message: GenericNetlinkMsg{ nlHeader{StructNlMsgHdr{ nlmsg_len{56}, nlmsg_type{30()}, nlmsg_flags{5(NLM_F_REQUEST|NLM_F_ACK)}, nlmsg_seq{149}, nlmsg_pid{0} }}, genNlHeader{StructGenNlMsgHdr{ command{33}, version{1}, reserved{0} }}, attributes{[StructNlAttr{ nla_len{8}, nla_type{-32723}, nla_value{04000000}, }, StructNlAttr{ nla_len{8}, nla_type{3}, nla_value{10000000}, }, StructNlAttr{ nla_len{12}, nla_type{-32724}, nla_value{080000008F090000}, }, StructNlAttr{ nla_len{8}, nla_type{158}, nla_value{00000000}, }]} }
+10-21 20:48:31.042   719   970 I Nl80211Proxy: Received NLMSG_ERROR with error 0 for message GenericNetlinkMsg{ nlHeader{StructNlMsgHdr{ nlmsg_len{56}, nlmsg_type{30()}, nlmsg_flags{5(NLM_F_REQUEST|NLM_F_ACK)}, nlmsg_seq{149}, nlmsg_pid{0} }}, genNlHeader{StructGenNlMsgHdr{ command{33}, version{1}, reserved{0} }}, attributes{[StructNlAttr{ nla_len{8}, nla_type{-32723}, nla_value{04000000}, }, StructNlAttr{ nla_len{8}, nla_type{3}, nla_value{10000000}, }, StructNlAttr{ nla_len{12}, nla_type{-32724}, nla_value{080000008F090000}, }, StructNlAttr{ nla_len{8}, nla_type{158}, nla_value{00000000}, }]} }
+10-21 20:48:31.044   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:31.059 25510 25547 I TestRunner: finished: pruneAccount_capsEntriesAtMaximumLimit(com.playertwo.controlegithub.SQLiteGitHubCacheStoreTest)

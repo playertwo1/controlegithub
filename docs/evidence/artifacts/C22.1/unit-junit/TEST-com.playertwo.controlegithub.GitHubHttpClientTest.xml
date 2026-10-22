@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.playertwo.controlegithub.GitHubHttpClientTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-10-22T12:05:53.044Z" hostname="BOOKFAEL" time="0.557">
+  <properties/>
+  <testcase name="readTimeoutIsReportedWithoutExceptionDetails" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.276"/>
+  <testcase name="preservesOnlyHeadersNeededForPaginationAndRateLimit" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.011"/>
+  <testcase name="rejectsUntrustedOriginsBeforeSendingCredentials" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.001"/>
+  <testcase name="patchHandlesForbiddenAndNotFoundCorrectly" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.033"/>
+  <testcase name="successSendsHeadersAndKeepsTokenOutOfUrl" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.007"/>
+  <testcase name="patchHandles304NotModifiedAsSuccess" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.022"/>
+  <testcase name="sendsIfNoneMatchHeaderAndParsesEtag" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.026"/>
+  <testcase name="httpFailuresHaveDistinctSafeMessages" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.085"/>
+  <testcase name="connectionFailureIsReportedWithoutExceptionDetails" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.009"/>
+  <testcase name="postSendsJsonBodyAndReceives201Created" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.012"/>
+  <testcase name="patchSendsJsonBodyAndReceives200Ok" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.006"/>
+  <testcase name="notModified304ReturnsSuccessWithEmptyBodyAndEtag" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.013"/>
+  <testcase name="postFailureReturnsProperError" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.015"/>
+  <testcase name="patchSendsMethodAndHandles205ResetContentWithEmptyBody" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.009"/>
+  <testcase name="doesNotFollowRedirectsWithAuthorizationHeader" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.018"/>
+  <testcase name="cancelDisconnectsInFlightRequest" classname="com.playertwo.controlegithub.GitHubHttpClientTest" time="0.01"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

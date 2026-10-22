@@ -113,36 +113,39 @@ internal fun GitHubNotificationsScreen(
         errorMessage = null
         retryAt = null
         try {
-            when (val result = withContext(Dispatchers.IO) { activePager.loadNext() }) {
-                is GitHubPageResult.Loaded -> {
-                    notifications = result.items
-                    hasNext = result.hasNext
-                    loaded = true
-                    isOfflineCache = result.isOfflineCache
-                    cachedAtMillis = result.cachedAtMillis
-                }
-                is GitHubPageResult.RateLimited -> {
-                    if (result.items.isNotEmpty() || notifications.isEmpty()) {
+            val result = withContext(Dispatchers.IO) { activePager.loadNext() }
+            withContext(Dispatchers.Main.immediate) {
+                when (result) {
+                    is GitHubPageResult.Loaded -> {
                         notifications = result.items
+                        hasNext = result.hasNext
+                        loaded = true
+                        isOfflineCache = result.isOfflineCache
+                        cachedAtMillis = result.cachedAtMillis
                     }
-                    retryAt = result.retryAtEpochMillis
-                    errorMessage = GitHubHttpError.RATE_LIMITED.userMessage
-                }
-                is GitHubPageResult.Failed -> {
-                    if (result.items.isNotEmpty() || notifications.isEmpty()) {
-                        notifications = result.items
+                    is GitHubPageResult.RateLimited -> {
+                        if (result.items.isNotEmpty() || notifications.isEmpty()) {
+                            notifications = result.items
+                        }
+                        retryAt = result.retryAtEpochMillis
+                        errorMessage = GitHubHttpError.RATE_LIMITED.userMessage
                     }
-                    errorMessage = if (result.error == GitHubHttpError.FORBIDDEN) {
-                        "O GitHub não aceitou o acesso OAuth às notificações."
-                    } else result.message
-                    if (result.error == GitHubHttpError.UNAUTHORIZED && session != null && !sessionExpiryReported) {
-                        sessionExpiryReported = true
-                        onSessionExpired(session)
+                    is GitHubPageResult.Failed -> {
+                        if (result.items.isNotEmpty() || notifications.isEmpty()) {
+                            notifications = result.items
+                        }
+                        errorMessage = if (result.error == GitHubHttpError.FORBIDDEN) {
+                            "O GitHub não aceitou o acesso OAuth às notificações."
+                        } else result.message
+                        if (result.error == GitHubHttpError.UNAUTHORIZED && session != null && !sessionExpiryReported) {
+                            sessionExpiryReported = true
+                            onSessionExpired(session)
+                        }
                     }
                 }
             }
         } finally {
-            loading = false
+            withContext(Dispatchers.Main.immediate) { loading = false }
         }
     }
 
@@ -225,19 +228,21 @@ internal fun GitHubNotificationsScreen(
                         val result = withContext(Dispatchers.IO) {
                             markNotificationAsRead(client, activeToken, selected.id)
                         }
-                        markingReadId = null
-                        when (result) {
-                            is MarkNotificationReadResult.Success -> {
-                                selectedNotification = selected.copy(unread = false)
-                                notifications = notifications.map { item ->
-                                    if (item.id == selected.id) item.copy(unread = false) else item
+                        withContext(Dispatchers.Main.immediate) {
+                            markingReadId = null
+                            when (result) {
+                                is MarkNotificationReadResult.Success -> {
+                                    selectedNotification = selected.copy(unread = false)
+                                    notifications = notifications.map { item ->
+                                        if (item.id == selected.id) item.copy(unread = false) else item
+                                    }
                                 }
-                            }
-                            is MarkNotificationReadResult.Failure -> {
-                                markReadError = result.error.userMessage
-                                if (result.error == GitHubHttpError.UNAUTHORIZED && !sessionExpiryReported) {
-                                    sessionExpiryReported = true
-                                    onSessionExpired(session)
+                                is MarkNotificationReadResult.Failure -> {
+                                    markReadError = result.error.userMessage
+                                    if (result.error == GitHubHttpError.UNAUTHORIZED && !sessionExpiryReported) {
+                                        sessionExpiryReported = true
+                                        onSessionExpired(session)
+                                    }
                                 }
                             }
                         }

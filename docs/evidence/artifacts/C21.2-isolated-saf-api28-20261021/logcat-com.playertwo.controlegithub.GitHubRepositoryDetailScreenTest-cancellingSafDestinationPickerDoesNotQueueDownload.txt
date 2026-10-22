@@ -1,0 +1,226 @@
+10-21 20:51:16.802  9958  9986 I TestRunner: started: cancellingSafDestinationPickerDoesNotQueueDownload(com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest)
+10-21 20:51:17.037  9958  9986 W .controlegithu: Accessing hidden method Landroid/os/Trace;->setAppTracingAllowed(Z)V (light greylist, reflection)
+10-21 20:51:17.038  9958  9986 I Tracing : Tracer added: class androidx.test.platform.tracing.AndroidXTracer
+10-21 20:51:17.119  9958  9958 W .controlegithu: Accessing hidden method Landroid/os/MessageQueue;->next()Landroid/os/Message; (light greylist, reflection)
+10-21 20:51:17.119  9958  9958 W .controlegithu: Accessing hidden field Landroid/os/MessageQueue;->mMessages:Landroid/os/Message; (light greylist, reflection)
+10-21 20:51:17.119  9958  9958 W .controlegithu: Accessing hidden method Landroid/os/Message;->recycleUnchecked()V (light greylist, reflection)
+10-21 20:51:17.126  9958  9986 D IdlingRegistry: Registering idling resources: [androidx.compose.ui.test.EspressoLink@397dc6f]
+10-21 20:51:17.243  9958  9986 W Settings: Setting always_finish_activities has moved from android.provider.Settings.System to android.provider.Settings.Global, returning read-only value.
+10-21 20:51:17.256  1991  2499 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@4035e2e)
+10-21 20:51:17.260  1991  2006 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@4035e2e)
+10-21 20:51:17.365  9958  9958 W ActivityThread: handleWindowVisibility: no activity for token android.os.BinderProxy@66fd08b
+10-21 20:51:17.368  1637  1704 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8298496
+10-21 20:51:17.481  1637  1704 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8298496
+10-21 20:51:17.497  9958  9958 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@5781bb9 in: PRE_ON_CREATE
+10-21 20:51:17.499  9958  9958 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was PRE_ON_CREATE
+10-21 20:51:17.583  9958  9958 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@5781bb9 in: CREATED
+10-21 20:51:17.584  9958  9958 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=androidx.activity.ComponentActivity@5781bb9
+10-21 20:51:17.596  9958  9958 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@5781bb9 in: STARTED
+10-21 20:51:17.596  9958  9958 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=androidx.activity.ComponentActivity@5781bb9
+10-21 20:51:17.602  9958  9958 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@5781bb9 in: RESUMED
+10-21 20:51:17.603  9958  9958 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=androidx.activity.ComponentActivity@5781bb9
+10-21 20:51:17.613  9958  9958 D OpenGLRenderer: HWUI GL Pipeline
+10-21 20:51:17.648  1816  2074 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-21 20:51:17.782  3683  3738 D EGL_emulation: eglMakeCurrent: 0x7a7e1adeec60: ver 2 0 (tinfo 0x7a7e1ac8df00)
+10-21 20:51:17.827  3726  3819 D EGL_emulation: eglMakeCurrent: 0xe6f8c120: ver 2 0 (tinfo 0xd127b0b0)
+10-21 20:51:17.854  9958  9989 D HostConnection: HostConnection::get() New Host Connection established 0x7a7e26cc3de0, tid 9989
+10-21 20:51:17.865  9958  9989 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_YUV420_888_to_NV21 ANDROID_EMU_YUV_Cache ANDROID_EMU_sync_buffer_data ANDROID_EMU_hwc_color_transform GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_2
+10-21 20:51:17.872  9958  9989 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasWideColorDisplay retrieved: 0
+10-21 20:51:17.875  1637  1704 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8298496
+10-21 20:51:17.883  9958  9989 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasHDRDisplay retrieved: 0
+10-21 20:51:17.883  9958  9989 I OpenGLRenderer: Initialized EGL, version 1.4
+10-21 20:51:17.883  9958  9989 D OpenGLRenderer: Swap behavior 1
+10-21 20:51:17.887  2199  2479 D EGL_emulation: eglMakeCurrent: 0x7a7e2a045f80: ver 2 0 (tinfo 0x7a7e2a0ad160)
+10-21 20:51:17.888  9958  9989 D eglCodecCommon: setVertexArrayObject: set vao to 0 (0) 0 0
+10-21 20:51:17.888  9958  9989 D EGL_emulation: eglCreateContext: 0x7a7e26cc42e0: maj 2 min 0 rcv 2
+10-21 20:51:17.889  9958  9989 D EGL_emulation: eglMakeCurrent: 0x7a7e26cc42e0: ver 2 0 (tinfo 0x7a7e26ce6980)
+10-21 20:51:17.897  1637  1704 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8298496
+10-21 20:51:17.897  1816  2503 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-21 20:51:17.903  1637  1637 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8298496
+10-21 20:51:17.935  9958  9989 D HostConnection: createUnique: call
+10-21 20:51:17.937  9958  9989 D HostConnection: HostConnection::get() New Host Connection established 0x7a7e26cc4420, tid 9989
+10-21 20:51:17.957  9958  9989 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_YUV420_888_to_NV21 ANDROID_EMU_YUV_Cache ANDROID_EMU_sync_buffer_data ANDROID_EMU_hwc_color_transform GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_2
+10-21 20:51:17.957  9958  9989 E eglCodecCommon: GoldfishAddressSpaceHostMemoryAllocator: ioctl_ping failed for device_type=5, ret=-1
+10-21 20:51:17.964  9958  9989 D EGL_emulation: eglMakeCurrent: 0x7a7e26cc42e0: ver 2 0 (tinfo 0x7a7e26ce6980)
+10-21 20:51:18.271  1991  2499 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c9a117d)
+10-21 20:51:18.273  1991  2006 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c9a117d)
+10-21 20:51:18.330  9958  9958 W .controlegithu: Accessing hidden method Landroid/os/Trace;->asyncTraceBegin(JLjava/lang/String;I)V (light greylist, reflection)
+10-21 20:51:18.330  9958  9958 W .controlegithu: Accessing hidden method Landroid/os/Trace;->asyncTraceEnd(JLjava/lang/String;I)V (light greylist, reflection)
+10-21 20:51:18.330  9958  9958 W .controlegithu: Accessing hidden method Landroid/os/Trace;->traceCounter(JLjava/lang/String;I)V (light greylist, reflection)
+10-21 20:51:18.335  2828  2828 I GoogleInputMethod: onFinishInput() : Dummy InputConnection bound
+10-21 20:51:18.337  2828  2828 I GoogleInputMethod: onStartInput() : Dummy InputConnection bound
+10-21 20:51:18.422  1991  2015 I ActivityManager: Displayed com.playertwo.controlegithub/androidx.activity.ComponentActivity: +966ms (total +8m46s659ms)
+10-21 20:51:18.501  1816  1816 W SurfaceFlinger: couldn't log to binary event log: overflow.
+10-21 20:51:18.523  1816  1816 W SurfaceFlinger: couldn't log to binary event log: overflow.
+10-21 20:51:18.542  1816  1867 W SurfaceFlinger: Attempting to set client state on removed layer: Splash Screen com.playertwo.controlegithub#0
+10-21 20:51:18.542  1816  1867 W SurfaceFlinger: Attempting to destroy on removed layer: Splash Screen com.playertwo.controlegithub#0
+10-21 20:51:18.627  3726  3726 I StreamRenderer: cleanUpRendererScope(nowcards--4812753970113510568)
+10-21 20:51:18.688  3726  9994 I PBSessionCacheImpl: Deleted sessionId[224084583740] from persistence.
+10-21 20:51:18.740  3726  3726 W SearchService: Abort, client detached.
+10-21 20:51:18.743  3726  3726 I StreamController: cleanUpControllerScope(nowcards--4812753970113510568)
+10-21 20:51:19.174  3726  9979 I WorkController: WorkProxy is not enqueued because WorkController is disposed: WorkProxy{Name=context::j, WorkerId=context, id=a54db74}
+10-21 20:51:19.174  3726  9979 I WorkController: WorkProxy is not enqueued because WorkController is disposed: WorkProxy{Name=context::m, WorkerId=context, id=b6f89d}
+10-21 20:51:19.174  3726  9979 I WorkController: WorkProxy is not enqueued because WorkController is disposed: WorkProxy{Name=context::n, WorkerId=context, id=415e112}
+10-21 20:51:19.175  3726  9979 I WorkController: WorkProxy is not enqueued because WorkController is disposed: WorkProxy{Name=context::p, WorkerId=context, id=dd080e3}
+10-21 20:51:19.273  1991  2499 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@4013e6e)
+10-21 20:51:19.278  1991  2006 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@4013e6e)
+10-21 20:51:20.273  1991  2499 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@ca1490f)
+10-21 20:51:20.275  1991  2006 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@ca1490f)
+10-21 20:51:20.471  9958  9958 I Choreographer: Skipped 112 frames!  The application may be doing too much work on its main thread.
+10-21 20:51:20.497  9958  9985 D NetworkSecurityConfig: Using Network Security Config from resource network_security_config debugBuild: true
+10-21 20:51:20.884  9958  9958 W .controlegithu: Accessing hidden method Landroid/text/SpannableStringInternal;->length()I (light greylist, linking)
+10-21 20:51:21.288  1991  2499 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@588dd9c)
+10-21 20:51:21.289  1991  2006 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@588dd9c)
+10-21 20:51:22.184  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->create(Ljava/lang/String;Landroid/view/View;)Landroid/view/RenderNode; (light greylist, linking)
+10-21 20:51:22.184  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getScaleX()F (dark greylist, linking)
+10-21 20:51:22.185  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/DisplayListCanvas;->drawRenderNode(Landroid/view/RenderNode;)V (light greylist, linking)
+10-21 20:51:22.186  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getScaleX()F (dark greylist, linking)
+10-21 20:51:22.186  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getAlpha()F (dark greylist, linking)
+10-21 20:51:22.186  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getCameraDistance()F (dark greylist, linking)
+10-21 20:51:22.186  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getClipToOutline()Z (dark greylist, linking)
+10-21 20:51:22.187  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getElevation()F (dark greylist, linking)
+10-21 20:51:22.187  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->isValid()Z (light greylist, linking)
+10-21 20:51:22.188  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getInverseMatrix(Landroid/graphics/Matrix;)V (dark greylist, linking)
+10-21 20:51:22.188  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getMatrix(Landroid/graphics/Matrix;)V (dark greylist, linking)
+10-21 20:51:22.189  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getPivotX()F (dark greylist, linking)
+10-21 20:51:22.189  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getPivotY()F (dark greylist, linking)
+10-21 20:51:22.189  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getRotationX()F (dark greylist, linking)
+10-21 20:51:22.189  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getRotationY()F (dark greylist, linking)
+10-21 20:51:22.189  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getRotation()F (dark greylist, linking)
+10-21 20:51:22.190  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getScaleX()F (dark greylist, linking)
+10-21 20:51:22.190  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getScaleY()F (dark greylist, linking)
+10-21 20:51:22.191  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getTranslationX()F (dark greylist, linking)
+10-21 20:51:22.192  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getTranslationY()F (dark greylist, linking)
+10-21 20:51:22.192  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->hasOverlappingRendering()Z (dark greylist, linking)
+10-21 20:51:22.192  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->offsetLeftAndRight(I)Z (light greylist, linking)
+10-21 20:51:22.192  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->offsetTopAndBottom(I)Z (dark greylist, linking)
+10-21 20:51:22.192  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->start(II)Landroid/view/DisplayListCanvas; (light greylist, linking)
+10-21 20:51:22.193  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->end(Landroid/view/DisplayListCanvas;)V (light greylist, linking)
+10-21 20:51:22.193  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setAlpha(F)Z (dark greylist, linking)
+10-21 20:51:22.196  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setCameraDistance(F)Z (dark greylist, linking)
+10-21 20:51:22.196  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setClipToBounds(Z)Z (light greylist, linking)
+10-21 20:51:22.196  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setClipToOutline(Z)Z (dark greylist, linking)
+10-21 20:51:22.196  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setLayerType(I)Z (dark greylist, linking)
+10-21 20:51:22.196  9958  9958 I chatty  : uid=10108(com.playertwo.controlegithub) identical 1 line
+10-21 20:51:22.196  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setLayerType(I)Z (dark greylist, linking)
+10-21 20:51:22.196  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setElevation(F)Z (dark greylist, linking)
+10-21 20:51:22.196  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setHasOverlappingRendering(Z)Z (light greylist, linking)
+10-21 20:51:22.197  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setOutline(Landroid/graphics/Outline;)Z (dark greylist, linking)
+10-21 20:51:22.197  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setPivotX(F)Z (dark greylist, linking)
+10-21 20:51:22.197  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setPivotY(F)Z (dark greylist, linking)
+10-21 20:51:22.197  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setLeftTopRightBottom(IIII)Z (light greylist, linking)
+10-21 20:51:22.197  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setRotationX(F)Z (dark greylist, linking)
+10-21 20:51:22.198  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setRotationY(F)Z (dark greylist, linking)
+10-21 20:51:22.198  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setRotation(F)Z (dark greylist, linking)
+10-21 20:51:22.198  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setScaleX(F)Z (dark greylist, linking)
+10-21 20:51:22.198  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setScaleY(F)Z (dark greylist, linking)
+10-21 20:51:22.199  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setTranslationX(F)Z (dark greylist, linking)
+10-21 20:51:22.199  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->setTranslationY(F)Z (dark greylist, linking)
+10-21 20:51:22.200  9958  9958 W .controlegithu: Accessing hidden method Landroid/view/RenderNode;->getScaleX()F (dark greylist, linking)
+10-21 20:51:22.291  1991  2499 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@17413a5)
+10-21 20:51:22.292  1991  2006 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@17413a5)
+10-21 20:51:22.599  9958  9963 I .controlegithu: Compiler allocated 4MB to compile void com.playertwo.controlegithub.GitHubRepositoriesScreenKt.GitHubRepositoriesScreen(androidx.compose.ui.Modifier, com.playertwo.controlegithub.GitHubHttpClient, com.playertwo.controlegithub.GitHubSession, boolean, boolean, boolean, kotlin.jvm.functions.Function2, kotlin.jvm.functions.Function1, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, com.playertwo.controlegithub.RepositoryFavoritesStore, boolean, kotlinx.coroutines.sync.Mutex, com.playertwo.controlegithub.GitHubCacheStore, androidx.compose.runtime.Composer, int, int, int)
+10-21 20:51:22.772  9958 10002 D ProfileInstaller: Installing profile for com.playertwo.controlegithub
+10-21 20:51:23.091  9958  9989 I OpenGLRenderer: Davey! duration=4498ms; Flags=0, IntendedVsync=1769652843169, Vsync=1771519509761, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=1771532217300, AnimationStart=1771532332300, PerformTraversalsStart=1771532828500, DrawStart=1773455245400, SyncQueued=1773572356900, SyncStart=1773572665900, IssueDrawCommandsStart=1773572822500, SwapBuffers=1774139585700, FrameCompleted=1774151477300, DequeueBufferDuration=876000, QueueBufferDuration=2788000,
+10-21 20:51:23.306  1991  2499 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@306d37a)
+10-21 20:51:23.307  1991  2006 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@306d37a)
+10-21 20:51:23.986  9958  9963 I .controlegithu: JIT allocated 70KB for stack maps of void com.playertwo.controlegithub.GitHubRepositoryDetailScreenKt.GitHubRepositoryDetailScreen(androidx.compose.ui.Modifier, com.playertwo.controlegithub.GitHubHttpClient, com.playertwo.controlegithub.GitHubSession, com.playertwo.controlegithub.GitHubRepository, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function1, kotlin.jvm.functions.Function0, boolean, com.playertwo.controlegithub.GitHubCacheStore, androidx.compose.runtime.Composer, int, int)
+10-21 20:51:23.996  9958  9963 I .controlegithu: Compiler allocated 7MB to compile void com.playertwo.controlegithub.GitHubRepositoryDetailScreenKt.GitHubRepositoryDetailScreen(androidx.compose.ui.Modifier, com.playertwo.controlegithub.GitHubHttpClient, com.playertwo.controlegithub.GitHubSession, com.playertwo.controlegithub.GitHubRepository, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function1, kotlin.jvm.functions.Function0, boolean, com.playertwo.controlegithub.GitHubCacheStore, androidx.compose.runtime.Composer, int, int)
+10-21 20:51:24.146  9958  9969 I .controlegithu: Background concurrent copying GC freed 31026(2MB) AllocSpace objects, 8(160KB) LOS objects, 49% free, 4MB/9MB, paused 1.282ms total 144.163ms
+10-21 20:51:24.316  1991  2499 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@8b3672b)
+10-21 20:51:24.318  1991  2006 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@8b3672b)
+10-21 20:51:24.962  9958  9985 W .controlegithu: Accessing hidden method Landroid/database/sqlite/SQLiteDatabase;->getThreadSession()Landroid/database/sqlite/SQLiteSession; (light greylist, reflection)
+10-21 20:51:24.962  9958  9985 W .controlegithu: Accessing hidden method Landroid/database/sqlite/SQLiteSession;->beginTransaction(ILandroid/database/sqlite/SQLiteTransactionListener;ILandroid/os/CancellationSignal;)V (light greylist, reflection)
+10-21 20:51:25.274  9958  9958 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@5781bb9 in: PAUSED
+10-21 20:51:25.274  9958  9958 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=androidx.activity.ComponentActivity@5781bb9
+10-21 20:51:25.280  6441  6441 W ActivityThread: handleWindowVisibility: no activity for token android.os.BinderProxy@5bc0607
+10-21 20:51:25.319  6441  6441 D PickActivity: Created new state object: State{action=4, acceptMimes=[application/vnd.android.package-archive], allowMultiple=false, localOnly=false, showDeviceStorageOption=true, showAdvanced=false, stack=DocumentStack{root=null, docStack=[], stackTouched=false}, dirConfigs={}, excludedAuthorities=[], openableOnly=true, sortModel=SortModel{dimensions={16908304=SortDimension{id=16908304, labelId=2131755226, dataType=0, sortCapability=0, defaultSortDirection=1, sortDirection=0, visibility=4}, 16908310=SortDimension{id=16908310, labelId=2131755224, dataType=0, sortCapability=3, defaultSortDirection=1, sortDirection=0, visibility=0}, 2131296333=SortDimension{id=2131296333, labelId=2131755222, dataType=1, sortCapability=3, defaultSortDirection=2, sortDirection=0, visibility=0}, 2131296375=SortDimension{id=2131296375, labelId=2131755223, dataType=0, sortCapability=3, defaultSortDirection=1, sortDirection=0, visibility=0}, 2131296509=SortDimension{id=2131296509, labelId=2131755225, dataType=1, sortCapability=3, defaultSortDirection=1, sortDirection=0, visibility=0}}, defaultDimensionId=0, sortedDimension=null}}
+10-21 20:51:25.320  6441  6441 D DrawerController: Calculated drawer width:280.0
+10-21 20:51:25.321  6441  6441 D Metrics : docsui_launch_action: 3
+10-21 20:51:25.321  6441  6441 D Metrics : docsui_create_mime: 3
+10-21 20:51:25.331  1991  2499 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@98857d2)
+10-21 20:51:25.335  6441  6441 D PickerActionHandler: Launched to a document.
+10-21 20:51:25.345  1991  2006 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@98857d2)
+10-21 20:51:25.365  6441 10007 D ProvidersAccess: Matched roots: [Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, Root{authority=com.android.externalstorage.documents, rootId=home, title=Documents, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/home]
+10-21 20:51:25.419  1637  1637 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8298496
+10-21 20:51:25.432  1637  1704 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8298496
+10-21 20:51:25.435  1637  1637 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8298496
+10-21 20:51:25.457  6441  6441 D DocumentStack: Resetting the whole darn stack to: DocumentStack{root=Root{authority=com.android.externalstorage.documents, rootId=primary, title=Android SDK built for x86_64, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/primary, docStack=[DocumentInfo{docId=primary:, name=0, mimeType=vnd.android.document/directory, isContainer=true, isDirectory=true, isArchive=false, isInArchive=false, isPartial=false, isVirtual=false, isDeleteSupported=true, isCreateSupported=true, isRenameSupported=true, isMetadataSupported=false} @ content://com.android.externalstorage.documents/document/primary%3A, DocumentInfo{docId=primary:Download, name=Download, mimeType=vnd.android.document/directory, isContainer=true, isDirectory=true, isArchive=false, isInArchive=false, isPartial=false, isVirtual=false, isDeleteSupported=true, isCreateSupported=true, isRenameSupported=true, isMetadataSupported=false} @ content://com.android.externalstorage.documents/document/primary%3ADownload], stackTouched=false}
+10-21 20:51:25.457  6441  6441 D DirectoryFragment: Showing directory: content://com.android.externalstorage.documents/document/primary%3ADownload
+10-21 20:51:25.457  6441  6441 D DirectoryFragment: Creating new fragment for directory: content://com.android.externalstorage.documents/document/primary%3ADownload
+10-21 20:51:25.462  6441  6441 D Metrics : docsui_create_at_location: 4
+10-21 20:51:25.501  6441  6832 D EGL_emulation: eglMakeCurrent: 0x7a7e26d9e7c0: ver 2 0 (tinfo 0x7a7e26dad0c0)
+10-21 20:51:25.532  6441  6452 I oid.documentsu: Background concurrent copying GC freed 4647(394KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 2MB/4MB, paused 6.678ms total 64.954ms
+10-21 20:51:25.624  2828  2828 I GoogleInputMethod: onFinishInput() : Dummy InputConnection bound
+10-21 20:51:25.626  1991  2015 I ActivityManager: Displayed com.android.documentsui/.picker.PickActivity: +338ms
+10-21 20:51:25.635  2828  2828 I GoogleInputMethod: onStartInput() : Dummy InputConnection bound
+10-21 20:51:25.650  6441  6441 D AbstractActionHandler: Creating new directory loader for: content://com.android.externalstorage.documents/document/primary%3ADownload
+10-21 20:51:25.762  6441  6441 D AbstractActionHandler: Loader has finished for: content://com.android.externalstorage.documents/document/primary%3ADownload
+10-21 20:51:25.762  6441  6441 I Model   : Updating model with new result set.
+10-21 20:51:25.763  6441  6441 D DirectoryFragment: Received model update. Loading=false
+10-21 20:51:25.811  6441  6441 D Metrics : docsui_startup_ms: 507
+10-21 20:51:26.070  9958  9989 D EGL_emulation: eglMakeCurrent: 0x7a7e26cc42e0: ver 2 0 (tinfo 0x7a7e26ce6980)
+10-21 20:51:26.101  9958  9958 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@5781bb9 in: STOPPED
+10-21 20:51:26.102  9958  9958 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=androidx.activity.ComponentActivity@5781bb9
+10-21 20:51:26.331  1991  2499 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@281e893)
+10-21 20:51:26.332  1991  2006 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@281e893)
+10-21 20:51:26.586 10015 10015 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 20:51:26.652 10015 10015 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+10-21 20:51:26.656 10015 10015 I app_process: The ClassLoaderContext is a special shared library.
+10-21 20:51:26.688 10015 10015 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 20:51:26.696 10015 10015 I Input   : injectKeyEvent: KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x0, repeatCount=0, eventTime=1777748, downTime=1777748, deviceId=-1, source=0x101 }
+10-21 20:51:26.705  6441  6441 D DocumentStack: Popping doc off stack.
+10-21 20:51:26.705  6441  6441 D DirectoryFragment: Showing directory: content://com.android.externalstorage.documents/document/primary%3A
+10-21 20:51:26.705  6441  6441 D DirectoryFragment: Creating new fragment for directory: content://com.android.externalstorage.documents/document/primary%3A
+10-21 20:51:26.713 10015 10015 I Input   : injectKeyEvent: KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x0, repeatCount=0, eventTime=1777748, downTime=1777748, deviceId=-1, source=0x101 }
+10-21 20:51:26.715  6441  6441 D DirectoryFragment: Received model update. Loading=false
+10-21 20:51:26.718  6441  6441 D AbstractActionHandler: Creating new directory loader for: content://com.android.externalstorage.documents/document/primary%3A
+10-21 20:51:26.732 10015 10015 D AndroidRuntime: Shutting down VM
+10-21 20:51:26.879  6441  6441 D AbstractActionHandler: Loader has finished for: content://com.android.externalstorage.documents/document/primary%3A
+10-21 20:51:26.879  6441  6441 I Model   : Updating model with new result set.
+10-21 20:51:26.880  6441  6441 D DirectoryFragment: Received model update. Loading=false
+10-21 20:51:27.345  1991  2499 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@6fd847e)
+10-21 20:51:27.347  1991  2006 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@6fd847e)
+10-21 20:51:27.427 10032 10032 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 20:51:27.528 10032 10032 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+10-21 20:51:27.532 10032 10032 I app_process: The ClassLoaderContext is a special shared library.
+10-21 20:51:27.569 10032 10032 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 20:51:27.570 10032 10032 I Input   : injectKeyEvent: KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x0, repeatCount=0, eventTime=1778630, downTime=1778630, deviceId=-1, source=0x101 }
+10-21 20:51:27.586 10032 10032 I Input   : injectKeyEvent: KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x0, repeatCount=0, eventTime=1778630, downTime=1778630, deviceId=-1, source=0x101 }
+10-21 20:51:27.598 10032 10032 D AndroidRuntime: Shutting down VM
+10-21 20:51:27.622  9958  9958 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@5781bb9 in: RESTARTED
+10-21 20:51:27.623  9958  9958 V ActivityScenario: Update currentActivityStage to RESTARTED, currentActivity=androidx.activity.ComponentActivity@5781bb9
+10-21 20:51:27.629  9958  9958 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@5781bb9 in: STARTED
+10-21 20:51:27.629  9958  9958 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=androidx.activity.ComponentActivity@5781bb9
+10-21 20:51:27.653  9958  9958 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@5781bb9 in: RESUMED
+10-21 20:51:27.653  9958  9958 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=androidx.activity.ComponentActivity@5781bb9
+10-21 20:51:27.684  1637  1637 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8298496
+10-21 20:51:27.687  1637  1704 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8298496
+10-21 20:51:27.689  1637  1704 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8298496
+10-21 20:51:27.718  2828  2828 I GoogleInputMethod: onFinishInput() : Dummy InputConnection bound
+10-21 20:51:27.718  2828  2828 I GoogleInputMethod: onStartInput() : Dummy InputConnection bound
+10-21 20:51:27.747  9958  9989 D EGL_emulation: eglMakeCurrent: 0x7a7e26cc42e0: ver 2 0 (tinfo 0x7a7e26ce6980)
+10-21 20:51:28.357  1991  2499 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@4b86d65)
+10-21 20:51:28.375  1991  2006 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@4b86d65)
+10-21 20:51:28.407  6441  6832 D EGL_emulation: eglMakeCurrent: 0x7a7e26d9e7c0: ver 2 0 (tinfo 0x7a7e26dad0c0)
+10-21 20:51:28.521  9958  9958 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@5781bb9 in: PAUSED
+10-21 20:51:28.521  9958  9958 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=androidx.activity.ComponentActivity@5781bb9
+10-21 20:51:28.562  1991  2015 W system_server: Long monitor contention with owner Binder:1991_17 (3915) at int com.android.server.am.ActivityStarter.startActivityMayWait(android.app.IApplicationThread, int, java.lang.String, android.content.Intent, java.lang.String, android.service.voice.IVoiceInteractionSession, com.android.internal.app.IVoiceInteractor, android.os.IBinder, java.lang.String, int, int, android.app.ProfilerInfo, android.app.WaitResult, android.content.res.Configuration, com.android.server.am.SafeActivityOptions, boolean, int, com.android.server.am.TaskRecord, java.lang.String, boolean)(ActivityStarter.java:1023) waiters=1 in void com.android.server.am.ActivityManagerService$LocalService.notifyAppTransitionFinished() for 218ms
+10-21 20:51:28.590  9958  9989 D EGL_emulation: eglMakeCurrent: 0x7a7e26cc42e0: ver 2 0 (tinfo 0x7a7e26ce6980)
+10-21 20:51:28.613  1637  1704 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8298496
+10-21 20:51:28.620  9958  9958 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@5781bb9 in: STOPPED
+10-21 20:51:28.620  9958  9958 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=androidx.activity.ComponentActivity@5781bb9
+10-21 20:51:28.653 10047 10047 I rolegithub.tes: Late-enabling -Xcheck:jni
+10-21 20:51:28.688 10047 10047 W rolegithub.tes: Unexpected CPU variant for X86 using defaults: x86_64
+10-21 20:51:28.771  1637  1704 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8298496
+10-21 20:51:28.933  1816  2351 W SurfaceFlinger: Attempting to set client state on removed layer: com.playertwo.controlegithub/androidx.activity.ComponentActivity#0
+10-21 20:51:28.933  1816  2351 W SurfaceFlinger: Attempting to destroy on removed layer: com.playertwo.controlegithub/androidx.activity.ComponentActivity#0
+10-21 20:51:28.941  1816  2351 W SurfaceFlinger: Attempting to set client state on removed layer: com.playertwo.controlegithub/androidx.activity.ComponentActivity#0
+10-21 20:51:28.942  1816  2351 W SurfaceFlinger: Attempting to destroy on removed layer: com.playertwo.controlegithub/androidx.activity.ComponentActivity#0
+10-21 20:51:29.119 10047 10047 D OpenGLRenderer: HWUI GL Pipeline
+10-21 20:51:29.138  1816  2351 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-21 20:51:29.151  9958  9958 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@5781bb9 in: DESTROYED
+10-21 20:51:29.151  9958  9958 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+10-21 20:51:29.194  1816  1862 W SurfaceFlinger: Attempting to destroy on removed layer: AppWindowToken{f6b2f3a token=Token{3058665 ActivityRecord{501635c u0 com.playertwo.controlegithub/androidx.activity.ComponentActivity t28}}}#0
+10-21 20:51:29.300  9958  9986 D IdlingRegistry: Unregistering idling resources: [androidx.compose.ui.test.EspressoLink@397dc6f]
+10-21 20:51:29.302  9958  9986 I TestRunner: finished: cancellingSafDestinationPickerDoesNotQueueDownload(com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest)

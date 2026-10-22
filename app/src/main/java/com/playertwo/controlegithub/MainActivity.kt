@@ -21,6 +21,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.zIndex
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
@@ -117,6 +119,7 @@ class MainActivity : ComponentActivity() {
                             try {
                                 SyncScheduler.cancel(this@MainActivity)
                                 LocalNotificationManager.cancelAll(this@MainActivity)
+                                cancelReleaseDownloads(this@MainActivity)
                                 sessions.logout()
                                 sessionStorageError = false
                                 sessionRetry = false
@@ -150,6 +153,7 @@ class MainActivity : ComponentActivity() {
                             if (session?.accessToken == expired.accessToken) {
                                 SyncScheduler.cancel(this@MainActivity)
                                 LocalNotificationManager.cancelAll(this@MainActivity)
+                                cancelReleaseDownloads(this@MainActivity)
                                 val login = expired.user.login
                                 withContext(Dispatchers.IO) {
                                     try { cacheStore.clear(login) } catch (_: Exception) {}
@@ -169,6 +173,7 @@ class MainActivity : ComponentActivity() {
                         scope.launch {
                             SyncScheduler.cancel(this@MainActivity)
                             LocalNotificationManager.cancelAll(this@MainActivity)
+                            cancelReleaseDownloads(this@MainActivity)
                             val login = session?.user?.login
                             if (login != null) {
                                 withContext(Dispatchers.IO) {
@@ -249,8 +254,19 @@ internal fun ControleApp(
     var page by rememberSaveable { mutableStateOf(0) }
     var workAreaPullRequests by rememberSaveable { mutableStateOf(false) }
     var selectedName by rememberSaveable { mutableStateOf<String?>(null) }
+    var markdownRouteStack by remember { mutableStateOf(emptyList<GitHubMarkdownDestination>()) }
+    var markdownRouteDepthExceeded by remember { mutableStateOf(false) }
     var logoutConfirm by rememberSaveable { mutableStateOf(false) }
     var repositorySessionExpired by remember { mutableStateOf(false) }
+    var markdownRouteSessionToken by remember { mutableStateOf(session?.accessToken) }
+    LaunchedEffect(session?.accessToken) {
+        if (markdownRouteSessionToken != session?.accessToken) {
+            markdownRouteStack = emptyList()
+            markdownRouteDepthExceeded = false
+            appearanceOpen = false
+            markdownRouteSessionToken = session?.accessToken
+        }
+    }
     val connectAndPersist: suspend (GitHubSession) -> Boolean = { connected ->
         val saved = onConnected(connected)
         if (saved) repositorySessionExpired = false
@@ -258,13 +274,17 @@ internal fun ControleApp(
     }
     val selected = DemoData.repositories.firstOrNull { it.name == selectedName }
     val keyboardOpen = WindowInsets.isImeVisible
-    BackHandler(appearanceOpen || started) {
+    BackHandler(enabled = appearanceOpen || (started && markdownRouteStack.isEmpty())) {
         if (appearanceOpen) appearanceOpen = false
         else if (selected != null) selectedName = null
         else started = false
     }
+    BackHandler(enabled = markdownRouteStack.isNotEmpty() && !appearanceOpen) {
+        markdownRouteStack = markdownRouteStack.dropLast(1)
+        markdownRouteDepthExceeded = false
+    }
     Scaffold(containerColor = MaterialTheme.colorScheme.background, bottomBar = {
-        if (started && !appearanceOpen && !keyboardOpen) Box(
+        if (started && !appearanceOpen && markdownRouteStack.isEmpty() && !keyboardOpen) Box(
             Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 20.dp, vertical = 10.dp)
         ) {
             Surface(
@@ -285,7 +305,24 @@ internal fun ControleApp(
             }
         }
     }) { padding ->
-        if (appearanceOpen) AppearanceScreen(
+        CompositionLocalProvider(LocalGitHubMarkdownNavigator provides { destination ->
+            if (session != null) {
+                val updatedStack = appendMarkdownRoute(markdownRouteStack, destination)
+                if (updatedStack == null) markdownRouteDepthExceeded = true
+                else {
+                    markdownRouteStack = updatedStack
+                    markdownRouteDepthExceeded = false
+                }
+            }
+        }) {
+            Box(Modifier.fillMaxSize()) {
+                Box(Modifier.fillMaxSize()) {
+                Box(
+                    Modifier.fillMaxSize().then(
+                        if (markdownRouteStack.isNotEmpty()) Modifier.clearAndSetSemantics { } else Modifier
+                    )
+                ) {
+        if (appearanceOpen && markdownRouteStack.isEmpty()) AppearanceScreen(
             Modifier.padding(padding), themeMode, preferenceError,
             onBack = { appearanceOpen = false }, onThemeModeChange = onThemeModeChange
         )
@@ -413,12 +450,118 @@ internal fun ControleApp(
                     }
                 }
             }
+                }
+                }
+                val activeSession = session
+                if (activeSession != null) Box(Modifier.padding(padding).fillMaxSize()) {
+                    markdownRouteStack.forEachIndexed { routeIndex, destination ->
+                        val isActive = routeIndex == markdownRouteStack.lastIndex && !appearanceOpen
+                        key(routeIndex, destination) {
+                            Surface(
+                                modifier = Modifier.fillMaxSize()
+                                    .zIndex(routeIndex.toFloat())
+                                    .then(if (isActive) Modifier else Modifier.clearAndSetSemantics { }),
+                                color = MaterialTheme.colorScheme.background
+                            ) {
+                                val onBackFromLinkedDestination = {
+                                    markdownRouteStack = markdownRouteStack.dropLast(1)
+                                    markdownRouteDepthExceeded = false
+                                }
+                                when (destination) {
+                                    is GitHubMarkdownDestination.Repository -> {
+                                        val owner = destination.owner
+                                        val name = destination.repository
+                                        GitHubRepositoryDetailScreen(
+                                            modifier = Modifier,
+                                            client = apiClient,
+                                            session = activeSession,
+                                            repository = GitHubRepository(
+                                                UNRESOLVED_GITHUB_REPOSITORY_ID,
+                                                name,
+                                                "$owner/$name",
+                                                owner,
+                                                false,
+                                                null,
+                                                null,
+                                                0
+                                            ),
+                                            onBack = onBackFromLinkedDestination,
+                                            onSessionExpired = onSessionExpired,
+                                            onAppearance = { appearanceOpen = true },
+                                            isOffline = activeSession.isOffline,
+                                            cacheStore = cacheStore,
+                                            isActive = isActive
+                                        )
+                                    }
+                                    is GitHubMarkdownDestination.Issue -> GitHubIssueDetailScreen(
+                                        modifier = Modifier,
+                                        client = apiClient,
+                                        session = activeSession,
+                                        issue = GitHubIssue(
+                                            destination.number,
+                                            "Issue do GitHub",
+                                            GitHubIssueState.OPEN,
+                                            "${destination.owner}/${destination.repository}",
+                                            null,
+                                            emptyList(),
+                                            emptyList(),
+                                            null
+                                        ),
+                                        onBack = onBackFromLinkedDestination,
+                                        onSessionExpired = onSessionExpired,
+                                        onAppearance = { appearanceOpen = true },
+                                        isOffline = activeSession.isOffline,
+                                        isActive = isActive
+                                    )
+                                    is GitHubMarkdownDestination.PullRequest -> GitHubPullRequestDetailScreen(
+                                        modifier = Modifier,
+                                        client = apiClient,
+                                        session = activeSession,
+                                        pullRequest = GitHubPullRequest(
+                                            destination.number,
+                                            "Pull request do GitHub",
+                                            GitHubPullRequestState.OPEN,
+                                            "${destination.owner}/${destination.repository}",
+                                            null,
+                                            emptyList(),
+                                            null
+                                        ),
+                                        onBack = onBackFromLinkedDestination,
+                                        onSessionExpired = onSessionExpired,
+                                        onAppearance = { appearanceOpen = true },
+                                        isOffline = activeSession.isOffline,
+                                        isActive = isActive
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    if (appearanceOpen) Surface(
+                        modifier = Modifier.fillMaxSize().zIndex(MAX_GITHUB_MARKDOWN_ROUTE_DEPTH + 1f),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        AppearanceScreen(
+                            Modifier.padding(padding), themeMode, preferenceError,
+                            onBack = { appearanceOpen = false }, onThemeModeChange = onThemeModeChange
+                        )
+                    }
+                }
+            }
         }
+    }
     }
     if (logoutConfirm) LogoutConfirmation(
         storageError = sessionStorageError,
         onDismiss = { logoutConfirm = false },
         onConfirm = { logoutConfirm = false; onLogout() }
+    )
+    if (markdownRouteDepthExceeded) AlertDialog(
+        onDismissRequest = { markdownRouteDepthExceeded = false },
+        title = { Text("Limite de navegação atingido") },
+        text = { Text("Volte a um destino anterior para continuar navegando por links internos.") },
+        confirmButton = {
+            TextButton(onClick = { markdownRouteDepthExceeded = false }) { Text("Entendi") }
+        }
     )
 }
 
@@ -548,6 +691,7 @@ internal fun AppearanceScreen(
     onBack: () -> Unit,
     onThemeModeChange: (AppThemeMode) -> Unit
 ) {
+    BackHandler(onBack = onBack)
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onBack) {

@@ -1,0 +1,494 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuites tests="133" failures="1" errors="0" skipped="0" time="234.797" timestamp="2026-10-21T19:46:39" hostname="localhost">
+  <testsuite name="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" tests="3" failures="0" errors="0" skipped="0" time="10.818" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testBottomDockSemanticsAndTouchTargets" classname="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" time="4.05" />
+    <testcase name="testKanbanAndWorkAccessibility" classname="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" time="3.953" />
+    <testcase name="testThemeSwitchingAccessibility" classname="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" time="2.815" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" tests="3" failures="0" errors="0" skipped="0" time="12.008" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testScreenRotationPreservesNavigationAndDock" classname="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" time="5.936" />
+    <testcase name="testActivityRecreationPreservesFlowAndState" classname="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" time="3.259" />
+    <testcase name="testCompactAndExpandedLayoutAdaptation" classname="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" time="2.813" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.BackgroundSyncAndroidTest" tests="6" failures="0" errors="0" skipped="0" time="0.651" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testScheduleWithPreferencesReflectsConfiguredSettings" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.385" />
+    <testcase name="testScheduleAndCancel" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.045" />
+    <testcase name="testSyncPreferencesPersistence" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.165" />
+    <testcase name="testScheduleDisabledCancelsJob" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.044" />
+    <testcase name="testBuildJobInfo_anyNetworkAndDisabled" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.006" />
+    <testcase name="testBuildJobInfo_wifiOnlyAndBatteryConstraints" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.006" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.BetaRobustnessAndroidTest" tests="3" failures="0" errors="0" skipped="0" time="0.018" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="scenario3_pullRequestDetailParsingWithNullBodyAndMinimalData" classname="com.playertwo.controlegithub.BetaRobustnessAndroidTest" time="0.007" />
+    <testcase name="scenario2_issueParsingWithMissingOptionalFieldsDoesNotCrash" classname="com.playertwo.controlegithub.BetaRobustnessAndroidTest" time="0.004" />
+    <testcase name="scenario1_repositoryParsingWithMissingOptionalFieldsDoesNotCrash" classname="com.playertwo.controlegithub.BetaRobustnessAndroidTest" time="0.007" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreateIssueAndroidTest" tests="3" failures="0" errors="0" skipped="0" time="0.022" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseCreatedIssueRejectsMissingTitleOrNumber" classname="com.playertwo.controlegithub.CreateIssueAndroidTest" time="0.006" />
+    <testcase name="parseCreatedIssueMapsFieldsCorrectly" classname="com.playertwo.controlegithub.CreateIssueAndroidTest" time="0.006" />
+    <testcase name="parseCreatedIssueHandlesMissingRepositoryByFallback" classname="com.playertwo.controlegithub.CreateIssueAndroidTest" time="0.01" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreateIssueUiTest" tests="5" failures="0" errors="0" skipped="0" time="14.327" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="createIssueOfflineModeDisablesSubmissionAndShowsBanner" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="1.743" />
+    <testcase name="createIssueAntiDoubleTapDisablesButtonDuringSubmission" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="3.973" />
+    <testcase name="createIssueFailureDisplaysErrorAndPreservesDraft" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="3.511" />
+    <testcase name="createIssueSuccessSubmitsPostAndInvokesCallback" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="3.412" />
+    <testcase name="createIssueEmptyTitleShowsValidationErrorWithoutNetworkCall" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="1.688" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest" tests="2" failures="0" errors="0" skipped="0" time="0.018" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseCreatedPullRequestCommentRejectsMissingId" classname="com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest" time="0.012" />
+    <testcase name="parseCreatedPullRequestCommentMapsFieldsCorrectly" classname="com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest" time="0.006" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" tests="5" failures="0" errors="0" skipped="0" time="13.849" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="commentAntiDoubleTapDisablesButtonDuringSubmission" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="3.66" />
+    <testcase name="commentSuccessSubmitsPostAppendsToUiAndClearsInput" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="3.242" />
+    <testcase name="mutationGuardEmptyValidation" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="2.198" />
+    <testcase name="commentFailurePreservesDraftTextAndDisplaysError" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="2.999" />
+    <testcase name="mutationGuardOfflineBlocked" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="1.75" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.DailySummaryUiTest" tests="4" failures="0" errors="0" skipped="0" time="9.86" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="dailySummaryDisplaysCachedSourceWhenOffline" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="1.884" />
+    <testcase name="dailySummaryDisplaysPartialCoverageSource" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="1.693" />
+    <testcase name="dailySummaryExportMarkdownCopiesToClipboardAndShowsFeedback" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="3.444" />
+    <testcase name="dailySummaryDisplaysPeriodTimezoneAndMetrics" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="2.839" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.EditAndCommentIssueAndroidTest" tests="2" failures="0" errors="0" skipped="0" time="0.011" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseCreatedIssueCommentRejectsMissingId" classname="com.playertwo.controlegithub.EditAndCommentIssueAndroidTest" time="0.005" />
+    <testcase name="parseCreatedIssueCommentMapsFieldsCorrectly" classname="com.playertwo.controlegithub.EditAndCommentIssueAndroidTest" time="0.006" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.EditAndCommentIssueUiTest" tests="7" failures="0" errors="0" skipped="0" time="22.477" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="commentAntiDoubleTapDisablesButtonDuringSubmission" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.64" />
+    <testcase name="commentSuccessSubmitsPostAppendsToUiAndClearsInput" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="4.056" />
+    <testcase name="editIssueSuccessSubmitsPatchAndUpdatesHeader" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.399" />
+    <testcase name="mutationGuardEmptyValidation" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="2.746" />
+    <testcase name="editIssueFailurePreservesDraftAndDisplaysError" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.119" />
+    <testcase name="commentFailurePreservesDraftTextAndDisplaysError" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="2.78" />
+    <testcase name="mutationGuardOfflineBlocked" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="2.737" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubAccountProfileMappingTest" tests="3" failures="0" errors="0" skipped="0" time="0.123" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="rejectsAnotherIdentityAndMalformedCounts" classname="com.playertwo.controlegithub.GitHubAccountProfileMappingTest" time="0.087" />
+    <testcase name="parsesAccountIdentityAndZeroCounts" classname="com.playertwo.controlegithub.GitHubAccountProfileMappingTest" time="0.022" />
+    <testcase name="absentAndNullCountsStayUnavailableAndBlankNameFallsBackToLogin" classname="com.playertwo.controlegithub.GitHubAccountProfileMappingTest" time="0.014" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubActionsMappingTest" tests="3" failures="0" errors="0" skipped="0" time="0.067" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="jobsCannotBeAttributedToAnotherWorkflowRun" classname="com.playertwo.controlegithub.GitHubActionsMappingTest" time="0.011" />
+    <testcase name="incompleteAndUnknownStatesNeverBecomeSuccess" classname="com.playertwo.controlegithub.GitHubActionsMappingTest" time="0.008" />
+    <testcase name="selectedWorkflowRunUsesTheFilteredEndpointAndAcceptsItsRun" classname="com.playertwo.controlegithub.GitHubActionsMappingTest" time="0.048" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubHomeScreenTest" tests="8" failures="0" errors="0" skipped="0" time="20.85" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="authenticatedWorkAndNoticesShowUnintegratedState" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="2.727" />
+    <testcase name="serverFailureCanRecoverThroughRetry" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="2.67" />
+    <testcase name="demonstrationDataIsLabeledAcrossHomeWorkAndNotices" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="3.225" />
+    <testcase name="rateLimitedProfileShowsExplicitRetry" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="2.093" />
+    <testcase name="forbiddenProfileKeepsSessionIdentitySeparateAndOffersRetry" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="2.146" />
+    <testcase name="authenticatedHomeLoadsOnlyAuthenticatedUserAndRefreshesWithoutDemoValues" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="3.892" />
+    <testcase name="unauthorizedProfileExpiresSessionOnceAndDoesNotShowLoadedProfile" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="2.089" />
+    <testcase name="networkFailureCanRecoverThroughRetry" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="2.008" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" tests="4" failures="0" errors="0" skipped="0" time="0.103" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="buildsIssueAndCommentRoutesFromValidatedIdentity" classname="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" time="0.016" />
+    <testcase name="absentBodyAndAuthorRemainEmptyAndPullRequestOrMismatchedIdentityAreRejected" classname="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" time="0.039" />
+    <testcase name="mapsSelectedIssueBodyLabelsAndInertMarkdownWithoutChangingIdentity" classname="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" time="0.01" />
+    <testcase name="mapsCommentsInResponseOrderAndSkipsMalformedEntries" classname="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" time="0.038" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubIssuesScreenTest" tests="13" failures="0" errors="0" skipped="0" time="32.937" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="failedNextCommentPagePreservesLoadedCommentsAndCanRetry" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="2.492" />
+    <testcase name="filtersIssuesPaginatesAndExcludesPullRequestsAndDuplicates" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="2.345" />
+    <testcase name="notFoundIssueStaysPrivateSafe" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="1.581" />
+    <testcase name="selectedParticipationAndStateRestartQueryAndShowEmptyState" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="3.307" />
+    <testcase name="rateLimitShowsExplicitRetryAndRecovers" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="2.642" />
+    <testcase name="opensSelectedIssueAndLoadsPagedCommentsAsInertText" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="2.498" />
+    <testcase name="serverFailureCanRetry" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="2.125" />
+    <testcase name="unauthorizedExpiresSessionOnce" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="1.753" />
+    <testcase name="backFromDetailPreservesFiltersAndLoadedIssues" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="5.976" />
+    <testcase name="missingSessionOffersConnectionWithoutDemoIssues" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="2.567" />
+    <testcase name="networkFailureCanRetry" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="1.669" />
+    <testcase name="removedIssueHasOwnState" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="1.893" />
+    <testcase name="forbiddenCanRetry" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="2.089" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubIssuesTest" tests="4" failures="0" errors="0" skipped="0" time="0.018" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="mapsIssueAndOptionalFieldsWithoutRenderingMarkdown" classname="com.playertwo.controlegithub.GitHubIssuesTest" time="0.004" />
+    <testcase name="dropsInvalidIssuesAndAcceptsEmptyResponse" classname="com.playertwo.controlegithub.GitHubIssuesTest" time="0.005" />
+    <testcase name="buildsAccountIssueQueriesWithIssueOnlyFilterAndPagination" classname="com.playertwo.controlegithub.GitHubIssuesTest" time="0.005" />
+    <testcase name="excludesPullRequestsDeduplicatesSeparatelyAndAcceptsOptionalDataMissing" classname="com.playertwo.controlegithub.GitHubIssuesTest" time="0.004" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubNotificationPagerTest" tests="2" failures="0" errors="0" skipped="0" time="0.047" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="preservesUnauthorizedForbiddenRateLimitAndMalformedResponseStates" classname="com.playertwo.controlegithub.GitHubNotificationPagerTest" time="0.016" />
+    <testcase name="requestsAllNotificationsAndDeduplicatesAcrossPages" classname="com.playertwo.controlegithub.GitHubNotificationPagerTest" time="0.031" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubNotificationsScreenTest" tests="7" failures="0" errors="0" skipped="0" time="14.494" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="markingNotificationAsReadWith304UpdatesLocalStateToRead" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="2.209" />
+    <testcase name="markingNotificationAsReadSendsPatchAndUpdatesLocalStateToRead" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="2.276" />
+    <testcase name="emptyStateAppearsOnlyAfterAValidSuccessfulResponse" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="1.416" />
+    <testcase name="forbiddenOAuthIsExplicitAndNeverRendersEmptyState" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="1.875" />
+    <testcase name="opensOriginAndBackReturnsToNotificationAndPreservesFilters" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="2.468" />
+    <testcase name="markingNotificationAsReadWith401PreservesUnreadAndNotifiesSessionExpiry" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="1.94" />
+    <testcase name="markingNotificationAsReadFailurePreservesUnreadAndDisplaysErrorMessage" classname="com.playertwo.controlegithub.GitHubNotificationsScreenTest" time="2.31" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubNotificationsTest" tests="6" failures="0" errors="0" skipped="0" time="0.109" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="rejectsMalformedCollectionOrThreadInsteadOfReturningPartialItems" classname="com.playertwo.controlegithub.GitHubNotificationsTest" time="0.037" />
+    <testcase name="acceptsOptionalTitleTypeUrlAndDate" classname="com.playertwo.controlegithub.GitHubNotificationsTest" time="0.011" />
+    <testcase name="parsesRequiredFieldsAndPreservesUnknownValues" classname="com.playertwo.controlegithub.GitHubNotificationsTest" time="0.006" />
+    <testcase name="markNotificationAsReadValidatesThreadId" classname="com.playertwo.controlegithub.GitHubNotificationsTest" time="0.004" />
+    <testcase name="rejectsUntrustedOrInconsistentSubjectUrls" classname="com.playertwo.controlegithub.GitHubNotificationsTest" time="0.047" />
+    <testcase name="mapsOnlyValidatedIssuePullRequestAndRepositoryDestinations" classname="com.playertwo.controlegithub.GitHubNotificationsTest" time="0.004" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubOAuthProfileTest" tests="1" failures="0" errors="0" skipped="0" time="0.006" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="acceptsOnlyAValidGitHubLoginFromTheUserResponse" classname="com.playertwo.controlegithub.GitHubOAuthProfileTest" time="0.006" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubPullRequestMappingTest" tests="7" failures="0" errors="0" skipped="0" time="2.267" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="filesChecksAndStatusesMapDiffAndCommitResults" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="0.011" />
+    <testcase name="commitStatusPagerEnforcesTheHundredPageHttpCap" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="1.133" />
+    <testcase name="detailDistinguishesClosedAndMergedAndPreservesForkBranches" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="0.006" />
+    <testcase name="filesPagerEnforcesTheThirtyPageAndThreeThousandFileHttpCap" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="0.38" />
+    <testcase name="searchKeepsOnlyValidPullRequestsAndDeduplicatesRepositoryNumber" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="0.006" />
+    <testcase name="paginationCapsAreReportedEvenWhenTheServerOmitsNextLinkAtTheBoundary" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="0.006" />
+    <testcase name="checkRunPagerEnforcesTheHundredPageHttpCap" classname="com.playertwo.controlegithub.GitHubPullRequestMappingTest" time="0.725" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" tests="9" failures="0" errors="0" skipped="0" time="19.314" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="reportsSearchLimitWhenTotalCountIsExactlyOneThousand" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="1.412" />
+    <testcase name="emptyCheckAndStatusListsDoNotClaimCombinedSuccess" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="1.68" />
+    <testcase name="expandingFileWithoutPatchExplainsWhyDiffIsUnavailable" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="2.078" />
+    <testcase name="doesNotRevealWhetherMissingOrGonePullRequestWasAccessible" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="1.169" />
+    <testcase name="statusFailureKeepsChecksAndRetryLoadsOnlyFailedSection" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="2.045" />
+    <testcase name="filesPaginationFollowsNextAndDeduplicatesPaths" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="2.777" />
+    <testcase name="opensPullRequestDetailWithCommentsAndReviews" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="2.735" />
+    <testcase name="expandingLongFilePatchExplainsLocalTruncation" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="2.973" />
+    <testcase name="filtersGlobalPullRequestsByOpenClosedAndMergedStates" classname="com.playertwo.controlegithub.GitHubPullRequestsScreenTest" time="2.445" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubRepositoriesEmptyStateTest" tests="1" failures="0" errors="0" skipped="0" time="1.724" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="emptyApiResponseShowsEmptyStateAndRefreshRequestsAgain" classname="com.playertwo.controlegithub.GitHubRepositoriesEmptyStateTest" time="1.724" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" tests="9" failures="0" errors="0" skipped="0" time="23.182" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="favoriteToggleFiltersLoadedRepositoriesWithoutRemoteRequest" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="2.349" />
+    <testcase name="searchAndCombinedFiltersStayLocalAndCanBeCleared" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="4.049" />
+    <testcase name="logoutIsDisabledWhileFavoriteIsBeingSaved" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="2.374" />
+    <testcase name="loadedRepositoryListOffersFavoritesFilter" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="2.009" />
+    <testcase name="failedFavoriteWriteKeepsThePersistedStarState" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="1.877" />
+    <testcase name="searchByLanguageAppliesToNextPageAndRefreshKeepsCriteria" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="3.068" />
+    <testcase name="filteredEmptyStateIsDistinctAndCanBeCleared" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="2.685" />
+    <testcase name="favoriteReadFailureDisablesControlsAndRetryRestoresThem" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="2.032" />
+    <testcase name="favoritesStayIsolatedWhenTheConnectedAccountChanges" classname="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest" time="2.739" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubRepositoryDetailMappingTest" tests="4" failures="0" errors="0" skipped="0" time="0.058" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="rejectsMismatchedIdentityAndInvalidCounts" classname="com.playertwo.controlegithub.GitHubRepositoryDetailMappingTest" time="0.042" />
+    <testcase name="absentCountsAndInvalidTimestampStayUnavailable" classname="com.playertwo.controlegithub.GitHubRepositoryDetailMappingTest" time="0.005" />
+    <testcase name="decodesReadmeBase64AsPlainUtf8AndRejectsOtherEncodings" classname="com.playertwo.controlegithub.GitHubRepositoryDetailMappingTest" time="0.005" />
+    <testcase name="mapsDetailCountsVisibilityBranchAndLastPush" classname="com.playertwo.controlegithub.GitHubRepositoryDetailMappingTest" time="0.006" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" tests="9" failures="1" errors="0" skipped="0" time="21.474" timestamp="2026-10-21T19:46:39" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="unauthorizedActionsRequestExpiresSessionOnce" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="2.266" />
+    <testcase name="repositoryActionsCanShowAllRecentRuns" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="2.556" />
+    <testcase name="serverFailureCanBeRetriedSuccessfully" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="3.132" />
+    <testcase name="logoutCancellationDeletesQueuedDownloadDestination" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="2.718" />
+    <testcase name="forbiddenActionsRequestIsNotPresentedAsAnEmptyList" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="2.092" />
+    <testcase name="completedReleaseAssetShowsManualInstallAction" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="3.319" />
+    <testcase name="metadataFailureIsNotPresentedAsAnEmptyReadme" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="2.07" />
+    <testcase name="workerFailureBeforeTransferDeletesSelectedDestination" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.887" />
+    <testcase name="actionsPaginationLoadsOnlyTheNextValidatedPageAndDeduplicates" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="1.434">
+      <failure>java.lang.IndexOutOfBoundsException: Index 4, size 4
+at androidx.compose.foundation.lazy.layout.MutableIntervalList.checkIndexBounds(IntervalList.kt:183)
+at androidx.compose.foundation.lazy.layout.MutableIntervalList.get(IntervalList.kt:166)
+at androidx.compose.foundation.lazy.layout.LazyLayoutIntervalContent.getKey(LazyLayoutIntervalContent.kt:86)
+at androidx.compose.foundation.lazy.LazyListItemProviderImpl.getKey(LazyListItemProvider.kt:85)
+at androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScopeImpl.measure-0kLqBqw(LazyLayoutMeasureScope.kt:122)
+at androidx.compose.foundation.lazy.LazyListMeasuredItemProvider.getAndMeasure-0kLqBqw(LazyListMeasuredItemProvider.kt:55)
+at androidx.compose.foundation.lazy.LazyListMeasuredItemProvider.getAndMeasure-0kLqBqw$default(LazyListMeasuredItemProvider.kt:49)
+at androidx.compose.foundation.lazy.LazyListMeasureKt.measureLazyList-x0Ok8Vo(LazyListMeasure.kt:214)
+at androidx.compose.foundation.lazy.LazyListKt$rememberLazyListMeasurePolicy$1$1.invoke-0kLqBqw(LazyList.kt:326)
+at androidx.compose.foundation.lazy.LazyListKt$rememberLazyListMeasurePolicy$1$1.invoke(LazyList.kt:183)
+at androidx.compose.foundation.lazy.layout.LazyLayoutKt$LazyLayout$3$2$1.invoke-0kLqBqw(LazyLayout.kt:119)
+at androidx.compose.foundation.lazy.layout.LazyLayoutKt$LazyLayout$3$2$1.invoke(LazyLayout.kt:112)
+at androidx.compose.ui.layout.LayoutNodeSubcompositionsState$createMeasurePolicy$1.measure-3p2s80s(SubcomposeLayout.kt:725)
+at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:135)
+at androidx.compose.ui.graphics.SimpleGraphicsLayerModifier.measure-3p2s80s(GraphicsLayerModifier.kt:646)
+at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:188)
+at androidx.compose.foundation.layout.FillNode.measure-3p2s80s(Size.kt:699)
+at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:188)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:316)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:315)
+at androidx.compose.runtime.snapshots.Snapshot$Companion.observe(Snapshot.kt:503)
+at androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.observe(SnapshotStateObserver.kt:502)
+at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:258)
+at androidx.compose.ui.node.OwnerSnapshotObserver.observeReads$ui_release(OwnerSnapshotObserver.kt:133)
+at androidx.compose.ui.node.OwnerSnapshotObserver.observeMeasureSnapshotReads$ui_release(OwnerSnapshotObserver.kt:113)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate.performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:1782)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate.access$performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:40)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.remeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:696)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.measure-BRTryo0(LayoutNodeLayoutDelegate.kt:672)
+at androidx.compose.ui.layout.RootMeasurePolicy.measure-3p2s80s(RootMeasurePolicy.kt:38)
+at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:135)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:316)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:315)
+at androidx.compose.runtime.snapshots.Snapshot$Companion.observe(Snapshot.kt:2441)
+at androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.observe(SnapshotStateObserver.kt:502)
+at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:258)
+at androidx.compose.ui.node.OwnerSnapshotObserver.observeReads$ui_release(OwnerSnapshotObserver.kt:133)
+at androidx.compose.ui.node.OwnerSnapshotObserver.observeMeasureSnapshotReads$ui_release(OwnerSnapshotObserver.kt:113)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate.performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:1782)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate.access$performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:40)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.remeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:696)
+at androidx.compose.ui.node.LayoutNode.remeasure-_Sx5XlM$ui_release(LayoutNode.kt:1222)
+at androidx.compose.ui.node.MeasureAndLayoutDelegate.doRemeasure-sdFAvZA(MeasureAndLayoutDelegate.kt:367)
+at androidx.compose.ui.node.MeasureAndLayoutDelegate.remeasureOnly(MeasureAndLayoutDelegate.kt:622)
+at androidx.compose.ui.node.MeasureAndLayoutDelegate.measureOnly(MeasureAndLayoutDelegate.kt:420)
+at androidx.compose.ui.platform.AndroidComposeView.onMeasure(AndroidComposeView.android.kt:1370)
+at android.view.View.measure(View.java:29133)
+at androidx.compose.ui.platform.AbstractComposeView.internalOnMeasure$ui_release(ComposeView.android.kt:309)
+at androidx.compose.ui.platform.AbstractComposeView.onMeasure(ComposeView.android.kt:296)
+at android.view.View.measure(View.java:29133)
+at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+at android.widget.FrameLayout.onMeasure(FrameLayout.java:195)
+at android.view.View.measure(View.java:29133)
+at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+at android.widget.LinearLayout.measureChildBeforeLayout(LinearLayout.java:1609)
+at android.widget.LinearLayout.measureVertical(LinearLayout.java:879)
+at android.widget.LinearLayout.onMeasure(LinearLayout.java:722)
+at android.view.View.measure(View.java:29133)
+at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+at android.widget.FrameLayout.onMeasure(FrameLayout.java:195)
+at com.android.internal.policy.DecorView.onMeasure(DecorView.java:728)
+at android.view.View.measure(View.java:29133)
+at android.view.ViewRootImpl.performMeasure(ViewRootImpl.java:5901)
+at android.view.ViewRootImpl.measureHierarchy(ViewRootImpl.java:3986)
+at android.view.ViewRootImpl.performTraversals(ViewRootImpl.java:4447)
+at android.view.ViewRootImpl.doTraversal(ViewRootImpl.java:3676)
+at android.view.ViewRootImpl$TraversalCallback.onVsync(ViewRootImpl.java:11992)
+at android.view.Choreographer$CallbackRecord.run(Choreographer.java:1916)
+at android.view.Choreographer.doCallbacks(Choreographer.java:1434)
+at android.view.Choreographer.doFrame(Choreographer.java:1289)
+at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:1892)
+at android.os.Handler.handleCallback(Handler.java:1080)
+at android.os.Handler.dispatchMessageImpl(Handler.java:135)
+at android.os.Handler.dispatchMessage(Handler.java:126)
+at android.os.Looper.loopOnce(Looper.java:285)
+at android.os.Looper.loop(Looper.java:390)
+at android.app.ActivityThread.main(ActivityThread.java:9884)
+at java.lang.reflect.Method.invoke(Native Method)
+at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:575)
+at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:906)
+</failure>
+    </testcase>
+  </testsuite>
+  <system-err>Test run failed to complete. Instrumentation run failed due to Process crashed.
+Logcat of last crash: 
+Process: com.playertwo.controlegithub, PID: 20068
+java.lang.IndexOutOfBoundsException: Index 4, size 4
+	at androidx.compose.foundation.lazy.layout.MutableIntervalList.checkIndexBounds(IntervalList.kt:183)
+	at androidx.compose.foundation.lazy.layout.MutableIntervalList.get(IntervalList.kt:166)
+	at androidx.compose.foundation.lazy.layout.LazyLayoutIntervalContent.getKey(LazyLayoutIntervalContent.kt:86)
+	at androidx.compose.foundation.lazy.LazyListItemProviderImpl.getKey(LazyListItemProvider.kt:85)
+	at androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScopeImpl.measure-0kLqBqw(LazyLayoutMeasureScope.kt:122)
+	at androidx.compose.foundation.lazy.LazyListMeasuredItemProvider.getAndMeasure-0kLqBqw(LazyListMeasuredItemProvider.kt:55)
+	at androidx.compose.foundation.lazy.LazyListMeasuredItemProvider.getAndMeasure-0kLqBqw$default(LazyListMeasuredItemProvider.kt:49)
+	at androidx.compose.foundation.lazy.LazyListMeasureKt.measureLazyList-x0Ok8Vo(LazyListMeasure.kt:214)
+	at androidx.compose.foundation.lazy.LazyListKt$rememberLazyListMeasurePolicy$1$1.invoke-0kLqBqw(LazyList.kt:326)
+	at androidx.compose.foundation.lazy.LazyListKt$rememberLazyListMeasurePolicy$1$1.invoke(LazyList.kt:183)
+	at androidx.compose.foundation.lazy.layout.LazyLayoutKt$LazyLayout$3$2$1.invoke-0kLqBqw(LazyLayout.kt:119)
+	at androidx.compose.foundation.lazy.layout.LazyLayoutKt$LazyLayout$3$2$1.invoke(LazyLayout.kt:112)
+	at androidx.compose.ui.layout.LayoutNodeSubcompositionsState$createMeasurePolicy$1.measure-3p2s80s(SubcomposeLayout.kt:725)
+	at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:135)
+	at androidx.compose.ui.graphics.SimpleGraphicsLayerModifier.measure-3p2s80s(GraphicsLayerModifier.kt:646)
+	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:188)
+	at androidx.compose.foundation.layout.FillNode.measure-3p2s80s(Size.kt:699)
+	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:188)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:316)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:315)
+	at androidx.compose.runtime.snapshots.Snapshot$Companion.observe(Snapshot.kt:503)
+	at androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.observe(SnapshotStateObserver.kt:502)
+	at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:258)
+	at androidx.compose.ui.node.OwnerSnapshotObserver.observeReads$ui_release(OwnerSnapshotObserver.kt:133)
+	at androidx.compose.ui.node.OwnerSnapshotObserver.observeMeasureSnapshotReads$ui_release(OwnerSnapshotObserver.kt:113)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate.performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:1782)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate.access$performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:40)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.remeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:696)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.measure-BRTryo0(LayoutNodeLayoutDelegate.kt:672)
+	at androidx.compose.ui.layout.RootMeasurePolicy.measure-3p2s80s(RootMeasurePolicy.kt:38)
+	at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:135)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:316)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:315)
+	at androidx.compose.runtime.snapshots.Snapshot$Companion.observe(Snapshot.kt:2441)
+	at androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.observe(SnapshotStateObserver.kt:502)
+	at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:258)
+	at androidx.compose.ui.node.OwnerSnapshotObserver.observeReads$ui_release(OwnerSnapshotObserver.kt:133)
+	at androidx.compose.ui.node.OwnerSnapshotObserver.observeMeasureSnapshotReads$ui_release(OwnerSnapshotObserver.kt:113)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate.performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:1782)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate.access$performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:40)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.remeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:696)
+	at androidx.compose.ui.node.LayoutNode.remeasure-_Sx5XlM$ui_release(LayoutNode.kt:1222)
+	at androidx.compose.ui.node.MeasureAndLayoutDelegate.doRemeasure-sdFAvZA(MeasureAndLayoutDelegate.kt:367)
+	at androidx.compose.ui.node.MeasureAndLayoutDelegate.remeasureOnly(MeasureAndLayoutDelegate.kt:622)
+	at androidx.compose.ui.node.MeasureAndLayoutDelegate.measureOnly(MeasureAndLayoutDelegate.kt:420)
+	at androidx.compose.ui.platform.AndroidComposeView.onMeasure(AndroidComposeView.android.kt:1370)
+	at android.view.View.measure(View.java:29133)
+	at androidx.compose.ui.platform.AbstractComposeView.internalOnMeasure$ui_release(ComposeView.android.kt:309)
+	at androidx.compose.ui.platform.AbstractComposeView.onMeasure(ComposeView.android.kt:296)
+	at android.view.View.measure(View.java:29133)
+	at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+	at android.widget.FrameLayout.onMeasure(FrameLayout.java:195)
+	at android.view.View.measure(View.java:29133)
+	at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+	at android.widget.LinearLayout.measureChildBeforeLayout(LinearLayout.java:1609)
+	at android.widget.LinearLayout.measureVertical(LinearLayout.java:879)
+	at android.widget.LinearLayout.onMeasure(LinearLayout.java:722)
+	at android.view.View.measure(View.java:29133)
+	at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+	at android.widget.FrameLayout.onMeasure(FrameLayout.java:195)
+	at com.android.internal.policy.DecorView.onMeasure(DecorView.java:728)
+	at android.view.View.measure(View.java:29133)
+	at android.view.ViewRootImpl.performMeasure(ViewRootImpl.java:5901)
+	at android.view.ViewRootImpl.measureHierarchy(ViewRootImpl.java:3986)
+	at android.view.ViewRootImpl.performTraversals(ViewRootImpl.java:4447)
+	at android.view.ViewRootImpl.doTraversal(ViewRootImpl.java:3676)
+	at android.view.ViewRootImpl$TraversalCallback.onVsync(ViewRootImpl.java:11992)
+	at android.view.Choreographer$CallbackRecord.run(Choreographer.java:1916)
+	at android.view.Choreographer.doCallbacks(Choreographer.java:1434)
+	at android.view.Choreographer.doFrame(Choreographer.java:1289)
+	at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:1892)
+	at android.os.Handler.handleCallback(Handler.java:1080)
+	at android.os.Handler.dispatchMessageImpl(Handler.java:135)
+	at android.os.Handler.dispatchMessage(Handler.java:126)
+	at android.os.Looper.loopOnce(Looper.java:285)
+	at android.os.Looper.loop(Looper.java:390)
+	at android.app.ActivityThread.main(ActivityThread.java:9884)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:575)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:906)
+
+</system-err>
+</testsuites>

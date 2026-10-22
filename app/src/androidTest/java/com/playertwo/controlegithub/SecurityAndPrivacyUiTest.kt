@@ -45,6 +45,9 @@ class SecurityAndPrivacyUiTest {
         assertTrue("INTERNET deve estar presente", requested.contains("android.permission.INTERNET"))
         assertTrue("ACCESS_NETWORK_STATE deve estar presente", requested.contains("android.permission.ACCESS_NETWORK_STATE"))
         assertTrue("POST_NOTIFICATIONS deve estar presente", requested.contains("android.permission.POST_NOTIFICATIONS"))
+        assertTrue("FOREGROUND_SERVICE deve estar presente", requested.contains("android.permission.FOREGROUND_SERVICE"))
+        assertTrue("FOREGROUND_SERVICE_DATA_SYNC deve estar presente", requested.contains("android.permission.FOREGROUND_SERVICE_DATA_SYNC"))
+        assertTrue("REQUEST_INSTALL_PACKAGES deve estar presente", requested.contains("android.permission.REQUEST_INSTALL_PACKAGES"))
     }
 
     @Test

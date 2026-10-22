@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuites tests="1" failures="0" errors="0" skipped="0" time="10.25" timestamp="2026-10-22T12:41:36" hostname="localhost">
+  <testsuite name="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" tests="1" failures="0" errors="0" skipped="0" time="-1.792672885843E9" timestamp="2026-10-22T12:41:36" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testBottomDockSemanticsAndTouchTargets" classname="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" time="-1.792672885843E9" />
+  </testsuite>
+  <system-err>Test driver &lt;com.google.testing.platform.runtime.android.driver.AndroidInstrumentationDriver&gt; was canceled.
+DeferredCoroutine was cancelled
+kotlinx.coroutines.JobCancellationException: DeferredCoroutine was cancelled; job=DeferredCoroutine{Cancelled}&#64;7f321b29
+
+</system-err>
+</testsuites>

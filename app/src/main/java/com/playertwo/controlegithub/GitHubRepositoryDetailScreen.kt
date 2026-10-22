@@ -55,7 +55,8 @@ internal fun GitHubRepositoryDetailScreen(
     onSessionExpired: (GitHubSession) -> Unit,
     onAppearance: () -> Unit,
     isOffline: Boolean = session.isOffline,
-    cacheStore: GitHubCacheStore? = null
+    cacheStore: GitHubCacheStore? = null,
+    isActive: Boolean = true
 ) {
     var refreshVersion by remember(repository.id, session.accessToken) { mutableIntStateOf(0) }
     var result by remember(repository.id, session.accessToken) {
@@ -112,7 +113,7 @@ internal fun GitHubRepositoryDetailScreen(
         return
     }
 
-    BackHandler(onBack = onBack)
+    BackHandler(enabled = isActive, onBack = onBack)
     LaunchedEffect(loader, repository.id, refreshVersion) {
         loading = true
         result = withContext(Dispatchers.IO) { loader.load(repository) }
@@ -202,10 +203,9 @@ internal fun GitHubRepositoryDetailScreen(
                                 color = MaterialTheme.colorScheme.surface,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text(
-                                    text = readme.text.ifBlank { "O README está vazio." },
-                                    modifier = Modifier.padding(18.dp),
-                                    lineHeight = 22.sp
+                                GitHubMarkdownContent(
+                                    markdown = readme.text.ifBlank { "O README está vazio." },
+                                    contentPadding = PaddingValues(18.dp)
                                 )
                             }
                         }

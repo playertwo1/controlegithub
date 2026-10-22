@@ -1,0 +1,378 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:bundleDebugClassesToCompileJar UP-TO-DATE
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:processDebugAndroidTestManifest UP-TO-DATE
+> Task :app:generateDebugAndroidTestBuildConfig UP-TO-DATE
+> Task :app:generateDebugAndroidTestResources UP-TO-DATE
+> Task :app:packageDebugAndroidTestResources UP-TO-DATE
+> Task :app:processDebugAndroidTestNavigationResources UP-TO-DATE
+> Task :app:parseDebugAndroidTestLocalResources UP-TO-DATE
+> Task :app:generateDebugAndroidTestRFile UP-TO-DATE
+> Task :app:compileDebugAndroidTestKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebugAndroidTest UP-TO-DATE
+> Task :app:compileDebugAndroidTestJavaWithJavac UP-TO-DATE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:dexBuilderDebug UP-TO-DATE
+> Task :app:mergeDebugGlobalSynthetics UP-TO-DATE
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJavaResource UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :app:mergeProjectDexDebug UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :app:packageDebug UP-TO-DATE
+> Task :app:createDebugApkListingFileRedirect UP-TO-DATE
+> Task :app:generateDebugAndroidTestAssets UP-TO-DATE
+> Task :app:mergeDebugAndroidTestAssets UP-TO-DATE
+> Task :app:compressDebugAndroidTestAssets UP-TO-DATE
+> Task :app:desugarDebugAndroidTestFileDependencies UP-TO-DATE
+> Task :app:checkDebugAndroidTestAarMetadata UP-TO-DATE
+> Task :app:mapDebugAndroidTestSourceSetPaths UP-TO-DATE
+> Task :app:compileDebugAndroidTestNavigationResources UP-TO-DATE
+> Task :app:mergeDebugAndroidTestResources UP-TO-DATE
+> Task :app:processDebugAndroidTestResources UP-TO-DATE
+> Task :app:dexBuilderDebugAndroidTest UP-TO-DATE
+> Task :app:mergeDebugAndroidTestGlobalSynthetics UP-TO-DATE
+> Task :app:processDebugAndroidTestJavaRes UP-TO-DATE
+> Task :app:mergeDebugAndroidTestJavaResource UP-TO-DATE
+> Task :app:checkDebugAndroidTestDuplicateClasses UP-TO-DATE
+> Task :app:mergeExtDexDebugAndroidTest UP-TO-DATE
+> Task :app:mergeLibDexDebugAndroidTest UP-TO-DATE
+> Task :app:mergeProjectDexDebugAndroidTest UP-TO-DATE
+> Task :app:mergeDebugAndroidTestJniLibFolders UP-TO-DATE
+> Task :app:mergeDebugAndroidTestNativeLibs NO-SOURCE
+> Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
+> Task :app:validateSigningDebugAndroidTest UP-TO-DATE
+> Task :app:writeDebugAndroidTestSigningConfigVersions UP-TO-DATE
+> Task :app:packageDebugAndroidTest UP-TO-DATE
+> Task :app:createDebugAndroidTestApkListingFileRedirect UP-TO-DATE
+Starting 204 tests on Pixel_9(AVD) - 17
+Pixel_9(AVD) - 17 Tests 2/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 4/204 completed. (0 skipped) (0 failed)
+> Task :app:connectedDebugAndroidTest
+
+Pixel_9(AVD) - 17 Tests 20/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 25/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 28/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 33/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 38/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 41/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 50/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 54/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 62/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 66/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 69/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 80/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 84/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 102/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 107/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 111/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 115/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 119/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 127/204 completed. (0 skipped) (0 failed)
+Pixel_9(AVD) - 17 Tests 131/204 completed. (0 skipped) (0 failed)
+
+com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest > actionsPaginationLoadsOnlyTheNextValidatedPageAndDeduplicates[Pixel_9(AVD) - 17] [31mFAILED [0m
+	java.lang.IndexOutOfBoundsException: Index 4, size 4
+	at androidx.compose.foundation.lazy.layout.MutableIntervalList.checkIndexBounds(IntervalList.kt:183)
+Pixel_9(AVD) - 17 Tests 133/204 completed. (0 skipped) (1 failed)
+Failed to retrieve logcat for some test cases. We retrieved logcat for 132 test cases out of 133 tests.
+Tests on Pixel_9(AVD) - 17 failed: There was 1 failure(s).
+Finished 133 tests on Pixel_9(AVD) - 17
+Execute com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest.actionsPaginationLoadsOnlyTheNextValidatedPageAndDeduplicates: FAILED
+java.lang.IndexOutOfBoundsException: java.lang.IndexOutOfBoundsException: Index 4, size 4
+at androidx.compose.foundation.lazy.layout.MutableIntervalList.checkIndexBounds(IntervalList.kt:183)
+at androidx.compose.foundation.lazy.layout.MutableIntervalList.get(IntervalList.kt:166)
+at androidx.compose.foundation.lazy.layout.LazyLayoutIntervalContent.getKey(LazyLayoutIntervalContent.kt:86)
+at androidx.compose.foundation.lazy.LazyListItemProviderImpl.getKey(LazyListItemProvider.kt:85)
+at androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScopeImpl.measure-0kLqBqw(LazyLayoutMeasureScope.kt:122)
+at androidx.compose.foundation.lazy.LazyListMeasuredItemProvider.getAndMeasure-0kLqBqw(LazyListMeasuredItemProvider.kt:55)
+at androidx.compose.foundation.lazy.LazyListMeasuredItemProvider.getAndMeasure-0kLqBqw$default(LazyListMeasuredItemProvider.kt:49)
+at androidx.compose.foundation.lazy.LazyListMeasureKt.measureLazyList-x0Ok8Vo(LazyListMeasure.kt:214)
+at androidx.compose.foundation.lazy.LazyListKt$rememberLazyListMeasurePolicy$1$1.invoke-0kLqBqw(LazyList.kt:326)
+at androidx.compose.foundation.lazy.LazyListKt$rememberLazyListMeasurePolicy$1$1.invoke(LazyList.kt:183)
+at androidx.compose.foundation.lazy.layout.LazyLayoutKt$LazyLayout$3$2$1.invoke-0kLqBqw(LazyLayout.kt:119)
+at androidx.compose.foundation.lazy.layout.LazyLayoutKt$LazyLayout$3$2$1.invoke(LazyLayout.kt:112)
+at androidx.compose.ui.layout.LayoutNodeSubcompositionsState$createMeasurePolicy$1.measure-3p2s80s(SubcomposeLayout.kt:725)
+at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:135)
+at androidx.compose.ui.graphics.SimpleGraphicsLayerModifier.measure-3p2s80s(GraphicsLayerModifier.kt:646)
+at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:188)
+at androidx.compose.foundation.layout.FillNode.measure-3p2s80s(Size.kt:699)
+at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:188)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:316)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:315)
+at androidx.compose.runtime.snapshots.Snapshot$Companion.observe(Snapshot.kt:503)
+at androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.observe(SnapshotStateObserver.kt:502)
+at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:258)
+at androidx.compose.ui.node.OwnerSnapshotObserver.observeReads$ui_release(OwnerSnapshotObserver.kt:133)
+at androidx.compose.ui.node.OwnerSnapshotObserver.observeMeasureSnapshotReads$ui_release(OwnerSnapshotObserver.kt:113)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate.performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:1782)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate.access$performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:40)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.remeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:696)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.measure-BRTryo0(LayoutNodeLayoutDelegate.kt:672)
+at androidx.compose.ui.layout.RootMeasurePolicy.measure-3p2s80s(RootMeasurePolicy.kt:38)
+at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:135)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:316)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:315)
+at androidx.compose.runtime.snapshots.Snapshot$Companion.observe(Snapshot.kt:2441)
+at androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.observe(SnapshotStateObserver.kt:502)
+at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:258)
+at androidx.compose.ui.node.OwnerSnapshotObserver.observeReads$ui_release(OwnerSnapshotObserver.kt:133)
+at androidx.compose.ui.node.OwnerSnapshotObserver.observeMeasureSnapshotReads$ui_release(OwnerSnapshotObserver.kt:113)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate.performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:1782)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate.access$performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:40)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.remeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:696)
+at androidx.compose.ui.node.LayoutNode.remeasure-_Sx5XlM$ui_release(LayoutNode.kt:1222)
+at androidx.compose.ui.node.MeasureAndLayoutDelegate.doRemeasure-sdFAvZA(MeasureAndLayoutDelegate.kt:367)
+at androidx.compose.ui.node.MeasureAndLayoutDelegate.remeasureOnly(MeasureAndLayoutDelegate.kt:622)
+at androidx.compose.ui.node.MeasureAndLayoutDelegate.measureOnly(MeasureAndLayoutDelegate.kt:420)
+at androidx.compose.ui.platform.AndroidComposeView.onMeasure(AndroidComposeView.android.kt:1370)
+at android.view.View.measure(View.java:29133)
+at androidx.compose.ui.platform.AbstractComposeView.internalOnMeasure$ui_release(ComposeView.android.kt:309)
+at androidx.compose.ui.platform.AbstractComposeView.onMeasure(ComposeView.android.kt:296)
+at android.view.View.measure(View.java:29133)
+at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+at android.widget.FrameLayout.onMeasure(FrameLayout.java:195)
+at android.view.View.measure(View.java:29133)
+at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+at android.widget.LinearLayout.measureChildBeforeLayout(LinearLayout.java:1609)
+at android.widget.LinearLayout.measureVertical(LinearLayout.java:879)
+at android.widget.LinearLayout.onMeasure(LinearLayout.java:722)
+at android.view.View.measure(View.java:29133)
+at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+at android.widget.FrameLayout.onMeasure(FrameLayout.java:195)
+at com.android.internal.policy.DecorView.onMeasure(DecorView.java:728)
+at android.view.View.measure(View.java:29133)
+at android.view.ViewRootImpl.performMeasure(ViewRootImpl.java:5901)
+at android.view.ViewRootImpl.measureHierarchy(ViewRootImpl.java:3986)
+at android.view.ViewRootImpl.performTraversals(ViewRootImpl.java:4447)
+at android.view.ViewRootImpl.doTraversal(ViewRootImpl.java:3676)
+at android.view.ViewRootImpl$TraversalCallback.onVsync(ViewRootImpl.java:11992)
+at android.view.Choreographer$CallbackRecord.run(Choreographer.java:1916)
+at android.view.Choreographer.doCallbacks(Choreographer.java:1434)
+at android.view.Choreographer.doFrame(Choreographer.java:1289)
+at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:1892)
+at android.os.Handler.handleCallback(Handler.java:1080)
+at android.os.Handler.dispatchMessageImpl(Handler.java:135)
+at android.os.Handler.dispatchMessage(Handler.java:126)
+at android.os.Looper.loopOnce(Looper.java:285)
+at android.os.Looper.loop(Looper.java:390)
+at android.app.ActivityThread.main(ActivityThread.java:9884)
+at java.lang.reflect.Method.invoke(Native Method)
+at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:575)
+at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:906)
+
+java.lang.IndexOutOfBoundsException: Index 4, size 4
+at androidx.compose.foundation.lazy.layout.MutableIntervalList.checkIndexBounds(IntervalList.kt:183)
+at androidx.compose.foundation.lazy.layout.MutableIntervalList.get(IntervalList.kt:166)
+at androidx.compose.foundation.lazy.layout.LazyLayoutIntervalContent.getKey(LazyLayoutIntervalContent.kt:86)
+at androidx.compose.foundation.lazy.LazyListItemProviderImpl.getKey(LazyListItemProvider.kt:85)
+at androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScopeImpl.measure-0kLqBqw(LazyLayoutMeasureScope.kt:122)
+at androidx.compose.foundation.lazy.LazyListMeasuredItemProvider.getAndMeasure-0kLqBqw(LazyListMeasuredItemProvider.kt:55)
+at androidx.compose.foundation.lazy.LazyListMeasuredItemProvider.getAndMeasure-0kLqBqw$default(LazyListMeasuredItemProvider.kt:49)
+at androidx.compose.foundation.lazy.LazyListMeasureKt.measureLazyList-x0Ok8Vo(LazyListMeasure.kt:214)
+at androidx.compose.foundation.lazy.LazyListKt$rememberLazyListMeasurePolicy$1$1.invoke-0kLqBqw(LazyList.kt:326)
+at androidx.compose.foundation.lazy.LazyListKt$rememberLazyListMeasurePolicy$1$1.invoke(LazyList.kt:183)
+at androidx.compose.foundation.lazy.layout.LazyLayoutKt$LazyLayout$3$2$1.invoke-0kLqBqw(LazyLayout.kt:119)
+at androidx.compose.foundation.lazy.layout.LazyLayoutKt$LazyLayout$3$2$1.invoke(LazyLayout.kt:112)
+at androidx.compose.ui.layout.LayoutNodeSubcompositionsState$createMeasurePolicy$1.measure-3p2s80s(SubcomposeLayout.kt:725)
+at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:135)
+at androidx.compose.ui.graphics.SimpleGraphicsLayerModifier.measure-3p2s80s(GraphicsLayerModifier.kt:646)
+at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:188)
+at androidx.compose.foundation.layout.FillNode.measure-3p2s80s(Size.kt:699)
+at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:188)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:316)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:315)
+at androidx.compose.runtime.snapshots.Snapshot$Companion.observe(Snapshot.kt:503)
+at androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.observe(SnapshotStateObserver.kt:502)
+at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:258)
+at androidx.compose.ui.node.OwnerSnapshotObserver.observeReads$ui_release(OwnerSnapshotObserver.kt:133)
+at androidx.compose.ui.node.OwnerSnapshotObserver.observeMeasureSnapshotReads$ui_release(OwnerSnapshotObserver.kt:113)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate.performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:1782)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate.access$performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:40)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.remeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:696)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.measure-BRTryo0(LayoutNodeLayoutDelegate.kt:672)
+at androidx.compose.ui.layout.RootMeasurePolicy.measure-3p2s80s(RootMeasurePolicy.kt:38)
+at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:135)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:316)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:315)
+at androidx.compose.runtime.snapshots.Snapshot$Companion.observe(Snapshot.kt:2441)
+at androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.observe(SnapshotStateObserver.kt:502)
+at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:258)
+at androidx.compose.ui.node.OwnerSnapshotObserver.observeReads$ui_release(OwnerSnapshotObserver.kt:133)
+at androidx.compose.ui.node.OwnerSnapshotObserver.observeMeasureSnapshotReads$ui_release(OwnerSnapshotObserver.kt:113)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate.performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:1782)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate.access$performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:40)
+at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.remeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:696)
+at androidx.compose.ui.node.LayoutNode.remeasure-_Sx5XlM$ui_release(LayoutNode.kt:1222)
+at androidx.compose.ui.node.MeasureAndLayoutDelegate.doRemeasure-sdFAvZA(MeasureAndLayoutDelegate.kt:367)
+at androidx.compose.ui.node.MeasureAndLayoutDelegate.remeasureOnly(MeasureAndLayoutDelegate.kt:622)
+at androidx.compose.ui.node.MeasureAndLayoutDelegate.measureOnly(MeasureAndLayoutDelegate.kt:420)
+at androidx.compose.ui.platform.AndroidComposeView.onMeasure(AndroidComposeView.android.kt:1370)
+at android.view.View.measure(View.java:29133)
+at androidx.compose.ui.platform.AbstractComposeView.internalOnMeasure$ui_release(ComposeView.android.kt:309)
+at androidx.compose.ui.platform.AbstractComposeView.onMeasure(ComposeView.android.kt:296)
+at android.view.View.measure(View.java:29133)
+at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+at android.widget.FrameLayout.onMeasure(FrameLayout.java:195)
+at android.view.View.measure(View.java:29133)
+at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+at android.widget.LinearLayout.measureChildBeforeLayout(LinearLayout.java:1609)
+at android.widget.LinearLayout.measureVertical(LinearLayout.java:879)
+at android.widget.LinearLayout.onMeasure(LinearLayout.java:722)
+at android.view.View.measure(View.java:29133)
+at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+at android.widget.FrameLayout.onMeasure(FrameLayout.java:195)
+at com.android.internal.policy.DecorView.onMeasure(DecorView.java:728)
+at android.view.View.measure(View.java:29133)
+at android.view.ViewRootImpl.performMeasure(ViewRootImpl.java:5901)
+at android.view.ViewRootImpl.measureHierarchy(ViewRootImpl.java:3986)
+at android.view.ViewRootImpl.performTraversals(ViewRootImpl.java:4447)
+at android.view.ViewRootImpl.doTraversal(ViewRootImpl.java:3676)
+at android.view.ViewRootImpl$TraversalCallback.onVsync(ViewRootImpl.java:11992)
+at android.view.Choreographer$CallbackRecord.run(Choreographer.java:1916)
+at android.view.Choreographer.doCallbacks(Choreographer.java:1434)
+at android.view.Choreographer.doFrame(Choreographer.java:1289)
+at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:1892)
+at android.os.Handler.handleCallback(Handler.java:1080)
+at android.os.Handler.dispatchMessageImpl(Handler.java:135)
+at android.os.Handler.dispatchMessage(Handler.java:126)
+at android.os.Looper.loopOnce(Looper.java:285)
+at android.os.Looper.loop(Looper.java:390)
+at android.app.ActivityThread.main(ActivityThread.java:9884)
+at java.lang.reflect.Method.invoke(Native Method)
+at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:575)
+at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:906)
+
+> Task :app:connectedDebugAndroidTest
+Test run failed to complete. Instrumentation run failed due to Process crashed.
+Logcat of last crash: 
+Process: com.playertwo.controlegithub, PID: 20068
+java.lang.IndexOutOfBoundsException: Index 4, size 4
+	at androidx.compose.foundation.lazy.layout.MutableIntervalList.checkIndexBounds(IntervalList.kt:183)
+	at androidx.compose.foundation.lazy.layout.MutableIntervalList.get(IntervalList.kt:166)
+	at androidx.compose.foundation.lazy.layout.LazyLayoutIntervalContent.getKey(LazyLayoutIntervalContent.kt:86)
+	at androidx.compose.foundation.lazy.LazyListItemProviderImpl.getKey(LazyListItemProvider.kt:85)
+	at androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScopeImpl.measure-0kLqBqw(LazyLayoutMeasureScope.kt:122)
+	at androidx.compose.foundation.lazy.LazyListMeasuredItemProvider.getAndMeasure-0kLqBqw(LazyListMeasuredItemProvider.kt:55)
+	at androidx.compose.foundation.lazy.LazyListMeasuredItemProvider.getAndMeasure-0kLqBqw$default(LazyListMeasuredItemProvider.kt:49)
+	at androidx.compose.foundation.lazy.LazyListMeasureKt.measureLazyList-x0Ok8Vo(LazyListMeasure.kt:214)
+	at androidx.compose.foundation.lazy.LazyListKt$rememberLazyListMeasurePolicy$1$1.invoke-0kLqBqw(LazyList.kt:326)
+	at androidx.compose.foundation.lazy.LazyListKt$rememberLazyListMeasurePolicy$1$1.invoke(LazyList.kt:183)
+	at androidx.compose.foundation.lazy.layout.LazyLayoutKt$LazyLayout$3$2$1.invoke-0kLqBqw(LazyLayout.kt:119)
+	at androidx.compose.foundation.lazy.layout.LazyLayoutKt$LazyLayout$3$2$1.invoke(LazyLayout.kt:112)
+	at androidx.compose.ui.layout.LayoutNodeSubcompositionsState$createMeasurePolicy$1.measure-3p2s80s(SubcomposeLayout.kt:725)
+	at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:135)
+	at androidx.compose.ui.graphics.SimpleGraphicsLayerModifier.measure-3p2s80s(GraphicsLayerModifier.kt:646)
+	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:188)
+	at androidx.compose.foundation.layout.FillNode.measure-3p2s80s(Size.kt:699)
+	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:188)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:316)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:315)
+	at androidx.compose.runtime.snapshots.Snapshot$Companion.observe(Snapshot.kt:503)
+	at androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.observe(SnapshotStateObserver.kt:502)
+	at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:258)
+	at androidx.compose.ui.node.OwnerSnapshotObserver.observeReads$ui_release(OwnerSnapshotObserver.kt:133)
+	at androidx.compose.ui.node.OwnerSnapshotObserver.observeMeasureSnapshotReads$ui_release(OwnerSnapshotObserver.kt:113)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate.performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:1782)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate.access$performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:40)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.remeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:696)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.measure-BRTryo0(LayoutNodeLayoutDelegate.kt:672)
+	at androidx.compose.ui.layout.RootMeasurePolicy.measure-3p2s80s(RootMeasurePolicy.kt:38)
+	at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:135)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:316)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:315)
+	at androidx.compose.runtime.snapshots.Snapshot$Companion.observe(Snapshot.kt:2441)
+	at androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.observe(SnapshotStateObserver.kt:502)
+	at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:258)
+	at androidx.compose.ui.node.OwnerSnapshotObserver.observeReads$ui_release(OwnerSnapshotObserver.kt:133)
+	at androidx.compose.ui.node.OwnerSnapshotObserver.observeMeasureSnapshotReads$ui_release(OwnerSnapshotObserver.kt:113)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate.performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:1782)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate.access$performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:40)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.remeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:696)
+	at androidx.compose.ui.node.LayoutNode.remeasure-_Sx5XlM$ui_release(LayoutNode.kt:1222)
+	at androidx.compose.ui.node.MeasureAndLayoutDelegate.doRemeasure-sdFAvZA(MeasureAndLayoutDelegate.kt:367)
+	at androidx.compose.ui.node.MeasureAndLayoutDelegate.remeasureOnly(MeasureAndLayoutDelegate.kt:622)
+	at androidx.compose.ui.node.MeasureAndLayoutDelegate.measureOnly(MeasureAndLayoutDelegate.kt:420)
+	at androidx.compose.ui.platform.AndroidComposeView.onMeasure(AndroidComposeView.android.kt:1370)
+	at android.view.View.measure(View.java:29133)
+	at androidx.compose.ui.platform.AbstractComposeView.internalOnMeasure$ui_release(ComposeView.android.kt:309)
+	at androidx.compose.ui.platform.AbstractComposeView.onMeasure(ComposeView.android.kt:296)
+	at android.view.View.measure(View.java:29133)
+	at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+	at android.widget.FrameLayout.onMeasure(FrameLayout.java:195)
+	at android.view.View.measure(View.java:29133)
+	at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+	at android.widget.LinearLayout.measureChildBeforeLayout(LinearLayout.java:1609)
+	at android.widget.LinearLayout.measureVertical(LinearLayout.java:879)
+	at android.widget.LinearLayout.onMeasure(LinearLayout.java:722)
+	at android.view.View.measure(View.java:29133)
+	at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+	at android.widget.FrameLayout.onMeasure(FrameLayout.java:195)
+	at com.android.internal.policy.DecorView.onMeasure(DecorView.java:728)
+	at android.view.View.measure(View.java:29133)
+	at android.view.ViewRootImpl.performMeasure(ViewRootImpl.java:5901)
+	at android.view.ViewRootImpl.measureHierarchy(ViewRootImpl.java:3986)
+	at android.view.ViewRootImpl.performTraversals(ViewRootImpl.java:4447)
+	at android.view.ViewRootImpl.doTraversal(ViewRootImpl.java:3676)
+	at android.view.ViewRootImpl$TraversalCallback.onVsync(ViewRootImpl.java:11992)
+	at android.view.Choreographer$CallbackRecord.run(Choreographer.java:1916)
+	at android.view.Choreographer.doCallbacks(Choreographer.java:1434)
+	at android.view.Choreographer.doFrame(Choreographer.java:1289)
+	at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:1892)
+	at android.os.Handler.handleCallback(Handler.java:1080)
+	at android.os.Handler.dispatchMessageImpl(Handler.java:135)
+	at android.os.Handler.dispatchMessage(Handler.java:126)
+	at android.os.Looper.loopOnce(Looper.java:285)
+	at android.os.Looper.loop(Looper.java:390)
+	at android.app.ActivityThread.main(ActivityThread.java:9884)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:575)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:906)
+
+
+> Task :app:connectedDebugAndroidTest FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:connectedDebugAndroidTest'.
+> There were failing tests. See the report at: file:///C:/Users/notefael/projetos/controlegithub/app/build/reports/androidTests/connected/debug/index.html
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 4m 10s
+71 actionable tasks: 1 executed, 70 up-to-date

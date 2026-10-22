@@ -58,7 +58,9 @@ internal class GitHubRepositoryDetailLoader(
                 return GitHubRepositoryDetailResult.Failed(GitHubHttpError.UNEXPECTED)
             }
         }
-        if (metadata.id != repository.id || !metadata.fullName.equals(repository.fullName, ignoreCase = true)) {
+        if ((repository.id != UNRESOLVED_GITHUB_REPOSITORY_ID && metadata.id != repository.id) ||
+            !metadata.fullName.equals(repository.fullName, ignoreCase = true)
+        ) {
             return GitHubRepositoryDetailResult.Failed(GitHubHttpError.UNEXPECTED)
         }
 

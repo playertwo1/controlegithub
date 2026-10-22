@@ -15,6 +15,7 @@ class GitHubReleasesTest {
        "published_at":"2026-10-18T10:00:00Z","assets":[
          {"id":1,"name":"app-release.apk","size":5242880,"download_count":3,
           "content_type":"application/vnd.android.package-archive",
+          "digest":"sha256:${"a".repeat(64)}",
           "browser_download_url":"https://github.com/me/app/releases/download/v1.0.0/app-release.apk"},
          {"id":2,"name":"SHA256SUMS.txt","size":90,"download_count":1,
           "browser_download_url":"https://evil.example/x"}]}
@@ -29,6 +30,7 @@ class GitHubReleasesTest {
         assertEquals(Instant.parse("2026-10-18T10:00:00Z"), releases[1].publishedAt)
         val (apk, sums) = releases[1].assets
         assertTrue(apk.isApk)
+        assertEquals("a".repeat(64), apk.digestSha256)
         assertTrue(sums.isChecksum)
         assertEquals(1, releases[1].apkAssets.size)
         assertNull("URL fora do github.com é descartada", sums.browserDownloadUrl)

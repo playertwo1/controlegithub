@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.playertwo.controlegithub.EditAndCommentIssueTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-22T12:05:50.210Z" hostname="BOOKFAEL" time="0.057">
+  <properties/>
+  <testcase name="createIssueCommentOfflineReturnsOfflineWithoutNetworkCall" classname="com.playertwo.controlegithub.EditAndCommentIssueTest" time="0.014"/>
+  <testcase name="createIssueCommentEmptyBodyReturnsEmptyBodyWithoutNetworkCall" classname="com.playertwo.controlegithub.EditAndCommentIssueTest" time="0.005"/>
+  <testcase name="createIssueCommentForbiddenReturnsFailure" classname="com.playertwo.controlegithub.EditAndCommentIssueTest" time="0.009"/>
+  <testcase name="editIssueEmptyTitleReturnsEmptyTitleWithoutNetworkCall" classname="com.playertwo.controlegithub.EditAndCommentIssueTest" time="0.005"/>
+  <testcase name="editIssueOfflineReturnsOfflineWithoutNetworkCall" classname="com.playertwo.controlegithub.EditAndCommentIssueTest" time="0.012"/>
+  <testcase name="editIssueForbiddenReturnsFailure" classname="com.playertwo.controlegithub.EditAndCommentIssueTest" time="0.01"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

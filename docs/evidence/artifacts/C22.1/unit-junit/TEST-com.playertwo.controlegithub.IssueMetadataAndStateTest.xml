@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.playertwo.controlegithub.IssueMetadataAndStateTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-22T12:05:59.871Z" hostname="BOOKFAEL" time="0.069">
+  <properties/>
+  <testcase name="updateIssueStateClosedToOpenSendsPatchStateOpen" classname="com.playertwo.controlegithub.IssueMetadataAndStateTest" time="0.024"/>
+  <testcase name="editGitHubIssueEmptyTitleReturnsEmptyTitleWithoutNetwork" classname="com.playertwo.controlegithub.IssueMetadataAndStateTest" time="0.006"/>
+  <testcase name="editGitHubIssueWithLabelsAndAssigneesSerializesJsonArrays" classname="com.playertwo.controlegithub.IssueMetadataAndStateTest" time="0.01"/>
+  <testcase name="updateIssueStateOpenToClosedSendsPatchStateClosed" classname="com.playertwo.controlegithub.IssueMetadataAndStateTest" time="0.009"/>
+  <testcase name="updateIssueStateOfflineReturnsOfflineWithoutNetwork" classname="com.playertwo.controlegithub.IssueMetadataAndStateTest" time="0.008"/>
+  <testcase name="updateIssueStateForbiddenReturnsFailure" classname="com.playertwo.controlegithub.IssueMetadataAndStateTest" time="0.012"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

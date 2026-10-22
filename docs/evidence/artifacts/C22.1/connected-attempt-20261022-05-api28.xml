@@ -1,0 +1,277 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuites tests="62" failures="10" errors="0" skipped="0" time="150.664" timestamp="2026-10-22T12:47:15" hostname="localhost">
+  <testsuite name="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" tests="3" failures="0" errors="0" skipped="0" time="12.547" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testBottomDockSemanticsAndTouchTargets" classname="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" time="4.534" />
+    <testcase name="testKanbanAndWorkAccessibility" classname="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" time="4.768" />
+    <testcase name="testThemeSwitchingAccessibility" classname="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" time="3.245" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" tests="3" failures="3" errors="0" skipped="0" time="8.228" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testScreenRotationPreservesNavigationAndDock" classname="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" time="3.124">
+      <failure>java.lang.AssertionError: Failed to inject touch input.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (Text + EditableText contains 'Repos' (ignoreCase: false))
+
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
+at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
+at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
+at com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest.testScreenRotationPreservesNavigationAndDock(AndroidMatrixAndLayoutsUiTest.kt:32)
+</failure>
+    </testcase>
+    <testcase name="testActivityRecreationPreservesFlowAndState" classname="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" time="2.433">
+      <failure>java.lang.AssertionError: Failed to inject touch input.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (Text + EditableText contains 'Trabalho' (ignoreCase: false))
+
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
+at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
+at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
+at com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest.testActivityRecreationPreservesFlowAndState(AndroidMatrixAndLayoutsUiTest.kt:63)
+</failure>
+    </testcase>
+    <testcase name="testCompactAndExpandedLayoutAdaptation" classname="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" time="2.671">
+      <failure>java.lang.AssertionError: Assert failed: The component is not displayed!
+at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+at com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest.testCompactAndExpandedLayoutAdaptation(AndroidMatrixAndLayoutsUiTest.kt:86)
+</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.BackgroundSyncAndroidTest" tests="6" failures="0" errors="0" skipped="0" time="1.051" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testScheduleWithPreferencesReflectsConfiguredSettings" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.625" />
+    <testcase name="testScheduleAndCancel" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.061" />
+    <testcase name="testSyncPreferencesPersistence" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.262" />
+    <testcase name="testScheduleDisabledCancelsJob" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.04" />
+    <testcase name="testBuildJobInfo_anyNetworkAndDisabled" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.056" />
+    <testcase name="testBuildJobInfo_wifiOnlyAndBatteryConstraints" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.007" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.BetaRobustnessAndroidTest" tests="3" failures="0" errors="0" skipped="0" time="0.043" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="scenario3_pullRequestDetailParsingWithNullBodyAndMinimalData" classname="com.playertwo.controlegithub.BetaRobustnessAndroidTest" time="0.031" />
+    <testcase name="scenario2_issueParsingWithMissingOptionalFieldsDoesNotCrash" classname="com.playertwo.controlegithub.BetaRobustnessAndroidTest" time="0.006" />
+    <testcase name="scenario1_repositoryParsingWithMissingOptionalFieldsDoesNotCrash" classname="com.playertwo.controlegithub.BetaRobustnessAndroidTest" time="0.006" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreateIssueAndroidTest" tests="3" failures="0" errors="0" skipped="0" time="0.017" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseCreatedIssueRejectsMissingTitleOrNumber" classname="com.playertwo.controlegithub.CreateIssueAndroidTest" time="0.006" />
+    <testcase name="parseCreatedIssueMapsFieldsCorrectly" classname="com.playertwo.controlegithub.CreateIssueAndroidTest" time="0.005" />
+    <testcase name="parseCreatedIssueHandlesMissingRepositoryByFallback" classname="com.playertwo.controlegithub.CreateIssueAndroidTest" time="0.006" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreateIssueUiTest" tests="5" failures="0" errors="0" skipped="0" time="18.106" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="createIssueOfflineModeDisablesSubmissionAndShowsBanner" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="2.511" />
+    <testcase name="createIssueAntiDoubleTapDisablesButtonDuringSubmission" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="5.179" />
+    <testcase name="createIssueFailureDisplaysErrorAndPreservesDraft" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="4.278" />
+    <testcase name="createIssueSuccessSubmitsPostAndInvokesCallback" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="3.258" />
+    <testcase name="createIssueEmptyTitleShowsValidationErrorWithoutNetworkCall" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="2.88" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest" tests="2" failures="0" errors="0" skipped="0" time="0.011" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseCreatedPullRequestCommentRejectsMissingId" classname="com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest" time="0.005" />
+    <testcase name="parseCreatedPullRequestCommentMapsFieldsCorrectly" classname="com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest" time="0.006" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" tests="5" failures="1" errors="0" skipped="0" time="18.41" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="commentAntiDoubleTapDisablesButtonDuringSubmission" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="5.285" />
+    <testcase name="commentSuccessSubmitsPostAppendsToUiAndClearsInput" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="3.695">
+      <failure>java.lang.AssertionError: Failed to assert the following: (EditableText = '')
+Semantics of the node:
+Node #737 at (l=63.0, t=1589.0, r=1017.0, b=1883.0)px, Tag: 'pr_comment_input'
+EditableText = ''
+TextSelectionRange = 'TextRange(0, 0)'
+IsEditable = 'true'
+ImeAction = 'Default'
+Focused = 'false'
+Text = '[Escreva um comentário…]'
+Actions = [GetTextLayoutResult, SetText, InsertTextAtCursor, SetSelection, PerformImeAction, OnClick, OnLongClick, PasteText, RequestFocus, SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution]
+MergeDescendants = 'true'
+Has 29 siblings
+Selector used: (TestTag = 'pr_comment_input')
+
+at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:265)
+at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:255)
+at com.playertwo.controlegithub.CreatePullRequestCommentUiTest.commentSuccessSubmitsPostAppendsToUiAndClearsInput(CreatePullRequestCommentUiTest.kt:74)
+</failure>
+    </testcase>
+    <testcase name="mutationGuardEmptyValidation" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="2.788" />
+    <testcase name="commentFailurePreservesDraftTextAndDisplaysError" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="3.303" />
+    <testcase name="mutationGuardOfflineBlocked" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="3.339" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.DailySummaryUiTest" tests="4" failures="0" errors="0" skipped="0" time="7.261" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="dailySummaryDisplaysCachedSourceWhenOffline" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="1.526" />
+    <testcase name="dailySummaryDisplaysPartialCoverageSource" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="1.55" />
+    <testcase name="dailySummaryExportMarkdownCopiesToClipboardAndShowsFeedback" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="2.522" />
+    <testcase name="dailySummaryDisplaysPeriodTimezoneAndMetrics" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="1.663" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.EditAndCommentIssueAndroidTest" tests="2" failures="0" errors="0" skipped="0" time="0.028" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseCreatedIssueCommentRejectsMissingId" classname="com.playertwo.controlegithub.EditAndCommentIssueAndroidTest" time="0.011" />
+    <testcase name="parseCreatedIssueCommentMapsFieldsCorrectly" classname="com.playertwo.controlegithub.EditAndCommentIssueAndroidTest" time="0.017" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.EditAndCommentIssueUiTest" tests="7" failures="0" errors="0" skipped="0" time="23.956" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="commentAntiDoubleTapDisablesButtonDuringSubmission" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="4.263" />
+    <testcase name="commentSuccessSubmitsPostAppendsToUiAndClearsInput" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="2.829" />
+    <testcase name="editIssueSuccessSubmitsPatchAndUpdatesHeader" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.894" />
+    <testcase name="mutationGuardEmptyValidation" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.672" />
+    <testcase name="editIssueFailurePreservesDraftAndDisplaysError" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.4" />
+    <testcase name="commentFailurePreservesDraftTextAndDisplaysError" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.497" />
+    <testcase name="mutationGuardOfflineBlocked" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="2.401" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubAccountProfileMappingTest" tests="3" failures="0" errors="0" skipped="0" time="0.087" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="rejectsAnotherIdentityAndMalformedCounts" classname="com.playertwo.controlegithub.GitHubAccountProfileMappingTest" time="0.033" />
+    <testcase name="parsesAccountIdentityAndZeroCounts" classname="com.playertwo.controlegithub.GitHubAccountProfileMappingTest" time="0.005" />
+    <testcase name="absentAndNullCountsStayUnavailableAndBlankNameFallsBackToLogin" classname="com.playertwo.controlegithub.GitHubAccountProfileMappingTest" time="0.049" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubActionsMappingTest" tests="3" failures="0" errors="0" skipped="0" time="0.063" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="jobsCannotBeAttributedToAnotherWorkflowRun" classname="com.playertwo.controlegithub.GitHubActionsMappingTest" time="0.04" />
+    <testcase name="incompleteAndUnknownStatesNeverBecomeSuccess" classname="com.playertwo.controlegithub.GitHubActionsMappingTest" time="0.009" />
+    <testcase name="selectedWorkflowRunUsesTheFilteredEndpointAndAcceptsItsRun" classname="com.playertwo.controlegithub.GitHubActionsMappingTest" time="0.014" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubHomeScreenTest" tests="8" failures="6" errors="0" skipped="0" time="48.407" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="authenticatedWorkAndNoticesShowUnintegratedState" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="2.215" />
+    <testcase name="serverFailureCanRecoverThroughRetry" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="12.465">
+      <failure>androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 10000 ms
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
+at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
+at com.playertwo.controlegithub.GitHubHomeScreenTest.serverFailureCanRecoverThroughRetry(GitHubHomeScreenTest.kt:228)
+</failure>
+    </testcase>
+    <testcase name="demonstrationDataIsLabeledAcrossHomeWorkAndNotices" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="2.449">
+      <failure>java.lang.AssertionError: Failed to inject touch input.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (Text + EditableText contains 'Trabalho' (ignoreCase: false))
+
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
+at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
+at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
+at com.playertwo.controlegithub.GitHubHomeScreenTest.demonstrationDataIsLabeledAcrossHomeWorkAndNotices(GitHubHomeScreenTest.kt:145)
+</failure>
+    </testcase>
+    <testcase name="rateLimitedProfileShowsExplicitRetry" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="1.353">
+      <failure>java.lang.AssertionError: Assert failed: The component is not displayed!
+at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+at com.playertwo.controlegithub.GitHubHomeScreenTest.rateLimitedProfileShowsExplicitRetry(GitHubHomeScreenTest.kt:213)
+</failure>
+    </testcase>
+    <testcase name="forbiddenProfileKeepsSessionIdentitySeparateAndOffersRetry" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="12.287">
+      <failure>androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 10000 ms
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
+at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
+at com.playertwo.controlegithub.GitHubHomeScreenTest.forbiddenProfileKeepsSessionIdentitySeparateAndOffersRetry(GitHubHomeScreenTest.kt:184)
+</failure>
+    </testcase>
+    <testcase name="authenticatedHomeLoadsOnlyAuthenticatedUserAndRefreshesWithoutDemoValues" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="2.883">
+      <failure>java.lang.AssertionError: Failed to inject touch input.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (Text + EditableText contains 'Trabalho' (ignoreCase: false))
+
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
+at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
+at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
+at com.playertwo.controlegithub.GitHubHomeScreenTest.authenticatedHomeLoadsOnlyAuthenticatedUserAndRefreshesWithoutDemoValues(GitHubHomeScreenTest.kt:63)
+</failure>
+    </testcase>
+    <testcase name="unauthorizedProfileExpiresSessionOnceAndDoesNotShowLoadedProfile" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="2.454" />
+    <testcase name="networkFailureCanRecoverThroughRetry" classname="com.playertwo.controlegithub.GitHubHomeScreenTest" time="12.301">
+      <failure>androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 10000 ms
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
+at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
+at com.playertwo.controlegithub.GitHubHomeScreenTest.networkFailureCanRecoverThroughRetry(GitHubHomeScreenTest.kt:245)
+</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" tests="4" failures="0" errors="0" skipped="0" time="0.068" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="buildsIssueAndCommentRoutesFromValidatedIdentity" classname="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" time="0.005" />
+    <testcase name="absentBodyAndAuthorRemainEmptyAndPullRequestOrMismatchedIdentityAreRejected" classname="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" time="0.046" />
+    <testcase name="mapsSelectedIssueBodyLabelsAndInertMarkdownWithoutChangingIdentity" classname="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" time="0.013" />
+    <testcase name="mapsCommentsInResponseOrderAndSkipsMalformedEntries" classname="com.playertwo.controlegithub.GitHubIssueDetailMappingTest" time="0.004" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.GitHubIssuesScreenTest" tests="1" failures="0" errors="0" skipped="0" time="-1.792673224005E9" timestamp="2026-10-22T12:47:15" hostname="localhost">
+    <properties>
+      <property name="device" value="C21_2_API28(AVD) - 9" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="failedNextCommentPagePreservesLoadedCommentsAndCanRetry" classname="com.playertwo.controlegithub.GitHubIssuesScreenTest" time="-1.792673224005E9" />
+  </testsuite>
+  <system-err>Test driver &lt;com.google.testing.platform.runtime.android.driver.AndroidInstrumentationDriver&gt; was canceled.
+DeferredCoroutine was cancelled
+kotlinx.coroutines.JobCancellationException: DeferredCoroutine was cancelled; job=DeferredCoroutine{Cancelled}&#64;459bf0b2
+
+</system-err>
+</testsuites>

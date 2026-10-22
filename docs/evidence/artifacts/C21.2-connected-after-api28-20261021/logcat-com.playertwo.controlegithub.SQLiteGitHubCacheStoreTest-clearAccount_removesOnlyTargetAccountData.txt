@@ -1,0 +1,15 @@
+10-21 20:48:31.060 25510 25547 I TestRunner: started: clearAccount_removesOnlyTargetAccountData(com.playertwo.controlegithub.SQLiteGitHubCacheStoreTest)
+10-21 20:48:31.061   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:31.077   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:31.088   719   966 D WifiNative: Scan result ready event
+10-21 20:48:31.089   719   970 I Nl80211Proxy: Sending Nl80211 message: GenericNetlinkMsg{ nlHeader{StructNlMsgHdr{ nlmsg_len{20}, nlmsg_type{30()}, nlmsg_flags{769(NLM_F_REQUEST|NLM_F_DUMP)}, nlmsg_seq{150}, nlmsg_pid{0} }}, genNlHeader{StructGenNlMsgHdr{ command{5}, version{1}, reserved{0} }}, attributes{[]} }
+10-21 20:48:31.089   719   970 I Nl80211Proxy: Received NLMSG_DONE for message GenericNetlinkMsg{ nlHeader{StructNlMsgHdr{ nlmsg_len{20}, nlmsg_type{30()}, nlmsg_flags{769(NLM_F_REQUEST|NLM_F_DUMP)}, nlmsg_seq{150}, nlmsg_pid{0} }}, genNlHeader{StructGenNlMsgHdr{ command{5}, version{1}, reserved{0} }}, attributes{[]} }
+10-21 20:48:31.089   719   970 W Nl80211Utils: Malformed NEW_INTERFACE response: missing attributes
+10-21 20:48:31.089   719   970 I Nl80211Proxy: Sending Nl80211 message: GenericNetlinkMsg{ nlHeader{StructNlMsgHdr{ nlmsg_len{28}, nlmsg_type{30()}, nlmsg_flags{769(NLM_F_REQUEST|NLM_F_DUMP)}, nlmsg_seq{151}, nlmsg_pid{0} }}, genNlHeader{StructGenNlMsgHdr{ command{32}, version{1}, reserved{0} }}, attributes{[StructNlAttr{ nla_len{8}, nla_type{3}, nla_value{10000000}, }]} }
+10-21 20:48:31.090   719   970 I Nl80211Proxy: Received NLMSG_DONE for message GenericNetlinkMsg{ nlHeader{StructNlMsgHdr{ nlmsg_len{28}, nlmsg_type{30()}, nlmsg_flags{769(NLM_F_REQUEST|NLM_F_DUMP)}, nlmsg_seq{151}, nlmsg_pid{0} }}, genNlHeader{StructGenNlMsgHdr{ command{32}, version{1}, reserved{0} }}, attributes{[StructNlAttr{ nla_len{8}, nla_type{3}, nla_value{10000000}, }]} }
+10-21 20:48:31.090  1450  1841 I WifiScanner: onFullResults
+10-21 20:48:31.090  1450  1500 I WifiScanner: onFullResults
+10-21 20:48:31.094   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:31.094   719   966 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+10-21 20:48:31.110   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:48:31.127 25510 25547 I TestRunner: finished: clearAccount_removesOnlyTargetAccountData(com.playertwo.controlegithub.SQLiteGitHubCacheStoreTest)

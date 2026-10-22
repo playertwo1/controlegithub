@@ -1,0 +1,460 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Test results - Test Summary</title>
+<link href="css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="css/style.css" rel="stylesheet" type="text/css"/>
+<script src="js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Test Summary</h1>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">112</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">1</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="skipped">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">2m38.49s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox failures" id="successRate">
+<div class="percent">99%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tool failures</a>
+</li>
+<li>
+<a href="#tab1">Failed tests</a>
+</li>
+<li>
+<a href="#tab2">Packages</a>
+</li>
+<li>
+<a href="#tab3">Classes</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tool failures</h2>
+<h2>Pixel_9(AVD) - 17</h2>
+<span class="code">
+<pre>Test run failed to complete. Instrumentation run failed due to Process crashed.
+Logcat of last crash: 
+Process: com.playertwo.controlegithub, PID: 31635
+java.lang.IndexOutOfBoundsException: Index 4, size 4
+	at androidx.compose.foundation.lazy.layout.MutableIntervalList.checkIndexBounds(IntervalList.kt:183)
+	at androidx.compose.foundation.lazy.layout.MutableIntervalList.get(IntervalList.kt:166)
+	at androidx.compose.foundation.lazy.layout.LazyLayoutIntervalContent.getKey(LazyLayoutIntervalContent.kt:86)
+	at androidx.compose.foundation.lazy.LazyListItemProviderImpl.getKey(LazyListItemProvider.kt:85)
+	at androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScopeImpl.measure-0kLqBqw(LazyLayoutMeasureScope.kt:122)
+	at androidx.compose.foundation.lazy.LazyListMeasuredItemProvider.getAndMeasure-0kLqBqw(LazyListMeasuredItemProvider.kt:55)
+	at androidx.compose.foundation.lazy.LazyListMeasuredItemProvider.getAndMeasure-0kLqBqw$default(LazyListMeasuredItemProvider.kt:49)
+	at androidx.compose.foundation.lazy.LazyListMeasureKt.measureLazyList-x0Ok8Vo(LazyListMeasure.kt:214)
+	at androidx.compose.foundation.lazy.LazyListKt$rememberLazyListMeasurePolicy$1$1.invoke-0kLqBqw(LazyList.kt:326)
+	at androidx.compose.foundation.lazy.LazyListKt$rememberLazyListMeasurePolicy$1$1.invoke(LazyList.kt:183)
+	at androidx.compose.foundation.lazy.layout.LazyLayoutKt$LazyLayout$3$2$1.invoke-0kLqBqw(LazyLayout.kt:119)
+	at androidx.compose.foundation.lazy.layout.LazyLayoutKt$LazyLayout$3$2$1.invoke(LazyLayout.kt:112)
+	at androidx.compose.ui.layout.LayoutNodeSubcompositionsState$createMeasurePolicy$1.measure-3p2s80s(SubcomposeLayout.kt:725)
+	at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:135)
+	at androidx.compose.ui.graphics.SimpleGraphicsLayerModifier.measure-3p2s80s(GraphicsLayerModifier.kt:646)
+	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:188)
+	at androidx.compose.foundation.layout.FillNode.measure-3p2s80s(Size.kt:699)
+	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:188)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:316)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:315)
+	at androidx.compose.runtime.snapshots.Snapshot$Companion.observe(Snapshot.kt:503)
+	at androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.observe(SnapshotStateObserver.kt:502)
+	at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:258)
+	at androidx.compose.ui.node.OwnerSnapshotObserver.observeReads$ui_release(OwnerSnapshotObserver.kt:133)
+	at androidx.compose.ui.node.OwnerSnapshotObserver.observeMeasureSnapshotReads$ui_release(OwnerSnapshotObserver.kt:113)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate.performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:1782)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate.access$performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:40)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.remeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:696)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.measure-BRTryo0(LayoutNodeLayoutDelegate.kt:672)
+	at androidx.compose.ui.layout.RootMeasurePolicy.measure-3p2s80s(RootMeasurePolicy.kt:38)
+	at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:135)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:316)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$performMeasureBlock$1.invoke(LayoutNodeLayoutDelegate.kt:315)
+	at androidx.compose.runtime.snapshots.Snapshot$Companion.observe(Snapshot.kt:2441)
+	at androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.observe(SnapshotStateObserver.kt:502)
+	at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:258)
+	at androidx.compose.ui.node.OwnerSnapshotObserver.observeReads$ui_release(OwnerSnapshotObserver.kt:133)
+	at androidx.compose.ui.node.OwnerSnapshotObserver.observeMeasureSnapshotReads$ui_release(OwnerSnapshotObserver.kt:113)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate.performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:1782)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate.access$performMeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:40)
+	at androidx.compose.ui.node.LayoutNodeLayoutDelegate$MeasurePassDelegate.remeasure-BRTryo0(LayoutNodeLayoutDelegate.kt:696)
+	at androidx.compose.ui.node.LayoutNode.remeasure-_Sx5XlM$ui_release(LayoutNode.kt:1222)
+	at androidx.compose.ui.node.MeasureAndLayoutDelegate.doRemeasure-sdFAvZA(MeasureAndLayoutDelegate.kt:367)
+	at androidx.compose.ui.node.MeasureAndLayoutDelegate.remeasureOnly(MeasureAndLayoutDelegate.kt:622)
+	at androidx.compose.ui.node.MeasureAndLayoutDelegate.measureOnly(MeasureAndLayoutDelegate.kt:420)
+	at androidx.compose.ui.platform.AndroidComposeView.onMeasure(AndroidComposeView.android.kt:1370)
+	at android.view.View.measure(View.java:29133)
+	at androidx.compose.ui.platform.AbstractComposeView.internalOnMeasure$ui_release(ComposeView.android.kt:309)
+	at androidx.compose.ui.platform.AbstractComposeView.onMeasure(ComposeView.android.kt:296)
+	at android.view.View.measure(View.java:29133)
+	at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+	at android.widget.FrameLayout.onMeasure(FrameLayout.java:195)
+	at android.view.View.measure(View.java:29133)
+	at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+	at android.widget.LinearLayout.measureChildBeforeLayout(LinearLayout.java:1609)
+	at android.widget.LinearLayout.measureVertical(LinearLayout.java:879)
+	at android.widget.LinearLayout.onMeasure(LinearLayout.java:722)
+	at android.view.View.measure(View.java:29133)
+	at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:7320)
+	at android.widget.FrameLayout.onMeasure(FrameLayout.java:195)
+	at com.android.internal.policy.DecorView.onMeasure(DecorView.java:728)
+	at android.view.View.measure(View.java:29133)
+	at android.view.ViewRootImpl.performMeasure(ViewRootImpl.java:5901)
+	at android.view.ViewRootImpl.measureHierarchy(ViewRootImpl.java:3986)
+	at android.view.ViewRootImpl.performTraversals(ViewRootImpl.java:4447)
+	at android.view.ViewRootImpl.doTraversal(ViewRootImpl.java:3676)
+	at android.view.ViewRootImpl$TraversalCallback.onVsync(ViewRootImpl.java:11992)
+	at android.view.Choreographer$CallbackRecord.run(Choreographer.java:1916)
+	at android.view.Choreographer.doCallbacks(Choreographer.java:1434)
+	at android.view.Choreographer.doFrame(Choreographer.java:1289)
+	at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:1892)
+	at android.os.Handler.handleCallback(Handler.java:1080)
+	at android.os.Handler.dispatchMessageImpl(Handler.java:135)
+	at android.os.Handler.dispatchMessage(Handler.java:126)
+	at android.os.Looper.loopOnce(Looper.java:285)
+	at android.os.Looper.loop(Looper.java:390)
+	at android.app.ActivityThread.main(ActivityThread.java:9884)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:575)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:906)
+
+</pre>
+</span>
+</div>
+<div id="tab1" class="tab">
+<h2>Failed tests</h2>
+<ul class="linkList">
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Test</th>
+</tr>
+</thead>
+<tr>
+<td class="failures">
+<a href="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest.html">GitHubRepositoriesFilterScreenTest</a>
+</td>
+<td class="failures">
+<a href="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest.html#favoriteToggleFiltersLoadedRepositoriesWithoutRemoteRequest">favoriteToggleFiltersLoadedRepositoriesWithoutRemoteRequest</a>
+</td>
+</tr>
+</table>
+</ul>
+</div>
+<div id="tab2" class="tab">
+<h2>Packages</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Tests</th>
+<th>Failures</th>
+<th>Skipped</th>
+<th>Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="failures">
+<a href="com.playertwo.controlegithub.html">com.playertwo.controlegithub</a>
+</td>
+<td>112</td>
+<td>1</td>
+<td>0</td>
+<td>2m38.49s</td>
+<td class="failures">99%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tab3" class="tab">
+<h2>Classes</h2>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Tests</th>
+<th>Failures</th>
+<th>Skipped</th>
+<th>Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest.html">com.playertwo.controlegithub.AccessibilityComprehensiveUiTest</a>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>7.567s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest.html">com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest</a>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>10.527s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.BackgroundSyncAndroidTest.html">com.playertwo.controlegithub.BackgroundSyncAndroidTest</a>
+<td>6</td>
+<td>0</td>
+<td>0</td>
+<td>0.585s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.BetaRobustnessAndroidTest.html">com.playertwo.controlegithub.BetaRobustnessAndroidTest</a>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0.049s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.CreateIssueAndroidTest.html">com.playertwo.controlegithub.CreateIssueAndroidTest</a>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0.052s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.CreateIssueUiTest.html">com.playertwo.controlegithub.CreateIssueUiTest</a>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+<td>14.536s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest.html">com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest</a>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0.009s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.CreatePullRequestCommentUiTest.html">com.playertwo.controlegithub.CreatePullRequestCommentUiTest</a>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+<td>14.513s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.DailySummaryUiTest.html">com.playertwo.controlegithub.DailySummaryUiTest</a>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>7.494s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.EditAndCommentIssueAndroidTest.html">com.playertwo.controlegithub.EditAndCommentIssueAndroidTest</a>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0.052s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.EditAndCommentIssueUiTest.html">com.playertwo.controlegithub.EditAndCommentIssueUiTest</a>
+<td>7</td>
+<td>0</td>
+<td>0</td>
+<td>19.175s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.GitHubAccountProfileMappingTest.html">com.playertwo.controlegithub.GitHubAccountProfileMappingTest</a>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0.041s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.GitHubActionsMappingTest.html">com.playertwo.controlegithub.GitHubActionsMappingTest</a>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0.068s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.GitHubHomeScreenTest.html">com.playertwo.controlegithub.GitHubHomeScreenTest</a>
+<td>8</td>
+<td>0</td>
+<td>0</td>
+<td>16.666s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.GitHubIssueDetailMappingTest.html">com.playertwo.controlegithub.GitHubIssueDetailMappingTest</a>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>0.019s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.GitHubIssuesScreenTest.html">com.playertwo.controlegithub.GitHubIssuesScreenTest</a>
+<td>13</td>
+<td>0</td>
+<td>0</td>
+<td>28.416s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.GitHubIssuesTest.html">com.playertwo.controlegithub.GitHubIssuesTest</a>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>0.032s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.GitHubNotificationPagerTest.html">com.playertwo.controlegithub.GitHubNotificationPagerTest</a>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0.224s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.GitHubNotificationsScreenTest.html">com.playertwo.controlegithub.GitHubNotificationsScreenTest</a>
+<td>7</td>
+<td>0</td>
+<td>0</td>
+<td>14.286s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.GitHubNotificationsTest.html">com.playertwo.controlegithub.GitHubNotificationsTest</a>
+<td>6</td>
+<td>0</td>
+<td>0</td>
+<td>0.090s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.GitHubOAuthProfileTest.html">com.playertwo.controlegithub.GitHubOAuthProfileTest</a>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0.012s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.GitHubPullRequestMappingTest.html">com.playertwo.controlegithub.GitHubPullRequestMappingTest</a>
+<td>7</td>
+<td>0</td>
+<td>0</td>
+<td>2.071s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.GitHubPullRequestsScreenTest.html">com.playertwo.controlegithub.GitHubPullRequestsScreenTest</a>
+<td>9</td>
+<td>0</td>
+<td>0</td>
+<td>18.651s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success"/>
+<a href="com.playertwo.controlegithub.GitHubRepositoriesEmptyStateTest.html">com.playertwo.controlegithub.GitHubRepositoriesEmptyStateTest</a>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>2.086s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="failures"/>
+<a href="com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest.html">com.playertwo.controlegithub.GitHubRepositoriesFilterScreenTest</a>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1.268s</td>
+<td class="failures">0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="footer">
+<p>Generated by 
+<a href="http://www.gradle.org">Gradle 9.3.1</a> at 21 de out. de 2026 00:01:58</p>
+</div>
+</div>
+</body>

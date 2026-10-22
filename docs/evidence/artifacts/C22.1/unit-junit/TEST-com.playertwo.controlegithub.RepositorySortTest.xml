@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.playertwo.controlegithub.RepositorySortTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-22T12:06:06.482Z" hostname="BOOKFAEL" time="0.014">
+  <properties/>
+  <testcase name="starsDescending" classname="com.playertwo.controlegithub.RepositorySortTest" time="0.002"/>
+  <testcase name="nameKeepsApiOrder" classname="com.playertwo.controlegithub.RepositorySortTest" time="0.001"/>
+  <testcase name="filtersByHealth" classname="com.playertwo.controlegithub.RepositorySortTest" time="0.0"/>
+  <testcase name="recentFirstWithUnknownLast" classname="com.playertwo.controlegithub.RepositorySortTest" time="0.004"/>
+  <testcase name="mostStaleFirstWithUnknownLast" classname="com.playertwo.controlegithub.RepositorySortTest" time="0.005"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

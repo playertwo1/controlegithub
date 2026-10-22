@@ -61,7 +61,8 @@ internal fun GitHubIssueDetailScreen(
     onBack: () -> Unit,
     onSessionExpired: (GitHubSession) -> Unit,
     onAppearance: () -> Unit,
-    isOffline: Boolean = session.isOffline
+    isOffline: Boolean = session.isOffline,
+    isActive: Boolean = true
 ) {
     var refreshVersion by remember(issue.identity, session.accessToken) { mutableIntStateOf(0) }
     val loader = remember(client, session.accessToken, issue.identity, refreshVersion) {
@@ -121,7 +122,7 @@ internal fun GitHubIssueDetailScreen(
         }
     }
 
-    BackHandler(onBack = {
+    BackHandler(enabled = isActive, onBack = {
         if (stateChanging) return@BackHandler
         if (editingIssue) {
             editingIssue = false
@@ -418,7 +419,7 @@ internal fun GitHubIssueDetailScreen(
                     }
                     Text(labelsText, color = MaterialTheme.colorScheme.secondary, modifier = Modifier.testTag("issue_labels_text"))
                     Text("Descrição", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
-                    InertMarkdown(current.detail.body?.takeIf(String::isNotBlank) ?: "Sem descrição.")
+                    GitHubMarkdownContent(current.detail.body?.takeIf(String::isNotBlank) ?: "Sem descrição.")
                 }
 
                 Text("Comentários", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
@@ -559,17 +560,6 @@ internal fun GitHubIssueDetailScreen(
 }
 
 @Composable
-private fun InertMarkdown(text: String) {
-    Surface(
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surface,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(text, modifier = Modifier.padding(18.dp), lineHeight = 22.sp, fontFamily = FontFamily.Default)
-    }
-}
-
-@Composable
 private fun IssueCommentCard(comment: GitHubIssueComment) {
     Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -583,7 +573,7 @@ private fun IssueCommentCard(comment: GitHubIssueComment) {
                     fontSize = 12.sp
                 )
             }
-            InertMarkdown(comment.body?.takeIf(String::isNotBlank) ?: "Comentário sem texto.")
+            GitHubMarkdownContent(comment.body?.takeIf(String::isNotBlank) ?: "Comentário sem texto.")
         }
     }
 }

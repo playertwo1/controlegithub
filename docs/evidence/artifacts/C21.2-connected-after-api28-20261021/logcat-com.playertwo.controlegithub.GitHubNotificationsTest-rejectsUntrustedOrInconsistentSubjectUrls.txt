@@ -1,0 +1,32 @@
+10-21 20:46:17.696 25510 25547 I TestRunner: started: rejectsUntrustedOrInconsistentSubjectUrls(com.playertwo.controlegithub.GitHubNotificationsTest)
+10-21 20:46:17.697 16319 16319 D ViewRootImpl: Skipping stats log for color mode
+10-21 20:46:17.697 16319 16319 V Godot   : OnStart: GodotFragment{fb583b8} (268ef184-1358-4f97-8d29-a8fcbf8724ff id=0x7f07002c)
+10-21 20:46:17.697 16319 16319 V Godot   : OnResume: GodotFragment{fb583b8} (268ef184-1358-4f97-8d29-a8fcbf8724ff id=0x7f07002c)
+10-21 20:46:17.708  1200  1200 I bluetooth: system/btif/avrcp/avrcp_service.cc:537 SendMediaUpdate: track_changed=false :  play_state=true :  queue=false
+10-21 20:46:17.708  1200  1200 E MediaControlProfile: onCurrentPlayerStateUpdated: base actions not supported, player actions= 0x0, adding missing base actions for fallback compatibility: 0x37
+10-21 20:46:17.709  1200  1200 I MediaControlGattService: Feature PLAYBACK_SPEED support: true
+10-21 20:46:17.709  1200  1200 I MediaControlGattService: Feature PLAYBACK_SPEED support: true
+10-21 20:46:17.709  1200  1200 I MediaControlGattService: Feature PLAYBACK_SPEED support: true
+10-21 20:46:17.709  1200  1200 I MediaControlGattService: Feature PLAYBACK_SPEED_NOTIFY support: true
+10-21 20:46:17.709  1200  1200 I MediaControlGattService: Feature TRACK_POSITION support: true
+10-21 20:46:17.709  1200  1200 I MediaControlGattService: Feature TRACK_POSITION_NOTIFY support: true
+10-21 20:46:17.709  1200  1200 I MediaControlGattService: Feature MEDIA_STATE support: true
+10-21 20:46:17.709  1200  1200 I MediaControlGattService: Feature MEDIA_STATE support: true
+10-21 20:46:17.709  1200  1200 I MediaControlGattService: Feature MEDIA_CONTROL_POINT_OPCODES_SUPPORTED support: true
+10-21 20:46:17.709  1200  1200 I MediaControlGattService: Feature MEDIA_STATE support: true
+10-21 20:46:17.709  1200  1200 I MediaControlGattService: Feature MEDIA_STATE support: true
+10-21 20:46:17.709  1200  1200 I MediaControlGattService: Feature MEDIA_STATE support: true
+10-21 20:46:17.710  1200  1200 I MediaControlGattService: Feature SEEKING_SPEED support: true
+10-21 20:46:17.710  1200  1200 I MediaControlGattService: Feature SEEKING_SPEED support: true
+10-21 20:46:17.710  1200  1200 I MediaControlGattService: Feature SEEKING_SPEED support: true
+10-21 20:46:17.710  1200  1200 W MediaControlProfile: MCS service state fields left unhandled:
+10-21 20:46:17.710  1200  1200 W MediaControlProfile:    > PLAYER_NAME
+10-21 20:46:17.710  1200  1200 W MediaControlProfile:    > PLAYING_ORDER_SUPPORTED
+10-21 20:46:17.711   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:46:17.711   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:46:17.711   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:46:17.711   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:46:17.712   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:46:17.712   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:46:17.712   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:46:17.712 25510 25547 I TestRunner: finished: rejectsUntrustedOrInconsistentSubjectUrls(com.playertwo.controlegithub.GitHubNotificationsTest)

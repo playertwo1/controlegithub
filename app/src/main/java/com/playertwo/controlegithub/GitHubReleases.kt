@@ -15,7 +15,8 @@ internal data class GitHubReleaseAsset(
     val sizeBytes: Long,
     val downloadCount: Long,
     val contentType: String?,
-    val browserDownloadUrl: String?
+    val browserDownloadUrl: String?,
+    val digestSha256: String? = null
 ) {
     val isApk: Boolean get() = name.lowercase(Locale.ROOT).endsWith(".apk")
     val isChecksum: Boolean get() = name.lowercase(Locale.ROOT).let {
@@ -72,7 +73,8 @@ internal fun parseGitHubRelease(release: JSONObject): GitHubRelease {
                 downloadCount = asset.optionalNonNegativeLong("download_count") ?: 0,
                 contentType = asset.optionalString("content_type"),
                 browserDownloadUrl = asset.optionalString("browser_download_url")
-                    ?.takeIf { it.startsWith("https://github.com/") }
+                    ?.takeIf { it.startsWith("https://github.com/") },
+                digestSha256 = asset.optionalString("digest")?.let(::parseGitHubReleaseDigest)
             )
         }
     )

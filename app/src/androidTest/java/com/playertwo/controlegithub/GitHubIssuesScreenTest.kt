@@ -78,7 +78,7 @@ class GitHubIssuesScreenTest {
         }
     }
 
-    @Test fun opensSelectedIssueAndLoadsPagedCommentsAsInertText() {
+    @Test fun opensSelectedIssueAndLoadsPagedCommentsWithMarkdown() {
         IssuesApi().use { api ->
             showScreen(api)
             compose.waitUntil(10_000) {
@@ -89,7 +89,7 @@ class GitHubIssuesScreenTest {
             compose.waitUntil(30_000) {
                 api.requests.any { it.startsWith("GET /repos/fixture-owner/fixture-repo/issues/18 HTTP") } &&
                     api.requests.any { it.startsWith("GET /repos/fixture-owner/fixture-repo/issues/18/comments") } &&
-                    compose.onAllNodesWithText("**fixture description**").fetchSemanticsNodes().isNotEmpty()
+                    compose.onAllNodesWithText("fixture description").fetchSemanticsNodes().isNotEmpty()
             }
             compose.onNodeWithText("Fixture detail title").assertIsDisplayed()
             compose.onNodeWithText("@fixture-comment-one").assertIsDisplayed()

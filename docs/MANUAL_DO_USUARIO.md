@@ -54,15 +54,22 @@ A interface utiliza uma doca flutuante inferior para alternar de forma imediata 
 ### 4.2 Repositórios
 - **Busca e Filtros:** Localize qualquer repositório pelo nome instantaneamente. Ordene por data de atualização recente, estrelas ou nome alfabético.
 - **Detalhes Completos:** Toque em qualquer repositório para visualizar descrição, linguagem predominante, contagem de forks/estrelas e atalhos diretos para issues e pull requests vinculados.
+- **Releases e APKs:** No detalhe do repositório, abra **Releases e APKs** para consultar releases e assets.
 
-### 4.3 Trabalho e Demandas (Issues e Pull Requests)
+### 4.3 Download e instalação manual de APKs
+- Toque em **Baixar** em um asset APK para acompanhar o progresso ou cancelar. Android 10+ salva em Downloads; no Android 8–9, escolha Downloads no seletor do sistema.
+- O app compara SHA-256 com o digest publicado pelo GitHub ou, quando ele não existe, com a entrada correspondente em `SHA256SUMS.txt`. Divergência descarta o arquivo; releases sem hash mostram **sem hash publicado**.
+- Depois de baixar, toque em **Instalar**. O Android pode pedir autorização para instalar apps iniciados pelo ControleGitHub e sempre apresenta a confirmação final. O app não instala nem atualiza APKs silenciosamente.
+- Notificações de progresso e conclusão são opcionais. Se forem negadas, o estado continua visível na tela Releases.
+
+### 4.4 Trabalho e Demandas (Issues e Pull Requests)
 - **Visualização em Lista ou Kanban:** Alterne a visualização através do seletor superior.
   - **Modo Lista:** Visualização clássica com filtros de estado (aberto/fechado) e busca rápida.
   - **Modo Quadro (Kanban Local):** Organize suas issues em 4 colunas (*A fazer*, *Em andamento*, *Em revisão* e *Concluído*). A movimentação de cartões é 100% local e pessoal — ela não modifica os dados do repositório no GitHub!
 - **Gestão de Issues:** Abra novas issues com título e descrição, comente em discussões existentes, altere labels e atribua responsáveis.
 - **Revisão de Pull Requests:** Inspecione detalhes da proposta, arquivos modificados, envie comentários de revisão ou emita pareceres formais (*Aprovar*, *Comentar* ou *Solicitar alterações*).
 
-### 4.4 Notificações
+### 4.5 Notificações
 - Central de notificações com agrupamento por repositório e motivo.
 - Toque em uma notificação para navegar diretamente ao item correspondente ou marque-a como lida individualmente.
 

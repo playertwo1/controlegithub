@@ -4,6 +4,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.Worker
+import androidx.work.WorkerParameters
+import androidx.work.WorkManager
+import androidx.work.workDataOf
+import android.content.Context
+import android.content.ContentValues
+import android.content.Intent
+import android.os.Environment
+import android.provider.MediaStore
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.InetAddress
@@ -13,7 +25,11 @@ import java.nio.charset.StandardCharsets
 import java.util.Base64
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.TimeUnit
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.espresso.Espresso.pressBack
+import androidx.test.filters.SdkSuppress
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -23,7 +39,7 @@ import org.junit.Test
 class GitHubRepositoryDetailScreenTest {
     @get:Rule val compose = createComposeRule()
 
-    @Test fun opensRealSelectionShowsInertReadmeRefreshesAndReturnsWithSearch() {
+    @Test fun opensRealSelectionRendersMarkdownAndConfirmsExternalLinks() {
         DetailApi().use { api ->
             showRepositories(api)
             compose.waitUntil(10_000) {
@@ -31,11 +47,15 @@ class GitHubRepositoryDetailScreenTest {
                     compose.onAllNodesWithText("acme/Mobile").fetchSemanticsNodes().isNotEmpty()
             }
             compose.onNode(hasSetTextAction()).performTextInput("mobile")
+            compose.waitForIdle()
             compose.onNodeWithText("acme/Mobile").performClick()
 
             compose.waitUntil(10_000) {
                 api.requestCount.get() == 3 &&
                     compose.onAllNodesWithText("Branch padrão").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Intro").fetchSemanticsNodes().isNotEmpty()
             }
             compose.onNodeWithText("acme/Mobile").assertIsDisplayed()
             compose.onNodeWithText("Interno").assertIsDisplayed()
@@ -48,29 +68,167 @@ class GitHubRepositoryDetailScreenTest {
             compose.onNodeWithText("4").assertIsDisplayed()
             compose.onNodeWithText("Último push").assertIsDisplayed()
 
-            val readme = "# Intro\n<script>literal</script>\n[link](https://example.test)\n```sh\necho safe\n```"
-            compose.onNodeWithText(readme).performScrollTo().assertIsDisplayed()
-            compose.onNodeWithText(readme).assertHasNoClickAction()
+            compose.onNodeWithText("Intro").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("<script>literal</script>").assertIsDisplayed().assertHasNoClickAction()
+            compose.onNodeWithText("unsafe").assertIsDisplayed().assertHasNoClickAction()
+            compose.onNodeWithText("Imagem: logo").assertIsDisplayed().performTouchInput { click() }
+            compose.onNodeWithText("Abrir link externo?").assertIsDisplayed()
+            compose.onNodeWithText("example.test").assertIsDisplayed()
+            compose.onNodeWithText("Cancelar").performClick()
+            compose.onNodeWithText("echo safe", substring = true).performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("external").performScrollTo().performTouchInput { click() }
+            compose.onNodeWithText("Abrir link externo?").assertIsDisplayed()
+            compose.onNodeWithText("example.test").assertIsDisplayed()
+            compose.onNodeWithText("Cancelar").performClick()
+            compose.onNodeWithText("Abrir link externo?").assertDoesNotExist()
+            assertEquals("Markdown must not fetch linked media or external pages", 3, api.requestCount.get())
             assertTrue(api.paths.any { it.contains("/repos/acme/Mobile/readme?ref=feature%2Fmobile") })
             if (InstrumentationRegistry.getArguments().getString("maestroPreview") == "true") {
                 Thread.sleep(60_000)
             }
 
             api.description = "Descrição atualizada no GitHub"
-            compose.onNodeWithContentDescription("Atualizar detalhe").performClick()
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithContentDescription("Atualizar detalhe").fetchSemanticsNodes()
+                    .any { !it.config.contains(SemanticsProperties.Disabled) }
+            }
+            compose.onNodeWithContentDescription("Atualizar detalhe").performScrollTo().performClick()
             compose.waitUntil(10_000) {
                 api.requestCount.get() >= 5 &&
                     compose.onAllNodesWithText("Descrição atualizada no GitHub").fetchSemanticsNodes().isNotEmpty()
             }
             compose.onNodeWithText("Descrição atualizada no GitHub").assertIsDisplayed()
-            compose.onNodeWithText("# Intro", substring = true).assertIsDisplayed()
+            compose.onNodeWithText("Intro").assertIsDisplayed()
 
-            compose.onNodeWithContentDescription("Voltar aos repositórios").performClick()
+            compose.onAllNodesWithContentDescription("Voltar aos repositórios").onLast().performClick()
             compose.onNodeWithText("Buscar repositórios").assertIsDisplayed()
             compose.onNodeWithText("mobile").assertIsDisplayed()
             compose.onNodeWithText("acme/Mobile").assertIsDisplayed()
             compose.onNodeWithText("acme/docs").assertDoesNotExist()
             assertTrue("Returning to the list triggered an unnecessary request", api.requestCount.get() == 5)
+        }
+    }
+
+    @Test fun internalMarkdownIssueLinkOpensAppDetailAndBackRestoresReadme() {
+        DetailApi().use { api ->
+            showFullApp(api)
+            compose.onNodeWithText("Abrir painel").performClick()
+            compose.onNodeWithText("Repos").performClick()
+            compose.waitUntil(10_000) {
+                api.paths.any { it.startsWith("GET /user/repos?") } &&
+                    compose.onAllNodesWithText("acme/Mobile").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("acme/Mobile").performClick()
+            compose.waitUntil(10_000) {
+                api.requestCount.get() >= 3 &&
+                    compose.onAllNodesWithText("README").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("issue").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("issue").performScrollTo().performTouchInput { click() }
+            compose.waitUntil(10_000) {
+                api.paths.any { it.startsWith("GET /repos/acme/Mobile/issues/9 ") } &&
+                    compose.onAllNodesWithText("Esta issue não está disponível para sua conta.").fetchSemanticsNodes().isNotEmpty()
+            }
+            val requestsBeforeBack = api.requestCount.get()
+            compose.onNodeWithContentDescription("Voltar às issues").performClick()
+            compose.onNodeWithText("README").assertIsDisplayed()
+            compose.onNodeWithText("Intro").assertIsDisplayed()
+            assertEquals(requestsBeforeBack, api.requestCount.get())
+        }
+    }
+
+    @Test fun internalMarkdownRepositoryLinkLoadsTheNewRepositoryAndBackRestoresReadme() {
+        DetailApi().use { api ->
+            showFullApp(api)
+            compose.onNodeWithText("Abrir painel").performClick()
+            compose.onNodeWithText("Repos").performClick()
+            compose.waitUntil(10_000) {
+                api.paths.any { it.startsWith("GET /user/repos?") } &&
+                    compose.onAllNodesWithText("acme/Mobile").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("acme/Mobile").performClick()
+            compose.waitUntil(10_000) {
+                api.paths.any { it.startsWith("GET /repos/acme/Mobile/readme") } &&
+                    compose.onAllNodesWithText("README").fetchSemanticsNodes().isNotEmpty() &&
+                    compose.onAllNodesWithText("docs repository").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("docs repository").performScrollTo().performTouchInput { click() }
+            compose.waitUntil(10_000) {
+                api.paths.any { it.startsWith("GET /repos/acme/docs ") }
+            }
+            compose.waitUntil(10_000) {
+                api.paths.any { it.startsWith("GET /repos/acme/docs/readme") }
+            }
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Docs README loaded").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("acme/docs").assertIsDisplayed()
+            compose.onNodeWithText("Docs README loaded").assertIsDisplayed()
+            compose.onAllNodesWithContentDescription("Voltar aos repositórios").assertCountEquals(1)
+
+            val requestsBeforeAppearance = api.requestCount.get()
+            compose.onNodeWithContentDescription("Configurações de aparência").performClick()
+            compose.onNodeWithText("Aparência").assertIsDisplayed()
+            compose.onNodeWithText("Tema do aplicativo").assertIsDisplayed()
+            pressBack()
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Docs README loaded").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Docs README loaded").assertIsDisplayed()
+            assertEquals(requestsBeforeAppearance, api.requestCount.get())
+
+            compose.onNodeWithText("other repository").performScrollTo().performTouchInput { click() }
+            compose.waitUntil(10_000) {
+                api.paths.any { it.startsWith("GET /repos/acme/other/readme") } &&
+                    compose.onAllNodesWithText("Other README loaded").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("acme/other").assertIsDisplayed()
+            compose.onNodeWithText("Other README loaded").assertIsDisplayed()
+            compose.onAllNodesWithContentDescription("Voltar aos repositórios").assertCountEquals(1)
+
+            val requestsBeforeBack = api.requestCount.get()
+            compose.onAllNodesWithContentDescription("Voltar aos repositórios").onLast().performClick()
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Docs README loaded").fetchSemanticsNodes().isNotEmpty() &&
+                    compose.onAllNodesWithContentDescription("Voltar aos repositórios").fetchSemanticsNodes().size == 1
+            }
+            compose.onNodeWithText("acme/docs").assertIsDisplayed()
+            compose.onNodeWithText("Docs README loaded").assertIsDisplayed()
+            compose.onAllNodesWithContentDescription("Voltar aos repositórios").assertCountEquals(1)
+            assertEquals(requestsBeforeBack, api.requestCount.get())
+            val requestsAfterReturningToDocs = api.requestCount.get()
+
+            compose.onAllNodesWithContentDescription("Voltar aos repositórios").onLast().performClick()
+            compose.onNodeWithText("acme/Mobile").assertIsDisplayed()
+            compose.onNodeWithText("issue").assertIsDisplayed()
+            compose.onAllNodesWithContentDescription("Voltar aos repositórios").assertCountEquals(1)
+            assertEquals(requestsAfterReturningToDocs, api.requestCount.get())
+        }
+    }
+
+    @Test fun markdownRouteIsClearedWhenItsSessionExpires() {
+        DetailApi(docsReadmeStatus = 401).use { api ->
+            showFullApp(api)
+            compose.onNodeWithText("Abrir painel").performClick()
+            compose.onNodeWithText("Repos").performClick()
+            compose.waitUntil(10_000) {
+                api.paths.any { it.startsWith("GET /user/repos?") } &&
+                    compose.onAllNodesWithText("acme/Mobile").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("acme/Mobile").performClick()
+            compose.waitUntil(10_000) {
+                api.paths.any { it.startsWith("GET /repos/acme/Mobile/readme") } &&
+                    compose.onAllNodesWithText("issue").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("docs repository").performScrollTo().performTouchInput { click() }
+            compose.waitUntil(10_000) {
+                api.paths.any { it.startsWith("GET /repos/acme/docs/readme") } &&
+                    compose.onAllNodesWithText("Início").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onAllNodesWithContentDescription("Voltar aos repositórios").assertCountEquals(0)
+            compose.onNodeWithText("Início").assertIsDisplayed()
         }
     }
 
@@ -81,6 +239,273 @@ class GitHubRepositoryDetailScreenTest {
             compose.onNodeWithText("README não encontrado para este repositório.").assertIsDisplayed()
             compose.onNodeWithText("Branch padrão").assertIsDisplayed()
             compose.onNodeWithText("Interno").assertIsDisplayed()
+        }
+    }
+
+    @Test fun repositoryReleasesShowLatestApkChecksumAndNotes() {
+        DetailApi().use { api ->
+            showRepositories(api)
+            openDetail(api)
+            compose.onNodeWithText("Releases e APKs").performScrollTo().performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/releases?") } &&
+                    compose.onAllNodesWithText("Versão 1.0").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Mais recente").assertIsDisplayed()
+            compose.onNodeWithText("Versão 1.0").performClick()
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("app-release.apk").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("app-release.apk").assertIsDisplayed()
+            compose.onNodeWithText("5,0 MB · 3 download(s)").assertIsDisplayed()
+            compose.onNodeWithText("SHA256SUMS.txt").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Notas da release").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Baixar").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithContentDescription("Voltar").performClick()
+            compose.onNodeWithText("Versão 1.0").assertIsDisplayed()
+        }
+    }
+
+    @Test @SdkSuppress(minSdkVersion = 26, maxSdkVersion = 28)
+    fun cancellingSafDestinationPickerDoesNotQueueDownload() {
+        val assetId = nextReleaseAssetIdForTest()
+        val workName = releaseAssetWorkName(1, assetId)
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        fun shell(command: String) = android.os.ParcelFileDescriptor.AutoCloseInputStream(
+            instrumentation.uiAutomation.executeShellCommand(command)
+        ).bufferedReader().use { it.readText() }
+        fun resumedPackage() = shell("dumpsys activity activities")
+            .lineSequence().firstOrNull { "mResumedActivity:" in it }
+            ?.substringAfter(" u0 ")?.substringBefore('/')
+        DetailApi(releaseAssetId = assetId).use { api ->
+            showRepositories(api)
+            openDetail(api)
+            compose.onNodeWithText("Releases e APKs").performScrollTo().performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/releases?") } &&
+                    compose.onAllNodesWithText("Versão 1.0").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Versão 1.0").performClick()
+            compose.onNodeWithText("Baixar").performScrollTo().performClick()
+            instrumentation.uiAutomation.waitForIdle(500, 5_000)
+            assertEquals("com.android.documentsui", resumedPackage())
+            repeat(2) {
+                shell("input keyevent 4")
+                Thread.sleep(500)
+            }
+            instrumentation.uiAutomation.waitForIdle(500, 5_000)
+            assertEquals(instrumentation.targetContext.packageName, resumedPackage())
+            assertTrue(WorkManager.getInstance(
+                instrumentation.targetContext
+            ).getWorkInfosForUniqueWork(workName).get().isEmpty())
+        }
+    }
+
+    @Test fun completedReleaseAssetShowsManualInstallAction() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val manager = WorkManager.getInstance(context)
+        val request = OneTimeWorkRequestBuilder<CompletedReleaseDownloadWorkerForUiTest>().setInputData(
+            workDataOf(
+                ReleaseDownloadKeys.OUTPUT_URI to "content://media/external/downloads/1",
+                ReleaseDownloadKeys.HASH_STATUS to "verified",
+                ReleaseDownloadKeys.HASH_SOURCE to "GitHub"
+            )
+        ).build()
+        val workName = releaseAssetWorkName(1, 19)
+        manager.enqueueUniqueWork(workName, ExistingWorkPolicy.REPLACE, request).result.get()
+        compose.waitUntil(10_000) { manager.getWorkInfoById(request.id).get()?.state == WorkInfo.State.SUCCEEDED }
+
+        DetailApi(releaseAssetId = 19).use { api ->
+            showRepositories(api)
+            openDetail(api)
+            compose.onNodeWithText("Releases e APKs").performScrollTo().performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/releases?") } &&
+                    compose.onAllNodesWithText("Versão 1.0").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Versão 1.0").performClick()
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Instalar").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("SHA-256 confere (GitHub)", substring = true).performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Instalar").performScrollTo().assertIsDisplayed()
+
+            assertTrue(
+                "O teste requer permissão de instalação manual negada no AVD",
+                !context.packageManager.canRequestPackageInstalls()
+            )
+            compose.onNodeWithText("Instalar").performClick()
+            compose.onNodeWithText("Permitir instalação manual").assertIsDisplayed()
+            compose.onNodeWithText("Cancelar").performClick()
+            compose.onNodeWithText("Permitir instalação manual").assertDoesNotExist()
+        }
+        manager.cancelUniqueWork(workName)
+    }
+
+    @Test fun checksumMismatchShowsSourceAndBlocksInstall() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val manager = WorkManager.getInstance(context)
+        val assetId = nextReleaseAssetIdForTest()
+        val workName = releaseAssetWorkName(1, assetId)
+        val request = OneTimeWorkRequestBuilder<FailedReleaseDownloadWorkerForUiTest>().setInputData(
+            workDataOf(
+                ReleaseDownloadKeys.ERROR to "hash_mismatch",
+                ReleaseDownloadKeys.HASH_SOURCE to "GitHub"
+            )
+        ).build()
+        manager.enqueueUniqueWork(workName, ExistingWorkPolicy.REPLACE, request).result.get()
+        compose.waitUntil(10_000) { manager.getWorkInfoById(request.id).get()?.state == WorkInfo.State.FAILED }
+
+        try {
+            DetailApi(releaseAssetId = assetId).use { api ->
+                showRepositories(api)
+                openDetail(api)
+                compose.onNodeWithText("Releases e APKs").performScrollTo().performClick()
+                compose.waitUntil(10_000) {
+                    api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/releases?") } &&
+                        compose.onAllNodesWithText("Versão 1.0", useUnmergedTree = true)
+                            .fetchSemanticsNodes().isNotEmpty()
+                }
+                compose.onNodeWithText("Versão 1.0", useUnmergedTree = true).performClick()
+                compose.onNodeWithText("Hash não confere com GitHub; arquivo descartado.")
+                    .performScrollTo().assertIsDisplayed()
+                compose.onNodeWithText("Instalar").assertDoesNotExist()
+            }
+        } finally {
+            manager.cancelUniqueWork(workName)
+        }
+    }
+
+    @Test @SdkSuppress(minSdkVersion = 29)
+    fun workerFailureBeforeTransferDeletesSelectedDestination() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val resolver = context.contentResolver
+        val destination = newPendingDownload(context, "worker-failure.apk")
+        val manager = WorkManager.getInstance(context)
+        val assetId = nextReleaseAssetIdForTest()
+        val workName = releaseAssetWorkName(1, assetId)
+        val request = OneTimeWorkRequestBuilder<GitHubReleaseDownloadWorker>().setInputData(
+            workDataOf(
+                ReleaseDownloadKeys.OWNER to "acme",
+                ReleaseDownloadKeys.REPO to "Mobile",
+                ReleaseDownloadKeys.REPOSITORY_ID to 1L,
+                ReleaseDownloadKeys.ASSET_ID to assetId,
+                ReleaseDownloadKeys.ASSET_NAME to "worker-failure.apk",
+                ReleaseDownloadKeys.ASSET_SIZE to Long.MAX_VALUE,
+                ReleaseDownloadKeys.DESTINATION_URI to destination.toString()
+            )
+        ).build()
+
+        try {
+            manager.enqueueUniqueWork(workName, ExistingWorkPolicy.REPLACE, request).result.get()
+            compose.waitUntil(10_000) { manager.getWorkInfoById(request.id).get()?.state == WorkInfo.State.FAILED }
+            assertEquals("no_space", manager.getWorkInfoById(request.id).get()?.outputData?.getString(ReleaseDownloadKeys.ERROR))
+            assertTrue("failed worker should remove the empty destination", !mediaStoreRowExists(resolver, destination))
+        } finally {
+            manager.cancelUniqueWork(workName)
+            resolver.delete(destination, null, null)
+        }
+    }
+
+    @Test @SdkSuppress(minSdkVersion = 29)
+    fun cancellingQueuedDownloadDeletesSelectedDestination() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val resolver = context.contentResolver
+        val destination = newPendingDownload(context, "queued-cancel.apk")
+        val manager = WorkManager.getInstance(context)
+        val assetId = nextReleaseAssetIdForTest()
+        val workName = releaseAssetWorkName(1, assetId)
+        val request = OneTimeWorkRequestBuilder<QueuedReleaseDownloadWorkerForUiTest>()
+            .setInitialDelay(1, TimeUnit.HOURS)
+            .setInputData(
+                workDataOf(
+                    ReleaseDownloadKeys.OWNER to "acme",
+                    ReleaseDownloadKeys.REPO to "Mobile",
+                    ReleaseDownloadKeys.REPOSITORY_ID to 1L,
+                    ReleaseDownloadKeys.ASSET_ID to assetId,
+                    ReleaseDownloadKeys.ASSET_NAME to "queued-cancel.apk",
+                    ReleaseDownloadKeys.ASSET_SIZE to 1L,
+                    ReleaseDownloadKeys.DESTINATION_URI to destination.toString()
+                )
+            ).build()
+
+        try {
+            rememberReleaseDownloadDestination(context, workName, destination)
+            manager.enqueueUniqueWork(workName, ExistingWorkPolicy.REPLACE, request).result.get()
+            compose.waitUntil(10_000) { manager.getWorkInfoById(request.id).get()?.state == WorkInfo.State.ENQUEUED }
+            DetailApi(releaseAssetId = assetId).use { api ->
+                showRepositories(api)
+                openDetail(api)
+                compose.onNodeWithText("Releases e APKs").performScrollTo().performClick()
+                compose.waitUntil(10_000) {
+                    api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/releases?") } &&
+                        compose.onAllNodesWithText("Versão 1.0", useUnmergedTree = true)
+                            .fetchSemanticsNodes().isNotEmpty()
+                }
+                compose.onNodeWithText("Versão 1.0", useUnmergedTree = true).performClick()
+                compose.onNodeWithText("Cancelar", useUnmergedTree = true).performScrollTo().performClick()
+                compose.waitUntil(10_000) { !mediaStoreRowExists(resolver, destination) }
+            }
+        } finally {
+            manager.cancelUniqueWork(workName)
+            resolver.delete(destination, null, null)
+        }
+    }
+
+    @Test @SdkSuppress(minSdkVersion = 29)
+    fun logoutCancellationDeletesQueuedDownloadDestination() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val resolver = context.contentResolver
+        val destination = newPendingDownload(context, "logout-cancel.apk")
+        val manager = WorkManager.getInstance(context)
+        val assetId = nextReleaseAssetIdForTest()
+        val workName = releaseAssetWorkName(1, assetId)
+        val request = OneTimeWorkRequestBuilder<QueuedReleaseDownloadWorkerForUiTest>()
+            .setInitialDelay(1, TimeUnit.HOURS)
+            .addTag(RELEASE_DOWNLOAD_WORK_TAG)
+            .addTag(workName)
+            .build()
+
+        try {
+            rememberReleaseDownloadDestination(context, workName, destination)
+            manager.enqueueUniqueWork(workName, ExistingWorkPolicy.REPLACE, request).result.get()
+            compose.waitUntil(10_000) { manager.getWorkInfoById(request.id).get()?.state == WorkInfo.State.ENQUEUED }
+            cancelReleaseDownloads(context)
+            compose.waitUntil(10_000) { !mediaStoreRowExists(resolver, destination) }
+        } finally {
+            manager.cancelUniqueWork(workName)
+            resolver.delete(destination, null, null)
+        }
+    }
+
+    @Test fun repositoryWithoutReleasesShowsAnHonestEmptyState() {
+        DetailApi(emptyReleases = true).use { api ->
+            showRepositories(api)
+            openDetail(api)
+            compose.onNodeWithText("Releases e APKs").performScrollTo().performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/releases?") } &&
+                    compose.onAllNodesWithText("Nenhuma release publicada neste repositório.")
+                        .fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Nenhuma release publicada neste repositório.").assertIsDisplayed()
+            compose.onNodeWithText("Versão 1.0").assertDoesNotExist()
+        }
+    }
+
+    @Test fun repositoryReleaseFailureOffersRetryWithoutDemoData() {
+        DetailApi(releaseStatus = 503).use { api ->
+            showRepositories(api)
+            openDetail(api)
+            compose.onNodeWithText("Releases e APKs").performScrollTo().performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/releases?") } &&
+                    compose.onAllNodesWithText("O GitHub está com instabilidade. Tente novamente mais tarde.")
+                        .fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("O GitHub está com instabilidade. Tente novamente mais tarde.").assertIsDisplayed()
+            compose.onNodeWithText("Versão 1.0").assertDoesNotExist()
+            compose.onNodeWithText("Tentar novamente").assertIsDisplayed()
         }
     }
 
@@ -140,6 +565,10 @@ class GitHubRepositoryDetailScreenTest {
             compose.onNodeWithText("Ver logs").performClick()
             compose.waitUntil(10_000) {
                 api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/actions/jobs/500/logs") }
+            }
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Este recurso não está disponível para sua conta.")
+                    .fetchSemanticsNodes().isNotEmpty()
             }
             compose.onNodeWithText("Este recurso não está disponível para sua conta.").assertIsDisplayed()
             compose.onNodeWithText("Este job ainda não tem logs.").assertDoesNotExist()
@@ -222,7 +651,10 @@ class GitHubRepositoryDetailScreenTest {
             val expired = AtomicInteger()
             showRepositories(api) { expired.incrementAndGet() }
             openActions(api)
-            compose.waitUntil(10_000) { expired.get() == 1 }
+            compose.waitUntil(10_000) {
+                expired.get() == 1 &&
+                    compose.onAllNodesWithText("Sua sessão expirou. Conecte-se novamente.").fetchSemanticsNodes().isNotEmpty()
+            }
             assertEquals(1, expired.get())
             compose.onNodeWithText("Sua sessão expirou. Conecte-se novamente.").assertIsDisplayed()
         }
@@ -360,15 +792,67 @@ class GitHubRepositoryDetailScreenTest {
         }
     }
 
+    private fun showFullApp(api: DetailApi) {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val session = GitHubSession(
+            GitHubUser("fixture-user", "https://github.com/fixture-user"),
+            SessionCredentials("instrumentation-fixture-token")
+        )
+        val sessionState = androidx.compose.runtime.mutableStateOf<GitHubSession?>(session)
+        compose.setContent {
+            ControleTheme(AppThemeMode.LIGHT) {
+                val activeSession = sessionState.value
+                ControleApp(
+                    themeMode = AppThemeMode.LIGHT,
+                    preferenceError = false,
+                    favoritesStore = DataStoreRepositoryFavoritesStore(context),
+                    favoriteOperations = kotlinx.coroutines.sync.Mutex(),
+                    session = activeSession,
+                    sessionRestoring = false,
+                    sessionRetry = false,
+                    sessionStorageError = false,
+                    favoriteCleanupError = false,
+                    onRetrySession = {},
+                    onRetrySessionCleanup = {},
+                    onConnected = { connected -> sessionState.value = connected; true },
+                    onSessionExpired = { sessionState.value = null },
+                    onLogout = {},
+                    onThemeModeChange = {},
+                    apiClient = GitHubHttpClient(api.baseUrl)
+                )
+            }
+        }
+    }
+
+    private fun newPendingDownload(context: Context, name: String) =
+        requireNotNull(context.contentResolver.insert(
+            MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+            ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+                put(MediaStore.MediaColumns.MIME_TYPE, "application/vnd.android.package-archive")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_DOWNLOADS}/")
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
+            }
+        ))
+
+    private fun mediaStoreRowExists(resolver: android.content.ContentResolver, uri: android.net.Uri) =
+        resolver.query(uri, arrayOf(MediaStore.MediaColumns._ID), null, null, null)?.use { it.moveToFirst() } ?: false
+
+    private fun nextReleaseAssetIdForTest() = System.nanoTime().coerceAtLeast(1L)
+
     private class DetailApi(
         private val metadataStatus: Int = 200,
         private val readmeStatus: Int = 200,
+        private val docsReadmeStatus: Int = 200,
         private val failMetadataNetworkOnce: Boolean = false,
         private val failMetadataServerOnce: Boolean = false,
         private val metadataRetryDelayMillis: Long = 0,
         private val actionsWorkflowsStatus: Int = 200,
         private val emptyActionsWorkflows: Boolean = false,
-        private val paginatedActionsWorkflows: Boolean = false
+        private val paginatedActionsWorkflows: Boolean = false,
+        private val releaseStatus: Int = 200,
+        private val emptyReleases: Boolean = false,
+        private val releaseAssetId: Long = nextTestReleaseAssetId()
     ) : AutoCloseable {
         private val server = ServerSocket(0, 2, InetAddress.getByName("127.0.0.1"))
         val baseUrl = URI.create("http://127.0.0.1:${server.localPort}/")
@@ -379,10 +863,36 @@ class GitHubRepositoryDetailScreenTest {
         val actionsResponses = ConcurrentLinkedQueue<String>()
         val responsesSent = ConcurrentLinkedQueue<String>()
         @Volatile var description = "Fixture detail"
-        private val readme = "# Intro\n<script>literal</script>\n[link](https://example.test)\n```sh\necho safe\n```"
+        private val readme = """# Intro
+            |<script>literal</script>
+            |
+            |[issue](https://github.com/acme/Mobile/issues/9)
+            |
+            |[docs repository](https://github.com/acme/docs)
+            |
+            |[external](https://example.test/docs)
+            |
+            |[unsafe](javascript:alert(1))
+            |
+            |![logo](https://example.test/logo.png)
+            |
+            |```sh
+            |echo safe
+            |```
+        """.trimMargin()
         private val readmeBody = JSONObject()
             .put("encoding", "base64")
             .put("content", Base64.getEncoder().encodeToString(readme.toByteArray(StandardCharsets.UTF_8)))
+            .toString()
+        private val docsReadmeBody = JSONObject()
+            .put("encoding", "base64")
+            .put("content", Base64.getEncoder().encodeToString(
+                "# Docs README loaded\n\n[other repository](https://github.com/acme/other)".toByteArray(StandardCharsets.UTF_8)
+            ))
+            .toString()
+        private val otherReadmeBody = JSONObject()
+            .put("encoding", "base64")
+            .put("content", Base64.getEncoder().encodeToString("# Other README loaded".toByteArray(StandardCharsets.UTF_8)))
             .toString()
 
         private val acceptThread = Thread {
@@ -404,6 +914,10 @@ class GitHubRepositoryDetailScreenTest {
                         }
                         val (status, body) = when {
                             requestLine.startsWith("GET /user/repos?") -> 200 to repositoryList
+                            requestLine.startsWith("GET /repos/acme/docs/readme") -> docsReadmeStatus to if (docsReadmeStatus == 200) docsReadmeBody else "{}"
+                            requestLine.startsWith("GET /repos/acme/docs ") -> 200 to docsMetadata
+                            requestLine.startsWith("GET /repos/acme/other/readme") -> 200 to otherReadmeBody
+                            requestLine.startsWith("GET /repos/acme/other ") -> 200 to otherMetadata
                             requestLine.startsWith("GET /repos/acme/Mobile/actions/workflows?page=2") -> 200 to workflowsNextPageBody
                             requestLine.startsWith("GET /repos/acme/Mobile/actions/workflows?") -> actionsWorkflowsStatus to when {
                                 actionsWorkflowsStatus != 200 -> "{}"
@@ -414,6 +928,11 @@ class GitHubRepositoryDetailScreenTest {
                             requestLine.startsWith("GET /repos/acme/Mobile/actions/runs?") -> 200 to runsBody
                             requestLine.startsWith("GET /repos/acme/Mobile/actions/workflows/42/runs?") -> 200 to runsBody
                             requestLine.startsWith("GET /repos/acme/Mobile/actions/runs/9001/jobs?") -> 200 to jobsBody
+                            requestLine.startsWith("GET /repos/acme/Mobile/releases?") -> releaseStatus to when {
+                                releaseStatus != 200 -> "{}"
+                                emptyReleases -> "[]"
+                                else -> releasesBody
+                            }
                             requestLine.startsWith("GET /repos/acme/Mobile/readme") -> readmeStatus to if (readmeStatus == 200) readmeBody else "{}"
                             requestLine.startsWith("GET /repos/acme/Mobile ") -> {
                                 val selectedStatus = if (failMetadataServerOnce && metadataAttempt == 1) 503 else metadataStatus
@@ -463,6 +982,19 @@ class GitHubRepositoryDetailScreenTest {
 
         private fun metadataBody() = metadata.replace("Fixture detail", description)
 
+        private val docsMetadata = """{
+          "id":2,"name":"docs","full_name":"acme/docs","owner":{"login":"acme"},
+          "private":false,"visibility":"public","default_branch":"main",
+          "description":"Docs metadata loaded","stargazers_count":1,"forks_count":0,
+          "open_issues_count":0,"pushed_at":"2026-10-01T10:20:30Z"
+        }"""
+        private val otherMetadata = """{
+          "id":3,"name":"other","full_name":"acme/other","owner":{"login":"acme"},
+          "private":false,"visibility":"public","default_branch":"main",
+          "description":"Other metadata loaded","stargazers_count":2,"forks_count":0,
+          "open_issues_count":0,"pushed_at":"2026-10-02T10:20:30Z"
+        }"""
+
         private val workflowsBody = """{"total_count":2,"workflows":[
             {"id":42,"name":"CI Android","path":".github/workflows/android.yml","state":"active"},
             {"id":43,"name":"Deploy","path":".github/workflows/deploy.yml","state":"disabled_manually"}]}"""
@@ -475,8 +1007,12 @@ class GitHubRepositoryDetailScreenTest {
             {"id":9001,"workflow_id":42,"name":"CI Android","run_number":17,"event":"push","status":"completed","conclusion":"failure","head_branch":"main","head_sha":"${"a".repeat(40)}","created_at":"2026-10-05T11:00:00Z","run_started_at":"2026-10-05T11:00:01Z","updated_at":"2026-10-05T11:01:00Z"}]}"""
         private val jobsBody = """{"total_count":1,"jobs":[
             {"id":500,"run_id":9001,"name":"Build and test","status":"completed","conclusion":"failure","started_at":"2026-10-05T11:00:01Z","completed_at":"2026-10-05T11:01:00Z"}]}"""
+        private val releasesBody = """[{"id":9,"tag_name":"v1.0.0","name":"Versão 1.0","body":"Notas da release","draft":false,"prerelease":false,"published_at":"2026-10-18T10:00:00Z","author":{"login":"acme"},"assets":[{"id":$releaseAssetId,"name":"app-release.apk","size":5242880,"download_count":3,"content_type":"application/vnd.android.package-archive","browser_download_url":"https://github.com/acme/Mobile/releases/download/v1.0.0/app-release.apk"},{"id":12,"name":"SHA256SUMS.txt","size":128,"download_count":1,"content_type":"text/plain","browser_download_url":"https://github.com/acme/Mobile/releases/download/v1.0.0/SHA256SUMS.txt"}]}]"""
 
         private companion object {
+            private val nextReleaseAssetId = AtomicLong(System.currentTimeMillis() * 1_000)
+            private fun nextTestReleaseAssetId() = nextReleaseAssetId.incrementAndGet()
+
             val repositoryList = """[
               {"id":1,"name":"Mobile","full_name":"acme/Mobile","owner":{"login":"acme"},"private":true,"description":"fixture list row","language":"Kotlin","stargazers_count":0},
               {"id":2,"name":"docs","full_name":"acme/docs","owner":{"login":"acme"},"private":false,"description":null,"language":"Markdown","stargazers_count":0}
@@ -489,4 +1025,16 @@ class GitHubRepositoryDetailScreenTest {
             }"""
         }
     }
+}
+
+class CompletedReleaseDownloadWorkerForUiTest(context: Context, parameters: WorkerParameters) : Worker(context, parameters) {
+    override fun doWork(): Result = Result.success(inputData)
+}
+
+class FailedReleaseDownloadWorkerForUiTest(context: Context, parameters: WorkerParameters) : Worker(context, parameters) {
+    override fun doWork(): Result = Result.failure(inputData)
+}
+
+class QueuedReleaseDownloadWorkerForUiTest(context: Context, parameters: WorkerParameters) : Worker(context, parameters) {
+    override fun doWork(): Result = Result.success()
 }

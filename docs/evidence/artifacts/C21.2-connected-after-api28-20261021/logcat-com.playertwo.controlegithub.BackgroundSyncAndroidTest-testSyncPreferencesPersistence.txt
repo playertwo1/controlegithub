@@ -1,0 +1,477 @@
+10-21 20:44:33.547 25510 25547 I TestRunner: started: testSyncPreferencesPersistence(com.playertwo.controlegithub.BackgroundSyncAndroidTest)
+10-21 20:44:33.559 25625 25672 I dowb    : Looking up Fi through package names.
+10-21 20:44:33.562   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.562   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.562   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.562   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.562   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.562   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.563   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.563   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.563   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.566 26032 26032 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+10-21 20:44:33.566 26032 26032 F DEBUG   : Build fingerprint: 'google/sdk_gphone16k_x86_64/emu64xa16k:17/CP41.260828.004.A7/16296984:user/dev-keys'
+10-21 20:44:33.566 26032 26032 F DEBUG   : Kernel Release: '6.12.81-android16-6-g4f69fc7b210c-ab16167562'
+10-21 20:44:33.566 26032 26032 F DEBUG   : Revision: '0'
+10-21 20:44:33.566 26032 26032 F DEBUG   : ABI: 'x86_64'
+10-21 20:44:33.566 26032 26032 F DEBUG   : Timestamp: 2026-10-21 20:44:33.541516004+0000
+10-21 20:44:33.566 26032 26032 F DEBUG   : Process uptime: 2s
+10-21 20:44:33.566 26032 26032 F DEBUG   : Page size: 16384 bytes
+10-21 20:44:33.566 26032 26032 F DEBUG   : Executable: /vendor/bin/hw/android.hardware.uwb-service
+10-21 20:44:33.566 26032 26032 F DEBUG   : Cmdline: /vendor/bin/hw/android.hardware.uwb-service /dev/uwb0
+10-21 20:44:33.566 26032 26032 F DEBUG   : pid: 26021, ppid: 1, tid: 26021, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.uwb-service <<<
+10-21 20:44:33.566 26032 26032 F DEBUG   : uid: 1083
+10-21 20:44:33.566 26032 26032 F DEBUG   : signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+10-21 20:44:33.566 26032 26032 F DEBUG   : Abort message: 'failed to open the serial device: Os { code: 6, kind: Uncategorized, message: "No such device or address" }'
+10-21 20:44:33.566 26032 26032 F DEBUG   :
+10-21 20:44:33.566 26032 26032 F DEBUG   :     rax 0000000000000000  rbx 00000000000065a5  rcx 000073f222cd706d  rdx 0000000000000006
+10-21 20:44:33.566 26032 26032 F DEBUG   :     r8  00007ff1aa47ce40  r9  00007ff1aa47ce40  r10 00007ff1aa47cc00  r11 0000000000000207
+10-21 20:44:33.566 26032 26032 F DEBUG   :     r12 0000000000000000  r13 00007ff1aa47cda0  r14 00000000000065a5  r15 00007ff1aa47cc00
+10-21 20:44:33.566 26032 26032 F DEBUG   :     rdi 00000000000065a5  rsi 00000000000065a5
+10-21 20:44:33.566 26032 26032 F DEBUG   :     rbp 00007ff1aa47ccb0  rsp 00007ff1aa47cc00  rip 000073f222cd706d  err 0000000000000000
+10-21 20:44:33.566 26032 26032 F DEBUG   :
+10-21 20:44:33.566 26032 26032 F DEBUG   : 18 total frames
+10-21 20:44:33.566 26032 26032 F DEBUG   : backtrace:
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #00 pc 000000000005b06d  /apex/com.android.runtime/lib64/bionic/libc.so (abort+189) (BuildId: 6a12fb8c62f84cd3689f4044ef042df1)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #01 pc 000000000003ed09  /vendor/bin/hw/android.hardware.uwb-service (std::sys::pal::unix::abort_internal+9) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #02 pc 000000000003c488  /vendor/bin/hw/android.hardware.uwb-service (std::process::abort+8) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #03 pc 0000000000038e89  /vendor/bin/hw/android.hardware.uwb-service (__rustc::__rust_abort+9) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #04 pc 000000000002d262  /vendor/bin/hw/android.hardware.uwb-service (__rustc::__rust_start_panic+18) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #05 pc 0000000000038e79  /vendor/bin/hw/android.hardware.uwb-service (__rustc::rust_panic+9) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #06 pc 000000000003c72f  /vendor/bin/hw/android.hardware.uwb-service (std::panicking::panic_with_hook+260) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #07 pc 0000000000038516  /vendor/bin/hw/android.hardware.uwb-service (std::panicking::panic_handler::{closure#0}+70) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #08 pc 0000000000038eab  /vendor/bin/hw/android.hardware.uwb-service (__rustc::rust_begin_unwind+27) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #09 pc 00000000000253db  /vendor/bin/hw/android.hardware.uwb-service (core::panicking::panic_fmt+43) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #10 pc 0000000000025261  /vendor/bin/hw/android.hardware.uwb-service (core::result::unwrap_failed+81) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #11 pc 00000000000641af  /vendor/bin/hw/android.hardware.uwb-service (<uwb_default_hal::uwb_chip::UwbChip>::new::{closure#0}+7999) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #12 pc 000000000006865a  /vendor/bin/hw/android.hardware.uwb-service (<core::iter::adapters::map::Map<core::iter::adapters::map::Map<core::iter::adapters::enumerate::Enumerate<core::iter::adapters::skip::Skip<std::env::Args>>, uwb_default_hal::main::{closure#1}>, <uwb_default_hal::uwb::Uwb>::from_chips<core::iter::adapters::map::Map<core::iter::adapters::enumerate::Enumerate<core::iter::adapters::skip::Skip<std::env::Args>>, uwb_default_hal::main::{closure#1}>>::{closure#0}> as core::iter::traits::iterator::Iterator>::next+3434) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #13 pc 0000000000065c77  /vendor/bin/hw/android.hardware.uwb-service (uwb_default_hal::main+791) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #14 pc 00000000000619fb  /vendor/bin/hw/android.hardware.uwb-service (std::rt::lang_start::<core::result::Result<(), anyhow::Error>>::{closure#0}+27) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #15 pc 000000000003bce6  /vendor/bin/hw/android.hardware.uwb-service (std::rt::lang_start_internal+534) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #16 pc 000000000006b193  /vendor/bin/hw/android.hardware.uwb-service (main+51) (BuildId: b8f3093f355d6b415637c050fb6e8cf4)
+10-21 20:44:33.566 26032 26032 F DEBUG   :       #17 pc 00000000000c3c10  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+112) (BuildId: 6a12fb8c62f84cd3689f4044ef042df1)
+10-21 20:44:33.566 26032 26032 F DEBUG   :
+10-21 20:44:33.566 26032 26032 F DEBUG   : Note: To display stack pointer information, use the pbtombstone tool:
+10-21 20:44:33.566 26032 26032 F DEBUG   :         pbtombstone --display-sp tombstone_XX.pb
+10-21 20:44:33.569 25625 26024 D WM-GreedyScheduler: Ignoring {WorkSpec: 321aaa6a-80fa-403c-be11-43390b20a855}. Requires device idle.
+10-21 20:44:33.569 25625 26024 D WM-GreedyScheduler: Ignoring {WorkSpec: fbe79c65-ead1-4428-ae56-886719ae5919}. Requires device idle.
+10-21 20:44:33.569 25625 26024 D WM-GreedyScheduler: Ignoring {WorkSpec: 40eb5e62-80c0-40b3-85eb-70bf5fef986b}. Requires device idle.
+10-21 20:44:33.569 25625 26024 D WM-GreedyScheduler: Ignoring {WorkSpec: 9359e582-ffca-46cb-a865-edd1cd903303}. Requires device idle.
+10-21 20:44:33.569 25625 26024 D WM-GreedyScheduler: Ignoring {WorkSpec: 9d4f1a74-a3f6-4e3c-965c-d8583f80d292}. Requires ContentUri triggers.
+10-21 20:44:33.569 25625 26024 D WM-GreedyScheduler: Starting work for 471341fb-72a4-4983-b613-e9057da0aa42
+10-21 20:44:33.570 25625 26024 D WM-Processor: vqq: processing WorkGenerationalId(workSpecId=471341fb-72a4-4983-b613-e9057da0aa42, generation=0)
+10-21 20:44:33.570 25625 25678 D MddListenableWorkerFactory: createWorker for class: com.google.android.apps.messaging.shared.datamodel.workqueue.WorkQueueWorkerShim
+10-21 20:44:33.576 25625 25674 W dspp    : BuglePhoneNumberUtils: canonicalizeMccMnc: invalid mccmnc. mcc: null, mnc: null
+10-21 20:44:33.578   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.578   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.578   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.578   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.578   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.581   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.581   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.581   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.590   379   379 E tombstoned: Tombstone written to: tombstone_20
+10-21 20:44:33.599   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.599   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.599   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.599   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.599   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.599   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.600   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.600   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.600   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.614   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.614   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.614   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.614   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.614   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.615   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.616   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.616   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.620 25625 25625 D WM-WorkerWrapper: Starting work for com.google.android.apps.messaging.shared.datamodel.workqueue.WorkQueueWorkerShim
+10-21 20:44:33.626 25625 25709 I djwg    : Rcs availability updater triggered on app start for all active identities.
+10-21 20:44:33.629   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.629   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.629   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.629   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.629   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.630 25613 25613 D VRI[InstrumentationActivityInvoker$EmptyActivity]: visibilityChanged oldVisibility=true newVisibility=false
+10-21 20:44:33.648   719  1048 I Surface : Creating surface for consumer unnamed-719-1452 with slotExpansion=1 for 64 slots
+10-21 20:44:33.648   719  1048 I Surface : Creating surface for consumer ImageReader-864x1939f1m1-719-1452 with slotExpansion=1 for 64 slots
+10-21 20:44:33.648   719  1048 W ImageReader_JNI: Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
+10-21 20:44:33.649   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.649   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.649   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.650   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.656  1450  1450 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.auth.service.START xflg=0x4 pkg=com.google.android.gms }
+10-21 20:44:33.656  1450  1450 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.auth.service.START xflg=0x4 pkg=com.google.android.gms }
+10-21 20:44:33.661  1450  1450 D BoundBrokerSvc: onRebind: Intent { act=com.google.android.gms.auth.aang.events.services.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.PersistentApiService }
+10-21 20:44:33.669   719  1048 E ConsumerBase: [ImageReader-864x1939f1m1-719-1452] abandonLocked: ConsumerBase is abandoned!
+10-21 20:44:33.684   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.684   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.684   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.684   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.684   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.694   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.694   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.694   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.694   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.694   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.694   719   753 I InputManager-JNI: Viewport [0] to add: local:4619827259835644672, isActive: true
+10-21 20:44:33.695   719   919 I InputReader: Reconfiguring input devices, changes=DISPLAY_INFO
+10-21 20:44:33.695   719   919 I InputReader: Touch device 'virtio_input_multi_touch_11' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-21 20:44:33.695   719   919 I InputReader: Touch device 'virtio_input_multi_touch_10' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-21 20:44:33.695   719   919 I InputReader: Touch device 'virtio_input_multi_touch_9' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-21 20:44:33.695   719   919 I InputReader: Touch device 'virtio_input_multi_touch_8' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-21 20:44:33.695   719   919 I InputReader: Touch device 'virtio_input_multi_touch_4' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-21 20:44:33.695   719   919 I InputReader: Touch device 'virtio_input_multi_touch_6' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-21 20:44:33.695   719   919 I InputReader: Touch device 'virtio_input_multi_touch_5' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-21 20:44:33.695   719   919 I InputReader: Touch device 'virtio_input_multi_touch_3' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-21 20:44:33.695   719   919 I InputReader: Touch device 'virtio_input_multi_touch_2' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-21 20:44:33.695   719   919 I InputReader: Touch device 'virtio_input_multi_touch_7' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-21 20:44:33.697  1682  1682 I AppBase : AppBase.onConfigurationChanged():283 onConfigurationChanged() : NewConfig = {1.0 310mcc260mnc [en_US] ldltr sw411dp w923dp h411dp 420dpi nrml long compactNeeded land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 2424, 1080) mAppBounds=Rect(0, 0 - 2424, 1080) mMaxBounds=Rect(0, 0 - 2424, 1080) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} as.3 s.659 fontWeightAdjustment=0}
+10-21 20:44:33.698  1682  1682 I GoogleInputMethodService: GoogleInputMethodService.onConfigurationChanged():1207 onConfigurationChanged() : NewConfig = {1.0 310mcc260mnc [en_US] ldltr sw411dp w923dp h411dp 420dpi nrml long compactNeeded land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 2424, 1080) mAppBounds=Rect(0, 0 - 2424, 1080) mMaxBounds=Rect(0, 0 - 2424, 1080) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} as.3 s.646 fontWeightAdjustment=0}
+10-21 20:44:33.698  1682  1682 I GoogleInputMethodService: GoogleInputMethodService.onConfigurationChanged():1208 device real metrics: DisplayMetrics{density=2.625, width=2424, height=1080, scaledDensity=2.625, xdpi=420.0, ydpi=420.0}
+10-21 20:44:33.698  1682  1682 I GoogleInputMethodService: GoogleInputMethodService.onConfigurationChanged():1232 Maybe update OEM conditional config because of configuration change
+10-21 20:44:33.698  1682  1682 I InputMethodEntryManager: InputMethodEntryManager.notifyCurrentInputMethodEntryOnContextChanged():607 notifyCurrentInputMethodEntryOnContextChanged()
+10-21 20:44:33.698  1682  1682 I InputMethodEntryManager: InputMethodEntryManager.notifyCurrentInputMethodEntryOnContextChanged():624 Notify current input method entry changed on context change
+10-21 20:44:33.698  1682  1682 I KeyboardContextProvider: KeyboardContextProvider$KeyboardContextCache.createKeyboardContext():173 createKeyboardContext(): en-US, acdh@3cd647(com.android.inputmethod.latin.LatinIME@ac30125), {1.0 310mcc260mnc [en_US] ldltr sw411dp w923dp h411dp 420dpi nrml long compactNeeded land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 2424, 1080) mAppBounds=Rect(0, 0 - 2424, 1080) mMaxBounds=Rect(0, 0 - 2424, 1080) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} as.3 s.513 fontWeightAdjustment=0}
+10-21 20:44:33.698  1682  1682 I GoogleInputMethodService: GoogleInputMethodService.onCurrentInputMethodEntryChanged():2671 onCurrentInputMethodEntryChanged(): imeDefsChanged=false, entryLanguageVariantChanged=false, keyboardContextChanged=true
+10-21 20:44:33.698  1682  1682 I SystemSubtypesReportModule: SystemSubtypesReportModule$2.onCurrentInputMethodEntryChanged():165 entry: en-US, source: UNSPECIFIED
+10-21 20:44:33.698  1682  1682 I KeyboardContextProvider: KeyboardContextProvider.setBaseContextAndInvalidKeyboardContextCache():88 setBaseContextAndInvalidKeyboardContextCache(): com.android.inputmethod.latin.LatinIME@ac30125
+10-21 20:44:33.699  1682  1682 I DeviceModeModule: DeviceModeModule.calculateAndNotify():242 Device mode 'phone' from display metrics 'DisplayMetrics{density=0.0, width=1080, height=2424, scaledDensity=0.0, xdpi=420.0, ydpi=420.0}' or smallestScreenWidthDp: 411
+10-21 20:44:33.699  1682  1682 I InputMethodEntryManager: InputMethodEntryManager.resetLanguages():2905 resetLanguages() debounced: languages=null, conditionName=orientation
+10-21 20:44:33.699  1682  1682 I GoogleInputMethodService: GoogleInputMethodService.onConfigurationChanged():1250 changedMask : 20000480
+10-21 20:44:33.699  1682  1682 I GoogleInputMethodService: GoogleInputMethodService.clearInputMethodServiceData():1193 clearInputMethodServiceData for configurationChange
+10-21 20:44:33.699  1682  1682 I GoogleInputMethodService: GoogleInputMethodService.discardAllKeyboardViewAndInputView():1467 discardAllKeyboardViewAndInputView()
+10-21 20:44:33.701  1682  1682 I AbstractOpenableExtension: AbstractOpenableExtension.maybeDestroyExistingKeyboardGroupManager():552 Destroy existing keyboard group manager in tbr
+10-21 20:44:33.701  1682  1682 I AbstractOpenableExtension: AbstractOpenableExtension$3.onSuccess():572 KeyboardGroupManager destroyed in tbr.
+10-21 20:44:33.701  1682  1682 I AbstractOpenableExtension: AbstractOpenableExtension.createKeyboardGroupManagerListenableFuture():122 Create keyboard group manager listenable future in tbr
+10-21 20:44:33.701  1682  1682 I AbstractOpenableExtension: AbstractOpenableExtension.maybeDestroyExistingKeyboardGroupManager():552 Destroy existing keyboard group manager in mze
+10-21 20:44:33.701  1682  1682 I AbstractOpenableExtension: AbstractOpenableExtension$3.onSuccess():572 KeyboardGroupManager destroyed in mze.
+10-21 20:44:33.701  1682  1682 I AbstractOpenableExtension: AbstractOpenableExtension.createKeyboardGroupManagerListenableFuture():122 Create keyboard group manager listenable future in mze
+10-21 20:44:33.701  1682  1682 I AbstractOpenableExtension: AbstractOpenableExtension.maybeDestroyExistingKeyboardGroupManager():552 Destroy existing keyboard group manager in tmf
+10-21 20:44:33.701  1682  1682 I AbstractOpenableExtension: AbstractOpenableExtension$3.onSuccess():572 KeyboardGroupManager destroyed in tmf.
+10-21 20:44:33.701  1682  1682 I AbstractOpenableExtension: AbstractOpenableExtension.createKeyboardGroupManagerListenableFuture():122 Create keyboard group manager listenable future in tmf
+10-21 20:44:33.701  1682  1682 I DeviceModeModule: DeviceModeModule.calculateAndNotify():242 Device mode 'phone' from display metrics 'DisplayMetrics{density=0.0, width=2424, height=1080, scaledDensity=0.0, xdpi=420.0, ydpi=420.0}' or smallestScreenWidthDp: 411
+10-21 20:44:33.701  1682  1682 I GoogleInputMethodService: GoogleInputMethodService$8.onWindowMetricsChanged():859 windowMetrics: bounds() = Rect(142, 137 - 2424, 1080), insets() = Rect(0, 0 - 0, 0)
+10-21 20:44:33.701  1682  1682 W LatinInputMethodServiceBase: LatinInputMethodServiceBase.updateInputViewCoverNavigation():365 Null input view, cannot update padding!
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.701  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.702  1682  1682 I WindowMetricsNotification: WindowMetricsNotification.notify():169 anii[bounds=Rect(142, 137 - 2424, 1080), insets=Rect(0, 0 - 0, 0), decorBounds=Rect(0, 0 - 2424, 1080), densityDpi=420, smallestScreenWidthDp=411, displayWidth=2424, displayHeight=1080, xdpi=420.0, ydpi=420.0, isTrustable=true, displayId=0]; DisplayMetrics{density=2.625, width=2424, height=1080, scaledDensity=2.625, xdpi=420.0, ydpi=420.0}
+10-21 20:44:33.702  1682  1682 I WindowMetricsHelper: WindowMetricsHelper.predictAndNotify():148 Window metrics predicted.
+10-21 20:44:33.702  1682  1682 I GoogleInputMethodService: GoogleInputMethodService.initializeInputMethodServiceData():914 initializeInputMethodServiceData for aepr{languageTag=en-US, variant=qwerty, hasLocalizedResources=true, conditionCacheKey=_android_software_xr_api_spatial=false_device=phone_device_size=default_enable_free_cursor_by_long_press_space=true_enable_number_row=false_enable_number_row_in_password=true_enable_pk_simulator=false_enable_pk_simulator_setting=false_enable_scrub_move=true_enable_secondary_digits=true_enable_secondary_symbols=false_enable_simplified_expression_keyboard=false_expressions=normal_four_or_more_letter_rows=false_free_cursor=false_free_cursor_del_swipe_delete=false_free_cursor_in_split_keyboard_gap=false_keyboard_font_size_setting=_keyboard_mode=normal_language=en-US_layout_9key_split=false_orientation=portrait_physical_keyboard=qwerty_pk_simulator_vk_ready=false_pref_enable_flick_symbols=false_rtl_layout=false_show_comma_key=true_show_period_key=true_show_secondary_digits=true_show_suggestion_strip=true_show_suggestions=true_split_with_duplicate_keys=true_true=true_variant=qwerty_writing_helper_enable_by_word_revert=true, imeDef.stringId=ime_english_united_states, imeDef.className=com.google.android.apps.inputmethod.libs.edittracker.EditTrackingImeWrapper, imeDef.languageTag=en-US}
+10-21 20:44:33.702  1682  1682 I ThemeUtil: ThemeUtil.isDynamicColorHigherContrastMode():340 Detected higher contrast mode: 72.432045
+10-21 20:44:33.708  1682 25603 I KeyboardGroupDefParser: KeyboardGroupDefParser.parseKeyboardGroupDef():72 parseKeyboardGroupDef() 2132213830 -> 0_resource_name_obfuscated : WaitTime = 1 ms : RunTime = 6 ms
+10-21 20:44:33.708  1682  1682 I KeyboardThemeProvider: KeyboardThemeProvider.applyKeyboardTheme():27 Apply keyboard theme: theme,!gsf,!pgsans,!pgsf,!use_system_font,BORDER,FLAVOR_DPI=XXHDPI,IS_LIGHT,KEYBOARD_MODE=1,KEYBOARD_WIDTH_CATEGORY=NORMAL,KEY_BORDER_SHAPE=1,LANDSCAPE,LIGHT_THEME=true,ORIENTATION=2,PHYSICAL_DIAGONAL=5.878963,POPUP,SCREEN_SHORTEST_WIDTH=411,SCREEN_SHORTEST_WIDTH_NO_SCALE=411,SW400DP,XXHDPI,density_2.625,enable_popup_on_keypress=true,font_scale_1.0,gsans,noshadow,overlay_builtin_dynamic_color_light_base.binarypb:gm3-light-fffaf8fe-ff4c5e8b-4fb1adea13304a190d4abf12326cf60c,silkpopup
+10-21 20:44:33.708  1682  1682 I InputMethodEntryManager: InputMethodEntryManager.getAdditionalImeDefs():2571 getAdditionalImeDefs() called, flag enabled: true, isUserUnlocked: true
+10-21 20:44:33.708  1682  1682 I InputBundle: InputBundle.prefetchKeyboard():679 prefetchKeyboard: prime
+10-21 20:44:33.708  1682 25603 I KeyboardGroupDefParser: KeyboardGroupDefParser.parseKeyboardGroupDef():72 parseKeyboardGroupDef() 2132213834 -> 0_resource_name_obfuscated : WaitTime = 7 ms : RunTime = 1 ms
+10-21 20:44:33.709  1682  1682 I KeyboardDefManager: KeyboardDefManager.requestKeyboardDef():143 requestKeyboardDef(): type=prime, info=aggq{defIds=[#0x7f170555, #0x7f1707eb], defIdsCacheKey=2132215125,2132215787}
+10-21 20:44:33.709  1682  1682 I KeyboardDefManager: KeyboardDefManager.requestKeyboardDef():232 requestKeyboardDef(): getOrCreate from cache, info=aggq{defIds=[#0x7f170555, #0x7f1707eb], defIdsCacheKey=2132215125,2132215787}
+10-21 20:44:33.709  1682  1682 I KeyboardDefManager: KeyboardDefManager$Companion$addFutureCallbackForKeyboardDefReceiver$<anonymous>.onSuccess():524 requestKeyboardDef onSuccess(): info=aggq{defIds=[#0x7f170555, #0x7f1707eb], defIdsCacheKey=2132215125,2132215787}
+10-21 20:44:33.709  1682  1682 I KeyboardInterfacePrivate: IKeyboard.createKeyboard():71 Keyboard created from HiltKeyboardFactory: com.google.android.apps.inputmethod.latin.keyboard.LatinPrimeKeyboard
+10-21 20:44:33.709  1682  1682 I InputBundleManager: InputBundleManager.loadActiveInputBundleId():552 loadActiveInputBundleId: und-Latn-x-password, password
+10-21 20:44:33.709  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.710  1682  1682 I ThemeUtil: ThemeUtil.applyThemeStyle():149 Theme style FocusRingsOverride is applied dynamically
+10-21 20:44:33.711  1682  1682 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1552 onStartInput(EditorInfo{EditorInfo{packageName=com.rafapedrosa.lofigame, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, true)
+10-21 20:44:33.711  1682  1682 W SessionManager: SessionManager.beginSession():73 Try to begin an already begun session [INPUT_SESSION], end it first
+10-21 20:44:33.711  1682  1682 W LatinInputMethodServiceBase: LatinInputMethodServiceBase.updateInputViewCoverNavigation():365 Null input view, cannot update padding!
+10-21 20:44:33.713  1682 25601 I KeyboardGroupDefParser: KeyboardGroupDefParser.parseKeyboardGroupDef():72 parseKeyboardGroupDef() 2132213833 -> 0_resource_name_obfuscated : WaitTime = 1 ms : RunTime = 12 ms
+10-21 20:44:33.714  1682  1682 W PrimesLoggerHolder: FrameMetricServiceImpl.start():172 measurement already started: MeasurementKey{rawStringEventName=null, noPiiEventName=OnConfigurationChanged, isActivity=false}
+10-21 20:44:33.714   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.714   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.714   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.714   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.714  1682  1682 I ImeDefCache: ImeDefCache.clearCacheForLanguages():340 clearCacheForLanguages: languagesToClear=null, conditionName=orientation
+10-21 20:44:33.714  1682  1682 I AdditionalImeDefCache: AdditionalImeDefCache.clearAdditionalImeDefsForCondition():303 clearAdditionalImeDefsForCondition() clear additional ImeDefs: []
+10-21 20:44:33.714  1682  1682 I InputMethodEntryManager: InputMethodEntryManager.startLoadingInputMethodEntrySettings():814 Start loading input method entry settings: [LanguageTagVariantTuple{languageTag=en-US, variant=qwerty}]
+10-21 20:44:33.714  1682  1682 I InputMethodEntryManager: InputMethodEntryManager.updateInputMethodEntrySettingsLoadingTask():944 update loading task with resetImplicitlyEnabledEntries is false
+10-21 20:44:33.714  1682  1682 I InputMethodEntryManager: InputMethodEntryManager$4.onSuccess():966 Success load entries: [LanguageTagVariantTuple{languageTag=en-US, variant=qwerty}], resetImplicitlyEnabledEntries=false, initialized=true
+10-21 20:44:33.715  1682  1682 I InputMethodEntryManager: InputMethodEntryManager.changeCurrentInputMethodEntry():3177 Set current input method entry: source=UNSPECIFIED, entryChanged=false, enablePersist=true, aepr{languageTag=en-US, variant=qwerty, hasLocalizedResources=true, conditionCacheKey=_android_software_xr_api_spatial=false_device=phone_device_size=default_enable_free_cursor_by_long_press_space=true_enable_number_row=false_enable_number_row_in_password=true_enable_pk_simulator=false_enable_pk_simulator_setting=false_enable_scrub_move=true_enable_secondary_digits=true_enable_secondary_symbols=false_enable_simplified_expression_keyboard=false_expressions=normal_four_or_more_letter_rows=false_free_cursor=false_free_cursor_del_swipe_delete=false_free_cursor_in_split_keyboard_gap=false_keyboard_font_size_setting=_keyboard_mode=normal_language=en-US_layout_9key_split=false_orientation=landscape_physical_keyboard=qwerty_pk_simulator_vk_ready=false_pref_enable_flick_symbols=false_rtl_layout=false_show_comma_key=true_show_period_key=true_show_secondary_digits=true_show_suggestion_strip=true_show_suggestions=true_split_with_duplicate_keys=true_true=true_variant=qwerty_writing_helper_enable_by_word_revert=true, imeDef.stringId=ime_english_united_states, imeDef.className=com.google.android.apps.inputmethod.libs.edittracker.EditTrackingImeWrapper, imeDef.languageTag=en-US}
+10-21 20:44:33.715  1093  1093 I NoBackGesture: Config changed: newConfig={1.0 310mcc260mnc [en_US] ldltr sw411dp w923dp h411dp 420dpi nrml long compactNeeded land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 2424, 1080) mAppBounds=Rect(0, 0 - 2424, 1080) mMaxBounds=Rect(0, 0 - 2424, 1080) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} as.3 s.667 fontWeightAdjustment=0} lastReportedConfig={1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h923dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2424) mAppBounds=Rect(0, 0 - 1080, 2424) mMaxBounds=Rect(0, 0 - 1080, 2424) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} as.3 s.636 fontWeightAdjustment=0}
+10-21 20:44:33.715  1682  1682 I InputMethodEntryManager: InputMethodEntryManager.loadAdditionalImeDefsForCurrentEntry():3210 loadAdditionalImeDefsForCurrentEntry(): aepr{languageTag=en-US, variant=qwerty, hasLocalizedResources=true, conditionCacheKey=_android_software_xr_api_spatial=false_device=phone_device_size=default_enable_free_cursor_by_long_press_space=true_enable_number_row=false_enable_number_row_in_password=true_enable_pk_simulator=false_enable_pk_simulator_setting=false_enable_scrub_move=true_enable_secondary_digits=true_enable_secondary_symbols=false_enable_simplified_expression_keyboard=false_expressions=normal_four_or_more_letter_rows=false_free_cursor=false_free_cursor_del_swipe_delete=false_free_cursor_in_split_keyboard_gap=false_keyboard_font_size_setting=_keyboard_mode=normal_language=en-US_layout_9key_split=false_orientation=landscape_physical_keyboard=qwerty_pk_simulator_vk_ready=false_pref_enable_flick_symbols=false_rtl_layout=false_show_comma_key=true_show_period_key=true_show_secondary_digits=true_show_suggestion_strip=true_show_suggestions=true_split_with_duplicate_keys=true_true=true_variant=qwerty_writing_helper_enable_by_word_revert=true, imeDef.stringId=ime_english_united_states, imeDef.className=com.google.android.apps.inputmethod.libs.edittracker.EditTrackingImeWrapper, imeDef.languageTag=en-US}
+10-21 20:44:33.715  1682  1682 I GoogleInputMethodService: GoogleInputMethodService.onCurrentInputMethodEntryChanged():2671 onCurrentInputMethodEntryChanged(): imeDefsChanged=false, entryLanguageVariantChanged=false, keyboardContextChanged=false
+10-21 20:44:33.715  1682  1682 I GoogleInputMethodService: GoogleInputMethodService.onCurrentInputMethodEntryChanged():2698 Skip the entry change as the input method entry is consider as not changed.
+10-21 20:44:33.715  1093  1093 I NoBackGesture: NavbarController: newConfig={1.0 310mcc260mnc [en_US] ldltr sw411dp w923dp h411dp 420dpi nrml long compactNeeded land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 2424, 1080) mAppBounds=Rect(0, 0 - 2424, 1080) mMaxBounds=Rect(0, 0 - 2424, 1080) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} as.3 s.667 fontWeightAdjustment=0} mTaskbarDelegate initialized=true willApplyConfigToNavbars=false navBarCount=0
+10-21 20:44:33.715  1682  1682 I SystemSubtypesReportModule: SystemSubtypesReportModule$2.onCurrentInputMethodEntryChanged():165 entry: en-US, source: UNSPECIFIED
+10-21 20:44:33.723 26036 26036 I flags_health_check: ServerConfigurableFlagsReset reset_mode value: 1
+10-21 20:44:33.724 26036 26036 I flags_health_check: ServerConfigurableFlagsReset updatable crashing detected, resetting flags.
+10-21 20:44:33.726  1682 25603 I DeviceStatusMonitor: DeviceStatusMonitor.onDisplayChanged():442 Display 0 rotation changed: 0 -> 1
+10-21 20:44:33.727  1682 25607 I PerLanguageDataDownloader: PerLanguageDataDownloader.downloadDataInternal():168 downloading Data for en
+10-21 20:44:33.727  1682 25607 I ManifestedDataDownloader: ManifestedDataDownloader.download():67 downloading manifest https://www.gstatic.com/android/keyboard/modelpack/proactiveek/embedding_gemma/2025120304/en_manifest.json
+10-21 20:44:33.728   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.728   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.728   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.728   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.730  1682  2130 I SP      : Registering emoticon_content_description.2022081613, url: https://www.gstatic.com/android/keyboard/emoticon_content_desc/202208161305/superpacks_manifest.json, constraints: W:*:*:*, flags: bg, requested: 2022081613, current: 2022081613
+10-21 20:44:33.736  1259  1310 D PerDisplayTaskbarResource: onConfigurationChanged: {1.0 310mcc260mnc [en_US] ldltr sw411dp w923dp h411dp 420dpi nrml long compactNeeded land finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 2424, 1080) mAppBounds=Rect(0, 0 - 2424, 1080) mMaxBounds=Rect(0, 0 - 2424, 1080) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} as.3 s.646 fontWeightAdjustment=0} displayId=0
+10-21 20:44:33.736  1259  1310 D PerDisplayTaskbarResource: onConfigurationChanged: | configDiff={} displayId=0
+10-21 20:44:33.736  1259  1310 D PerDisplayTaskbarResource: onConfigurationChanged: isTaskbarEnabled()=True displayId=0
+10-21 20:44:33.736  1259  1310 D PerDisplayTaskbarResource: onConfigurationChanged: call recreateTaskbars displayId=0
+10-21 20:44:33.736  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay displayId=0
+10-21 20:44:33.736  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay: getting device profile displayId=0
+10-21 20:44:33.736  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay: destroying taskbar displayId=0
+10-21 20:44:33.736  1259  1310 D PerDisplayTaskbarResource: destroyTaskbarForDisplay displayId=0
+10-21 20:44:33.739  1259  1310 D CueBarController: CuebarController destroy
+10-21 20:44:33.740  1259  1310 D TaskbarOverlayController: onDestroy: 	at com.android.launcher3.taskbar.PerDisplayTaskbarResource.destroyTaskbarForDisplay(go/retraceme 27a598f2914f3177f1fa84de7e2b1581f1c63e610e884b594a57bc1d76c4a32b:41)
+10-21 20:44:33.740  1259  1310 D TaskbarOverlayController: 	at com.android.launcher3.taskbar.TaskbarManagerImpl.recreateTaskbarForDisplay(go/retraceme 27a598f2914f3177f1fa84de7e2b1581f1c63e610e884b594a57bc1d76c4a32b:172)
+10-21 20:44:33.740  1259  1310 D TaskbarOverlayController: 	at com.android.launcher3.taskbar.TaskbarManagerImpl$$ExternalSyntheticLambda23.invoke(go/retraceme 27a598f2914f3177f1fa84de7e2b1581f1c63e610e884b594a57bc1d76c4a32b:45)
+10-21 20:44:33.740  1259  1310 D TaskbarOverlayController: onDestroy: Was window already present? false
+10-21 20:44:33.740  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay: isTaskbarEnabled=true [dp != null]=true mUserUnlocked=true dp.isTaskbarPresent=false isTaskbarEnabled=true displayExists=true displayId=0
+10-21 20:44:33.740  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay: creating taskbar displayId=0
+10-21 20:44:33.742  1682  2130 I SuperpacksManagerImpl: SuperpacksManagerImpl$3$1.onSuccess():552 emoticon_content_description.registerManifest() succeeded
+10-21 20:44:33.744   530   555 D AudioFlinger: mixer(0x7f350fa03790) throttle end: throttle time(5)
+10-21 20:44:33.745   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.746  1682 25601 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatusInternal():119 repeatCheckTimes = 1, locked = false
+10-21 20:44:33.747  1682  2130 I SP      : Syncing emoticon_content_description (2022081613) with slices: [7a635888cb828dfa2fc744b7b9b50f04], metadata: false
+10-21 20:44:33.760   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.776  1093  1093 D ShadeStateTraceLogger: New configuration change from Shade window. smallestScreenWidthDp: 411, densityDpi: 420
+10-21 20:44:33.776  1093  1093 D ShadeStateTraceLogger: New shadeHeaderHeight: 0, displayId: 0
+10-21 20:44:33.778   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.779   719  1734 W libbinder.ServiceManagerCppClient: Waited one second for android.hardware.uwb.IUwb/default (is service started? Number of threads started in the threadpool: 32. Are binder threads started and available?)
+10-21 20:44:33.780  1682  2247 I DownloadManager: DownloadManager.completeDownload():501 Download for __PEKB_manifest_pek_blocklist__en scheduled with params agah[allowMetered=true, requireCharging=false, foreground=false, immediately=true, priority=0]
+10-21 20:44:33.780  1682  2247 I DownloadManager: DownloadManager.startDownload():585 start download of __PEKB_manifest_pek_blocklist__en
+10-21 20:44:33.780  1682  2247 I DownloadManager: DownloadManager$4.onSuccess():654 download for __PEKB_manifest_pek_blocklist__en is finished with files # anon@4e65901
+10-21 20:44:33.780  1682 25606 I ManifestedDataDownloader: ManifestedDataDownloader.checkVersionAndDownload():98 filegroup __PEKB_pek_blocklist__en with version 2025120304 is already downloaded
+10-21 20:44:33.781  1682 25606 I PerLanguageDataDownloader: PerLanguageDataDownloader$2.onSuccess():188 Data en downloaded with version 2025120304
+10-21 20:44:33.796   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.796   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.796   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.796   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.796   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.812   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.812   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.812   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.812   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.812   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.816 25613 25613 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): null
+10-21 20:44:33.816 25613 25662 D WindowOnBackDispatcher: setOnBackInvokedCallbackInfo: null
+10-21 20:44:33.828   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.828   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.828   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.828   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.828   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.836 25926 25940 W libbinder.ServiceManagerCppClient: Waited one second for android.hardware.nfc.INfc/default (is service started? Number of threads started in the threadpool: 16. Are binder threads started and available?)
+10-21 20:44:33.838   313 26040 W libc    : Unable to set property "ctl.interface_start" to "aidl/android.hardware.uwb.IUwb/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+10-21 20:44:33.843   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.843   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.843   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.844   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.844   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.844 25613 25613 D ViewRootImpl: Skipping stats log for color mode
+10-21 20:44:33.846  1682  2114 W ModuleManager: ModuleManager.loadModule():641 Module akdj is not available
+10-21 20:44:33.860   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.860   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.860   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.860   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.860   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.867   313 26041 W libc    : Unable to set property "ctl.interface_start" to "aidl/android.hardware.nfc.INfc/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+10-21 20:44:33.874 25625 25674 I dowr    : Handling SIM state update work request for 3 with updateTrigger 6, scheduledAt 2026-10-21T20:44:33.453Z.
+10-21 20:44:33.877   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.877   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.877   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.877   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.878 25625 25674 I dowb    : Beginning update task for phone SIMs state scheduledAt: 2026-10-21T20:44:33.453Z
+10-21 20:44:33.888 25625 25672 I dowb    : default call SIM: redacted-pii[20-chars], default sms SIM redacted-pii[20-chars]. default data SIM redacted-pii[20-chars].
+10-21 20:44:33.888  1682  2114 W LatinCommonMetricsProcessor: LatinCommonMetricsProcessor.processInputMethodEntryChanged():2680 The new entry is equal to the old entry
+10-21 20:44:33.891  1259  1310 W SystemServiceRegistry: No service published for: personal_context
+10-21 20:44:33.892  1259  1310 W AmbientCueRepository: spoonBarOptedIn not found, default to enabled
+10-21 20:44:33.892  1259  1310 D LauncherAmbientCueVM: recalculateStates: isRootAttached=false (isTestMode=false, hasActions=false, isAmbientCueEnabled=true, isNotDeactivated=true, isTaskFocused=true [focusedId=-1, targetId=-1])
+10-21 20:44:33.892  1259  1310 D LauncherAmbientCueVM: onUnfilteredActionsChange: AmbientCueActions(actions=[], loggingContext=null)
+10-21 20:44:33.892 25625 25672 I dowb    : default call SIM: redacted-pii[20-chars], default sms SIM redacted-pii[20-chars]. default data SIM redacted-pii[20-chars].
+10-21 20:44:33.892  1259  1259 D RecentsView: onTaskRemoved: 4757, not handling task stack changes
+10-21 20:44:33.893  1259  1259 D TopTaskTracker: onTaskRemoved: 4757
+10-21 20:44:33.896  1259  1259 D RecentsView: onTaskRemoved: 4757, not handling task stack changes
+10-21 20:44:33.896   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.896   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.896   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.896   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.896   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.908  1259  1310 D LauncherAmbientCueVM: recalculateStates: isRootAttached=false (isTestMode=false, hasActions=false, isAmbientCueEnabled=true, isNotDeactivated=true, isTaskFocused=true [focusedId=-1, targetId=-1])
+10-21 20:44:33.911  1259  1310 D AmbientCueRepository: connectToAce: connecting TO ACE and registering
+10-21 20:44:33.911   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.911   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.911   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.912   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.912   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.916  1259  1310 D AllAppsStore: setApps: apps.length=37
+10-21 20:44:33.916  1259  1310 D AllAppsStore: notifyUpdate: notifying listeners
+10-21 20:44:33.920  1259  1310 D LauncherAmbientCueVM: recalculateStates: isRootAttached=false (isTestMode=false, hasActions=false, isAmbientCueEnabled=true, isNotDeactivated=true, isTaskFocused=true [focusedId=-1, targetId=-1])
+10-21 20:44:33.920  1259  1310 D LauncherAmbientCueVM: recalculateStates: isRootAttached=false (isTestMode=false, hasActions=false, isAmbientCueEnabled=true, isNotDeactivated=true, isTaskFocused=true [focusedId=-1, targetId=-1])
+10-21 20:44:33.920  1259  1310 D TaskbarManager: createTaskbarUIControllerForRecentsViewContainer displayId=0 mPrimaryDisplayId=0
+10-21 20:44:33.921  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay: adding rootView displayId=0
+10-21 20:44:33.921  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay: adding root layout displayId=0
+10-21 20:44:33.923  1259  1310 D BubbleBarView: BubbleBar RTL properties changed, new layoutDirection=0 previous layoutDirection=-1
+10-21 20:44:33.925  1259  1259 D RecentTasksList: invalidateLoadedTasks - previous requestLoadId: -1
+10-21 20:44:33.928   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.928   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.928   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.928   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.928   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.937   530   555 D AudioFlinger: mixer(0x7f350fa03790) throttle end: throttle time(10)
+10-21 20:44:33.951 25625 25673 I dsui    : isOnSatellite(1): false [CONTEXT ratelimit_period="1 SECONDS" ]
+10-21 20:44:33.951 25625 25673 I dsui    : 1 is not on satellite and no other subscriptions are on satellite [CONTEXT ratelimit_period="1 SECONDS" ]
+10-21 20:44:33.960   719  1085 D ConnectivityService: requestNetwork for uid/pid:10151/25625 activeRequest: null callbackRequest: 679 [NetworkRequest [ TRACK_DEFAULT id=680, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10151 RequestorUid: 10151 RequestorPkg: com.google.android.apps.messaging UnderlyingNetworks: Null] ], NetworkRequest [ REQUEST id=681, [ Transports: SATELLITE Capabilities: INTERNET&TRUSTED&NOT_VCN_MANAGED Uid: 10151 RequestorUid: 10151 RequestorPkg: com.google.android.apps.messaging UnderlyingNetworks: Null] ], NetworkRequest [ REQUEST id=682, [ Transports: SATELLITE Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10151 RequestorUid: 10151 RequestorPkg: com.google.android.apps.messaging UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false declaredMethods: AVAIL|LOST|NC
+10-21 20:44:33.961   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.961   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.961   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.961   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.961   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.964   719   972 D ConnectivityService: NetReassign [680 : null → 103] [c 0] [a 0] [i 0]
+10-21 20:44:33.978   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.978   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.978   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.978   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.978   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: No service published for: ethernet
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: android.os.ServiceManager$ServiceNotFoundException: No service published for: ethernet
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.os.ServiceManager.getServiceOrThrow(ServiceManager.java:175)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry$178.createService(SystemServiceRegistry.java:2788)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry$CachedServiceFetcher.getService(SystemServiceRegistry.java:2916)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry.getSystemService(SystemServiceRegistry.java:2446)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.app.ContextImpl.getSystemService(ContextImpl.java:2627)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.content.ContextWrapper.getSystemService(ContextWrapper.java:1002)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.net.connectivity.com.android.networkstack.tethering.Tethering.isEthernetSupported(Tethering.java:1905)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.net.connectivity.com.android.networkstack.tethering.Tethering.makeSupportedDownstreams(Tethering.java:2898)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.net.connectivity.com.android.networkstack.tethering.Tethering.updateSupportedDownstreams(Tethering.java:2872)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.net.connectivity.com.android.networkstack.tethering.Tethering.updateConfiguration(Tethering.java:574)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.net.connectivity.com.android.networkstack.tethering.Tethering.-$$Nest$mupdateConfiguration(Tethering.java:0)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.net.connectivity.com.android.networkstack.tethering.Tethering$StateReceiver.onReceive(Tethering.java:1408)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args.lambda$getRunnable$0(LoadedApk.java:2027)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args.$r8$lambda$mcNAAl1SQ4MyJPyDg8TJ2x2h0Rk(LoadedApk.java:0)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.os.Handler.handleCallback(Handler.java:1080)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.os.Handler.dispatchMessageImpl(Handler.java:135)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.os.Handler.dispatchMessage(Handler.java:126)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.os.Looper.loopOnce(Looper.java:285)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.os.Looper.loop(Looper.java:390)
+10-21 20:44:33.981  1184  1273 E SystemServiceRegistry: 	at android.os.HandlerThread.run(HandlerThread.java:143)
+10-21 20:44:33.993   719  1478 D ConnectivityService: requestNetwork for uid/pid:10151/25625 activeRequest: null callbackRequest: 683 [NetworkRequest [ TRACK_DEFAULT id=684, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10151 RequestorUid: 10151 RequestorPkg: com.google.android.apps.messaging UnderlyingNetworks: Null] ], NetworkRequest [ REQUEST id=685, [ Transports: SATELLITE Capabilities: INTERNET&TRUSTED&NOT_VCN_MANAGED Uid: 10151 RequestorUid: 10151 RequestorPkg: com.google.android.apps.messaging UnderlyingNetworks: Null] ], NetworkRequest [ REQUEST id=686, [ Transports: SATELLITE Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10151 RequestorUid: 10151 RequestorPkg: com.google.android.apps.messaging UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false declaredMethods: AVAIL|LOST|UNAVAIL|NC
+10-21 20:44:33.994   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:33.996 25625 25673 I dsui    : Registering BugleCarrierRoamingNtnModeListenerWrapper
+10-21 20:44:34.009   719   972 D ConnectivityService: NetReassign [684 : null → 103] [c 0] [a 1] [i 1]
+10-21 20:44:34.016 25625 25709 I dsui    : Connection state change: onAvailable, data connection: UNKNOWN, manual connection eligibility: false, ntn roaming: false
+10-21 20:44:34.016 25625 25709 I dsui    : New default data network: wifi
+10-21 20:44:34.017 25625 25709 I dsui    : Connection state change: onCapabilitiesChanged, data connection: WIFI, manual connection eligibility: false, ntn roaming: false
+10-21 20:44:34.017 25625 25709 I dsui    : New default data network: wifi
+10-21 20:44:34.023 25943 25963 I Finsky:background: [50] WM::SCH: Logging work initialize for 3-720
+10-21 20:44:34.023 25943 25963 I Finsky:background: [50] WM::SCH: Logging work initialize for 3-721
+10-21 20:44:34.023 25943 25963 I Finsky:background: [50] WM::SCH: Logging work initialize for 3-722
+10-21 20:44:34.028   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.028   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.028   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.028   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.045   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.045   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.045   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.045   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.045   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.045   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.045   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.056  1259  1310 D PerDisplayTaskbarResource: onDisplayInfoChanged: Rotation changed displayId=0
+10-21 20:44:34.056  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay displayId=0
+10-21 20:44:34.056  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay: getting device profile displayId=0
+10-21 20:44:34.056  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay: destroying taskbar displayId=0
+10-21 20:44:34.056  1259  1310 D PerDisplayTaskbarResource: destroyTaskbarForDisplay displayId=0
+10-21 20:44:34.058  1259  1310 D CueBarController: CuebarController destroy
+10-21 20:44:34.062   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.062   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.062   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.062   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.062   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.063  1259  1310 D TaskbarOverlayController: onDestroy: 	at com.android.launcher3.taskbar.PerDisplayTaskbarResource.destroyTaskbarForDisplay(go/retraceme 27a598f2914f3177f1fa84de7e2b1581f1c63e610e884b594a57bc1d76c4a32b:41)
+10-21 20:44:34.063  1259  1310 D TaskbarOverlayController: 	at com.android.launcher3.taskbar.TaskbarManagerImpl.recreateTaskbarForDisplay(go/retraceme 27a598f2914f3177f1fa84de7e2b1581f1c63e610e884b594a57bc1d76c4a32b:172)
+10-21 20:44:34.063  1259  1310 D TaskbarOverlayController: 	at com.android.launcher3.taskbar.TaskbarManagerImpl$$ExternalSyntheticLambda31.accept(go/retraceme 27a598f2914f3177f1fa84de7e2b1581f1c63e610e884b594a57bc1d76c4a32b:77)
+10-21 20:44:34.063  1259  1310 D TaskbarOverlayController: onDestroy: Was window already present? false
+10-21 20:44:34.064  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay: isTaskbarEnabled=true [dp != null]=true mUserUnlocked=true dp.isTaskbarPresent=false isTaskbarEnabled=true displayExists=true displayId=0
+10-21 20:44:34.064  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay: creating taskbar displayId=0
+10-21 20:44:34.074 25943 25975 I Finsky:background: [56] SCH: Scheduling phonesky job Id: 3-720, CT: 1792615473008, Constraints: [{ L: 0, D: 86400000, C: CHARGING_NONE, I: IDLE_REQUIRED, N: NET_UNMETERED, B: BATTERY_ANY }]
+10-21 20:44:34.075  1450  1450 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.notifications.capping.api.NotificationsCappingApiService.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-21 20:44:34.075  1450  1450 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.notifications.capping.api.NotificationsCappingApiService.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-21 20:44:34.075 25943 25975 I Finsky:background: [56] SCH: Scheduling phonesky job Id: 3-721, CT: 1792615473008, Constraints: [{ L: 15326994, D: 26126994, C: CHARGING_NONE, I: IDLE_REQUIRED, N: NET_UNMETERED, B: BATTERY_ANY }]
+10-21 20:44:34.076 25943 25975 I Finsky:background: [56] SCH: Scheduling phonesky job Id: 3-722, CT: 1792615473008, Constraints: [{ L: 0, D: 86400000, C: CHARGING_REQUIRED, I: IDLE_REQUIRED, N: NET_UNMETERED, B: BATTERY_ANY }]
+10-21 20:44:34.077  1093  1093 D StatusBarBounds: Bounds changed! Triggered by layout of: startSideContent. Start side: REDUCED (width diff: 0px, height diff: -5px. Old: Rect(11, 0 - 202, 142) -> New: Rect(153, 0 - 344, 137)). End side: No change (remains Rect(789, 0 - 1016, 142))
+10-21 20:44:34.078   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.078   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.078   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.078   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.078   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.082  1093  1093 D StatusBarBounds: Bounds changed! Triggered by layout of: endSideContent. Start side: No change (remains Rect(153, 0 - 344, 137)). End side: REDUCED (width diff: 0px, height diff: -5px. Old: Rect(931, 0 - 1158, 142) -> New: Rect(2133, 0 - 2360, 137))
+10-21 20:44:34.090  1259  1310 W SystemServiceRegistry: No service published for: personal_context
+10-21 20:44:34.090  1259  1310 W AmbientCueRepository: spoonBarOptedIn not found, default to enabled
+10-21 20:44:34.091  1259  1310 D LauncherAmbientCueVM: recalculateStates: isRootAttached=false (isTestMode=false, hasActions=false, isAmbientCueEnabled=true, isNotDeactivated=true, isTaskFocused=true [focusedId=-1, targetId=-1])
+10-21 20:44:34.091  1259  1310 D LauncherAmbientCueVM: onUnfilteredActionsChange: AmbientCueActions(actions=[], loggingContext=null)
+10-21 20:44:34.095   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.095   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.095   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.095   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.095   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.108  1259  1310 D LauncherAmbientCueVM: recalculateStates: isRootAttached=false (isTestMode=false, hasActions=false, isAmbientCueEnabled=true, isNotDeactivated=true, isTaskFocused=true [focusedId=-1, targetId=-1])
+10-21 20:44:34.110  1259  1310 D AmbientCueRepository: connectToAce: connecting TO ACE and registering
+10-21 20:44:34.112 25625 26035 W .apps.messaging: Weak pointer dereference blocked for 17 milliseconds.
+10-21 20:44:34.112   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.112   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.112   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.112   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.112   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.114 25625 25673 I dnrg    : Attempting to register registerForCarrierRoamingNtnModeChanged listener
+10-21 20:44:34.114  1259  1310 D AllAppsStore: setApps: apps.length=37
+10-21 20:44:34.114  1259  1310 D AllAppsStore: notifyUpdate: notifying listeners
+10-21 20:44:34.122  1259  1310 D LauncherAmbientCueVM: recalculateStates: isRootAttached=false (isTestMode=false, hasActions=false, isAmbientCueEnabled=true, isNotDeactivated=true, isTaskFocused=true [focusedId=-1, targetId=-1])
+10-21 20:44:34.122  1259  1310 D LauncherAmbientCueVM: recalculateStates: isRootAttached=false (isTestMode=false, hasActions=false, isAmbientCueEnabled=true, isNotDeactivated=true, isTaskFocused=true [focusedId=-1, targetId=-1])
+10-21 20:44:34.125 25943 25972 I Finsky:background: [53] SCH: Scheduling 1 system job(s)
+10-21 20:44:34.125 25943 25972 I Finsky:background: [53] SCH: Scheduling system job Id: 10959, L: 0, D: 26125877, C: false, I: true, N: 2
+10-21 20:44:34.127  1259  1310 D TaskbarManager: createTaskbarUIControllerForRecentsViewContainer displayId=0 mPrimaryDisplayId=0
+10-21 20:44:34.127   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.128   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.128   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.128   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.128   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.128  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay: adding rootView displayId=0
+10-21 20:44:34.129  1259  1310 D PerDisplayTaskbarResource: recreateTaskbarForDisplay: adding root layout displayId=0
+10-21 20:44:34.130  1259  1310 D BubbleBarView: BubbleBar RTL properties changed, new layoutDirection=0 previous layoutDirection=-1
+10-21 20:44:34.133  1682  2130 I SP      : Sync for emoticon_content_description succeeded in 387 ms: no changes
+10-21 20:44:34.134  1682  2130 I SP      : GC for 'emoticon_content_description' (10) with ttl of 0 ms took 0 ms (0/0/0)
+10-21 20:44:34.136  1682  2130 I SuperpacksManagerImpl: SuperpacksManagerImpl$19.onSyncSuccess():947 emoticon_content_description.sync() succeeded
+10-21 20:44:34.142  1259  1310 D LauncherAmbientCueVM: recalculateStates: isRootAttached=false (isTestMode=false, hasActions=false, isAmbientCueEnabled=true, isNotDeactivated=true, isTaskFocused=false [focusedId=4745, targetId=-1])
+10-21 20:44:34.145   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.145   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.145   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.145   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.145   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.145   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:44:34.154 25510 25547 I TestRunner: finished: testSyncPreferencesPersistence(com.playertwo.controlegithub.BackgroundSyncAndroidTest)

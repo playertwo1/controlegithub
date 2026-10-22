@@ -1,0 +1,27 @@
+10-21 20:55:08.687  1151  1283 I TestRunner: started: testScheduleAndCancel(com.playertwo.controlegithub.BackgroundSyncAndroidTest)
+10-21 20:55:08.695   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.695   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.695   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.695   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.695   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.695   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.696   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.696   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.696   535   572 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.701  1370  1370 D VRI[InstrumentationActivityInvoker$EmptyActivity]: visibilityChanged oldVisibility=true newVisibility=false
+10-21 20:55:08.709   719  1048 I Surface : Creating surface for consumer unnamed-719-1866 with slotExpansion=1 for 64 slots
+10-21 20:55:08.709   719  1048 I Surface : Creating surface for consumer ImageReader-864x1939f1m1-719-1866 with slotExpansion=1 for 64 slots
+10-21 20:55:08.709   719  1048 W ImageReader_JNI: Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
+10-21 20:55:08.711   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.711   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.711   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.711   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.711   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.723 25719 25719 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.profiling' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+10-21 20:55:08.729   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.729   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.729   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.729   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.729   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:55:08.732   719  1048 E ConsumerBase: [ImageReader-864x1939f1m1-719-1866] abandonLocked: ConsumerBase is abandoned!
+10-21 20:55:08.741  1151  1283 I TestRunner: finished: testScheduleAndCancel(com.playertwo.controlegithub.BackgroundSyncAndroidTest)

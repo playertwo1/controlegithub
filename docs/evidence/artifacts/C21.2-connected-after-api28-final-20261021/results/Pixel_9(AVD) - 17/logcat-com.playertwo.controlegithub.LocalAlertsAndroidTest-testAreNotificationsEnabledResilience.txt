@@ -1,0 +1,14 @@
+10-21 20:58:35.476  1151  1283 I TestRunner: started: testAreNotificationsEnabledResilience(com.playertwo.controlegithub.LocalAlertsAndroidTest)
+10-21 20:58:35.476  1259  1310 D LauncherAmbientCueVM: onUnfilteredActionsChange: AmbientCueActions(actions=[], loggingContext=null)
+10-21 20:58:35.477   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:58:35.477   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:58:35.477   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:58:35.477   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:58:35.477   535   535 W skia    : AGTM parsing failed flags.readFromStream(s) at 159
+10-21 20:58:35.485  1259  1310 D LauncherAmbientCueVM: recalculateStates: isRootAttached=false (isTestMode=false, hasActions=false, isAmbientCueEnabled=true, isNotDeactivated=true, isTaskFocused=true [focusedId=-1, targetId=-1])
+10-21 20:58:35.486  1259  1310 D AmbientCueRepository: connectToAce: connecting TO ACE and registering
+10-21 20:58:35.487  1259  1310 D AllAppsStore: setApps: apps.length=37
+10-21 20:58:35.487  1259  1310 D AllAppsStore: notifyUpdate: notifying listeners
+10-21 20:58:35.489  1259  1310 D LauncherAmbientCueVM: recalculateStates: isRootAttached=false (isTestMode=false, hasActions=false, isAmbientCueEnabled=true, isNotDeactivated=true, isTaskFocused=true [focusedId=-1, targetId=-1])
+10-21 20:58:35.489  1259  1310 D LauncherAmbientCueVM: recalculateStates: isRootAttached=false (isTestMode=false, hasActions=false, isAmbientCueEnabled=true, isNotDeactivated=true, isTaskFocused=true [focusedId=-1, targetId=-1])
+10-21 20:58:35.492  1151  1283 I TestRunner: finished: testAreNotificationsEnabledResilience(com.playertwo.controlegithub.LocalAlertsAndroidTest)

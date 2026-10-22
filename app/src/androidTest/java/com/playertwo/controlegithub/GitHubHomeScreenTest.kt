@@ -52,7 +52,7 @@ class GitHubHomeScreenTest {
                     compose.onAllNodesWithText("Fixture Developer").fetchSemanticsNodes().isNotEmpty()
             }
             compose.onNodeWithText("Fixture Developer").assertIsDisplayed()
-            compose.onNodeWithText("0").assertIsDisplayed()
+            compose.onNodeWithContentDescription("Repositórios públicos: 0").assertIsDisplayed()
             compose.onNodeWithText("7").assertIsDisplayed()
             compose.onNodeWithText("12").assertIsDisplayed()
             compose.onNodeWithText("Origem: Perfil do GitHub").assertIsDisplayed()
@@ -282,14 +282,17 @@ private class ProfileApi(initialStatus: Int = 200) : AutoCloseable {
             runCatching {
                 server.accept().use { socket ->
                     val reader = BufferedReader(InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8))
-                    requests += reader.readLine()
+                    val line = reader.readLine()
                     while (reader.readLine()?.isNotEmpty() == true) Unit
-                    if (dropNextResponse) {
+                    // O resumo diário da Home (C15.1) consulta /notifications em paralelo; fica fora da contagem do perfil
+                    val summary = line == "GET /notifications HTTP/1.1"
+                    if (!summary) requests += line
+                    if (dropNextResponse && !summary) {
                         dropNextResponse = false
                         return@use
                     }
-                    val responseCode = if (requests.last().startsWith("GET /notifications")) 403 else responseStatus
-                    val body = if (responseCode != 200) "{}" else if (requests.last().startsWith("GET /user/repos?") || requests.last().startsWith("GET /issues?")) "[]" else
+                    val responseCode = if (line.startsWith("GET /notifications")) 403 else responseStatus
+                    val body = if (responseCode != 200) "{}" else if (line.startsWith("GET /user/repos?") || line.startsWith("GET /issues?")) "[]" else
                         """{"login":"fixture-user","html_url":"https://github.com/fixture-user","name":"Fixture Developer","public_repos":0,"owned_private_repos":7,"followers":12}"""
                     val bytes = body.toByteArray(StandardCharsets.UTF_8)
                     socket.getOutputStream().apply {

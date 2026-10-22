@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.playertwo.controlegithub.SecurityAndPrivacyAuditTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-22T12:06:06.509Z" hostname="BOOKFAEL" time="0.021">
+  <properties/>
+  <testcase name="licenseIsPresentAndApprovedMit" classname="com.playertwo.controlegithub.SecurityAndPrivacyAuditTest" time="0.004"/>
+  <testcase name="securityPolicyMatchesControlsAndGuidance" classname="com.playertwo.controlegithub.SecurityAndPrivacyAuditTest" time="0.002"/>
+  <testcase name="manifestDeclaresOnlyMinimalPermissionsAndDisablesBackup" classname="com.playertwo.controlegithub.SecurityAndPrivacyAuditTest" time="0.005"/>
+  <testcase name="dataExtractionRulesExcludeAllSensitiveStorageDomains" classname="com.playertwo.controlegithub.SecurityAndPrivacyAuditTest" time="0.006"/>
+  <testcase name="sensitiveEndpointsAndTokensAreBlockedFromCache" classname="com.playertwo.controlegithub.SecurityAndPrivacyAuditTest" time="0.0"/>
+  <testcase name="privacyPolicyMatchesPermissionsAndDeclaredArchitecture" classname="com.playertwo.controlegithub.SecurityAndPrivacyAuditTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

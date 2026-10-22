@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.playertwo.controlegithub.GitHubOAuthClientTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-22T12:05:53.970Z" hostname="BOOKFAEL" time="0.114">
+  <properties/>
+  <testcase name="requestsDeviceCodeWithConfiguredScopes" classname="com.playertwo.controlegithub.GitHubOAuthClientTest" time="0.028"/>
+  <testcase name="refreshUsesOnlyClientIdAndParsesRotatedExpiry" classname="com.playertwo.controlegithub.GitHubOAuthClientTest" time="0.014"/>
+  <testcase name="malformedDeviceResponseFailsWithoutShowingResponseBody" classname="com.playertwo.controlegithub.GitHubOAuthClientTest" time="0.022"/>
+  <testcase name="pollingHonorsPendingSlowDownAuthorizationDenialAndExpiry" classname="com.playertwo.controlegithub.GitHubOAuthClientTest" time="0.039"/>
+  <testcase name="userRequestUsesBearerAndOAuthHttpCallCanBeCancelled" classname="com.playertwo.controlegithub.GitHubOAuthClientTest" time="0.009"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

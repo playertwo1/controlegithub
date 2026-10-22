@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.playertwo.controlegithub.GitHubPaginationCacheTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-22T12:05:54.097Z" hostname="BOOKFAEL" time="0.262">
+  <properties/>
+  <testcase name="ok200UpdatesItemsAndEtag" classname="com.playertwo.controlegithub.GitHubPaginationCacheTest" time="0.045"/>
+  <testcase name="notModified304PreservesCachedItemsAndUpdatesTimestamp" classname="com.playertwo.controlegithub.GitHubPaginationCacheTest" time="0.03"/>
+  <testcase name="sendsIfNoneMatchWhenCachedEtagAvailable" classname="com.playertwo.controlegithub.GitHubPaginationCacheTest" time="0.025"/>
+  <testcase name="fallsBackToOfflineCacheOnNetworkFailure" classname="com.playertwo.controlegithub.GitHubPaginationCacheTest" time="0.03"/>
+  <testcase name="returnsHelpfulOfflineErrorMessageWhenNetworkFailsAndNoCache" classname="com.playertwo.controlegithub.GitHubPaginationCacheTest" time="0.021"/>
+  <testcase name="cachesSuccessfulPageOneResponse" classname="com.playertwo.controlegithub.GitHubPaginationCacheTest" time="0.018"/>
+  <testcase name="networkFailureDuringNextPagePreservesExistingItems" classname="com.playertwo.controlegithub.GitHubPaginationCacheTest" time="0.047"/>
+  <testcase name="notModified304WithoutCacheTriggersFreshRequest" classname="com.playertwo.controlegithub.GitHubPaginationCacheTest" time="0.018"/>
+  <testcase name="respectsAccountIsolationOnOfflineFallback" classname="com.playertwo.controlegithub.GitHubPaginationCacheTest" time="0.024"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

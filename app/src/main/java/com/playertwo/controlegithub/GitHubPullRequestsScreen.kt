@@ -105,34 +105,37 @@ internal fun GitHubPullRequestsScreen(
         errorMessage = null
         retryAt = null
         try {
-            when (val result = withContext(Dispatchers.IO) { activePager.loadNext() }) {
-                is GitHubPullRequestPageResult.Loaded -> {
-                    pullRequests = result.page.items
-                    hasNext = result.page.hasNext
-                    incomplete = result.page.incomplete || result.page.totalCount >= 1_000
-                    loaded = true
-                    isOfflineCache = result.page.isOfflineCache
-                    cachedAtMillis = result.page.cachedAtMillis
-                }
-                is GitHubPullRequestPageResult.RateLimited -> {
-                    if (result.page.items.isNotEmpty() || pullRequests.isEmpty()) {
+            val result = withContext(Dispatchers.IO) { activePager.loadNext() }
+            withContext(Dispatchers.Main.immediate) {
+                when (result) {
+                    is GitHubPullRequestPageResult.Loaded -> {
                         pullRequests = result.page.items
+                        hasNext = result.page.hasNext
+                        incomplete = result.page.incomplete || result.page.totalCount >= 1_000
+                        loaded = true
+                        isOfflineCache = result.page.isOfflineCache
+                        cachedAtMillis = result.page.cachedAtMillis
                     }
-                    incomplete = result.page.incomplete || result.page.totalCount >= 1_000
-                    retryAt = result.retryAtEpochMillis
-                    errorMessage = GitHubHttpError.RATE_LIMITED.userMessage
-                }
-                is GitHubPullRequestPageResult.Failed -> {
-                    if (result.page.items.isNotEmpty() || pullRequests.isEmpty()) {
-                        pullRequests = result.page.items
+                    is GitHubPullRequestPageResult.RateLimited -> {
+                        if (result.page.items.isNotEmpty() || pullRequests.isEmpty()) {
+                            pullRequests = result.page.items
+                        }
+                        incomplete = result.page.incomplete || result.page.totalCount >= 1_000
+                        retryAt = result.retryAtEpochMillis
+                        errorMessage = GitHubHttpError.RATE_LIMITED.userMessage
                     }
-                    incomplete = result.page.incomplete || result.page.totalCount >= 1_000
-                    errorMessage = result.message
-                    if (result.error == GitHubHttpError.UNAUTHORIZED && session != null) onSessionExpired(session)
+                    is GitHubPullRequestPageResult.Failed -> {
+                        if (result.page.items.isNotEmpty() || pullRequests.isEmpty()) {
+                            pullRequests = result.page.items
+                        }
+                        incomplete = result.page.incomplete || result.page.totalCount >= 1_000
+                        errorMessage = result.message
+                        if (result.error == GitHubHttpError.UNAUTHORIZED && session != null) onSessionExpired(session)
+                    }
                 }
             }
         } finally {
-            loading = false
+            withContext(Dispatchers.Main.immediate) { loading = false }
         }
     }
 
@@ -299,7 +302,8 @@ internal fun GitHubPullRequestDetailScreen(
     onBack: () -> Unit,
     onSessionExpired: (GitHubSession) -> Unit,
     onAppearance: () -> Unit,
-    isOffline: Boolean = session.isOffline
+    isOffline: Boolean = session.isOffline,
+    isActive: Boolean = true
 ) {
     var refreshVersion by remember(pullRequest.identity, session.accessToken) { mutableIntStateOf(0) }
     val loader = remember(client, session.accessToken, pullRequest.identity, refreshVersion) {
@@ -458,7 +462,7 @@ internal fun GitHubPullRequestDetailScreen(
         } finally { loadingStatuses = false }
     }
 
-    BackHandler(onBack = {
+    BackHandler(enabled = isActive, onBack = {
         if (commentSubmitting || reviewSubmitting) return@BackHandler
         onBack()
     })
@@ -515,7 +519,7 @@ internal fun GitHubPullRequestDetailScreen(
                 Text("Destino", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                 Text("${value.baseRepository}:${value.baseBranch}", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text("Descrição", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
-                PullRequestMarkdown(value.body?.takeIf(String::isNotBlank) ?: "Sem descrição.")
+                GitHubMarkdownContent(value.body?.takeIf(String::isNotBlank) ?: "Sem descrição.")
                 Text("Arquivos alterados · ${files.size}", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                 if (!filesLoaded && loadingFiles) LoadingPullRequests("Carregando arquivos…")
                 if (filesLoaded && files.isEmpty() && filesError == null) Text("Este pull request não informa arquivos alterados.", color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -858,18 +862,11 @@ internal fun GitHubPullRequestDetailScreen(
 }
 
 @Composable
-private fun PullRequestMarkdown(text: String) {
-    Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth()) {
-        Text(text, modifier = Modifier.padding(18.dp), lineHeight = 22.sp, fontFamily = FontFamily.Default)
-    }
-}
-
-@Composable
 private fun PullRequestCommentCard(comment: GitHubPullRequestComment) {
     Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(comment.author?.let { "@$it" } ?: "Autor indisponível", fontWeight = FontWeight.SemiBold)
-            PullRequestMarkdown(comment.body?.takeIf(String::isNotBlank) ?: "Comentário sem texto.")
+            GitHubMarkdownContent(comment.body?.takeIf(String::isNotBlank) ?: "Comentário sem texto.")
         }
     }
 }
@@ -890,7 +887,7 @@ private fun PullRequestReviewCard(review: GitHubPullRequestReview) {
                 val date = DateTimeFormatter.ofPattern("dd/MM/yyyy").withZone(ZoneId.systemDefault()).format(submittedAt)
                 Text("Enviada em $date", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
             }
-            review.body?.takeIf(String::isNotBlank)?.let { PullRequestMarkdown(it) }
+            review.body?.takeIf(String::isNotBlank)?.let { GitHubMarkdownContent(it) }
         }
     }
 }

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuites tests="1" failures="0" errors="0" skipped="0" time="6.267" timestamp="2026-10-21T10:27:29" hostname="localhost">
+  <testsuite name="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" tests="1" failures="0" errors="0" skipped="0" time="4.965" timestamp="2026-10-21T10:27:29" hostname="localhost">
+    <properties>
+      <property name="device" value="Pixel_9(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="completedReleaseAssetShowsManualInstallAction" classname="com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" time="4.965" />
+  </testsuite>
+</testsuites>

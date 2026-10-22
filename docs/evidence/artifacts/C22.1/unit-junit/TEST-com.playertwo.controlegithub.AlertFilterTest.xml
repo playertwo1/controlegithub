@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.playertwo.controlegithub.AlertFilterTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-22T12:05:49.579Z" hostname="BOOKFAEL" time="0.097">
+  <properties/>
+  <testcase name="isMentionOrAssignment_correctlyIdentifiesRelevantReasons" classname="com.playertwo.controlegithub.AlertFilterTest" time="0.06"/>
+  <testcase name="filterAlertCandidates_appliesMentionsOnlyFilter" classname="com.playertwo.controlegithub.AlertFilterTest" time="0.017"/>
+  <testcase name="filterAlertCandidates_filtersReadNotifications" classname="com.playertwo.controlegithub.AlertFilterTest" time="0.002"/>
+  <testcase name="filterAlertCandidates_deduplicatesAlreadyNotifiedIds" classname="com.playertwo.controlegithub.AlertFilterTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
