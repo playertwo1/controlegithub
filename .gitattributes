@@ -2,3 +2,6 @@
 *.bat text eol=crlf
 *.png binary
 *.jar binary
+docs/evidence/artifacts/C22.1/*.pb binary
+docs/evidence/artifacts/C22.1/*.log whitespace=-blank-at-eol
+docs/evidence/artifacts/C22.1/*.xml whitespace=-blank-at-eol

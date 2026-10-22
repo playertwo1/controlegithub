@@ -1,0 +1,219 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuites tests="43" failures="2" errors="0" skipped="0" time="94.533" timestamp="2026-10-22T18:10:07" hostname="localhost">
+  <testsuite name="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" tests="3" failures="0" errors="0" skipped="0" time="10.233" timestamp="2026-10-22T18:10:07" hostname="localhost">
+    <properties>
+      <property name="device" value="Medium_Phone(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testBottomDockSemanticsAndTouchTargets" classname="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" time="4.93" />
+    <testcase name="testKanbanAndWorkAccessibility" classname="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" time="3.033" />
+    <testcase name="testThemeSwitchingAccessibility" classname="com.playertwo.controlegithub.AccessibilityComprehensiveUiTest" time="2.27" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" tests="3" failures="0" errors="0" skipped="0" time="12.839" timestamp="2026-10-22T18:10:07" hostname="localhost">
+    <properties>
+      <property name="device" value="Medium_Phone(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testScreenRotationPreservesNavigationAndDock" classname="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" time="5.26" />
+    <testcase name="testActivityRecreationPreservesFlowAndState" classname="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" time="3.67" />
+    <testcase name="testCompactAndExpandedLayoutAdaptation" classname="com.playertwo.controlegithub.AndroidMatrixAndLayoutsUiTest" time="3.909" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.BackgroundSyncAndroidTest" tests="6" failures="0" errors="0" skipped="0" time="0.517" timestamp="2026-10-22T18:10:07" hostname="localhost">
+    <properties>
+      <property name="device" value="Medium_Phone(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="testScheduleWithPreferencesReflectsConfiguredSettings" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.291" />
+    <testcase name="testScheduleAndCancel" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.03" />
+    <testcase name="testSyncPreferencesPersistence" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.184" />
+    <testcase name="testScheduleDisabledCancelsJob" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.004" />
+    <testcase name="testBuildJobInfo_anyNetworkAndDisabled" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.004" />
+    <testcase name="testBuildJobInfo_wifiOnlyAndBatteryConstraints" classname="com.playertwo.controlegithub.BackgroundSyncAndroidTest" time="0.004" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.BetaRobustnessAndroidTest" tests="3" failures="0" errors="0" skipped="0" time="0.014" timestamp="2026-10-22T18:10:07" hostname="localhost">
+    <properties>
+      <property name="device" value="Medium_Phone(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="scenario3_pullRequestDetailParsingWithNullBodyAndMinimalData" classname="com.playertwo.controlegithub.BetaRobustnessAndroidTest" time="0.004" />
+    <testcase name="scenario2_issueParsingWithMissingOptionalFieldsDoesNotCrash" classname="com.playertwo.controlegithub.BetaRobustnessAndroidTest" time="0.005" />
+    <testcase name="scenario1_repositoryParsingWithMissingOptionalFieldsDoesNotCrash" classname="com.playertwo.controlegithub.BetaRobustnessAndroidTest" time="0.005" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreateIssueAndroidTest" tests="3" failures="0" errors="0" skipped="0" time="0.011" timestamp="2026-10-22T18:10:07" hostname="localhost">
+    <properties>
+      <property name="device" value="Medium_Phone(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseCreatedIssueRejectsMissingTitleOrNumber" classname="com.playertwo.controlegithub.CreateIssueAndroidTest" time="0.004" />
+    <testcase name="parseCreatedIssueMapsFieldsCorrectly" classname="com.playertwo.controlegithub.CreateIssueAndroidTest" time="0.004" />
+    <testcase name="parseCreatedIssueHandlesMissingRepositoryByFallback" classname="com.playertwo.controlegithub.CreateIssueAndroidTest" time="0.003" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreateIssueUiTest" tests="5" failures="0" errors="0" skipped="0" time="16.268" timestamp="2026-10-22T18:10:07" hostname="localhost">
+    <properties>
+      <property name="device" value="Medium_Phone(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="createIssueOfflineModeDisablesSubmissionAndShowsBanner" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="2.245" />
+    <testcase name="createIssueAntiDoubleTapDisablesButtonDuringSubmission" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="4.489" />
+    <testcase name="createIssueFailureDisplaysErrorAndPreservesDraft" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="4.919" />
+    <testcase name="createIssueSuccessSubmitsPostAndInvokesCallback" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="3.006" />
+    <testcase name="createIssueEmptyTitleShowsValidationErrorWithoutNetworkCall" classname="com.playertwo.controlegithub.CreateIssueUiTest" time="1.609" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest" tests="2" failures="0" errors="0" skipped="0" time="0.01" timestamp="2026-10-22T18:10:07" hostname="localhost">
+    <properties>
+      <property name="device" value="Medium_Phone(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseCreatedPullRequestCommentRejectsMissingId" classname="com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest" time="0.006" />
+    <testcase name="parseCreatedPullRequestCommentMapsFieldsCorrectly" classname="com.playertwo.controlegithub.CreatePullRequestCommentAndroidTest" time="0.004" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" tests="5" failures="0" errors="0" skipped="0" time="15.499" timestamp="2026-10-22T18:10:07" hostname="localhost">
+    <properties>
+      <property name="device" value="Medium_Phone(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="commentAntiDoubleTapDisablesButtonDuringSubmission" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="4.256" />
+    <testcase name="commentSuccessSubmitsPostAppendsToUiAndClearsInput" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="3.77" />
+    <testcase name="mutationGuardEmptyValidation" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="2.107" />
+    <testcase name="commentFailurePreservesDraftTextAndDisplaysError" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="3.082" />
+    <testcase name="mutationGuardOfflineBlocked" classname="com.playertwo.controlegithub.CreatePullRequestCommentUiTest" time="2.284" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.DailySummaryUiTest" tests="4" failures="0" errors="0" skipped="0" time="8.056" timestamp="2026-10-22T18:10:07" hostname="localhost">
+    <properties>
+      <property name="device" value="Medium_Phone(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="dailySummaryDisplaysCachedSourceWhenOffline" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="2.134" />
+    <testcase name="dailySummaryDisplaysPartialCoverageSource" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="1.638" />
+    <testcase name="dailySummaryExportMarkdownCopiesToClipboardAndShowsFeedback" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="2.251" />
+    <testcase name="dailySummaryDisplaysPeriodTimezoneAndMetrics" classname="com.playertwo.controlegithub.DailySummaryUiTest" time="2.033" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.EditAndCommentIssueAndroidTest" tests="2" failures="0" errors="0" skipped="0" time="0.034" timestamp="2026-10-22T18:10:07" hostname="localhost">
+    <properties>
+      <property name="device" value="Medium_Phone(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="parseCreatedIssueCommentRejectsMissingId" classname="com.playertwo.controlegithub.EditAndCommentIssueAndroidTest" time="0.005" />
+    <testcase name="parseCreatedIssueCommentMapsFieldsCorrectly" classname="com.playertwo.controlegithub.EditAndCommentIssueAndroidTest" time="0.029" />
+  </testsuite>
+  <testsuite name="com.playertwo.controlegithub.EditAndCommentIssueUiTest" tests="7" failures="2" errors="0" skipped="0" time="28.229" timestamp="2026-10-22T18:10:07" hostname="localhost">
+    <properties>
+      <property name="device" value="Medium_Phone(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="commentAntiDoubleTapDisablesButtonDuringSubmission" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="4.416" />
+    <testcase name="commentSuccessSubmitsPostAppendsToUiAndClearsInput" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="6.425">
+      <failure>java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
+at androidx.compose.ui.test.TestContext.getAllSemanticsNodes$ui_test_release(TestOwner.kt:87)
+at androidx.compose.ui.test.TestContext.getAllSemanticsNodes$ui_test_release$default(TestOwner.kt:81)
+at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes(SemanticsNodeInteraction.kt:256)
+at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes$default(SemanticsNodeInteraction.kt:249)
+at com.playertwo.controlegithub.EditAndCommentIssueUiTest.commentSuccessSubmitsPostAppendsToUiAndClearsInput$lambda$11$lambda$7(EditAndCommentIssueUiTest.kt:59)
+at com.playertwo.controlegithub.EditAndCommentIssueUiTest$$ExternalSyntheticLambda14.invoke(D8$$SyntheticClass:0)
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:434)
+at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
+at com.playertwo.controlegithub.EditAndCommentIssueUiTest.commentSuccessSubmitsPostAppendsToUiAndClearsInput(EditAndCommentIssueUiTest.kt:58)
+</failure>
+    </testcase>
+    <testcase name="editIssueSuccessSubmitsPatchAndUpdatesHeader" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="4.124" />
+    <testcase name="mutationGuardEmptyValidation" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.024" />
+    <testcase name="editIssueFailurePreservesDraftAndDisplaysError" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.232" />
+    <testcase name="commentFailurePreservesDraftTextAndDisplaysError" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.877" />
+    <testcase name="mutationGuardOfflineBlocked" classname="com.playertwo.controlegithub.EditAndCommentIssueUiTest" time="3.131">
+      <failure>java.lang.ArrayIndexOutOfBoundsException: length=2560; index=-206
+at androidx.compose.runtime.SlotTableKt.dataAnchor(SlotTable.kt:4003)
+at androidx.compose.runtime.SlotTableKt.access$dataAnchor(SlotTable.kt:1)
+at androidx.compose.runtime.SlotWriter.moveSlotGapTo(SlotTable.kt:2989)
+at androidx.compose.runtime.SlotWriter.removeSlots(SlotTable.kt:3198)
+at androidx.compose.runtime.SlotWriter.removeGroup(SlotTable.kt:2266)
+at androidx.compose.runtime.ComposerKt.removeCurrentGroup(Composer.kt:4182)
+at androidx.compose.runtime.CompositionImpl.dispose(Composition.kt:783)
+at androidx.compose.ui.platform.WrappedComposition.dispose(Wrapper.android.kt:169)
+at androidx.compose.ui.platform.WrappedComposition.onStateChanged(Wrapper.android.kt:177)
+at androidx.lifecycle.LifecycleRegistry$ObserverWithState.dispatchEvent(LifecycleRegistry.jvm.kt:320)
+at androidx.lifecycle.LifecycleRegistry.backwardPass(LifecycleRegistry.jvm.kt:272)
+at androidx.lifecycle.LifecycleRegistry.sync(LifecycleRegistry.jvm.kt:289)
+at androidx.lifecycle.LifecycleRegistry.moveToState(LifecycleRegistry.jvm.kt:142)
+at androidx.lifecycle.LifecycleRegistry.handleLifecycleEvent(LifecycleRegistry.jvm.kt:124)
+at androidx.lifecycle.ReportFragment$Companion.dispatch$lifecycle_runtime_release(ReportFragment.android.kt:190)
+at androidx.lifecycle.ReportFragment$LifecycleCallbacks.onActivityPreDestroyed(ReportFragment.android.kt:146)
+at android.app.Activity.dispatchActivityPreDestroyed(Activity.java:1784)
+at android.app.Activity.performDestroy(Activity.java:9657)
+at android.app.Instrumentation.callActivityOnDestroy(Instrumentation.java:1578)
+at androidx.test.runner.MonitoringInstrumentation.callActivityOnDestroy(MonitoringInstrumentation.java:753)
+at android.app.ActivityThread.performDestroyActivity(ActivityThread.java:6619)
+at android.app.ActivityThread.handleDestroyActivity(ActivityThread.java:6664)
+at android.app.servertransaction.DestroyActivityItem.execute(DestroyActivityItem.java:53)
+at android.app.servertransaction.ActivityTransactionItem.execute(ActivityTransactionItem.java:63)
+at android.app.servertransaction.TransactionExecutor.executeLifecycleItem(TransactionExecutor.java:169)
+at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:101)
+at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:80)
+at android.app.ActivityThread$H.handleMessage(ActivityThread.java:3032)
+at android.os.Handler.dispatchMessageImpl(Handler.java:142)
+at android.os.Handler.dispatchMessage(Handler.java:125)
+at android.os.Looper.loopOnce(Looper.java:296)
+at android.os.Looper.loop(Looper.java:397)
+at android.app.ActivityThread.main(ActivityThread.java:9523)
+at java.lang.reflect.Method.invoke(Native Method)
+at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:575)
+at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:939)
+</failure>
+    </testcase>
+  </testsuite>
+  <system-err>Test run failed to complete. Instrumentation run failed due to Process crashed.
+Logcat of last crash: 
+Process: com.playertwo.controlegithub, PID: 4816
+java.lang.RuntimeException: Unable to destroy activity {com.playertwo.controlegithub/androidx.activity.ComponentActivity}
+	at android.app.ActivityThread.performDestroyActivity(ActivityThread.java:6632)
+	at android.app.ActivityThread.handleDestroyActivity(ActivityThread.java:6664)
+	at android.app.servertransaction.DestroyActivityItem.execute(DestroyActivityItem.java:53)
+	at android.app.servertransaction.ActivityTransactionItem.execute(ActivityTransactionItem.java:63)
+	at android.app.servertransaction.TransactionExecutor.executeLifecycleItem(TransactionExecutor.java:169)
+	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:101)
+	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:80)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:3032)
+	at android.os.Handler.dispatchMessageImpl(Handler.java:142)
+	at android.os.Handler.dispatchMessage(Handler.java:125)
+	at android.os.Looper.loopOnce(Looper.java:296)
+	at android.os.Looper.loop(Looper.java:397)
+	at android.app.ActivityThread.main(ActivityThread.java:9523)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:575)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:939)
+Caused by: java.lang.ArrayIndexOutOfBoundsException: length=2560; index=-206
+	at androidx.compose.runtime.SlotTableKt.dataAnchor(SlotTable.kt:4003)
+	at androidx.compose.runtime.SlotTableKt.access$dataAnchor(SlotTable.kt:1)
+	at androidx.compose.runtime.SlotWriter.moveSlotGapTo(SlotTable.kt:2989)
+	at androidx.compose.runtime.SlotWriter.removeSlots(SlotTable.kt:3198)
+	at androidx.compose.runtime.SlotWriter.removeGroup(SlotTable.kt:2266)
+	at androidx.compose.runtime.ComposerKt.removeCurrentGroup(Composer.kt:4182)
+	at androidx.compose.runtime.CompositionImpl.dispose(Composition.kt:783)
+	at androidx.compose.ui.platform.WrappedComposition.dispose(Wrapper.android.kt:169)
+	at androidx.compose.ui.platform.WrappedComposition.onStateChanged(Wrapper.android.kt:177)
+	at androidx.lifecycle.LifecycleRegistry$ObserverWithState.dispatchEvent(LifecycleRegistry.jvm.kt:320)
+	at androidx.lifecycle.LifecycleRegistry.backwardPass(LifecycleRegistry.jvm.kt:272)
+	at androidx.lifecycle.LifecycleRegistry.sync(LifecycleRegistry.jvm.kt:289)
+	at androidx.lifecycle.LifecycleRegistry.moveToState(LifecycleRegistry.jvm.kt:142)
+	at androidx.lifecycle.LifecycleRegistry.handleLifecycleEvent(LifecycleRegistry.jvm.kt:124)
+	at androidx.lifecycle.ReportFragment$Companion.dispatch$lifecycle_runtime_release(ReportFragment.android.kt:190)
+	at androidx.lifecycle.ReportFragment$LifecycleCallbacks.onActivityPreDestroyed(ReportFragment.android.kt:146)
+	at android.app.Activity.dispatchActivityPreDestroyed(Activity.java:1784)
+	at android.app.Activity.performDestroy(Activity.java:9657)
+	at android.app.Instrumentation.callActivityOnDestroy(Instrumentation.java:1578)
+	at androidx.test.runner.MonitoringInstrumentation.callActivityOnDestroy(MonitoringInstrumentation.java:753)
+	at android.app.ActivityThread.performDestroyActivity(ActivityThread.java:6619)
+	... 15 more
+
+</system-err>
+</testsuites>

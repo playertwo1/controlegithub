@@ -24,13 +24,13 @@
 - Por decisão explícita do usuário em 2026-10-22, a validação em aparelho físico foi adiada para depois do avanço do roadmap; os cenários continuam `NOT_RUN`, sem serem apresentados como PASS.
 - C21.2 está `DONE` com `docs/evidence/C21.2.md`; C21.3 foi criada como `PLANNED` para o aceite físico. O checkpoint C21 permanece aberto até C21.3 passar.
 
-## C22.1 — Markdown de leitura (em andamento, 2026-10-22)
+## C22.1 — Markdown de leitura (DONE, 2026-10-22)
 
 - Implementados parser CommonMark/GFM com limites, renderer Compose selecionável, fallback textual, HTML literal, imagens sem download e classificação segura de links. Links GitHub canônicos abrem detalhes internos com retorno por Back; HTTPS externo exige confirmação.
-- `assembleDebug testDebugUnitTest lintDebug` **PASS** (181/181 JVM); build e lint também **PASS**. Execuções focadas de Markdown, navegação/Back e expiração foram reportadas como aprovadas, mas os respectivos XMLs individuais não foram arquivados.
-- A suíte conectada integral do estado atual **não passou**: a primeira tentativa registrou crash em `MutableIntervalList`; a segunda perdeu ADB/UTP após 175 testes concluídos; a quinta foi interrompida no AVD API 28 após 62/205 registros e 10 falhas de UI. As tentativas terceira e quarta não executaram testes por falha/indisponibilidade do ADB e uso do AVD Pixel 9 compartilhado. O resultado antigo de 205/205 antecede o delta atual e não é gate válido.
-- Nenhuma causa do crash em `MutableIntervalList` no código do app foi confirmada; o teste isolado passou e nenhuma correção especulativa foi aplicada. Evidências por tentativa e relatórios ficam em `docs/evidence/C22.1.md` e `docs/evidence/artifacts/C22.1/`.
-- Auditoria independente final do diff e da evidência: **PASS, sem achados materiais**. C22.1 permanece `IN_PROGRESS`, com `evidence: null` em `plan/tasks.json`, até uma execução integral conectada válida. A validação física de C21.3 continua `NOT_RUN`, conforme adiamento explícito do usuário, e não é gate de C22.1.
+- `assembleDebug testDebugUnitTest lintDebug` **PASS** (181/181 JVM); build e lint também **PASS**.
+- A suíte conectada integral do estado atual **PASS** (207/207, 0 falhas) em `Medium_Phone`, Android 17/API 37. O AVD foi iniciado a frio com os parâmetros temporários `-memory 3072 -gpu host -no-snapshot-load -no-snapshot-save`; o sistema Android reportou 4.006.176 kB de memória. XML/PB/log e parâmetros observados estão em `docs/evidence/artifacts/C22.1/`.
+- Tentativas anteriores tiveram falhas transitórias no Compose; na tentativa 13, o runner registrou `INSTRUMENTATION_ABORTED: System has crashed` e os serviços Android ficaram indisponíveis. A causa específica não está comprovada nos artefatos preservados. Os testes focados e a suíte integral final passaram após reiniciar o AVD; não houve correção especulativa no app. Os detalhes e hashes estão em `docs/evidence/C22.1.md`.
+- Auditoria independente desta atualização final de evidência e documentos: **PASS, sem achados materiais**. `plan/tasks.json` aponta para `docs/evidence/C22.1.md`. A validação física de C21.3 continua `NOT_RUN`, conforme adiamento explícito do usuário, e não é gate de C22.1.
 
 ## Geração de Secrets de Produção e Compilação da Release Oficial v1.0.0 — 2026-10-18
 
