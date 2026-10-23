@@ -1,6 +1,6 @@
 # ControleGitHub
 
-[![Release](https://img.shields.io/badge/Release-v1.0.0-blue.svg)](https://github.com/playertwo1/controlegithub/releases)
+[![Release](https://img.shields.io/badge/Release-v2.0.0-blue.svg)](https://github.com/playertwo1/controlegithub/releases)
 [![Android](https://img.shields.io/badge/Android-8.0%2B%20(API%2026%2B)-green.svg)](https://developer.android.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Architecture: Local--First](https://img.shields.io/badge/Architecture-Local--First-purple.svg)](PRIVACY.md)
@@ -10,9 +10,19 @@ Um aplicativo Android nativo em Kotlin e Jetpack Compose, inspirado na proposta 
 
 ---
 
-## 🚀 Versão 1.0.0 Oficial
+## Fase atual do roadmap (C22.1–C24.1)
 
-O ControleGitHub chega à sua versão **1.0.0 estável e operante**, construído sobre uma arquitetura estritamente **local-first**:
+- **Leitura Markdown:** renderização de Markdown e tabelas GFM com tratamento seguro de links e conteúdo externo.
+- **Edição Markdown:** editor com formatação, abas Escrever/Prévia e rascunhos locais por conta e item.
+- **Navegação de código:** navegação por pastas e arquivos com breadcrumb, números de linha e destaque local; arquivos binários ou acima de 1 MB exibem um aviso.
+
+Essas entregas compõem a versão publicada 2.0.0.
+
+---
+
+## 🚀 Versão 2.0.0 Oficial
+
+O ControleGitHub chega à versão **2.0.0**, construída sobre uma arquitetura estritamente **local-first**:
 - Conexão direta e exclusiva entre seu celular e a API oficial do GitHub (`https://api.github.com`).
 - Sem servidores intermediários, sem telemetria e sem coleta oculta de dados.
 - Criptografia em hardware (`AndroidKeyStore` AES-256-GCM) para credenciais de sessão.
@@ -26,7 +36,9 @@ Baixe o pacote oficial assinado na aba de [Releases do GitHub](https://github.co
 
 | Artefato | Versão | Arquivo | Checksum SHA-256 |
 | :--- | :---: | :---: | :--- |
-| **APK de Produção** | `1.0.0` (100) | `app-release.apk` | `F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71` |
+| **APK de Produção** | `2.0.0` (101) | `app-release.apk` | `64A3549593E6EC7CC10D70F6E49B56FD3FBA6E4BB65FF11015CA1F46575AF8D8` |
+
+**Atenção:** a v2.0.0 usa uma nova chave de assinatura. Ela não atualiza a v1.0.0 diretamente. Para instalar, desinstale a versão anterior; o Android apagará os dados locais do aplicativo.
 
 ### Verificação de Integridade
 
@@ -42,7 +54,7 @@ sha256sum app-release.apk
 
 O hash deve ser idêntico a:
 ```text
-F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71
+64A3549593E6EC7CC10D70F6E49B56FD3FBA6E4BB65FF11015CA1F46575AF8D8
 ```
 
 ---
@@ -57,6 +69,8 @@ F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71
 - **Quadro Kanban Local (4 Colunas):** Organize issues pessoalmente em *A fazer*, *Em andamento*, *Em revisão* e *Concluído* sem alterar o repositório remoto no GitHub.
 - **Notificações Integradas:** Leitura de avisos por repositório com marcação rápida de leitura.
 - **GitHub Actions (CI/CD):** Acompanhamento de execuções de workflows, jobs e visualizador otimizado de logs de compilação.
+- **Leitura e edição Markdown:** Prévia de conteúdo, tabelas GFM, formatação e rascunhos locais.
+- **Navegador de código:** Acesso à árvore do repositório, arquivos de texto com linhas numeradas e destaque local.
 - **Modo Offline & Cache SQLite:** Consultas salvas localmente com revalidação condicional via HTTP ETag (`304 Not Modified`) e selo de data/hora.
 - **Sincronização em Segundo Plano:** Agendador nativo com `JobScheduler` e alertas locais configuráveis no canal `controlegithub_alerts`.
 - **Acessibilidade e Temas:** Suporte integral aos temas Claro, Escuro e Sistema, alto contraste WCAG AA e compatibilidade com TalkBack.
@@ -93,15 +107,16 @@ F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71
    # Checagem de Lint
    ./gradlew lintDebug
    ```
-3. Para compilar a versão de release com chave de produção:
+3. Para compilar a versão de release, mantenha o keystore e os quatro valores de assinatura em `.secrets/` (diretório ignorado pelo Git) e execute:
    ```bash
-   ./gradlew assembleRelease -PRELEASE_STORE_FILE=caminho/para/chave.jks -PRELEASE_STORE_PASSWORD=senha -PRELEASE_KEY_ALIAS=alias -PRELEASE_KEY_PASSWORD=senha
+   ./gradlew assembleRelease
    ```
 
 ---
 
 ## 📚 Documentação do Projeto
 
+- [Notas de Lançamento 2.0.0](docs/RELEASE_NOTES_v2.0.0.md)
 - [Notas de Lançamento 1.0.0](docs/RELEASE_NOTES_v1.0.0.md)
 - [Manual do Usuário](docs/MANUAL_DO_USUARIO.md)
 - [Guia de Operação e Suporte](docs/OPERACAO_E_SUPORTE.md)

@@ -16,7 +16,7 @@ class ReleaseDeliveryVerificationTest {
         current
     }
 
-    private val canonicalSha256 = "F2A51D35AD2C4603B5DCF7A29D2A4F65DC00734DAD79CFE4DB2E9B40FAC04F71"
+    private val canonicalSha256 = "64A3549593E6EC7CC10D70F6E49B56FD3FBA6E4BB65FF11015CA1F46575AF8D8"
 
     @Test
     fun sha256SumsFileIsValidAndMatchesReleaseApkHash() {
@@ -50,16 +50,16 @@ class ReleaseDeliveryVerificationTest {
 
     @Test
     fun releaseNotesDocumentContainsAllRequiredSections() {
-        val notesFile = File(projectRoot, "docs/RELEASE_NOTES_v1.0.0.md")
-        assertTrue("docs/RELEASE_NOTES_v1.0.0.md deve existir", notesFile.exists())
+        val notesFile = File(projectRoot, "docs/RELEASE_NOTES_v2.0.0.md")
+        assertTrue("docs/RELEASE_NOTES_v2.0.0.md deve existir", notesFile.exists())
 
         val text = notesFile.readText(Charsets.UTF_8)
-        assertTrue("Deve referenciar a versão 1.0.0", text.contains("1.0.0"))
+        assertTrue("Deve referenciar a versão 2.0.0", text.contains("2.0.0"))
         assertTrue("Deve conter o hash canônico SHA-256", text.contains(canonicalSha256))
-        assertTrue("Deve cobrir o Marco 1 (M1)", text.contains("Marco 1") || text.contains("M1"))
-        assertTrue("Deve cobrir o Marco 2 (M2)", text.contains("Marco 2") || text.contains("M2"))
-        assertTrue("Deve cobrir o Marco 3 (M3)", text.contains("Marco 3") || text.contains("M3"))
-        assertTrue("Deve cobrir o Marco 4 (M4)", text.contains("Marco 4") || text.contains("M4"))
+        assertTrue("Deve cobrir C22.1", text.contains("C22.1"))
+        assertTrue("Deve cobrir C23.1", text.contains("C23.1"))
+        assertTrue("Deve cobrir C24.1", text.contains("C24.1"))
+        assertTrue("Deve explicar a instalação limpa", text.contains("desinstalar"))
         assertTrue("Deve referenciar o canal oficial GitHub Releases", text.contains("github.com/playertwo1/controlegithub/releases"))
     }
 

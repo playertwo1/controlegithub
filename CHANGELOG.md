@@ -7,6 +7,30 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
+## [2.0.0] — 2026-10-23
+
+Nova versão principal do ControleGitHub. As mudanças C22.1–C24.1 acrescentam leitura e edição Markdown e navegação de arquivos de código. Esta release usa uma nova chave de assinatura; a instalação existente da 1.0.0 precisa ser removida antes da instalação, o que apaga os dados locais do aplicativo.
+
+### Adicionado
+
+- Leitura de Markdown e tabelas GFM, com classificação segura de links e confirmação para navegação HTTPS externa.
+- Editor Markdown com formatação, abas Escrever/Prévia, rascunhos locais por conta e item, e sugestões baseadas em participantes carregados.
+- Navegação da árvore de código com breadcrumb, linhas numeradas, destaque local e aviso para arquivos binários ou acima de 1 MB.
+
+### Alterado
+
+- `versionName` atualizado para `2.0.0` e `versionCode` para `101`.
+- A assinatura de release lê `.secrets/signing.properties`, ignorado pelo Git, resolve o keystore a partir da raiz do projeto e falha quando uma tarefa Release não tem assinatura de produção válida.
+- Release publicada com a chave nova; instalações v1.0.0 exigem reinstalação e não preservam dados locais.
+
+### Verificação
+
+- `assembleRelease` **PASS** com JDK/SDK do Android Studio.
+- `apksigner` **PASS**, assinatura APK v2 e certificado de produção (SHA-256: `c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec`).
+- `aapt` confirmou pacote `com.playertwo.controlegithub`, versão `2.0.0` e código `101`.
+- SHA-256 do APK: `64A3549593E6EC7CC10D70F6E49B56FD3FBA6E4BB65FF11015CA1F46575AF8D8`.
+- Validação em aparelho físico: **NOT_RUN**.
+
 ## [1.0.0] — 2026-10-18
 
 Lançamento oficial da versão **1.0.0** do ControleGitHub para Android. Primeira versão estável e operante, cobrindo os Marcos M0, M1, M2, M3 e M4 do roadmap.

@@ -1,8 +1,39 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
 }
 val githubOAuthClientId = providers.gradleProperty("GITHUB_OAUTH_CLIENT_ID").orElse("").get()
+val localSigningPropertiesFile = rootProject.file(".secrets/signing.properties")
+val localSigningProperties = Properties().apply {
+    if (localSigningPropertiesFile.isFile) {
+        localSigningPropertiesFile.inputStream().use { inputStream -> load(inputStream) }
+    }
+}
+fun signingValue(name: String): String? = providers.gradleProperty(name)
+    .orElse(providers.environmentVariable(name))
+    .orNull
+    ?: localSigningProperties.getProperty(name)
+
+val releaseStoreFilePath = signingValue("RELEASE_STORE_FILE")?.takeIf { it.isNotBlank() }
+val releaseStoreFile = releaseStoreFilePath?.let { rootProject.file(it) }
+val releaseStorePassword = signingValue("RELEASE_STORE_PASSWORD")
+val releaseKeyAlias = signingValue("RELEASE_KEY_ALIAS")
+val releaseKeyPassword = signingValue("RELEASE_KEY_PASSWORD")
+val hasProductionReleaseSigning = releaseStoreFile?.exists() == true &&
+    !releaseStorePassword.isNullOrBlank() &&
+    !releaseKeyAlias.isNullOrBlank() &&
+    !releaseKeyPassword.isNullOrBlank()
+
+gradle.taskGraph.whenReady {
+    if (allTasks.any { it.name.contains("Release", ignoreCase = true) } && !hasProductionReleaseSigning) {
+        throw org.gradle.api.GradleException(
+            "Release exige RELEASE_STORE_FILE, RELEASE_STORE_PASSWORD, RELEASE_KEY_ALIAS e RELEASE_KEY_PASSWORD válidos."
+        )
+    }
+}
+
 android {
     namespace = "com.playertwo.controlegithub"
     compileSdk = 36
@@ -10,31 +41,18 @@ android {
         applicationId = "com.playertwo.controlegithub"
         minSdk = 26
         targetSdk = 36
-        versionCode = 100
-        versionName = "1.0.0"
+        versionCode = 101
+        versionName = "2.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "GITHUB_OAUTH_CLIENT_ID", "\"$githubOAuthClientId\"")
     }
     signingConfigs {
         create("release") {
-            val storeFilePath = providers.gradleProperty("RELEASE_STORE_FILE")
-                .orElse(providers.environmentVariable("RELEASE_STORE_FILE"))
-                .orNull
-            val storePasswordProp = providers.gradleProperty("RELEASE_STORE_PASSWORD")
-                .orElse(providers.environmentVariable("RELEASE_STORE_PASSWORD"))
-                .orNull
-            val keyAliasProp = providers.gradleProperty("RELEASE_KEY_ALIAS")
-                .orElse(providers.environmentVariable("RELEASE_KEY_ALIAS"))
-                .orNull
-            val keyPasswordProp = providers.gradleProperty("RELEASE_KEY_PASSWORD")
-                .orElse(providers.environmentVariable("RELEASE_KEY_PASSWORD"))
-                .orNull
-
-            if (storeFilePath != null && file(storeFilePath).exists()) {
-                storeFile = file(storeFilePath)
-                storePassword = storePasswordProp
-                keyAlias = keyAliasProp
-                keyPassword = keyPasswordProp
+            if (hasProductionReleaseSigning) {
+                storeFile = releaseStoreFile
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
             } else {
                 val debugConfig = getByName("debug")
                 storeFile = debugConfig.storeFile

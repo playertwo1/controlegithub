@@ -1,5 +1,14 @@
 # Estado do projeto
 
+## Release v2.0.0 — PRONTA PARA PUBLICAÇÃO (2026-10-23)
+
+- APK de produção gerado com o JDK/SDK do Android Studio: `versionCode = 101`, `versionName = 2.0.0`, pacote `com.playertwo.controlegithub`, 12.602.147 bytes.
+- `apksigner verify --verbose --print-certs` **PASS**, esquema v2; certificado SHA-256 `c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec`. `aapt dump badging` confirmou pacote e versão.
+- SHA-256 do APK: `64A3549593E6EC7CC10D70F6E49B56FD3FBA6E4BB65FF11015CA1F46575AF8D8` (`SHA256SUMS.txt`).
+- `assembleRelease` e `assembleDebug testDebugUnitTest lintDebug` **PASS** (193/193 JVM); `python scripts/check_plan.py` **PASS** (48 tarefas); `git diff --check` **PASS**. Uma execução anterior teve uma falha transitória em `GitHubHttpClientTest.cancelDisconnectsInFlightRequest`; o caso isolado e a repetição completa passaram.
+- Os quatro valores locais e o keystore estão em `.secrets/`, ignorados pelo Git e não publicados. A assinatura é diferente da v1.0.0; é necessário desinstalar a versão antiga para instalar esta, apagando dados locais.
+- Auditoria independente do APK, assinatura, índice Git e teste de proteção de secrets: **PASS**. Publicação da tag e APK no GitHub ainda pendente. Instalação em aparelho físico: **NOT_RUN**.
+
 ## C24.1 — Navegador de código (DONE, 2026-10-22)
 
 - Botão Código no cabeçalho do detalhe. Pastas, breadcrumb, texto com número de linha e destaque local. Markdown usa o componente de C22.1. Binário ou arquivo maior que 1 MB mostra aviso, sem token no link.
