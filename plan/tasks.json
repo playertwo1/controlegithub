@@ -659,6 +659,19 @@
       "contract": "plan/contracts/C25.1.md",
       "evidence": "docs/evidence/C25.1.md",
       "blocked_reason": null
+    },
+    {
+      "id": "C25.2",
+      "checkpoint": "C25",
+      "title": "Ações diretas de repositório/APK em Avisos e ícone adaptativo",
+      "depends_on": [
+        "C25.1"
+      ],
+      "status": "DONE",
+      "acceptance": "Cartões e detalhe de Avisos oferecem atalhos diretos para Abrir repositório e Releases e APKs em qualquer notificação com repositório válido; Adaptive Icon moderno configurado sem erros de lint.",
+      "contract": "plan/contracts/C25.2.md",
+      "evidence": "docs/evidence/C25.2.md",
+      "blocked_reason": null
     }
   ]
 }

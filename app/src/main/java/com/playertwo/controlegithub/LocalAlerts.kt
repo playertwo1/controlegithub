@@ -134,7 +134,7 @@ internal object LocalNotificationManager {
         )
 
         val notification = Notification.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher)
+            .setSmallIcon(R.drawable.ic_stat_notification)
             .setContentTitle(title)
             .setContentText(text)
             .setContentIntent(pendingIntent)

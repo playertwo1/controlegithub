@@ -60,12 +60,28 @@ internal fun parseGitHubNotifications(json: String): List<GitHubNotification> = 
     throw IOException("Resposta de notificações inválida", error)
 }
 
+internal fun notificationRepository(item: GitHubNotification): GitHubRepository? {
+    if (item.repositoryId <= 0 || !REPOSITORY_NAME.matches(item.repositoryFullName)) {
+        return null
+    }
+    val parts = item.repositoryFullName.split('/', limit = 2)
+    if (parts.size != 2) return null
+    return GitHubRepository(
+        id = item.repositoryId,
+        name = parts[1],
+        fullName = item.repositoryFullName,
+        owner = parts[0],
+        isPrivate = false,
+        description = null,
+        language = null,
+        stars = 0
+    )
+}
+
 internal fun notificationDestination(item: GitHubNotification): GitHubNotificationDestination {
     if (item.subjectType != "Issue" && item.subjectType != "PullRequest") {
-        if (item.repositoryId <= 0 || !REPOSITORY_NAME.matches(item.repositoryFullName)) {
-            return GitHubNotificationDestination.Unavailable
-        }
-        return GitHubNotificationDestination.Repository(item.repositoryFullName)
+        val repo = notificationRepository(item) ?: return GitHubNotificationDestination.Unavailable
+        return GitHubNotificationDestination.Repository(repo.fullName)
     }
 
     val uri = item.subjectApiUrl?.let { runCatching { URI(it) }.getOrNull() }

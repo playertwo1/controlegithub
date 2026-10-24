@@ -58,7 +58,8 @@ internal fun GitHubRepositoryDetailScreen(
     onAppearance: () -> Unit,
     isOffline: Boolean = session.isOffline,
     cacheStore: GitHubCacheStore? = null,
-    isActive: Boolean = true
+    isActive: Boolean = true,
+    initialReleasesOpen: Boolean = false
 ) {
     var refreshVersion by remember(repository.id, session.accessToken) { mutableIntStateOf(0) }
     var result by remember(repository.id, session.accessToken) {
@@ -101,7 +102,9 @@ internal fun GitHubRepositoryDetailScreen(
         return
     }
 
-    var releasesOpen by remember(repository.id, session.accessToken) { mutableStateOf(false) }
+    var releasesOpen by remember(repository.id, session.accessToken, initialReleasesOpen) {
+        mutableStateOf(initialReleasesOpen)
+    }
     var codeOpen by remember(repository.id, session.accessToken) { mutableStateOf(false) }
     var codeBranch by remember(repository.id, session.accessToken) { mutableStateOf<String?>(null) }
     if (codeOpen) {

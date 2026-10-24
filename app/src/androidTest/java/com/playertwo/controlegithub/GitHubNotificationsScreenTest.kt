@@ -352,6 +352,41 @@ class GitHubNotificationsScreenTest {
         }
     }
 
+    @Test
+    fun notificationCardDirectActionsOpenRepositoryAndReleasesForAnyNotice() {
+        NotificationsScreenApi(
+            notificationsJson = """
+                [{"id":"thread-issue","unread":true,"reason":"assign","updated_at":"2026-10-01T12:00:00Z",
+                  "subject":{"title":"Issue notice with repo","type":"Issue","url":"https://api.github.com/repos/other-owner/other-repo/issues/18"},
+                  "repository":{"id":42,"full_name":"other-owner/other-repo"}}]
+            """,
+            originResponses = otherRepoResponses()
+        ).use { api ->
+            showNotifications(api)
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Issue notice with repo").fetchSemanticsNodes().isNotEmpty()
+            }
+
+            compose.onNodeWithTag("notification-card-open-repo-thread-issue").performClick()
+            compose.waitUntil(10_000) {
+                api.requests.any { it.startsWith("GET /repos/other-owner/other-repo ") } &&
+                    compose.onAllNodesWithText("Fixture readme", useUnmergedTree = true)
+                        .fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithContentDescription("Voltar à notificação").performClick()
+            compose.onNodeWithText("Issue notice with repo").assertIsDisplayed()
+
+            compose.onNodeWithTag("notification-card-open-releases-thread-issue").performClick()
+            compose.waitUntil(10_000) {
+                api.requests.any { it.contains("/repos/other-owner/other-repo/releases?") } &&
+                    compose.onAllNodesWithText("1 APK disponível").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithContentDescription("Voltar").performClick()
+            compose.onNodeWithContentDescription("Voltar à notificação").performClick()
+            compose.onNodeWithText("Issue notice with repo").assertIsDisplayed()
+        }
+    }
+
     private fun openReleaseOrigin() {
         compose.waitUntil(10_000) {
             compose.onAllNodesWithText("Fixture release notice").fetchSemanticsNodes().isNotEmpty()

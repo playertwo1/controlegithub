@@ -2,6 +2,8 @@ package com.playertwo.controlegithub
 
 import java.time.Instant
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 class GitHubNotificationDestinationTest {
@@ -57,6 +59,28 @@ class GitHubNotificationDestinationTest {
             GitHubNotificationDestination.Unavailable,
             notificationDestination(notification(url = "https://example.com/repos/acme/app/issues/12"))
         )
+    }
+
+    @Test
+    fun notificationRepositoryResolvesForAnyTypeWithValidRepositoryIdentity() {
+        listOf("Issue", "PullRequest", "Release", "CheckSuite", null).forEach { type ->
+            val repo = notificationRepository(
+                notification(
+                    type = type,
+                    repository = "acme/app",
+                    repositoryId = 42,
+                    url = "https://example.com/invalid"
+                )
+            )
+            assertNotNull(type, repo)
+            assertEquals(42L, repo?.id)
+            assertEquals("acme", repo?.owner)
+            assertEquals("app", repo?.name)
+            assertEquals("acme/app", repo?.fullName)
+        }
+        assertNull(notificationRepository(notification(repositoryId = 0)))
+        assertNull(notificationRepository(notification(repository = "invalid repo")))
+        assertNull(notificationRepository(notification(repository = "only-owner")))
     }
 
     private fun notification(

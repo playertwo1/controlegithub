@@ -347,7 +347,7 @@ internal class GitHubReleaseDownloadWorker(context: Context, parameters: WorkerP
             ((downloaded * 100 / total).coerceIn(0, 100)).toInt()
         } else null
         val notification = Notification.Builder(applicationContext, RELEASE_DOWNLOAD_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher)
+            .setSmallIcon(R.drawable.ic_stat_notification)
             .setContentTitle("Baixando APK de release")
             .setContentText(percent?.let { "$it%" } ?: "Transferência em andamento")
             .setProgress(100, percent ?: 0, percent == null)
@@ -388,7 +388,7 @@ internal class GitHubReleaseDownloadWorker(context: Context, parameters: WorkerP
         manager.notify(
             completionNotificationId(),
             Notification.Builder(applicationContext, RELEASE_DOWNLOAD_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.ic_stat_notification)
                 .setContentTitle("Download de release concluído")
                 .setContentText("$hashText. Abra Releases para instalar.")
                 .setContentIntent(pending)

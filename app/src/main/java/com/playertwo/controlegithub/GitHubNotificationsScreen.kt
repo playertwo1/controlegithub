@@ -65,6 +65,13 @@ private enum class NotificationTypeFilter(val label: String) {
     ALL("Todos"), ISSUE("Issue"), PULL_REQUEST("Pull request"), REPOSITORY("Repositório"), OTHER("Outro")
 }
 
+private enum class NotificationOriginMode {
+    NONE,
+    ORIGIN,
+    REPOSITORY,
+    RELEASES
+}
+
 @Composable
 internal fun GitHubNotificationsScreen(
     modifier: Modifier,
@@ -99,7 +106,8 @@ internal fun GitHubNotificationsScreen(
     var readFilter by rememberSaveable(login) { mutableStateOf(NotificationReadFilter.ALL) }
     var typeFilter by rememberSaveable(login) { mutableStateOf(NotificationTypeFilter.ALL) }
     var selectedNotification by remember(token) { mutableStateOf<GitHubNotification?>(null) }
-    var showingOrigin by remember(token) { mutableStateOf(false) }
+    var originMode by remember(token) { mutableStateOf(NotificationOriginMode.NONE) }
+    var openedDirectlyFromCard by remember(token) { mutableStateOf(false) }
     var sessionExpiryReported by remember(token) { mutableStateOf(false) }
     var markingReadId by remember(token) { mutableStateOf<String?>(null) }
     var markReadError by remember(token) { mutableStateOf<String?>(null) }
@@ -155,7 +163,36 @@ internal fun GitHubNotificationsScreen(
     DisposableEffect(pager) { onDispose { pager?.cancel() } }
 
     val selected = selectedNotification
-    if (selected != null && showingOrigin && session != null) {
+    val closeOrigin = {
+        originMode = NotificationOriginMode.NONE
+        if (openedDirectlyFromCard) {
+            selectedNotification = null
+            openedDirectlyFromCard = false
+            markReadError = null
+        }
+    }
+    if (selected != null && originMode != NotificationOriginMode.NONE && session != null) {
+        if (originMode == NotificationOriginMode.REPOSITORY || originMode == NotificationOriginMode.RELEASES) {
+            val repo = notificationRepository(selected)
+            if (repo != null) {
+                GitHubRepositoryDetailScreen(
+                    modifier = modifier,
+                    client = client,
+                    session = session,
+                    repository = repo,
+                    onBack = closeOrigin,
+                    backContentDescription = "Voltar à notificação",
+                    onSessionExpired = onSessionExpired,
+                    onAppearance = onAppearance,
+                    cacheStore = cacheStore,
+                    isOffline = isOfflineCache || session.isOffline,
+                    initialReleasesOpen = originMode == NotificationOriginMode.RELEASES
+                )
+            } else {
+                NotificationOriginUnavailable(modifier, onBack = closeOrigin)
+            }
+            return
+        }
         when (val destination = notificationDestination(selected)) {
             is GitHubNotificationDestination.Issue -> GitHubIssueDetailScreen(
                 modifier = modifier,
@@ -171,7 +208,7 @@ internal fun GitHubNotificationsScreen(
                     emptyList(),
                     selected.updatedAt
                 ),
-                onBack = { showingOrigin = false },
+                onBack = closeOrigin,
                 onSessionExpired = onSessionExpired,
                 onAppearance = onAppearance,
                 isOffline = isOfflineCache || session.isOffline
@@ -189,31 +226,26 @@ internal fun GitHubNotificationsScreen(
                     emptyList(),
                     selected.updatedAt
                 ),
-                onBack = { showingOrigin = false },
+                onBack = closeOrigin,
                 onSessionExpired = onSessionExpired,
                 onAppearance = onAppearance
             )
             is GitHubNotificationDestination.Repository -> {
-                val parts = destination.repository.split('/', limit = 2)
-                if (parts.size == 2) GitHubRepositoryDetailScreen(
+                val repo = notificationRepository(selected)
+                if (repo != null) GitHubRepositoryDetailScreen(
                     modifier = modifier,
                     client = client,
                     session = session,
-                    repository = GitHubRepository(
-                        selected.repositoryId, parts[1], destination.repository, parts[0],
-                        false, null, null, 0
-                    ),
-                    onBack = { showingOrigin = false },
+                    repository = repo,
+                    onBack = closeOrigin,
                     backContentDescription = "Voltar à notificação",
                     onSessionExpired = onSessionExpired,
                     onAppearance = onAppearance,
                     cacheStore = cacheStore,
                     isOffline = isOfflineCache || session.isOffline
-                ) else NotificationOriginUnavailable(modifier) { showingOrigin = false }
+                ) else NotificationOriginUnavailable(modifier, onBack = closeOrigin)
             }
-            GitHubNotificationDestination.Unavailable -> NotificationOriginUnavailable(modifier) {
-                showingOrigin = false
-            }
+            GitHubNotificationDestination.Unavailable -> NotificationOriginUnavailable(modifier, onBack = closeOrigin)
         }
         return
     }
@@ -254,6 +286,7 @@ internal fun GitHubNotificationsScreen(
 
         BackHandler {
             selectedNotification = null
+            openedDirectlyFromCard = false
             markReadError = null
         }
         NotificationDetail(
@@ -261,9 +294,21 @@ internal fun GitHubNotificationsScreen(
             notification = selected,
             onBack = {
                 selectedNotification = null
+                openedDirectlyFromCard = false
                 markReadError = null
             },
-            onOpenOrigin = { showingOrigin = true },
+            onOpenOrigin = {
+                openedDirectlyFromCard = false
+                originMode = NotificationOriginMode.ORIGIN
+            },
+            onOpenRepository = {
+                openedDirectlyFromCard = false
+                originMode = NotificationOriginMode.REPOSITORY
+            },
+            onOpenReleases = {
+                openedDirectlyFromCard = false
+                originMode = NotificationOriginMode.RELEASES
+            },
             onAppearance = onAppearance,
             onMarkAsRead = onMarkSelectedAsRead,
             markingRead = markingReadId == selected.id,
@@ -344,7 +389,24 @@ internal fun GitHubNotificationsScreen(
             }
         }
         items(filtered, key = GitHubNotification::id) { notification ->
-            NotificationCard(notification) { selectedNotification = notification }
+            NotificationCard(
+                notification = notification,
+                onClick = {
+                    openedDirectlyFromCard = false
+                    originMode = NotificationOriginMode.NONE
+                    selectedNotification = notification
+                },
+                onOpenRepository = {
+                    selectedNotification = notification
+                    openedDirectlyFromCard = true
+                    originMode = NotificationOriginMode.REPOSITORY
+                },
+                onOpenReleases = {
+                    selectedNotification = notification
+                    openedDirectlyFromCard = true
+                    originMode = NotificationOriginMode.RELEASES
+                }
+            )
         }
         if (hasNext) item {
             TextButton(onClick = { scope.launch { loadNextPage() } }, enabled = !loading,
@@ -365,7 +427,13 @@ private fun FilterRow(selected: String, options: List<String>, onSelect: (String
 }
 
 @Composable
-private fun NotificationCard(notification: GitHubNotification, onClick: () -> Unit) {
+private fun NotificationCard(
+    notification: GitHubNotification,
+    onClick: () -> Unit,
+    onOpenRepository: () -> Unit,
+    onOpenReleases: () -> Unit
+) {
+    val hasValidRepository = notificationRepository(notification) != null
     Surface(
         modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
         shape = RoundedCornerShape(20.dp),
@@ -380,6 +448,27 @@ private fun NotificationCard(notification: GitHubNotification, onClick: () -> Un
                 color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
             notification.updatedAt?.let { instant -> Text(notificationDateFormatter.format(instant), fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            if (hasValidRepository) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TextButton(
+                        onClick = onOpenRepository,
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                        modifier = Modifier.testTag("notification-card-open-repo-${notification.id}")
+                    ) {
+                        Text("Abrir repositório", fontSize = 13.sp)
+                    }
+                    TextButton(
+                        onClick = onOpenReleases,
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                        modifier = Modifier.testTag("notification-card-open-releases-${notification.id}")
+                    ) {
+                        Text("Releases e APKs", fontSize = 13.sp)
+                    }
+                }
+            }
         }
     }
 }
@@ -390,11 +479,15 @@ private fun NotificationDetail(
     notification: GitHubNotification,
     onBack: () -> Unit,
     onOpenOrigin: () -> Unit,
+    onOpenRepository: () -> Unit,
+    onOpenReleases: () -> Unit,
     onAppearance: () -> Unit,
     onMarkAsRead: (() -> Unit)? = null,
     markingRead: Boolean = false,
     markReadError: String? = null
 ) {
+    val destination = notificationDestination(notification)
+    val hasValidRepository = notificationRepository(notification) != null
     BackHandler(onBack = onBack)
     Column(modifier.fillMaxSize().padding(PaddingValues(horizontal = 24.dp, vertical = 20.dp)),
         verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -413,9 +506,25 @@ private fun NotificationDetail(
         Text(notificationTypeLabel(notification.subjectType), fontWeight = FontWeight.Medium)
         Text("${if (notification.unread) "Não lida" else "Lida"} · ${notificationReasonLabel(notification.reason)}")
         notification.updatedAt?.let { Text(notificationDateFormatter.format(it), color = MaterialTheme.colorScheme.onSurfaceVariant) }
-        TextButton(onClick = onOpenOrigin, enabled = notificationDestination(notification) != GitHubNotificationDestination.Unavailable,
+        TextButton(onClick = onOpenOrigin, enabled = destination != GitHubNotificationDestination.Unavailable,
             modifier = Modifier.testTag("notification-open-origin")) { Text("Abrir item de origem") }
-        if (notificationDestination(notification) == GitHubNotificationDestination.Unavailable) {
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            TextButton(
+                onClick = onOpenRepository,
+                enabled = hasValidRepository,
+                modifier = Modifier.testTag("notification-open-repository")
+            ) {
+                Text("Abrir repositório")
+            }
+            TextButton(
+                onClick = onOpenReleases,
+                enabled = hasValidRepository,
+                modifier = Modifier.testTag("notification-open-releases")
+            ) {
+                Text("Releases e APKs")
+            }
+        }
+        if (destination == GitHubNotificationDestination.Unavailable) {
             Text("A origem desta notificação não está disponível.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         if (notification.unread && onMarkAsRead != null) {

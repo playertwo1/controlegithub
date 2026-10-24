@@ -1,5 +1,12 @@
 # Estado do projeto
 
+## C25.2 — Ações diretas de repositório/APK em Avisos e ícone adaptativo (DONE, 2026-10-24)
+
+- Implementados atalhos diretos **"Abrir repositório"** e **"Releases e APKs"** tanto nos cartões da lista de `Avisos` quanto na tela `Detalhe da notificação` para qualquer notificação com repositório válido (`repositoryId > 0` e `owner/repo` válido), inclusive em avisos de `Issue`, `PullRequest`, `Release` ou `Outro`.
+- `GitHubRepositoryDetailScreen` aceita `initialReleasesOpen` para abrir diretamente a lista de Releases/APKs do repositório com retorno previsível à caixa de avisos.
+- Ícone do aplicativo redesenhado como Adaptive Icon (`@mipmap/ic_launcher` e `@mipmap/ic_launcher_round` com `@drawable/ic_launcher_background` em degradê escuro e `@drawable/ic_launcher_foreground` com escudo octogonal e grafo Git em azul/ciano/índigo) e ícone monocromático dedicado `@drawable/ic_stat_notification` para notificações do sistema.
+- Verificações executadas: `python scripts/check_plan.py` **PASS** (50 tarefas), `git diff --check` **PASS**, `./gradlew.bat assembleDebug testDebugUnitTest lintDebug --console=plain` **PASS** (198/198 JVM, 0 falhas; lint 0 erros) e `./gradlew.bat connectedDebugAndroidTest -P "android.testInstrumentationRunnerArguments.class=com.playertwo.controlegithub.GitHubNotificationsScreenTest"` **PASS** (13/13 testes aprovados no emulador `Medium_Phone` API 37). Evidência completa em `docs/evidence/C25.2.md`.
+
 ## Release v2.0.0 — PUBLICADA (2026-10-23)
 
 - APK de produção gerado com o JDK/SDK do Android Studio: `versionCode = 101`, `versionName = 2.0.0`, pacote `com.playertwo.controlegithub`, 12.602.147 bytes.
