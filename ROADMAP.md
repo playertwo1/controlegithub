@@ -420,8 +420,7 @@ acrescentar permissões, escopos OAuth ou operações administrativas.
 **Evidência:** contrato e registro de C25.1 em `plan/contracts/C25.1.md` e
 `docs/evidence/C25.1.md`. Até o proprietário ampliar o escopo, “acessar tudo”
 significa usar as funções existentes no app com as permissões da sessão. O
-checkpoint C25 pode fechar depois de C09, da tarefa C24.1 e de C25.1, sem
-esperar o fechamento de C21/C24 nem C21.3.
+checkpoint C25 fecha com C25.1, por instrução do proprietário em 2026-10-23, com a suíte integral registrada como **NOT PASS**. C21.3 continua `PLANNED`/`NOT_RUN` e não entra nesse fechamento.
 
 ## Execução e refinamento
 

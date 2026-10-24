@@ -9,13 +9,11 @@
 - Os quatro valores locais e o keystore estão em `.secrets/`, ignorados pelo Git e não publicados. A assinatura é diferente da v1.0.0; é necessário desinstalar a versão antiga para instalar esta, apagando dados locais.
 - Auditoria independente do APK, assinatura, índice Git e teste de proteção de secrets: **PASS**. Release GitHub: [v2.0.0](https://github.com/playertwo1/controlegithub/releases/tag/v2.0.0), tag `v2.0.0`, commit `0f22a99`; ativos `app-release.apk` e `SHA256SUMS.txt`, com SHA-256 do APK conferido pelo GitHub. Instalação em aparelho físico: **NOT_RUN**.
 
-## C25.1 — Avisos → repositório → recursos e APK (IN_PROGRESS, 2026-10-23)
+## C25.1 — Avisos → repositório → recursos e APK (DONE com exceção, 2026-10-23)
 
-- Implementado o fallback: `Release`, tipo desconhecido e tipo ausente abrem o repositório quando a identidade é válida. Issue e Pull request mantêm o destino específico. A URL do assunto não é usada como fallback.
-- O Voltar vindo de Avisos anuncia “Voltar à notificação”. O default da lista continua “Voltar aos repositórios”.
-- `assembleDebug testDebugUnitTest lintDebug` **PASS** (197/197 JVM). `GitHubNotificationsScreenTest` **PASS** (12/12) em `Medium_Phone`, Android 17/API 37. `python scripts/check_plan.py` e `git diff --check` **PASS**.
-- `connectedDebugAndroidTest` **NOT PASS** em quatro execuções, inclusive após boot a frio. As falhas foram timeout em `RefreshUiTest` e `IndexOutOfBoundsException: Index 4, size 4` em telas que passaram isoladas (`GitHubRepositoryDetailScreenTest` 26/26 e `GitHubHomeScreenTest` 8/8). Sem correção especulativa. Por isso C25.1 **não** está `DONE`.
-- Auditoria independente do diff: **PASS**, sem achado material. C21.3 continua **NOT_RUN**. Evidência em `docs/evidence/C25.1.md`.
+- Fechada por instrução do proprietário. Critérios 1–7 têm prova. Auditoria do diff: **PASS**, sem achado material.
+- `connectedDebugAndroidTest` permanece **NOT PASS** em quatro execuções, inclusive após boot a frio. O flake é `IndexOutOfBoundsException: Index 4, size 4` em telas que passaram isoladas. Não é PASS da suíte.
+- O checkpoint C25 fecha com C25.1. C21 continua aberto: C21.3 segue `PLANNED`/`NOT_RUN`. Não há outra tarefa READY.
 
 ## C24.1 — Navegador de código (DONE, 2026-10-22)
 
