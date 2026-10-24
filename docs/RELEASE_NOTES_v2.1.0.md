@@ -30,4 +30,4 @@ Esta versão utiliza o mesmo certificado de assinatura da versão 2.0.0 (`c622fc
 | Tamanho | 12.623.583 bytes |
 | Assinatura | APK Signature Scheme v2, verificada por `apksigner` |
 | SHA-256 do certificado | `c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec` |
-| SHA-256 do APK | `78E16B50972C1E6724D9A08132D6A6171870BA3E7BCDEF7D6509CAAC034F59E7` |
+| SHA-256 do APK | `1FEFF9F088F7B6136DD9525A6AA20AD5EA0C57BCC458E9DC703FABF62DBEEB45` |

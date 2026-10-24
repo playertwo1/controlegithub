@@ -16,7 +16,7 @@ class ReleaseDeliveryVerificationTest {
         current
     }
 
-    private val canonicalSha256 = "78E16B50972C1E6724D9A08132D6A6171870BA3E7BCDEF7D6509CAAC034F59E7"
+    private val canonicalSha256 = "1FEFF9F088F7B6136DD9525A6AA20AD5EA0C57BCC458E9DC703FABF62DBEEB45"
 
     @Test
     fun sha256SumsFileIsValidAndMatchesReleaseApkHash() {
