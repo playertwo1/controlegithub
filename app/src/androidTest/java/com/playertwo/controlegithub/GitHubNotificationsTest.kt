@@ -25,7 +25,7 @@ class GitHubNotificationsTest {
         assertEquals("acme/app", notification.repositoryFullName)
         assertEquals(Instant.parse("2026-10-01T12:00:00Z"), notification.updatedAt)
         assertEquals("https://api.github.com/repos/acme/app/issues/12", notification.subjectApiUrl)
-        assertEquals(GitHubNotificationDestination.Unavailable, notificationDestination(notification))
+        assertEquals(GitHubNotificationDestination.Repository("acme/app"), notificationDestination(notification))
     }
 
     @Test
@@ -77,6 +77,13 @@ class GitHubNotificationsTest {
         assertEquals(
             GitHubNotificationDestination.Repository("acme/app"),
             notificationDestination(fixtureNotification(type = "Repository", url = null).toModel())
+        )
+        assertEquals(
+            GitHubNotificationDestination.Repository("acme/app"),
+            notificationDestination(fixtureNotification(
+                type = "Release",
+                url = "https://evil.example/repos/other/app/releases/1"
+            ).toModel())
         )
     }
 

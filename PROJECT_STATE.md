@@ -9,6 +9,14 @@
 - Os quatro valores locais e o keystore estão em `.secrets/`, ignorados pelo Git e não publicados. A assinatura é diferente da v1.0.0; é necessário desinstalar a versão antiga para instalar esta, apagando dados locais.
 - Auditoria independente do APK, assinatura, índice Git e teste de proteção de secrets: **PASS**. Release GitHub: [v2.0.0](https://github.com/playertwo1/controlegithub/releases/tag/v2.0.0), tag `v2.0.0`, commit `0f22a99`; ativos `app-release.apk` e `SHA256SUMS.txt`, com SHA-256 do APK conferido pelo GitHub. Instalação em aparelho físico: **NOT_RUN**.
 
+## C25.1 — Avisos → repositório → recursos e APK (IN_PROGRESS, 2026-10-23)
+
+- Implementado o fallback: `Release`, tipo desconhecido e tipo ausente abrem o repositório quando a identidade é válida. Issue e Pull request mantêm o destino específico. A URL do assunto não é usada como fallback.
+- O Voltar vindo de Avisos anuncia “Voltar à notificação”. O default da lista continua “Voltar aos repositórios”.
+- `assembleDebug testDebugUnitTest lintDebug` **PASS** (197/197 JVM). `GitHubNotificationsScreenTest` **PASS** (12/12) em `Medium_Phone`, Android 17/API 37. `python scripts/check_plan.py` e `git diff --check` **PASS**.
+- `connectedDebugAndroidTest` **NOT PASS** em três execuções. As falhas foram timeout em `RefreshUiTest` e `IndexOutOfBoundsException: Index 4, size 4` em `GitHubRepositoryDetailScreenTest`, com aborto do processo. As classes isoladas passaram (3/3 e 26/26). Sem correção especulativa. Por isso C25.1 **não** está `DONE`.
+- Auditoria independente do diff: **PASS**, sem achado material. C21.3 continua **NOT_RUN**. Evidência em `docs/evidence/C25.1.md`.
+
 ## C24.1 — Navegador de código (DONE, 2026-10-22)
 
 - Botão Código no cabeçalho do detalhe. Pastas, breadcrumb, texto com número de linha e destaque local. Markdown usa o componente de C22.1. Binário ou arquivo maior que 1 MB mostra aviso, sem token no link.

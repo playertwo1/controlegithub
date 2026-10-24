@@ -53,6 +53,7 @@ internal fun GitHubRepositoryDetailScreen(
     session: GitHubSession,
     repository: GitHubRepository,
     onBack: () -> Unit,
+    backContentDescription: String = "Voltar aos repositórios",
     onSessionExpired: (GitHubSession) -> Unit,
     onAppearance: () -> Unit,
     isOffline: Boolean = session.isOffline,
@@ -155,7 +156,7 @@ internal fun GitHubRepositoryDetailScreen(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Voltar aos repositórios")
+                Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = backContentDescription)
             }
             Spacer(Modifier.weight(1f))
             TextButton(

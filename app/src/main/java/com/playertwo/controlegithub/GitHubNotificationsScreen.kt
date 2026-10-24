@@ -204,6 +204,7 @@ internal fun GitHubNotificationsScreen(
                         false, null, null, 0
                     ),
                     onBack = { showingOrigin = false },
+                    backContentDescription = "Voltar à notificação",
                     onSessionExpired = onSessionExpired,
                     onAppearance = onAppearance,
                     cacheStore = cacheStore,

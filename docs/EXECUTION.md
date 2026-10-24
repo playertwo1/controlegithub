@@ -1,6 +1,6 @@
 # Como executar o roadmap
 
-O ROADMAP define o produto e o aceite dos checkpoints C00–C20. O backlog
+O ROADMAP define o produto e o aceite dos checkpoints C00–C25. O backlog
 `plan/tasks.json` é a única fonte de IDs, dependências e estados das tarefas.
 PROJECT_STATE registra evidências e limitações observadas, sem duplicar estados.
 Os checkpoints agregam tarefas; não são a unidade de implementação.
@@ -18,6 +18,11 @@ Os checkpoints agregam tarefas; não são a unidade de implementação.
    o código e a documentação oficial atual da API. Não invente decisões externas.
 5. Se a tarefa selecionada depender de informação ausente, registre BLOCKED
    com o impedimento e a pergunta concreta; continue outra READY independente.
+   Uma tarefa pode avançar sem validação física PLANNED quando ela estiver
+   explicitamente separada e não fizer parte das dependências dessa tarefa.
+   Um checkpoint só herda os gates listados na tabela ROADMAP. Se a tabela
+   identificar uma dependência como tarefa, basta aquela entrega concluída; não
+   é necessário fechar todo o checkpoint que a contém.
 
 ## Estados e contrato
 
@@ -80,8 +85,8 @@ reduzir o aceite do checkpoint nem ampliar o escopo autorizado.
 
 A revisão encontrou checkpoints com comportamentos independentes (C14/C15),
 dependências expressas apenas por agrupamentos e critérios futuros sem ambiente
-definido. Mantemos os 21 checkpoints para rastreabilidade e refinamos as entregas
-sem transformar cada detalhe técnico em uma etapa.
+definido. Mantemos os 21 checkpoints originais de M0–M4 para rastreabilidade; as
+evoluções pós-release acrescentam C21–C25 sem reescrever o histórico da 1.0.
 
 - [INVEST e SMART, Bill Wake](https://xp123.com/invest-in-good-stories-and-smart-tasks/):
   pequenas entregas de valor, fronteiras sem sobreposição e critérios testáveis.

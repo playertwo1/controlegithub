@@ -61,11 +61,11 @@ internal fun parseGitHubNotifications(json: String): List<GitHubNotification> = 
 }
 
 internal fun notificationDestination(item: GitHubNotification): GitHubNotificationDestination {
-    if (item.subjectType == null || item.subjectType == "Repository") {
-        return GitHubNotificationDestination.Repository(item.repositoryFullName)
-    }
     if (item.subjectType != "Issue" && item.subjectType != "PullRequest") {
-        return GitHubNotificationDestination.Unavailable
+        if (item.repositoryId <= 0 || !REPOSITORY_NAME.matches(item.repositoryFullName)) {
+            return GitHubNotificationDestination.Unavailable
+        }
+        return GitHubNotificationDestination.Repository(item.repositoryFullName)
     }
 
     val uri = item.subjectApiUrl?.let { runCatching { URI(it) }.getOrNull() }

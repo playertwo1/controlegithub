@@ -644,6 +644,21 @@
       "contract": null,
       "evidence": null,
       "blocked_reason": null
+    },
+    {
+      "id": "C25.1",
+      "checkpoint": "C25",
+      "title": "Avisos → repositório → recursos e APK",
+      "depends_on": [
+        "C09.1",
+        "C21.2",
+        "C24.1"
+      ],
+      "status": "IN_PROGRESS",
+      "acceptance": "Notificações de qualquer tipo com repositório validado abrem o detalhe correspondente; issue/PR preservam o destino específico; o app expõe seus recursos existentes e o fluxo Releases → APK de C21.2, com acesso autorizado, estados explícitos, retorno à caixa preservado e rótulo acessível de Voltar compatível com a origem.",
+      "contract": "plan/contracts/C25.1.md",
+      "evidence": "docs/evidence/C25.1.md",
+      "blocked_reason": null
     }
   ]
 }

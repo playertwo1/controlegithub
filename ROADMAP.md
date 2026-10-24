@@ -1,10 +1,11 @@
-# Roadmap operacional — do ponto zero à versão 1.0
+# Roadmap operacional — versão 1.0 e evolução pós-release
 
 Objetivo: um aplicativo Android que permita conectar uma conta GitHub, acompanhar
-repositórios e trabalho, executar as ações previstas e usar uma versão assinada
-com recuperação de erros, privacidade e evidência de funcionamento real.
+repositórios e trabalho, executar as ações previstas e usar versões assinadas
+com recuperação de erros, privacidade e evidência de funcionamento real. C00–C20
+compõem a versão 1.0; C21–C25 registram a evolução posterior.
 
-Este documento define o aceite agregado. A execução usa as 42 tarefas de
+Este documento define o aceite agregado. A execução usa as tarefas de
 [plan/tasks.json](plan/tasks.json) e o [protocolo de execução](docs/EXECUTION.md).
 O estado de execução fica em [PROJECT_STATE.md](PROJECT_STATE.md). Referências das 36 telas:
 [catálogo visual](docs/design/README.md); regras One UI/menu flutuante:
@@ -39,11 +40,10 @@ O [registro de ideias OpenHub](docs/IDEIAS.md) e seu
 orientam refinamento futuro de C11 (cache/refresh), C12/C13 (composição) e
 eventuais evoluções de leitura/links. A sequência está no
 [plano de aproveitamento](docs/superpowers/plans/2026-10-17-openhub-aproveitamento.md).
-Ideias OH não são tarefas Cxx e não alteram dependências, estados ou aceites
-agregados. Leitura Markdown formatada, roteador geral, navegador completo de
-código e outras extensões só entram mediante delimitação de contrato e decisão
-de produto quando ampliarem escopo. C08.2 trata arquivos alterados do PR,
-não a árvore geral do repositório.
+Ideias OH não alteram dependências, estados ou aceites agregados sem uma tarefa
+aprovada. C22–C24 registram as expansões já incorporadas: leitura Markdown,
+edição Markdown e navegador de código. C08.2 continua tratando arquivos alterados
+do PR, não a árvore geral do repositório.
 
 ## Marcos de entrega
 
@@ -92,14 +92,27 @@ aceite agregado e evidências; desenho, commit ou build isolado não bastam.
 | C18 | F4 | Privacidade e release assinada | C17 |
 | C19 | F4 | Beta com uso real | C18 |
 | C20 | F4 | Aceite final e operação — M4 | C19 |
+| C21 | F5 | Releases e download/instalação manual de APK | C20 |
+| C22 | F5 | Leitura Markdown | C21 |
+| C23 | F5 | Edição Markdown | C22 |
+| C24 | F5 | Navegação de código | C23 |
+| C25 | F5 | Avisos → repositório → recursos existentes e APK | C09, tarefa C24.1 |
 
-As dependências desta tabela são gates de aceite/fechamento dos checkpoints;
-`depends_on` no backlog controla quando uma tarefa individual pode começar.
+As dependências desta tabela são gates de aceite/fechamento dos checkpoints.
+Uma célula pode apontar um checkpoint inteiro ou, quando identificada como
+“tarefa”, somente aquela entrega. `depends_on` no backlog controla quando uma
+tarefa individual pode começar.
 Uma tarefa pode avançar antes de seu checkpoint predecessor fechar se suas
 dependências próprias estiverem concluídas. Por isso C01.1 pode avançar após
 C00.1 enquanto a auditoria C00.2 está pendente. Isso permite preparação, não
 fecha C00 nem M0. M0 só fecha depois de C00.1, C00.2 e todo C01 aceitos.
 Favoritos não esperam issues; preferências podem avançar cedo.
+
+C21.3 acompanha o aceite de download em aparelho físico e permanece separado.
+Por decisão do proprietário, esse teste pode ocorrer depois. C25.1 depende
+diretamente da tarefa já concluída C21.2, e C25 não depende do fechamento do
+checkpoint C21. C25 usa C24.1 como dependência de tarefa, sem aguardar o
+fechamento agregado de C24; C21.3 só é gate para fechar C21.
 
 A ordem numérica é uma ordem segura de entrega, não uma exigência de serializar
 tudo: C04 pode avançar com respostas HTTP de teste enquanto o OAuth é configurado;
@@ -380,9 +393,40 @@ CI verde no SHA da release, auditorias resolvidas, artefatos acessíveis e nenhu
 dependência de modo demo para uma função essencial. Fecha M4.
 **Evidência:** relatório ponta a ponta, SHA, release, APK/checksum e limitações aceitas.
 
+## F5 — Evolução pós-release
+
+### C21–C24 — Releases, APK, Markdown e código
+
+Esses checkpoints já entregam lista/detalhe de releases, download verificado e
+instalação manual de APK, leitura e edição Markdown e navegação da árvore de
+código. Os contratos C21.1–C24.1 detalham limites e evidências. C21.3 ainda
+acompanha a validação física, marcada `PLANNED`/`NOT_RUN`.
+
+### C25 — Acesso do aviso ao repositório e APK
+
+**Entregar:** para notificações sem destino de issue ou PR, abrir o repositório
+de origem quando sua identidade validada estiver disponível. De lá, alcançar os
+recursos já presentes no app — resumo/README, Código, Actions, Nova issue e
+Releases/APKs — e usar o download manual verificado de C21.2. Notificações de
+issue e PR mantêm seus destinos específicos.
+
+**Aceite agregado:** resolver repositórios dinamicamente pelos dados da
+notificação, sem lista fixa; respeitar a sessão OAuth e as permissões concedidas;
+mostrar explicitamente falha ou falta de acesso; preservar a caixa de avisos ao
+voltar e anunciar o destino correto no botão Voltar. O APK só baixa após ação
+explícita e segue o fluxo C21.2 de progresso, checksum e instalação manual. Não
+acrescentar permissões, escopos OAuth ou operações administrativas.
+
+**Evidência:** contrato e registro de C25.1 em `plan/contracts/C25.1.md` e
+`docs/evidence/C25.1.md`. Até o proprietário ampliar o escopo, “acessar tudo”
+significa usar as funções existentes no app com as permissões da sessão. O
+checkpoint C25 pode fechar depois de C09, da tarefa C24.1 e de C25.1, sem
+esperar o fechamento de C21/C24 nem C21.3.
+
 ## Execução e refinamento
 
-O [backlog](plan/tasks.json) divide os checkpoints em 42 entregas verificáveis.
+O [backlog](plan/tasks.json) é a fonte única das entregas verificáveis e inclui
+as evoluções pós-v1.0.
 O [protocolo](docs/EXECUTION.md) define seleção, estados, contratos e evidências.
 Não duplicar status nesta tabela nem criar uma segunda fila.
 
