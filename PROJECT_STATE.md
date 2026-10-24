@@ -14,7 +14,7 @@
 - Implementado o fallback: `Release`, tipo desconhecido e tipo ausente abrem o repositório quando a identidade é válida. Issue e Pull request mantêm o destino específico. A URL do assunto não é usada como fallback.
 - O Voltar vindo de Avisos anuncia “Voltar à notificação”. O default da lista continua “Voltar aos repositórios”.
 - `assembleDebug testDebugUnitTest lintDebug` **PASS** (197/197 JVM). `GitHubNotificationsScreenTest` **PASS** (12/12) em `Medium_Phone`, Android 17/API 37. `python scripts/check_plan.py` e `git diff --check` **PASS**.
-- `connectedDebugAndroidTest` **NOT PASS** em três execuções. As falhas foram timeout em `RefreshUiTest` e `IndexOutOfBoundsException: Index 4, size 4` em `GitHubRepositoryDetailScreenTest`, com aborto do processo. As classes isoladas passaram (3/3 e 26/26). Sem correção especulativa. Por isso C25.1 **não** está `DONE`.
+- `connectedDebugAndroidTest` **NOT PASS** em quatro execuções, inclusive após boot a frio. As falhas foram timeout em `RefreshUiTest` e `IndexOutOfBoundsException: Index 4, size 4` em telas que passaram isoladas (`GitHubRepositoryDetailScreenTest` 26/26 e `GitHubHomeScreenTest` 8/8). Sem correção especulativa. Por isso C25.1 **não** está `DONE`.
 - Auditoria independente do diff: **PASS**, sem achado material. C21.3 continua **NOT_RUN**. Evidência em `docs/evidence/C25.1.md`.
 
 ## C24.1 — Navegador de código (DONE, 2026-10-22)
