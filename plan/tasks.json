@@ -687,6 +687,21 @@
       "contract": "plan/contracts/C26.1.md",
       "evidence": "docs/evidence/C26.1.md",
       "blocked_reason": null
+    },
+    {
+      "id": "C27.1",
+      "checkpoint": "C27",
+      "title": "Histórico recente local de repositórios visitados (OH-08)",
+      "depends_on": [
+        "C06.1",
+        "C14.1",
+        "C26.1"
+      ],
+      "status": "DONE",
+      "acceptance": "Repositórios visitados são registrados localmente por conta (até 10 itens, sem duplicatas), exibidos em Repositórios e Início para retomada rápida com opção de limpar histórico e expurgados no logout.",
+      "contract": "plan/contracts/C27.1.md",
+      "evidence": "docs/evidence/C27.1.md",
+      "blocked_reason": null
     }
   ]
 }

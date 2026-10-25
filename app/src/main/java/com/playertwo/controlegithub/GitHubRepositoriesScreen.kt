@@ -45,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -91,6 +92,10 @@ internal fun GitHubRepositoriesScreen(
     val favoriteStore = remember(context, favoritesStore) {
         favoritesStore ?: DataStoreRepositoryFavoritesStore(context)
     }
+    val recentStore = LocalRecentRepositoriesStore.current ?: remember(context) {
+        DataStoreRecentRepositoriesStore(context)
+    }
+    var recentRepositories by remember(session?.user?.login) { mutableStateOf(emptyList<RecentRepositoryEntry>()) }
     var repositories by remember(client, session?.user?.login) { mutableStateOf(emptyList<GitHubRepository>()) }
     var hasNext by remember(pager) { mutableStateOf(false) }
     var loaded by remember(pager) { mutableStateOf(false) }
@@ -113,6 +118,15 @@ internal fun GitHubRepositoriesScreen(
     var favoritesOnly by remember(client, session?.user?.login) { mutableStateOf(false) }
     var favoritesRetry by remember(client, session?.user?.login) { mutableIntStateOf(0) }
     val accountLogin = session?.user?.login
+    LaunchedEffect(recentStore, accountLogin, selectedRepository) {
+        if (accountLogin == null) {
+            recentRepositories = emptyList()
+        } else if (selectedRepository == null) {
+            recentRepositories = withContext(Dispatchers.IO) {
+                runCatching { recentStore.load(accountLogin) }.getOrDefault(emptyList())
+            }
+        }
+    }
     LaunchedEffect(favoriteStore, accountLogin, favoritesRetry) {
         if (accountLogin == null) {
             favoriteIds = null
@@ -300,9 +314,56 @@ internal fun GitHubRepositoriesScreen(
                 }
             }
 
-            item {
-                if (isOfflineCache) {
+            if (isOfflineCache) {
+                item {
                     OfflineCacheBadge(cachedAtMillis)
+                }
+            }
+
+            if (recentRepositories.isNotEmpty()) {
+                item(key = "recent_repositories_section") {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().testTag("recent_repositories_section"),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Visitados recentemente", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                            TextButton(
+                                onClick = {
+                                    val login = accountLogin ?: return@TextButton
+                                    scope.launch {
+                                        withContext(Dispatchers.IO) { runCatching { recentStore.clear(login) } }
+                                        recentRepositories = emptyList()
+                                    }
+                                },
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                                modifier = Modifier.height(28.dp).testTag("clear_recent_repositories_button")
+                            ) {
+                                Text("Limpar histórico", fontSize = 12.sp)
+                            }
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            recentRepositories.forEach { entry ->
+                                FilterChip(
+                                    selected = false,
+                                    onClick = {
+                                        selectedRepository = repositories.firstOrNull {
+                                            it.fullName.equals(entry.fullName, ignoreCase = true)
+                                        } ?: entry.toGitHubRepository()
+                                    },
+                                    label = { Text("↺ ${entry.fullName}", fontSize = 12.sp) },
+                                    modifier = Modifier.testTag("recent_repo_chip_${entry.fullName}")
+                                )
+                            }
+                        }
+                    }
                 }
             }
 

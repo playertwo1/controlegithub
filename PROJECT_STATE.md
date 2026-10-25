@@ -1,5 +1,18 @@
 # Estado do projeto
 
+## Release v2.3.0 — PUBLICADA (2026-10-25)
+
+- APK de produção gerado com o JDK/SDK do Android Studio: `versionCode = 104`, `versionName = 2.3.0`, pacote `com.playertwo.controlegithub`, 12.675.927 bytes.
+- `apksigner verify --verbose --print-certs` **PASS**, esquema v2; certificado SHA-256 `c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec`.
+- SHA-256 do APK: `771D120946328D548BF4207D00E9E20870516E3F865A47FA27D133A0990B4D82` (`SHA256SUMS.txt`).
+- Notas de lançamento em `docs/RELEASE_NOTES_v2.3.0.md` e `docs/RELEASE.md`.
+
+## C27.1 — Histórico recente local de repositórios visitados (OH-08) (DONE, 2026-10-25)
+
+- Implementado `RecentRepositoriesStore` (`DataStoreRecentRepositoriesStore` e `InMemoryRecentRepositoriesStore` em `RecentRepositories.kt`) isolado por conta autenticada, retendo até 10 repositórios visitados recentemente em ordem MRU sem duplicatas e com expurgo automático no logout e na expiração de sessão (`MainActivity.kt`).
+- `GitHubRepositoryDetailScreen` registra automaticamente a visita quando os detalhes do repositório carregam, e `GitHubRepositoriesScreen` + `GitHubHomeScreen` exibem a seção **"Visitados recentemente"** com retomada em 1 toque e botão **"Limpar histórico"**.
+- Verificações executadas: `python scripts/check_plan.py` **PASS** (52 tarefas), `git diff --check` **PASS**, `./gradlew.bat assembleDebug testDebugUnitTest lintDebug --console=plain` **PASS** (207/207 JVM, 0 falhas; lint 0 erros) e `./gradlew.bat connectedDebugAndroidTest -P "android.testInstrumentationRunnerArguments.class=com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" --console=plain` **PASS** (28/28 testes aprovados no emulador `Medium_Phone` API 37). A suíte conectada integral permanece sob a exceção `DEC-2026-012` (**NOT PASS**) e `C21.3` segue `PLANNED`/`NOT_RUN`. Evidência completa em `docs/evidence/C27.1.md`.
+
 ## Release v2.2.0 — PUBLICADA (2026-10-25)
 
 - APK de produção gerado com o JDK/SDK do Android Studio: `versionCode = 103`, `versionName = 2.2.0`, pacote `com.playertwo.controlegithub`, 12.659.543 bytes.

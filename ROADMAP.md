@@ -3,7 +3,7 @@
 Objetivo: um aplicativo Android que permita conectar uma conta GitHub, acompanhar
 repositórios e trabalho, executar as ações previstas e usar versões assinadas
 com recuperação de erros, privacidade e evidência de funcionamento real. C00–C20
-compõem a versão 1.0; C21–C26 registram a evolução posterior.
+compõem a versão 1.0; C21–C27 registram a evolução posterior.
 
 Este documento define o aceite agregado. A execução usa as tarefas de
 [plan/tasks.json](plan/tasks.json) e o [protocolo de execução](docs/EXECUTION.md).
@@ -98,6 +98,7 @@ aceite agregado e evidências; desenho, commit ou build isolado não bastam.
 | C24 | F5 | Navegação de código | C23 |
 | C25 | F5 | Avisos → repositório → recursos existentes e APK | C09, tarefa C24.1 |
 | C26 | F5 | Issues e Pull Requests por repositório | C07, C08, C25 |
+| C27 | F5 | Histórico recente local de repositórios visitados (OH-08) | C06, C14, C26 |
 
 As dependências desta tabela são gates de aceite/fechamento dos checkpoints.
 Uma célula pode apontar um checkpoint inteiro ou, quando identificada como
@@ -440,6 +441,25 @@ fictícios.
 
 **Evidência:** contrato e registro de C26.1 em `plan/contracts/C26.1.md` e
 `docs/evidence/C26.1.md`.
+
+### C27 — Histórico recente local de repositórios visitados (OH-08)
+
+**Entregar:** registrar localmente, por conta autenticada, os últimos repositórios
+visitados no aplicativo (até 10 itens, ordenados do mais recente ao mais antigo,
+sem duplicar `owner/repo`), exibir a seção **"Visitados recentemente"** no painel
+inicial (`GitHubHomeScreen`) e na aba `Repositórios` (`GitHubRepositoriesScreen`)
+para retomada rápida com 1 toque e botão **"Limpar histórico"**, além de expurgar
+automaticamente o histórico no logout ou expiração da sessão.
+
+**Aceite agregado:** abrir o detalhe de um repositório válido (`GitHubRepositoryDetailScreen`)
+registra a visita apenas para a conta ativa; repositórios privados ou públicos
+visitados nunca vazam entre contas diferentes; limpar histórico ou fazer logout
+remove os registros persistidos; tocar em um item recente abre
+`GitHubRepositoryDetailScreen` diretamente com retorno previsível; não altera
+stars/watch no GitHub nem cria dados de demonstração.
+
+**Evidência:** contrato e registro de C27.1 em `plan/contracts/C27.1.md` e
+`docs/evidence/C27.1.md`.
 
 ## Execução e refinamento
 

@@ -45,6 +45,7 @@ class MainActivity : ComponentActivity() {
             val syncPreferences = remember(context) { SyncPreferences(context) }
             val favoritesStore = remember(context) { DataStoreRepositoryFavoritesStore(context) }
             val kanbanStore = remember(context) { DataStoreKanbanStore(context) }
+            val recentRepositoriesStore = remember(context) { DataStoreRecentRepositoriesStore(context) }
             val favoriteOperations = remember { Mutex() }
             val apiClient = remember(context) { GitHubHttpClient() }
             val cacheStore = remember(context) { SQLiteGitHubCacheStore(context) }
@@ -115,6 +116,7 @@ class MainActivity : ComponentActivity() {
                     favoriteOperations = favoriteOperations,
                     cacheStore = cacheStore,
                     kanbanStore = kanbanStore,
+                    recentRepositoriesStore = recentRepositoriesStore,
                     onRetrySession = { scope.launch { restoreSession() } },
                     onRetrySessionCleanup = {
                         scope.launch {
@@ -160,6 +162,7 @@ class MainActivity : ComponentActivity() {
                                 withContext(Dispatchers.IO) {
                                     try { cacheStore.clear(login) } catch (_: Exception) {}
                                     try { draftStore.clearAccount(login) } catch (_: Exception) {}
+                                    try { recentRepositoriesStore.clear(login) } catch (_: Exception) {}
                                 }
                                 try {
                                     sessions.logout()
@@ -182,6 +185,7 @@ class MainActivity : ComponentActivity() {
                                 withContext(Dispatchers.IO) {
                                     try { cacheStore.clear(login) } catch (_: Exception) {}
                                     try { draftStore.clearAccount(login) } catch (_: Exception) {}
+                                    try { recentRepositoriesStore.clear(login) } catch (_: Exception) {}
                                 }
                             }
                             if (login == null) {
@@ -196,6 +200,7 @@ class MainActivity : ComponentActivity() {
                             }
                             when (logoutWithFavoriteCleanup(login, favoritesStore, favoriteOperations) {
                                 clearKanbanBeforeLogout(login, kanbanStore)
+                                clearRecentRepositoriesBeforeLogout(login, recentRepositoriesStore)
                                 sessions.logout()
                             }) {
                                 FavoriteLogoutResult.LOGGED_OUT -> {
@@ -252,8 +257,13 @@ internal fun ControleApp(
     onLogout: () -> Unit,
     onThemeModeChange: (AppThemeMode) -> Unit,
     cacheStore: GitHubCacheStore? = null,
-    kanbanStore: KanbanStore? = null
+    kanbanStore: KanbanStore? = null,
+    recentRepositoriesStore: RecentRepositoriesStore? = null
 ) {
+    val context = LocalContext.current
+    val activeRecentRepositoriesStore = remember(context, recentRepositoriesStore) {
+        recentRepositoriesStore ?: DataStoreRecentRepositoriesStore(context)
+    }
     var started by rememberSaveable { mutableStateOf(false) }
     var appearanceOpen by rememberSaveable { mutableStateOf(false) }
     var page by rememberSaveable { mutableStateOf(0) }
@@ -310,16 +320,19 @@ internal fun ControleApp(
             }
         }
     }) { padding ->
-        CompositionLocalProvider(LocalGitHubMarkdownNavigator provides { destination ->
-            if (session != null) {
-                val updatedStack = appendMarkdownRoute(markdownRouteStack, destination)
-                if (updatedStack == null) markdownRouteDepthExceeded = true
-                else {
-                    markdownRouteStack = updatedStack
-                    markdownRouteDepthExceeded = false
+        CompositionLocalProvider(
+            LocalRecentRepositoriesStore provides activeRecentRepositoriesStore,
+            LocalGitHubMarkdownNavigator provides { destination ->
+                if (session != null) {
+                    val updatedStack = appendMarkdownRoute(markdownRouteStack, destination)
+                    if (updatedStack == null) markdownRouteDepthExceeded = true
+                    else {
+                        markdownRouteStack = updatedStack
+                        markdownRouteDepthExceeded = false
+                    }
                 }
             }
-        }) {
+        ) {
             Box(Modifier.fillMaxSize()) {
                 Box(Modifier.fillMaxSize()) {
                 Box(

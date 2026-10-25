@@ -61,6 +61,10 @@ internal fun GitHubRepositoryDetailScreen(
     isActive: Boolean = true,
     initialReleasesOpen: Boolean = false
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val recentStore = LocalRecentRepositoriesStore.current ?: remember(context) {
+        DataStoreRecentRepositoriesStore(context)
+    }
     var refreshVersion by remember(repository.id, session.accessToken) { mutableIntStateOf(0) }
     var result by remember(repository.id, session.accessToken) {
         mutableStateOf<GitHubRepositoryDetailResult?>(null)
@@ -161,14 +165,37 @@ internal fun GitHubRepositoryDetailScreen(
         result = withContext(Dispatchers.IO) { loader.load(repository) }
         loading = false
     }
-    LaunchedEffect(result) {
+    LaunchedEffect(result, repository.id, repository.fullName, session.user.login) {
         val expired = when (val current = result) {
             is GitHubRepositoryDetailResult.Failed -> current.error == GitHubHttpError.UNAUTHORIZED
             is GitHubRepositoryDetailResult.Loaded ->
                 (current.readme as? GitHubReadmeResult.Failed)?.error == GitHubHttpError.UNAUTHORIZED
             null -> false
         }
-        if (expired) onSessionExpired(session)
+        if (expired) {
+            onSessionExpired(session)
+            return@LaunchedEffect
+        }
+        val detail = (result as? GitHubRepositoryDetailResult.Loaded)?.detail
+        if (detail != null) {
+            val parts = detail.fullName.split('/')
+            if (parts.size == 2) {
+                withContext(Dispatchers.IO) {
+                    runCatching {
+                        recentStore.recordVisit(
+                            session.user.login,
+                            RecentRepositoryEntry(
+                                id = detail.id,
+                                owner = parts[0],
+                                name = parts[1],
+                                fullName = detail.fullName,
+                                isPrivate = detail.visibility == "private"
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
     Column(

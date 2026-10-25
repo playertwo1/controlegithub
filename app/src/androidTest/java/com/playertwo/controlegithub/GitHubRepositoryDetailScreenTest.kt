@@ -39,6 +39,13 @@ import org.junit.Test
 class GitHubRepositoryDetailScreenTest {
     @get:Rule val compose = createComposeRule()
 
+    @org.junit.Before fun clearRecentHistory() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        kotlinx.coroutines.runBlocking {
+            DataStoreRecentRepositoriesStore(context).clear("fixture-user")
+        }
+    }
+
     @Test fun opensRealSelectionRendersMarkdownAndConfirmsExternalLinks() {
         DetailApi().use { api ->
             showRepositories(api)
@@ -792,6 +799,38 @@ class GitHubRepositoryDetailScreenTest {
                     compose.onAllNodesWithText("Branch padrão").fetchSemanticsNodes().isNotEmpty()
             }
             compose.onNodeWithText("README").assertIsDisplayed()
+        }
+    }
+
+    @Test fun visitingRepositoryRecordsRecentHistoryAndAllowsReopeningAndClearing() {
+        DetailApi().use { api ->
+            showRepositories(api)
+            openDetail(api)
+            compose.onNodeWithText("README").assertIsDisplayed()
+
+            compose.onAllNodesWithContentDescription("Voltar aos repositórios").onLast().performClick()
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithTag("recent_repositories_section").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithTag("recent_repositories_section").assertIsDisplayed()
+            compose.onNodeWithText("Visitados recentemente").assertIsDisplayed()
+            compose.onNodeWithTag("recent_repo_chip_acme/Mobile").assertIsDisplayed().performClick()
+
+            compose.waitUntil(10_000) {
+                api.requestCount.get() >= 5 &&
+                    compose.onAllNodesWithText("Branch padrão").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("acme/Mobile").assertIsDisplayed()
+            compose.onAllNodesWithContentDescription("Voltar aos repositórios").onLast().performClick()
+
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithTag("clear_recent_repositories_button").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithTag("clear_recent_repositories_button").performClick()
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithTag("recent_repositories_section").fetchSemanticsNodes().isEmpty()
+            }
+            compose.onNodeWithTag("recent_repositories_section").assertDoesNotExist()
         }
     }
 

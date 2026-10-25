@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,10 +32,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
@@ -46,6 +50,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -62,12 +67,27 @@ internal fun GitHubHomeScreen(
     providedSummary: DailySummary? = null
 ) {
     val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val markdownNavigator = LocalGitHubMarkdownNavigator.current
+    val recentStore = LocalRecentRepositoriesStore.current ?: remember(context) {
+        DataStoreRecentRepositoriesStore(context)
+    }
+    var recentRepositories by remember(session.user.login) { mutableStateOf(emptyList<RecentRepositoryEntry>()) }
     var refreshVersion by remember(session.accessToken) { mutableIntStateOf(0) }
     var profile by remember(session.accessToken) { mutableStateOf<GitHubAccountProfile?>(null) }
     var loading by remember(session.accessToken) { mutableStateOf(false) }
     var error by remember(session.accessToken) { mutableStateOf<String?>(null) }
     var unauthorized by remember(session.accessToken) { mutableStateOf(false) }
     var summary by remember(session.accessToken, providedSummary) { mutableStateOf(providedSummary) }
+
+    LaunchedEffect(recentStore, session.user.login, refreshVersion, sessionRestoring) {
+        if (!sessionRestoring) {
+            recentRepositories = withContext(Dispatchers.IO) {
+                runCatching { recentStore.load(session.user.login) }.getOrDefault(emptyList())
+            }
+        }
+    }
 
     LaunchedEffect(session.accessToken, refreshVersion, sessionRestoring) {
         if (sessionRestoring || unauthorized) return@LaunchedEffect
@@ -245,6 +265,50 @@ internal fun GitHubHomeScreen(
                     Text("Abrir a lista real da conta", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
                 }
                 Text("›", fontSize = 24.sp, color = MaterialTheme.colorScheme.primary)
+            }
+        }
+        if (recentRepositories.isNotEmpty()) {
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = MaterialTheme.colorScheme.surface,
+                modifier = Modifier.fillMaxWidth().testTag("home_recent_repositories_section")
+            ) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Visitados recentemente", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                        TextButton(
+                            onClick = {
+                                scope.launch {
+                                    withContext(Dispatchers.IO) { runCatching { recentStore.clear(session.user.login) } }
+                                    recentRepositories = emptyList()
+                                }
+                            },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                            modifier = Modifier.height(28.dp).testTag("clear_recent_repositories_button")
+                        ) {
+                            Text("Limpar histórico", fontSize = 12.sp)
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        recentRepositories.forEach { entry ->
+                            FilterChip(
+                                selected = false,
+                                onClick = {
+                                    markdownNavigator?.invoke(GitHubMarkdownDestination.Repository(entry.owner, entry.name))
+                                },
+                                label = { Text("↺ ${entry.fullName}", fontSize = 12.sp) },
+                                modifier = Modifier.testTag("recent_repo_chip_${entry.fullName}")
+                            )
+                        }
+                    }
+                }
             }
         }
         Spacer(Modifier.height(4.dp))
