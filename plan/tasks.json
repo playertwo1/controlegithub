@@ -702,6 +702,64 @@
       "contract": "plan/contracts/C27.1.md",
       "evidence": "docs/evidence/C27.1.md",
       "blocked_reason": null
+    },
+    {
+      "id": "C28.1",
+      "checkpoint": "C28",
+      "title": "Ações sociais no repositório: Star / Unstar e Watch (OH-13)",
+      "depends_on": [
+        "C06.1",
+        "C14.1",
+        "C27.1"
+      ],
+      "status": "DONE",
+      "acceptance": "Detalhe do repositório consulta e permite marcar/desmarcar Star e Watch remotamente no GitHub com confirmação HTTP, proteção contra toque duplo e distinção clara dos favoritos locais.",
+      "contract": "plan/contracts/C28.1.md",
+      "evidence": "docs/evidence/C28.1.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "C29.1",
+      "checkpoint": "C29",
+      "title": "Busca e descoberta global no GitHub (OH-11)",
+      "depends_on": [
+        "C05.2",
+        "C06.1",
+        "C27.1"
+      ],
+      "status": "DONE",
+      "acceptance": "Aba Repositórios oferece modo Explorar GitHub para pesquisar repositórios públicos de qualquer usuário/organização via GET /search/repositories e abrir o detalhe completo.",
+      "contract": "plan/contracts/C29.1.md",
+      "evidence": "docs/evidence/C29.1.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "C30.1",
+      "checkpoint": "C30",
+      "title": "Atalhos rápidos no Launcher do Android / App Shortcuts (OH-14)",
+      "depends_on": [
+        "C01.1",
+        "C03.2",
+        "C18.1"
+      ],
+      "status": "DONE",
+      "acceptance": "Launcher do Android exibe atalhos estáticos em português para Resumo Diário, Repositórios, Demandas e Avisos, abrindo a aba correspondente quando autenticado sem vazar dados privados.",
+      "contract": "plan/contracts/C30.1.md",
+      "evidence": "docs/evidence/C30.1.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "C31.1",
+      "checkpoint": "C31",
+      "title": "Controle de imagens em Markdown / Economia de dados (OH-09)",
+      "depends_on": [
+        "C22.1"
+      ],
+      "status": "DONE",
+      "acceptance": "Imagens em Markdown não carregam automaticamente; ao tocar em uma referência de imagem, o diálogo permite carregar e visualizar a imagem sob demanda via HTTPS sem enviar credenciais.",
+      "contract": "plan/contracts/C31.1.md",
+      "evidence": "docs/evidence/C31.1.md",
+      "blocked_reason": null
     }
   ]
 }

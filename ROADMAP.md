@@ -461,6 +461,71 @@ stars/watch no GitHub nem cria dados de demonstração.
 **Evidência:** contrato e registro de C27.1 em `plan/contracts/C27.1.md` e
 `docs/evidence/C27.1.md`.
 
+### C28 — Ações sociais no repositório: Star / Unstar e Watch (OH-13)
+
+**Entregar:** no detalhe do repositório (`GitHubRepositoryDetailScreen`), consultar
+o estado remoto de Star (`GET /user/starred/{owner}/{repo}`) e Watch / Subscription
+(`GET /repos/{owner}/{repo}/subscription`) e oferecer botões explícitos para marcar
+ou desmarcar **Star** (`PUT`/`DELETE /user/starred/{owner}/{repo}`) e **Watch**
+(`PUT`/`DELETE /repos/{owner}/{repo}/subscription`) remotamente no GitHub,
+distinguindo claramente essas ações públicas do indicador de favoritos locais.
+
+**Aceite agregado:** estado inicial de Star e Watch reflete a resposta da API;
+alterar Star ou Watch atualiza o estado apenas após confirmação HTTP (204/200),
+protege contra toque duplo, desabilita ações em modo offline e exibe erro explícito
+em caso de falha ou falta de escopo sem alterar favoritos locais.
+
+**Evidência:** contrato e registro de C28.1 em `plan/contracts/C28.1.md` e
+`docs/evidence/C28.1.md`.
+
+### C29 — Busca e descoberta global no GitHub (OH-11)
+
+**Entregar:** na aba `Repositórios` (`GitHubRepositoriesScreen`), oferecer modo de
+busca pública global no GitHub (`GET /search/repositories?q=...&per_page=30`),
+claramente separado de `"Seus repositórios"`, permitindo pesquisar repositórios
+públicos de qualquer pessoa ou organização e abrir o detalhe completo
+(`GitHubRepositoryDetailScreen`: README, Código, Actions, Issues e PRs, Releases e APKs).
+
+**Aceite agregado:** a busca global só dispara mediante ação explícita do usuário
+com termo não vazio; exibe resultados públicos paginados ou estado vazio/erro/rate-limit
+explícito; tocar em qualquer resultado abre `GitHubRepositoryDetailScreen` e Voltar
+retorna aos resultados da busca global preservando o termo pesquisado.
+
+**Evidência:** contrato e registro de C29.1 em `plan/contracts/C29.1.md` e
+`docs/evidence/C29.1.md`.
+
+### C30 — Atalhos rápidos no Launcher do Android / App Shortcuts (OH-14)
+
+**Entregar:** configurar App Shortcuts estáticos (`res/xml/shortcuts.xml` e
+`AndroidManifest.xml`) ao segurar o ícone do app no Launcher do Android para abrir
+diretamente **Resumo Diário** (`Início`), **Repositórios**, **Demandas** (`Trabalho`)
+ou **Avisos** (`Notificações`), tratando o Intent em `MainActivity.kt`.
+
+**Aceite agregado:** os quatro atalhos possuem rótulos em português sem dados
+privados; quando há sessão autenticada válida, acionar o atalho entra direto na aba
+correspondente (`started = true` e `page = 0..3`); quando não há sessão ativa, o
+atalho não burla o login nem expõe dados de outra conta.
+
+**Evidência:** contrato e registro de C30.1 em `plan/contracts/C30.1.md` e
+`docs/evidence/C30.1.md`.
+
+### C31 — Controle de imagens em Markdown / Economia de dados (OH-09)
+
+**Entregar:** manter o bloqueio de carregamento automático de imagens remotas em
+Markdown (`GitHubMarkdownContent.kt`) por economia de dados e privacidade, e
+adicionar a opção de carregar e visualizar a imagem sob demanda dentro do app
+(`"Carregar imagem no app"`) ao tocar em um link de imagem (`"Imagem: ..."`),
+validando HTTPS, limite de tamanho (máx. 5 MB) e sem enviar token OAuth a terceiros.
+
+**Aceite agregado:** nenhuma imagem remota é baixada automaticamente ao abrir um
+Markdown; tocar em `"Imagem: <alt>"` continua exibindo o diálogo de confirmação com
+o host externo e opções `"Abrir no navegador"` e `"Cancelar"`, acrescido da ação
+`"Carregar imagem no app"`, que baixa sob demanda via HTTPS sem credenciais e exibe
+a prévia visual ou erro explícito se o formato/tamanho for inválido.
+
+**Evidência:** contrato e registro de C31.1 em `plan/contracts/C31.1.md` e
+`docs/evidence/C31.1.md`.
+
 ## Execução e refinamento
 
 O [backlog](plan/tasks.json) é a fonte única das entregas verificáveis e inclui

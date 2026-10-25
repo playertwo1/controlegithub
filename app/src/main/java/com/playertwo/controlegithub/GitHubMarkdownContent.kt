@@ -3,6 +3,7 @@ package com.playertwo.controlegithub
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +31,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -74,10 +78,19 @@ import org.commonmark.node.ThematicBreak
 internal val LocalGitHubMarkdownNavigator =
     staticCompositionLocalOf<((GitHubMarkdownDestination) -> Unit)?> { null }
 
+internal val LocalGitHubMarkdownImageLoader =
+    staticCompositionLocalOf { GitHubMarkdownImageLoader() }
+
 private sealed interface MarkdownParseState {
     data object Loading : MarkdownParseState
     data class Parsed(val document: org.commonmark.node.Document) : MarkdownParseState
     data object Fallback : MarkdownParseState
+}
+
+private sealed interface MarkdownImageUiState {
+    data object Loading : MarkdownImageUiState
+    data class Ready(val bitmap: ImageBitmap) : MarkdownImageUiState
+    data class Error(val message: String) : MarkdownImageUiState
 }
 
 @Composable
@@ -92,14 +105,22 @@ internal fun GitHubMarkdownContent(
         }
     }
     val navigator = LocalGitHubMarkdownNavigator.current
+    val imageLoader = LocalGitHubMarkdownImageLoader.current
     val context = LocalContext.current
     var pendingExternalLink by remember(markdown) { mutableStateOf<GitHubMarkdownLinkTarget.External?>(null) }
+    var pendingExternalImageLabel by remember(markdown) { mutableStateOf<String?>(null) }
+    var activeImagePreview by remember(markdown) {
+        mutableStateOf<Pair<GitHubMarkdownLinkTarget.External, String>?>(null)
+    }
     var browserUnavailable by remember(markdown) { mutableStateOf(false) }
 
-    fun openMarkdownTarget(target: GitHubMarkdownLinkTarget) {
+    fun openMarkdownTarget(target: GitHubMarkdownLinkTarget, imageLabel: String? = null) {
         when (target) {
             is GitHubMarkdownLinkTarget.InApp -> navigator?.invoke(target.destination)
-            is GitHubMarkdownLinkTarget.External -> pendingExternalLink = target
+            is GitHubMarkdownLinkTarget.External -> {
+                pendingExternalLink = target
+                pendingExternalImageLabel = imageLabel
+            }
         }
     }
 
@@ -123,19 +144,36 @@ internal fun GitHubMarkdownContent(
     }
 
     pendingExternalLink?.let { target ->
+        val imageLabel = pendingExternalImageLabel
         AlertDialog(
-            onDismissRequest = { pendingExternalLink = null },
+            onDismissRequest = {
+                pendingExternalLink = null
+                pendingExternalImageLabel = null
+            },
             title = { Text("Abrir link externo?") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text("O endereço será aberto fora do app. Sua sessão do GitHub não será enviada.")
                     Text(target.host, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
                     Text(target.url, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    if (imageLabel != null) {
+                        TextButton(
+                            onClick = {
+                                pendingExternalLink = null
+                                pendingExternalImageLabel = null
+                                activeImagePreview = target to imageLabel
+                            },
+                            modifier = Modifier.testTag("load_markdown_image_button")
+                        ) {
+                            Text("Carregar imagem no app")
+                        }
+                    }
                 }
             },
             confirmButton = {
                 TextButton(onClick = {
                     pendingExternalLink = null
+                    pendingExternalImageLabel = null
                     try {
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(target.url)))
                     } catch (_: ActivityNotFoundException) {
@@ -146,10 +184,24 @@ internal fun GitHubMarkdownContent(
                 }) { Text("Abrir no navegador") }
             },
             dismissButton = {
-                TextButton(onClick = { pendingExternalLink = null }) { Text("Cancelar") }
+                TextButton(onClick = {
+                    pendingExternalLink = null
+                    pendingExternalImageLabel = null
+                }) { Text("Cancelar") }
             }
         )
     }
+
+    activeImagePreview?.let { (target, imageLabel) ->
+        MarkdownImagePreviewDialog(
+            url = target.url,
+            host = target.host,
+            imageLabel = imageLabel,
+            imageLoader = imageLoader,
+            onDismiss = { activeImagePreview = null }
+        )
+    }
+
     if (browserUnavailable) {
         AlertDialog(
             onDismissRequest = { browserUnavailable = false },
@@ -160,7 +212,58 @@ internal fun GitHubMarkdownContent(
 }
 
 @Composable
-private fun MarkdownBlocks(node: Node, onOpenLink: (GitHubMarkdownLinkTarget) -> Unit) {
+private fun MarkdownImagePreviewDialog(
+    url: String,
+    host: String,
+    imageLabel: String,
+    imageLoader: GitHubMarkdownImageLoader,
+    onDismiss: () -> Unit
+) {
+    val uiState by produceState<MarkdownImageUiState>(MarkdownImageUiState.Loading, url, imageLoader) {
+        value = withContext(Dispatchers.IO) {
+            when (val result = imageLoader.load(url)) {
+                is MarkdownImageLoadResult.Failed -> MarkdownImageUiState.Error(result.message)
+                is MarkdownImageLoadResult.Loaded -> {
+                    val decoded = decodeMarkdownImageBitmap(result.bytes)
+                    if (decoded != null) {
+                        MarkdownImageUiState.Ready(decoded.asImageBitmap())
+                    } else {
+                        MarkdownImageUiState.Error("Não foi possível decodificar a imagem recebida.")
+                    }
+                }
+            }
+        }
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        modifier = Modifier.testTag("markdown_image_preview_dialog"),
+        title = { Text("Imagem: $imageLabel") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(host, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
+                when (val current = uiState) {
+                    MarkdownImageUiState.Loading -> Text("Carregando imagem...")
+                    is MarkdownImageUiState.Ready -> Image(
+                        bitmap = current.bitmap,
+                        contentDescription = imageLabel,
+                        modifier = Modifier.fillMaxWidth().testTag("markdown_loaded_image")
+                    )
+                    is MarkdownImageUiState.Error -> Text(
+                        text = current.message,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text("Fechar") }
+        }
+    )
+}
+
+@Composable
+private fun MarkdownBlocks(node: Node, onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit) {
     var child = node.firstChild
     while (child != null) {
         when (val block = child) {
@@ -200,7 +303,7 @@ private fun MarkdownList(
     list: Node,
     ordered: Boolean,
     start: Int = 1,
-    onOpenLink: (GitHubMarkdownLinkTarget) -> Unit
+    onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
         var itemNumber = start
@@ -236,7 +339,7 @@ private fun MarkdownCode(literal: String) {
 }
 
 @Composable
-private fun MarkdownTable(table: TableBlock, onOpenLink: (GitHubMarkdownLinkTarget) -> Unit) {
+private fun MarkdownTable(table: TableBlock, onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         var section = table.firstChild
         while (section != null) {
@@ -253,7 +356,7 @@ private fun MarkdownTable(table: TableBlock, onOpenLink: (GitHubMarkdownLinkTarg
 private fun MarkdownTableRows(
     section: Node,
     isHeader: Boolean,
-    onOpenLink: (GitHubMarkdownLinkTarget) -> Unit
+    onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit
 ) {
     var row = section.firstChild
     while (row != null) {
@@ -283,7 +386,7 @@ private fun MarkdownTableRows(
 @Composable
 private fun MarkdownInlineText(
     node: Node,
-    onOpenLink: (GitHubMarkdownLinkTarget) -> Unit,
+    onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit,
     style: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.bodyMedium,
     modifier: Modifier = Modifier
 ) {
@@ -295,7 +398,9 @@ private fun MarkdownInlineText(
         buildAnnotatedString {
             var child = node.firstChild
             while (child != null) {
-                appendInline(child, linkColor, codeBackground, codeColor) { currentOnOpenLink(it) }
+                appendInline(child, linkColor, codeBackground, codeColor) { target, imageLabel ->
+                    currentOnOpenLink(target, imageLabel)
+                }
                 child = child.next
             }
         }
@@ -308,7 +413,7 @@ private fun AnnotatedString.Builder.appendInline(
     linkColor: Color,
     codeBackground: Color,
     codeColor: Color,
-    onOpenLink: (GitHubMarkdownLinkTarget) -> Unit
+    onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit
 ) {
     when (node) {
         is MarkdownTextNode -> append(node.literal)
@@ -324,18 +429,19 @@ private fun AnnotatedString.Builder.appendInline(
                 LinkAnnotation.Url(
                     node.destination,
                     TextLinkStyles(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline))
-                ) { onOpenLink(target) }
+                ) { onOpenLink(target, null) }
             ) { appendInlineChildren(node, linkColor, codeBackground, codeColor, onOpenLink) }
         }
         is org.commonmark.node.Image -> {
-            val label = inlinePlainText(node).ifBlank { "Imagem" }.let { "Imagem: $it" }
+            val altText = inlinePlainText(node).ifBlank { "Imagem" }
+            val label = "Imagem: $altText"
             val target = classifyGitHubMarkdownLink(node.destination)
             if (target == null) append(label)
             else withLink(
                 LinkAnnotation.Url(
                     node.destination,
                     TextLinkStyles(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline))
-                ) { onOpenLink(target) }
+                ) { onOpenLink(target, altText) }
             ) { append(label) }
         }
         is HtmlInline -> append(node.literal)
@@ -349,7 +455,7 @@ private fun AnnotatedString.Builder.appendInlineChildren(
     linkColor: Color,
     codeBackground: Color,
     codeColor: Color,
-    onOpenLink: (GitHubMarkdownLinkTarget) -> Unit
+    onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit
 ) {
     var child = node.firstChild
     while (child != null) {

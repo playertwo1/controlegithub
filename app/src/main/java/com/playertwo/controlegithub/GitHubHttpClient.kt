@@ -121,6 +121,24 @@ internal class GitHubHttpClient(
         return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate, "POST", jsonBody = jsonBody)
     }
 
+    fun put(path: String, accessToken: String? = null, jsonBody: String? = null): GitHubHttpCall {
+        require(path.startsWith('/') && !path.startsWith("//") && '#' !in path)
+        require(accessToken == null || (accessToken.isNotBlank() && accessToken.none(Char::isWhitespace)))
+
+        val target = baseUrl.resolve(path.removePrefix("/"))
+        require(sameOrigin(baseUrl, target))
+        return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate, "PUT", jsonBody = jsonBody)
+    }
+
+    fun delete(path: String, accessToken: String? = null): GitHubHttpCall {
+        require(path.startsWith('/') && !path.startsWith("//") && '#' !in path)
+        require(accessToken == null || (accessToken.isNotBlank() && accessToken.none(Char::isWhitespace)))
+
+        val target = baseUrl.resolve(path.removePrefix("/"))
+        require(sameOrigin(baseUrl, target))
+        return GitHubHttpCall(target, accessToken, connectTimeoutMillis, readTimeoutMillis, rateLimitGate, "DELETE")
+    }
+
     internal fun pathFromLink(linkUrl: String): String {
         val target = baseUrl.resolve(URI.create(linkUrl))
         require(target.userInfo == null && target.fragment == null && sameOrigin(baseUrl, target))

@@ -834,6 +834,129 @@ class GitHubRepositoryDetailScreenTest {
         }
     }
 
+    @Test fun repositoryDetailAllowsTogglingStarAndWatchOnGitHub() {
+        DetailApi().use { api ->
+            showRepositories(api)
+            openDetail(api)
+
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithTag("repo_star_button").fetchSemanticsNodes()
+                    .any { !it.config.contains(SemanticsProperties.Disabled) }
+            }
+            compose.onNodeWithText("Estrela no GitHub").assertIsDisplayed()
+            compose.onNodeWithText("Acompanhar (Watch)").assertIsDisplayed()
+            compose.onNodeWithText("0").assertIsDisplayed()
+
+            compose.onNodeWithTag("repo_star_button").performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("PUT /user/starred/acme/Mobile ") } &&
+                    compose.onAllNodesWithText("Com estrela no GitHub").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Com estrela no GitHub").assertIsDisplayed()
+            compose.onNodeWithText("1").assertIsDisplayed()
+
+            compose.onNodeWithTag("repo_watch_button").performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("PUT /repos/acme/Mobile/subscription ") } &&
+                    compose.onAllNodesWithText("Acompanhando (Watch)").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Acompanhando (Watch)").assertIsDisplayed()
+
+            compose.onNodeWithTag("repo_star_button").performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("DELETE /user/starred/acme/Mobile ") } &&
+                    compose.onAllNodesWithText("Estrela no GitHub").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Estrela no GitHub").assertIsDisplayed()
+            compose.onNodeWithText("0").assertIsDisplayed()
+        }
+    }
+
+    @Test fun globalPublicSearchFindsExternalRepositoryAndOpensDetail() {
+        DetailApi().use { api ->
+            showRepositories(api)
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithTag("global_search_mode_chip").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithTag("global_search_mode_chip").performClick()
+            compose.onNodeWithTag("global_search_input").performTextInput("compose")
+            compose.onNodeWithTag("global_search_submit_button").performClick()
+
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /search/repositories?q=compose") } &&
+                    compose.onAllNodesWithText("acme/other").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("acme/other").assertIsDisplayed().performClick()
+
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Other metadata loaded").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("acme/other").assertIsDisplayed()
+            compose.onNodeWithText("Other README loaded").assertIsDisplayed()
+            compose.onAllNodesWithContentDescription("Voltar aos repositórios").onLast().performClick()
+
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("acme/other").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("acme/other").assertIsDisplayed()
+        }
+    }
+
+    @Test fun markdownImageOffersOnDemandInAppLoadingAction() {
+        DetailApi().use { api ->
+            showRepositories(api)
+            openDetail(api)
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Intro").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Intro").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Imagem: logo").assertIsDisplayed().performTouchInput { click() }
+            compose.onNodeWithText("Abrir link externo?").assertIsDisplayed()
+            compose.onNodeWithTag("load_markdown_image_button").assertIsDisplayed()
+            compose.onNodeWithText("Carregar imagem no app").assertIsDisplayed()
+            compose.onNodeWithText("Cancelar").performClick()
+        }
+    }
+
+    @Test fun launcherShortcutOpensTargetTabWhenAuthenticated() {
+        DetailApi().use { api ->
+            val context = InstrumentationRegistry.getInstrumentation().targetContext
+            val session = GitHubSession(
+                GitHubUser("fixture-user", "https://github.com/fixture-user"),
+                SessionCredentials("instrumentation-fixture-token")
+            )
+            var consumed = false
+            compose.setContent {
+                ControleTheme(AppThemeMode.LIGHT) {
+                    ControleApp(
+                        themeMode = AppThemeMode.LIGHT,
+                        preferenceError = false,
+                        favoritesStore = DataStoreRepositoryFavoritesStore(context),
+                        favoriteOperations = kotlinx.coroutines.sync.Mutex(),
+                        session = session,
+                        sessionRestoring = false,
+                        sessionRetry = false,
+                        sessionStorageError = false,
+                        favoriteCleanupError = false,
+                        onRetrySession = {},
+                        onRetrySessionCleanup = {},
+                        onConnected = { true },
+                        onSessionExpired = {},
+                        onLogout = {},
+                        onThemeModeChange = {},
+                        apiClient = GitHubHttpClient(api.baseUrl),
+                        initialShortcutPage = SHORTCUT_PAGE_REPOS,
+                        onShortcutConsumed = { consumed = true }
+                    )
+                }
+            }
+            compose.waitUntil(10_000) {
+                consumed && compose.onAllNodesWithText("Seus repositórios").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Seus repositórios").assertIsDisplayed()
+        }
+    }
+
     private fun openDetail(api: DetailApi, expectedRequests: Int = 3, expectedText: String = "Branch padrão") {
         compose.waitUntil(10_000) {
             api.requestCount.get() >= 1 &&
@@ -940,7 +1063,7 @@ class GitHubRepositoryDetailScreenTest {
         private val emptyReleases: Boolean = false,
         private val releaseAssetId: Long = nextTestReleaseAssetId()
     ) : AutoCloseable {
-        private val server = ServerSocket(0, 2, InetAddress.getByName("127.0.0.1"))
+        private val server = ServerSocket(0, 50, InetAddress.getByName("127.0.0.1"))
         val baseUrl = URI.create("http://127.0.0.1:${server.localPort}/")
         val requestCount = AtomicInteger()
         val readmeRequests = AtomicInteger()
@@ -949,6 +1072,8 @@ class GitHubRepositoryDetailScreenTest {
         val actionsResponses = ConcurrentLinkedQueue<String>()
         val responsesSent = ConcurrentLinkedQueue<String>()
         @Volatile var description = "Fixture detail"
+        @Volatile var starred = false
+        @Volatile var watching = false
         private val readme = """# Intro
             |<script>literal</script>
             |
@@ -988,9 +1113,28 @@ class GitHubRepositoryDetailScreenTest {
                     server.accept().use { socket ->
                         val reader = BufferedReader(InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8))
                         val requestLine = reader.readLine().orEmpty()
+                        var contentLength = 0
                         var line = reader.readLine()
-                        while (!line.isNullOrEmpty()) line = reader.readLine()
-                        requestCount.incrementAndGet()
+                        while (!line.isNullOrEmpty()) {
+                            if (line.startsWith("Content-Length:", ignoreCase = true)) {
+                                contentLength = line.substringAfter(':').trim().toIntOrNull() ?: 0
+                            }
+                            line = reader.readLine()
+                        }
+                        if (contentLength > 0) {
+                            val buffer = CharArray(contentLength)
+                            var offset = 0
+                            while (offset < contentLength) {
+                                val read = reader.read(buffer, offset, contentLength - offset)
+                                if (read == -1) break
+                                offset += read
+                            }
+                        }
+                        val isSocialRequest = requestLine.contains("/user/starred/") ||
+                            requestLine.contains("/subscription ")
+                        if (!isSocialRequest) {
+                            requestCount.incrementAndGet()
+                        }
                         paths.add(requestLine)
 
                         if (requestLine.startsWith("GET /repos/acme/Mobile/readme")) readmeRequests.incrementAndGet()
@@ -999,7 +1143,26 @@ class GitHubRepositoryDetailScreenTest {
                             continue
                         }
                         val (status, body) = when {
+                            requestLine.startsWith("GET /user/starred/acme/Mobile ") -> if (starred) 204 to "" else 404 to "{}"
+                            requestLine.startsWith("PUT /user/starred/acme/Mobile ") -> {
+                                starred = true
+                                204 to ""
+                            }
+                            requestLine.startsWith("DELETE /user/starred/acme/Mobile ") -> {
+                                starred = false
+                                204 to ""
+                            }
+                            requestLine.startsWith("GET /repos/acme/Mobile/subscription ") -> if (watching) 200 to """{"subscribed":true}""" else 404 to "{}"
+                            requestLine.startsWith("PUT /repos/acme/Mobile/subscription ") -> {
+                                watching = true
+                                200 to """{"subscribed":true}"""
+                            }
+                            requestLine.startsWith("DELETE /repos/acme/Mobile/subscription ") -> {
+                                watching = false
+                                204 to ""
+                            }
                             requestLine.startsWith("GET /user/repos?") -> 200 to repositoryList
+                            requestLine.startsWith("GET /search/repositories?") -> 200 to """{"total_count":1,"incomplete_results":false,"items":[{"id":3,"name":"other","full_name":"acme/other","owner":{"login":"acme"},"private":false,"description":"Other public repository","language":"Kotlin","stargazers_count":2}]}"""
                             requestLine.startsWith("GET /repos/acme/docs/readme") -> docsReadmeStatus to if (docsReadmeStatus == 200) docsReadmeBody else "{}"
                             requestLine.startsWith("GET /repos/acme/docs ") -> 200 to docsMetadata
                             requestLine.startsWith("GET /repos/acme/other/readme") -> 200 to otherReadmeBody
@@ -1039,9 +1202,10 @@ class GitHubRepositoryDetailScreenTest {
                         if (metadataAttempt > 1 && metadataRetryDelayMillis > 0) {
                             Thread.sleep(metadataRetryDelayMillis)
                         }
-                        val bytes = body.toByteArray(StandardCharsets.UTF_8)
+                        val bytes = if (status == 204) ByteArray(0) else body.toByteArray(StandardCharsets.UTF_8)
                         val reason = when (status) {
                             200 -> "OK"
+                            204 -> "No Content"
                             401 -> "Unauthorized"
                             403 -> "Forbidden"
                             429 -> "Too Many Requests"
@@ -1050,17 +1214,17 @@ class GitHubRepositoryDetailScreenTest {
                         }
                         val headers = (
                             "HTTP/1.1 $status $reason\r\n" +
-                                "Content-Type: application/json\r\n" +
+                                (if (status == 204) "" else "Content-Type: application/json\r\n") +
                                 (if (status == 429) "Retry-After: 2\r\n" else "") +
                                 (if (paginatedActionsWorkflows && requestLine.startsWith("GET /repos/acme/Mobile/actions/workflows?"))
                                     "Link: <http://127.0.0.1:${server.localPort}/repos/acme/Mobile/actions/workflows?page=2&per_page=50>; rel=\"next\"\r\n"
                                 else "") +
-                                "Content-Length: ${bytes.size}\r\n" +
+                                (if (status == 204) "" else "Content-Length: ${bytes.size}\r\n") +
                                 "Connection: close\r\n\r\n"
                             ).toByteArray(StandardCharsets.UTF_8)
                         socket.getOutputStream().apply {
                             write(headers)
-                            write(bytes)
+                            if (bytes.isNotEmpty()) write(bytes)
                             flush()
                         }
                         responseRequestLine = requestLine

@@ -1,7 +1,9 @@
 package com.playertwo.controlegithub
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.core.util.Consumer
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.SystemBarStyle
@@ -64,6 +66,19 @@ class MainActivity : ComponentActivity() {
             var sessionRetry by remember { mutableStateOf(false) }
             var sessionStorageError by remember { mutableStateOf(false) }
             var favoriteCleanupError by remember { mutableStateOf(false) }
+            var shortcutRequestPage by remember {
+                mutableStateOf(resolveAppShortcutPage(intent?.action, intent?.dataString))
+            }
+            DisposableEffect(this@MainActivity) {
+                val listener = Consumer<Intent> { newIntent ->
+                    val resolved = resolveAppShortcutPage(newIntent.action, newIntent.dataString)
+                    if (resolved != null) {
+                        shortcutRequestPage = resolved
+                    }
+                }
+                addOnNewIntentListener(listener)
+                onDispose { removeOnNewIntentListener(listener) }
+            }
             suspend fun restoreSession() {
                 sessionRestoring = true
                 sessionRetry = false
@@ -117,6 +132,8 @@ class MainActivity : ComponentActivity() {
                     cacheStore = cacheStore,
                     kanbanStore = kanbanStore,
                     recentRepositoriesStore = recentRepositoriesStore,
+                    initialShortcutPage = shortcutRequestPage,
+                    onShortcutConsumed = { shortcutRequestPage = null },
                     onRetrySession = { scope.launch { restoreSession() } },
                     onRetrySessionCleanup = {
                         scope.launch {
@@ -258,7 +275,9 @@ internal fun ControleApp(
     onThemeModeChange: (AppThemeMode) -> Unit,
     cacheStore: GitHubCacheStore? = null,
     kanbanStore: KanbanStore? = null,
-    recentRepositoriesStore: RecentRepositoriesStore? = null
+    recentRepositoriesStore: RecentRepositoriesStore? = null,
+    initialShortcutPage: Int? = null,
+    onShortcutConsumed: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val activeRecentRepositoriesStore = remember(context, recentRepositoriesStore) {
@@ -274,6 +293,18 @@ internal fun ControleApp(
     var logoutConfirm by rememberSaveable { mutableStateOf(false) }
     var repositorySessionExpired by remember { mutableStateOf(false) }
     var markdownRouteSessionToken by remember { mutableStateOf(session?.accessToken) }
+    LaunchedEffect(initialShortcutPage, session, sessionRestoring) {
+        if (initialShortcutPage != null && session != null && !sessionRestoring) {
+            started = true
+            page = initialShortcutPage
+            workAreaPullRequests = false
+            selectedName = null
+            appearanceOpen = false
+            markdownRouteStack = emptyList()
+            markdownRouteDepthExceeded = false
+            onShortcutConsumed()
+        }
+    }
     LaunchedEffect(session?.accessToken) {
         if (markdownRouteSessionToken != session?.accessToken) {
             markdownRouteStack = emptyList()

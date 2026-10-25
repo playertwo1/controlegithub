@@ -117,6 +117,16 @@ internal fun GitHubRepositoriesScreen(
     var favoritesSaving by remember(client, session?.user?.login) { mutableStateOf(false) }
     var favoritesOnly by remember(client, session?.user?.login) { mutableStateOf(false) }
     var favoritesRetry by remember(client, session?.user?.login) { mutableIntStateOf(0) }
+    var globalSearchMode by remember(client, session?.user?.login) { mutableStateOf(false) }
+    var globalQuery by remember(client, session?.user?.login) { mutableStateOf("") }
+    var globalPager by remember(client, session?.accessToken) { mutableStateOf<GitHubGlobalRepositorySearchPager?>(null) }
+    var globalResults by remember(client, session?.user?.login) { mutableStateOf(emptyList<GitHubRepository>()) }
+    var globalHasNext by remember(client, session?.user?.login) { mutableStateOf(false) }
+    var globalLoaded by remember(client, session?.user?.login) { mutableStateOf(false) }
+    var globalLoading by remember(client, session?.user?.login) { mutableStateOf(false) }
+    var globalRetryPending by remember(client, session?.user?.login) { mutableStateOf(false) }
+    var globalErrorMessage by remember(client, session?.user?.login) { mutableStateOf<String?>(null) }
+    var globalRetryAt by remember(client, session?.user?.login) { mutableStateOf<Long?>(null) }
     val accountLogin = session?.user?.login
     LaunchedEffect(recentStore, accountLogin, selectedRepository) {
         if (accountLogin == null) {
@@ -237,11 +247,84 @@ internal fun GitHubRepositoriesScreen(
         }
     }
 
+    suspend fun loadNextGlobalPage(activePager: GitHubGlobalRepositorySearchPager? = globalPager) {
+        val targetPager = activePager ?: return
+        if (globalLoading) return
+        globalLoading = true
+        globalErrorMessage = null
+        globalRetryAt = null
+        try {
+            when (val result = withContext(Dispatchers.IO) { targetPager.loadNext() }) {
+                is GitHubPageResult.Loaded -> {
+                    if (globalPager === targetPager) {
+                        globalResults = result.items
+                        globalHasNext = result.hasNext
+                        globalLoaded = true
+                        globalRetryPending = false
+                    }
+                }
+                is GitHubPageResult.RateLimited -> {
+                    if (globalPager === targetPager) {
+                        if (result.items.isNotEmpty() || globalResults.isEmpty()) {
+                            globalResults = result.items
+                        }
+                        globalRetryPending = true
+                        globalRetryAt = result.retryAtEpochMillis
+                        globalErrorMessage = GitHubHttpError.RATE_LIMITED.userMessage
+                    }
+                }
+                is GitHubPageResult.Failed -> {
+                    if (globalPager === targetPager) {
+                        if (result.items.isNotEmpty() || globalResults.isEmpty()) {
+                            globalResults = result.items
+                        }
+                        if (result.error == GitHubHttpError.UNAUTHORIZED && session != null) {
+                            globalRetryPending = false
+                            onSessionExpired(session)
+                        } else {
+                            globalRetryPending = true
+                            globalErrorMessage = result.message
+                        }
+                    }
+                }
+            }
+        } finally {
+            if (globalPager === targetPager) {
+                globalLoading = false
+            }
+        }
+    }
+
+    fun submitGlobalSearch() {
+        val activeSession = session ?: return
+        val trimmed = globalQuery.trim()
+        if (trimmed.isEmpty() || globalLoading || activeSession.isOffline) return
+        globalPager?.cancel()
+        val newPager = GitHubGlobalRepositorySearchPager(
+            client = client,
+            accessToken = activeSession.accessToken,
+            query = trimmed
+        )
+        globalPager = newPager
+        globalResults = emptyList()
+        globalHasNext = false
+        globalLoaded = false
+        globalRetryPending = false
+        globalErrorMessage = null
+        globalRetryAt = null
+        scope.launch {
+            loadNextGlobalPage(newPager)
+        }
+    }
+
     LaunchedEffect(pager) {
         if (pager != null) loadNextPage()
     }
     DisposableEffect(pager) {
         onDispose { pager?.cancel() }
+    }
+    DisposableEffect(globalPager) {
+        onDispose { globalPager?.cancel() }
     }
 
     if (selectedRepository != null && session != null) {
@@ -314,7 +397,119 @@ internal fun GitHubRepositoriesScreen(
                 }
             }
 
-            if (isOfflineCache) {
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    FilterChip(
+                        selected = !globalSearchMode,
+                        onClick = { globalSearchMode = false },
+                        label = { Text("Meus repositórios") },
+                        modifier = Modifier.testTag("my_repos_mode_chip")
+                    )
+                    FilterChip(
+                        selected = globalSearchMode,
+                        onClick = { globalSearchMode = true },
+                        label = { Text("Explorar GitHub") },
+                        modifier = Modifier.testTag("global_search_mode_chip")
+                    )
+                }
+            }
+
+            if (globalSearchMode) {
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text(
+                            "Pesquise repositórios públicos de qualquer pessoa ou organização no GitHub.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 13.sp
+                        )
+                        OutlinedTextField(
+                            value = globalQuery,
+                            onValueChange = { globalQuery = it },
+                            modifier = Modifier.fillMaxWidth().testTag("global_search_input"),
+                            label = { Text("Buscar no GitHub público") },
+                            placeholder = { Text("Ex.: owner/repo, compose, linux") },
+                            singleLine = true,
+                            trailingIcon = {
+                                if (globalQuery.isNotEmpty()) {
+                                    IconButton(onClick = { globalQuery = "" }) {
+                                        Icon(Icons.Outlined.Close, contentDescription = "Limpar busca global")
+                                    }
+                                }
+                            }
+                        )
+                        Button(
+                            onClick = ::submitGlobalSearch,
+                            enabled = globalQuery.isNotBlank() && !globalLoading && !session.isOffline,
+                            modifier = Modifier.fillMaxWidth().height(48.dp).testTag("global_search_submit_button"),
+                            shape = RoundedCornerShape(14.dp)
+                        ) {
+                            Text("Pesquisar")
+                        }
+                    }
+                }
+
+                if (globalLoading && globalResults.isEmpty()) {
+                    item {
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                            CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                            Text("Pesquisando repositórios no GitHub…", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+                }
+
+                globalErrorMessage?.let { message ->
+                    item {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(message, color = MaterialTheme.colorScheme.error)
+                            globalRetryAt?.let { deadline ->
+                                val safeTime = android.text.format.DateFormat.getTimeFormat(LocalContext.current)
+                                    .format(Date(deadline))
+                                Text("Tente novamente após $safeTime.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                            }
+                            TextButton(onClick = { scope.launch { loadNextGlobalPage() } }, enabled = !globalLoading) {
+                                Text("Tentar novamente")
+                            }
+                        }
+                    }
+                }
+
+                if (globalLoaded && globalResults.isEmpty() && globalErrorMessage == null) {
+                    item {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("Nenhum repositório público encontrado para a busca.", fontWeight = FontWeight.SemiBold)
+                            Text("Tente outro termo, nome de repositório ou organização.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+                }
+
+                items(globalResults, key = GitHubRepository::id) { repository ->
+                    GitHubRepositoryCard(
+                        repository = repository,
+                        isFavorite = repository.id in favoriteIds.orEmpty(),
+                        favoriteEnabled = favoriteIds != null && !favoritesSaving,
+                        onFavoriteClick = { setFavorite(repository, repository.id !in favoriteIds.orEmpty()) },
+                        onClick = { selectedRepository = repository }
+                    )
+                }
+
+                if (globalLoaded && globalHasNext) {
+                    item {
+                        Button(
+                            onClick = { scope.launch { loadNextGlobalPage() } },
+                            enabled = !globalLoading && !globalRetryPending,
+                            modifier = Modifier.fillMaxWidth().height(52.dp),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            if (globalLoading) CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                            else Text("Carregar mais")
+                        }
+                    }
+                }
+            } else {
+                if (isOfflineCache) {
                 item {
                     OfflineCacheBadge(cachedAtMillis)
                 }
@@ -561,6 +756,7 @@ internal fun GitHubRepositoriesScreen(
                         Text("Tentar carregar a próxima página")
                     }
                 }
+            }
             }
         }
     }

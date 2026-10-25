@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +46,7 @@ import java.time.format.FormatStyle
 import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -73,6 +76,18 @@ internal fun GitHubRepositoryDetailScreen(
     val loader = remember(client, session.accessToken) {
         GitHubRepositoryDetailLoader(client, session.accessToken)
     }
+    val socialClient = remember(client, session.accessToken) {
+        GitHubRepositorySocialClient(client, session.accessToken)
+    }
+    val coroutineScope = rememberCoroutineScope()
+    var initialStarred by remember(repository.id, session.accessToken) {
+        mutableStateOf<Boolean?>(null)
+    }
+    var socialState by remember(repository.id, session.accessToken) {
+        mutableStateOf<GitHubRepositorySocialState?>(null)
+    }
+    var socialBusy by remember(repository.id, session.accessToken) { mutableStateOf(false) }
+    var socialError by remember(repository.id, session.accessToken) { mutableStateOf<String?>(null) }
 
     var actionsOpen by remember(repository.id, session.accessToken) { mutableStateOf(false) }
     if (actionsOpen) {
@@ -160,9 +175,40 @@ internal fun GitHubRepositoryDetailScreen(
     }
 
     BackHandler(enabled = isActive, onBack = onBack)
-    LaunchedEffect(loader, repository.id, refreshVersion) {
+    LaunchedEffect(loader, socialClient, repository.id, refreshVersion) {
         loading = true
-        result = withContext(Dispatchers.IO) { loader.load(repository) }
+        socialError = null
+        val (loadedResult, loadedSocial) = withContext(Dispatchers.IO) {
+            val detailResult = loader.load(repository)
+            val socialResult = if (
+                detailResult is GitHubRepositoryDetailResult.Loaded &&
+                detailResult.readme !is GitHubReadmeResult.Failed &&
+                !isOffline
+            ) {
+                val parts = detailResult.detail.fullName.split('/')
+                val owner = if (parts.size == 2) parts[0] else repository.owner
+                val name = if (parts.size == 2) parts[1] else repository.name
+                socialClient.loadState(owner, name)
+            } else {
+                null
+            }
+            detailResult to socialResult
+        }
+        result = loadedResult
+        when (loadedSocial) {
+            is GitHubRepositorySocialResult.Loaded -> {
+                initialStarred = loadedSocial.state.starred
+                socialState = loadedSocial.state
+            }
+            is GitHubRepositorySocialResult.Failed -> {
+                if (loadedSocial.error == GitHubHttpError.UNAUTHORIZED) {
+                    onSessionExpired(session)
+                } else {
+                    socialError = loadedSocial.message
+                }
+            }
+            null -> Unit
+        }
         loading = false
     }
     LaunchedEffect(result, repository.id, repository.fullName, session.user.login) {
@@ -226,7 +272,6 @@ internal fun GitHubRepositoryDetailScreen(
                 Icon(Icons.Outlined.Refresh, contentDescription = "Atualizar detalhe")
             }
         }
-        Spacer(Modifier.height(8.dp))
         Text(repository.fullName, fontSize = 28.sp, fontWeight = FontWeight.Bold)
         Text("Detalhe do repositório", color = MaterialTheme.colorScheme.onSurfaceVariant)
 
@@ -238,16 +283,127 @@ internal fun GitHubRepositoryDetailScreen(
             is GitHubRepositoryDetailResult.Failed ->
                 DetailError(current.error, current.retryAtEpochMillis, enabled = !loading) { refreshVersion++ }
             is GitHubRepositoryDetailResult.Loaded -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    val displayedStars = current.detail.stars?.let { baseStars ->
+                        val activeSocial = socialState
+                        val initial = initialStarred
+                        val delta = when {
+                            activeSocial == null || initial == null -> 0L
+                            activeSocial.starred && !initial -> 1L
+                            !activeSocial.starred && initial -> -1L
+                            else -> 0L
+                        }
+                        (baseStars + delta).coerceAtLeast(0L)
+                    }
                     Surface(
                         shape = RoundedCornerShape(20.dp),
                         color = MaterialTheme.colorScheme.surface,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(current.detail.description?.takeIf(String::isNotBlank) ?: "Sem descrição", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                FilterChip(
+                                    selected = socialState?.starred == true,
+                                    onClick = {
+                                        val activeSocial = socialState ?: return@FilterChip
+                                        if (socialBusy || isOffline) return@FilterChip
+                                        val parts = current.detail.fullName.split('/')
+                                        val owner = if (parts.size == 2) parts[0] else repository.owner
+                                        val name = if (parts.size == 2) parts[1] else repository.name
+                                        val targetStarred = !activeSocial.starred
+                                        socialBusy = true
+                                        socialError = null
+                                        coroutineScope.launch {
+                                            val outcome = withContext(Dispatchers.IO) {
+                                                socialClient.setStarred(
+                                                    owner = owner,
+                                                    repo = name,
+                                                    targetStarred = targetStarred,
+                                                    currentWatching = activeSocial.watching
+                                                )
+                                            }
+                                            socialBusy = false
+                                            when (outcome) {
+                                                is GitHubRepositorySocialResult.Loaded -> socialState = outcome.state
+                                                is GitHubRepositorySocialResult.Failed -> {
+                                                    if (outcome.error == GitHubHttpError.UNAUTHORIZED) {
+                                                        onSessionExpired(session)
+                                                    } else {
+                                                        socialError = outcome.message
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    enabled = !isOffline && !socialBusy && socialState != null,
+                                    label = {
+                                        Text(
+                                            if (socialState?.starred == true) "Com estrela no GitHub" else "Estrela no GitHub",
+                                            fontSize = 12.sp,
+                                            maxLines = 1
+                                        )
+                                    },
+                                    modifier = Modifier.height(32.dp).testTag("repo_star_button")
+                                )
+                                FilterChip(
+                                    selected = socialState?.watching == true,
+                                    onClick = {
+                                        val activeSocial = socialState ?: return@FilterChip
+                                        if (socialBusy || isOffline) return@FilterChip
+                                        val parts = current.detail.fullName.split('/')
+                                        val owner = if (parts.size == 2) parts[0] else repository.owner
+                                        val name = if (parts.size == 2) parts[1] else repository.name
+                                        val targetWatching = !activeSocial.watching
+                                        socialBusy = true
+                                        socialError = null
+                                        coroutineScope.launch {
+                                            val outcome = withContext(Dispatchers.IO) {
+                                                socialClient.setWatching(
+                                                    owner = owner,
+                                                    repo = name,
+                                                    targetWatching = targetWatching,
+                                                    currentStarred = activeSocial.starred
+                                                )
+                                            }
+                                            socialBusy = false
+                                            when (outcome) {
+                                                is GitHubRepositorySocialResult.Loaded -> socialState = outcome.state
+                                                is GitHubRepositorySocialResult.Failed -> {
+                                                    if (outcome.error == GitHubHttpError.UNAUTHORIZED) {
+                                                        onSessionExpired(session)
+                                                    } else {
+                                                        socialError = outcome.message
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    enabled = !isOffline && !socialBusy && socialState != null,
+                                    label = {
+                                        Text(
+                                            if (socialState?.watching == true) "Acompanhando (Watch)" else "Acompanhar (Watch)",
+                                            fontSize = 12.sp,
+                                            maxLines = 1
+                                        )
+                                    },
+                                    modifier = Modifier.height(32.dp).testTag("repo_watch_button")
+                                )
+                            }
+                            socialError?.let { errorMessage ->
+                                Text(
+                                    text = errorMessage,
+                                    color = MaterialTheme.colorScheme.error,
+                                    fontSize = 13.sp,
+                                    modifier = Modifier.testTag("repo_social_error")
+                                )
+                            }
                             DetailValue("Visibilidade", current.detail.visibility?.visibilityLabel())
                             DetailValue("Branch padrão", current.detail.defaultBranch)
-                            DetailValue("Estrelas", current.detail.stars?.toString())
+                            DetailValue("Estrelas", displayedStars?.toString())
                             DetailValue("Forks", current.detail.forks?.toString())
                             DetailValue("Issues + PRs abertas", current.detail.openIssuesAndPullRequests?.toString())
                             DetailValue("Último push", current.detail.pushedAt?.let(::formatPushTime))

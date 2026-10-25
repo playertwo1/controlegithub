@@ -1,5 +1,20 @@
 # Estado do projeto
 
+## Release v2.4.0 — PUBLICADA (2026-10-25)
+
+- APK de produção gerado com o JDK/SDK do Android Studio: `versionCode = 105`, `versionName = 2.4.0`, pacote `com.playertwo.controlegithub`, 12.712.827 bytes.
+- `apksigner verify --verbose --print-certs` **PASS**, esquema v2; certificado SHA-256 `c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec`.
+- SHA-256 do APK: `D2CF5199030D19DEEABF20D7D6B76FA3B27922BD4749A99696CFCE2FE58E8704` (`SHA256SUMS.txt`).
+- Notas de lançamento em `docs/RELEASE_NOTES_v2.4.0.md` e `docs/RELEASE.md`.
+
+## C28.1, C29.1, C30.1 e C31.1 — Star/Watch (OH-13), Busca Global (OH-11), App Shortcuts (OH-14) e Imagens Markdown sob demanda (OH-09) (DONE, 2026-10-25)
+
+- **C28.1 (`OH-13` — Ações sociais no repositório):** adicionados `put` e `delete` em `GitHubHttpClient.kt`, `GitHubRepositorySocialClient` em `GitHubRepositorySocial.kt` (`/user/starred/{owner}/{repo}` e `/repos/{owner}/{repo}/subscription`) e chips compactos `repo_star_button` e `repo_watch_button` em `GitHubRepositoryDetailScreen.kt`, distintos dos favoritos locais.
+- **C29.1 (`OH-11` — Busca e descoberta global no GitHub):** implementado `GitHubGlobalRepositorySearchPager` (`GET /search/repositories`) em `GitHubGlobalSearch.kt` e modo **"Explorar GitHub"** (`global_search_mode_chip`) em `GitHubRepositoriesScreen.kt`, permitindo pesquisar e abrir o detalhe completo de qualquer repositório público no GitHub.
+- **C30.1 (`OH-14` — App Shortcuts no Launcher):** configurados 4 atalhos estáticos em `res/xml/shortcuts.xml` e `AndroidManifest.xml` (`Resumo Diário`, `Repositórios`, `Demandas`, `Avisos`) e roteamento seguro em `AppShortcuts.kt` e `MainActivity.kt` respeitando a sessão autenticada.
+- **C31.1 (`OH-09` — Imagens sob demanda em Markdown):** implementado `GitHubMarkdownImageLoader` (somente HTTPS, sem envio de `Authorization`, limite de 5 MB) e botão **"Carregar imagem no app"** (`load_markdown_image_button`) no diálogo de imagem de `GitHubMarkdownContent.kt`, mantendo zero requisições automáticas ao abrir Markdown.
+- **Verificações executadas:** `python scripts/check_plan.py` **PASS** (56 tarefas; eligible: none), `git diff --check` **PASS**, `./gradlew.bat assembleDebug testDebugUnitTest lintDebug --console=plain` **PASS** (221/221 JVM, 0 falhas; lint 0 erros) e `./gradlew.bat connectedDebugAndroidTest -P "android.testInstrumentationRunnerArguments.class=com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" --console=plain` **PASS** (32/32 testes aprovados no emulador `Medium_Phone` API 37). A suíte conectada integral permanece sob a exceção `DEC-2026-012` (**NOT PASS**) e `C21.3` segue `PLANNED`/`NOT_RUN`. Evidências em `docs/evidence/C28.1.md`, `C29.1.md`, `C30.1.md` e `C31.1.md`.
+
 ## Release v2.3.0 — PUBLICADA (2026-10-25)
 
 - APK de produção gerado com o JDK/SDK do Android Studio: `versionCode = 104`, `versionName = 2.3.0`, pacote `com.playertwo.controlegithub`, 12.675.927 bytes.

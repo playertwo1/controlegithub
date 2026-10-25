@@ -2,13 +2,13 @@
 
 Última atualização: 25 de outubro de 2026
 
-## Release atual: v2.3.0
+## Release atual: v2.4.0
 
 - Pacote: `com.playertwo.controlegithub`
-- Versão: `2.3.0` (`versionCode = 104`)
+- Versão: `2.4.0` (`versionCode = 105`)
 - Compatibilidade: Android 8.0 (API 26) ou superior
 - Arquivo: `app-release.apk`
-- SHA-256: `771D120946328D548BF4207D00E9E20870516E3F865A47FA27D133A0990B4D82`
+- SHA-256: `D2CF5199030D19DEEABF20D7D6B76FA3B27922BD4749A99696CFCE2FE58E8704`
 - Certificado SHA-256: `c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec`
 - Assinatura: APK Signature Scheme v2
 

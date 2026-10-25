@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="shortcut_summary"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_summary_short"
+        android:shortcutLongLabel="@string/shortcut_summary_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.playertwo.controlegithub"
+            android:targetClass="com.playertwo.controlegithub.MainActivity"
+            android:data="controlegithub://shortcut/summary" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="shortcut_repos"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_repos_short"
+        android:shortcutLongLabel="@string/shortcut_repos_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.playertwo.controlegithub"
+            android:targetClass="com.playertwo.controlegithub.MainActivity"
+            android:data="controlegithub://shortcut/repos" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="shortcut_work"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_work_short"
+        android:shortcutLongLabel="@string/shortcut_work_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.playertwo.controlegithub"
+            android:targetClass="com.playertwo.controlegithub.MainActivity"
+            android:data="controlegithub://shortcut/work" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="shortcut_notifications"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_notifications_short"
+        android:shortcutLongLabel="@string/shortcut_notifications_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.playertwo.controlegithub"
+            android:targetClass="com.playertwo.controlegithub.MainActivity"
+            android:data="controlegithub://shortcut/notifications" />
+    </shortcut>
+</shortcuts>
