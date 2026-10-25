@@ -105,8 +105,28 @@ internal fun GitHubRepositoryDetailScreen(
     var releasesOpen by remember(repository.id, session.accessToken, initialReleasesOpen) {
         mutableStateOf(initialReleasesOpen)
     }
+    var workOpen by remember(repository.id, session.accessToken) { mutableStateOf(false) }
     var codeOpen by remember(repository.id, session.accessToken) { mutableStateOf(false) }
     var codeBranch by remember(repository.id, session.accessToken) { mutableStateOf<String?>(null) }
+    if (workOpen) {
+        GitHubRepositoryWorkScreen(
+            modifier = modifier,
+            client = client,
+            session = session,
+            repository = repository,
+            cacheStore = cacheStore,
+            isOffline = isOffline,
+            onBack = { workOpen = false },
+            onCreateIssue = {
+                workOpen = false
+                createIssueOpen = true
+            },
+            onSessionExpired = onSessionExpired,
+            onAppearance = onAppearance,
+            isActive = isActive
+        )
+        return
+    }
     if (codeOpen) {
         GitHubCodeBrowserScreen(
             modifier = modifier,
@@ -224,8 +244,22 @@ internal fun GitHubRepositoryDetailScreen(
                             Text("Nova issue")
                         }
                     }
-                    Button(onClick = { releasesOpen = true }, modifier = Modifier.fillMaxWidth()) {
-                        Text("Releases e APKs")
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Button(
+                            onClick = { workOpen = true },
+                            modifier = Modifier.weight(1f).testTag("repository_work_button")
+                        ) {
+                            Text("Issues e PRs")
+                        }
+                        Button(
+                            onClick = { releasesOpen = true },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text("Releases e APKs")
+                        }
                     }
                     when (val readme = current.readme) {
                         is GitHubReadmeResult.Found -> Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {

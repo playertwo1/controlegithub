@@ -509,6 +509,53 @@ class GitHubRepositoryDetailScreenTest {
         }
     }
 
+    @Test fun repositoryWorkScreenDisplaysIssuesAndPullRequestsAndOpensDetails() {
+        DetailApi().use { api ->
+            showRepositories(api)
+            openDetail(api)
+
+            compose.onNodeWithTag("repository_work_button").performScrollTo().performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/issues?state=open&per_page=50") } &&
+                    compose.onAllNodesWithText("Corrigir sincronização offline").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Issues e Pull Requests do repositório").assertIsDisplayed()
+            compose.onNodeWithText("Corrigir sincronização offline").assertIsDisplayed()
+            compose.onNodeWithText("PR infiltrado em issues").assertDoesNotExist()
+
+            compose.onNodeWithText("Corrigir sincronização offline").performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/issues/14 ") } &&
+                    compose.onAllNodesWithText("Detalhe completo da issue 14 do repositório.")
+                        .fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Detalhe completo da issue 14 do repositório.").assertIsDisplayed()
+            compose.onNodeWithContentDescription("Voltar às issues").performClick()
+            compose.onNodeWithText("Corrigir sincronização offline").assertIsDisplayed()
+
+            compose.onNodeWithTag("repo_work_tab_pulls").performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/pulls?state=open&per_page=50") } &&
+                    compose.onAllNodesWithText("Implementar aba de PRs do repositório")
+                        .fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Implementar aba de PRs do repositório").assertIsDisplayed()
+
+            compose.onNodeWithText("Implementar aba de PRs do repositório").performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.startsWith("GET /repos/acme/Mobile/pulls/21 ") } &&
+                    compose.onAllNodesWithText("Detalhe completo do pull request 21.")
+                        .fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Detalhe completo do pull request 21.").assertIsDisplayed()
+            compose.onNodeWithContentDescription("Voltar aos pull requests").performClick()
+            compose.onNodeWithText("Implementar aba de PRs do repositório").assertIsDisplayed()
+
+            compose.onNodeWithContentDescription("Voltar ao repositório").performClick()
+            compose.onNodeWithText("Detalhe do repositório").assertIsDisplayed()
+        }
+    }
+
     @Test fun repositoryDetailOpensWorkflowRunAndJobStatusesForSelectedRepository() {
         DetailApi().use { api ->
             showRepositories(api)
@@ -933,6 +980,15 @@ class GitHubRepositoryDetailScreenTest {
                                 emptyReleases -> "[]"
                                 else -> releasesBody
                             }
+                            requestLine.startsWith("GET /repos/acme/Mobile/issues?state=") -> 200 to repoIssuesBody
+                            requestLine.startsWith("GET /repos/acme/Mobile/issues/14 ") -> 200 to repoIssue14DetailBody
+                            requestLine.startsWith("GET /repos/acme/Mobile/issues/14/comments?") -> 200 to "[]"
+                            requestLine.startsWith("GET /repos/acme/Mobile/pulls?state=") -> 200 to repoPullsBody
+                            requestLine.startsWith("GET /repos/acme/Mobile/pulls/21 ") -> 200 to repoPull21DetailBody
+                            requestLine.startsWith("GET /repos/acme/Mobile/issues/21/comments?") -> 200 to "[]"
+                            requestLine.startsWith("GET /repos/acme/Mobile/pulls/21/reviews?") -> 200 to "[]"
+                            requestLine.startsWith("GET /repos/acme/Mobile/pulls/21/files?") -> 200 to "[]"
+                            requestLine.startsWith("GET /repos/acme/Mobile/commits/") -> 200 to """{"total_count":0,"check_runs":[],"state":"success","statuses":[]}"""
                             requestLine.startsWith("GET /repos/acme/Mobile/readme") -> readmeStatus to if (readmeStatus == 200) readmeBody else "{}"
                             requestLine.startsWith("GET /repos/acme/Mobile ") -> {
                                 val selectedStatus = if (failMetadataServerOnce && metadataAttempt == 1) 503 else metadataStatus
@@ -1008,6 +1064,15 @@ class GitHubRepositoryDetailScreenTest {
         private val jobsBody = """{"total_count":1,"jobs":[
             {"id":500,"run_id":9001,"name":"Build and test","status":"completed","conclusion":"failure","started_at":"2026-10-05T11:00:01Z","completed_at":"2026-10-05T11:01:00Z"}]}"""
         private val releasesBody = """[{"id":9,"tag_name":"v1.0.0","name":"Versão 1.0","body":"Notas da release","draft":false,"prerelease":false,"published_at":"2026-10-18T10:00:00Z","author":{"login":"acme"},"assets":[{"id":$releaseAssetId,"name":"app-release.apk","size":5242880,"download_count":3,"content_type":"application/vnd.android.package-archive","browser_download_url":"https://github.com/acme/Mobile/releases/download/v1.0.0/app-release.apk"},{"id":12,"name":"SHA256SUMS.txt","size":128,"download_count":1,"content_type":"text/plain","browser_download_url":"https://github.com/acme/Mobile/releases/download/v1.0.0/SHA256SUMS.txt"}]}]"""
+        private val repoIssuesBody = """[
+            {"number":14,"title":"Corrigir sincronização offline","state":"open","html_url":"https://github.com/acme/Mobile/issues/14","user":{"login":"alice"},"assignees":[{"login":"bob"}],"labels":[{"name":"bug"}],"updated_at":"2026-10-20T12:00:00Z"},
+            {"number":15,"title":"PR infiltrado em issues","state":"open","html_url":"https://github.com/acme/Mobile/pull/15","pull_request":{"url":"https://api.github.com/repos/acme/Mobile/pulls/15"},"user":{"login":"carol"}}
+        ]"""
+        private val repoIssue14DetailBody = """{"number":14,"title":"Corrigir sincronização offline","state":"open","html_url":"https://github.com/acme/Mobile/issues/14","user":{"login":"alice"},"assignees":[{"login":"bob"}],"labels":[{"name":"bug"}],"body":"Detalhe completo da issue 14 do repositório.","updated_at":"2026-10-20T12:00:00Z"}"""
+        private val repoPullsBody = """[
+            {"number":21,"title":"Implementar aba de PRs do repositório","state":"open","merged_at":null,"html_url":"https://github.com/acme/Mobile/pull/21","user":{"login":"carol"},"labels":[{"name":"feature"}],"updated_at":"2026-10-21T10:00:00Z"}
+        ]"""
+        private val repoPull21DetailBody = """{"number":21,"title":"Implementar aba de PRs do repositório","state":"open","merged_at":null,"user":{"login":"carol"},"body":"Detalhe completo do pull request 21.","labels":[{"name":"feature"}],"head":{"ref":"feat/repo-prs","sha":"${"b".repeat(40)}","repo":{"full_name":"acme/Mobile"}},"base":{"ref":"feature/mobile","repo":{"full_name":"acme/Mobile"}}}"""
 
         private companion object {
             private val nextReleaseAssetId = AtomicLong(System.currentTimeMillis() * 1_000)

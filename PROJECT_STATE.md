@@ -1,5 +1,18 @@
 # Estado do projeto
 
+## Release v2.2.0 — PUBLICADA (2026-10-25)
+
+- APK de produção gerado com o JDK/SDK do Android Studio: `versionCode = 103`, `versionName = 2.2.0`, pacote `com.playertwo.controlegithub`, 12.659.543 bytes.
+- `apksigner verify --verbose --print-certs` **PASS**, esquema v2; certificado SHA-256 `c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec`.
+- SHA-256 do APK: `95BED54C6DE8A595E7477C63EA8570404D13FD0E7B3EF8D26B7180AEE437212D` (`SHA256SUMS.txt`).
+- Notas de lançamento em `docs/RELEASE_NOTES_v2.2.0.md` e `docs/RELEASE.md`.
+
+## C26.1 — Issues e Pull Requests por repositório e refinamento do ícone (DONE, 2026-10-25)
+
+- Implementada a tela `GitHubRepositoryWorkScreen` acessível pelo botão **"Issues e PRs"** em `GitHubRepositoryDetailScreen`, permitindo listar, filtrar por estado (`Abertas`, `Fechadas`, `Todas`) e paginar as Issues (`/repos/{owner}/{repo}/issues`) e os Pull Requests (`/repos/{owner}/{repo}/pulls`) específicos do repositório aberto, abrir `GitHubIssueDetailScreen` e `GitHubPullRequestDetailScreen` com retorno preservado e acionar **"Nova issue"**.
+- Atualizados os vetores do Adaptive Icon (`@drawable/ic_launcher_background`, `@drawable/ic_launcher_foreground` e `@drawable/ic_launcher`) com a identidade **Cyber Octocat & Git**.
+- Verificações executadas: `python scripts/check_plan.py` **PASS** (51 tarefas), `git diff --check` **PASS**, `./gradlew.bat assembleDebug testDebugUnitTest lintDebug --console=plain` **PASS** (202/202 JVM, 0 falhas; lint 0 erros) e `./gradlew.bat connectedDebugAndroidTest -P "android.testInstrumentationRunnerArguments.class=com.playertwo.controlegithub.GitHubRepositoryDetailScreenTest" --console=plain` **PASS** (27/27 testes aprovados no emulador `Medium_Phone` API 37). A suíte conectada integral permanece sob a exceção `DEC-2026-012` (**NOT PASS**) e `C21.3` segue `PLANNED`/`NOT_RUN`. Evidência completa em `docs/evidence/C26.1.md`.
+
 ## C25.2 — Ações diretas de repositório/APK em Avisos e ícone adaptativo (DONE, 2026-10-24)
 
 - Implementados atalhos diretos **"Abrir repositório"** e **"Releases e APKs"** tanto nos cartões da lista de `Avisos` quanto na tela `Detalhe da notificação` para qualquer notificação com repositório válido (`repositoryId > 0` e `owner/repo` válido), inclusive em avisos de `Issue`, `PullRequest`, `Release` ou `Outro`.

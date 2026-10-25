@@ -19,7 +19,7 @@ def validate(data, root=ROOT):
     require(len(ids) == len(set(ids)), 'Duplicate task ID')
     by_id = {t['id']: t for t in tasks}
     require(sum(t['status'] == 'IN_PROGRESS' for t in tasks) <= 1, 'Multiple active tasks')
-    require({t['checkpoint'] for t in tasks} == {f'C{i:02}' for i in range(26)}, 'Checkpoint coverage')
+    require({t['checkpoint'] for t in tasks} == {f'C{i:02}' for i in range(27)}, 'Checkpoint coverage')
     for task in tasks:
         ident = task['id']
         require(re.fullmatch(r'C\d{2}\.\d+', ident), f'{ident}: invalid ID')

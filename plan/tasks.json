@@ -672,6 +672,21 @@
       "contract": "plan/contracts/C25.2.md",
       "evidence": "docs/evidence/C25.2.md",
       "blocked_reason": null
+    },
+    {
+      "id": "C26.1",
+      "checkpoint": "C26",
+      "title": "Issues e Pull Requests por repositório e refinamento do ícone",
+      "depends_on": [
+        "C07.2",
+        "C08.1",
+        "C25.2"
+      ],
+      "status": "DONE",
+      "acceptance": "Detalhe do repositório permite listar, filtrar por estado e abrir Issues e Pull Requests específicos do owner/repo com retorno preservado; ícone adaptativo Cyber Octocat & Git atualizado sem erros de lint.",
+      "contract": "plan/contracts/C26.1.md",
+      "evidence": "docs/evidence/C26.1.md",
+      "blocked_reason": null
     }
   ]
 }

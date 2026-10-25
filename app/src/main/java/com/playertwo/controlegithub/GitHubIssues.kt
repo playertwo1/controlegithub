@@ -4,6 +4,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.net.URI
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.time.Instant
 import java.util.Locale
 
@@ -35,14 +37,23 @@ internal data class GitHubIssue(
 internal fun githubIssuesPath(scope: GitHubIssueScope, state: GitHubIssueState): String =
     "/issues?filter=${scope.queryValue}&state=${state.queryValue}&pulls=false&per_page=50"
 
-internal fun parseGitHubIssues(json: String): List<GitHubIssue> {
+internal fun githubRepositoryIssuesPath(repository: String, state: GitHubIssueState): String {
+    val parts = repository.split('/')
+    require(parts.size == 2 && parts.none { it.isBlank() || it == "." || it == ".." })
+    return "/repos/${encodeIssueSegment(parts[0])}/${encodeIssueSegment(parts[1])}/issues?state=${state.queryValue}&per_page=50"
+}
+
+private fun encodeIssueSegment(value: String): String =
+    URLEncoder.encode(value, StandardCharsets.UTF_8.name()).replace("+", "%20")
+
+internal fun parseGitHubIssues(json: String, fallbackRepository: String? = null): List<GitHubIssue> {
     val array = JSONArray(json)
     return buildList {
         for (index in 0 until array.length()) {
             val item = array.optJSONObject(index) ?: throw IOException("Resposta de issues inválida")
             if (item.has("pull_request") && item.opt("pull_request") != JSONObject.NULL) continue
             try {
-                add(item.toGitHubIssue())
+                add(item.toGitHubIssue(fallbackRepository))
             } catch (_: Exception) {
                 // O endpoint pode devolver itens removidos/inconsistentes durante a paginação.
                 // Ignorar o item evita exibir metadados parciais como uma issue real.
@@ -51,7 +62,7 @@ internal fun parseGitHubIssues(json: String): List<GitHubIssue> {
     }
 }
 
-private fun JSONObject.toGitHubIssue(): GitHubIssue {
+private fun JSONObject.toGitHubIssue(fallbackRepository: String? = null): GitHubIssue {
     val rawNumber = opt("number") as? Number ?: throw IOException("Issue inválida")
     val longNumber = rawNumber.toLong()
     if (rawNumber.toDouble() != longNumber.toDouble() || longNumber !in 1..Int.MAX_VALUE) {
@@ -64,8 +75,11 @@ private fun JSONObject.toGitHubIssue(): GitHubIssue {
         "closed" -> GitHubIssueState.CLOSED
         else -> throw IOException("Issue inválida")
     }
-    val repository = optJSONObject("repository")?.requiredIssueString("full_name")
-        ?: throw IOException("Issue inválida")
+    val rawRepository = optJSONObject("repository")?.optionalIssueString("full_name")?.takeIf(String::isNotBlank)
+    val repository = rawRepository ?: fallbackRepository ?: throw IOException("Issue inválida")
+    if (fallbackRepository != null && !repository.equals(fallbackRepository, ignoreCase = true)) {
+        throw IOException("Issue inválida")
+    }
     val repositoryParts = repository.split('/')
     if (repositoryParts.size != 2 || repositoryParts.any { it.isBlank() || it.any(Char::isWhitespace) }) {
         throw IOException("Issue inválida")
@@ -125,11 +139,34 @@ internal class GitHubIssuePager(
     state: GitHubIssueState,
     cacheStore: GitHubCacheStore? = null,
     accountLogin: String? = null,
-    decode: (String) -> List<GitHubIssue> = ::parseGitHubIssues
+    decode: (String) -> List<GitHubIssue> = { parseGitHubIssues(it) }
 ) {
     private val pager = GitHubPaginator(
         client = client,
         firstPath = githubIssuesPath(scope, state),
+        accessToken = accessToken,
+        decode = decode,
+        itemKey = GitHubIssue::identity,
+        cacheStore = cacheStore,
+        accountLogin = accountLogin
+    )
+
+    fun loadNext(): GitHubPageResult<GitHubIssue> = pager.loadNext()
+    fun cancel() = pager.cancel()
+}
+
+internal class GitHubRepositoryIssuePager(
+    client: GitHubHttpClient,
+    accessToken: String,
+    repository: String,
+    state: GitHubIssueState,
+    cacheStore: GitHubCacheStore? = null,
+    accountLogin: String? = null,
+    decode: (String) -> List<GitHubIssue> = { parseGitHubIssues(it, fallbackRepository = repository) }
+) {
+    private val pager = GitHubPaginator(
+        client = client,
+        firstPath = githubRepositoryIssuesPath(repository, state),
         accessToken = accessToken,
         decode = decode,
         itemKey = GitHubIssue::identity,

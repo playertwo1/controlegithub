@@ -3,7 +3,7 @@
 Objetivo: um aplicativo Android que permita conectar uma conta GitHub, acompanhar
 repositórios e trabalho, executar as ações previstas e usar versões assinadas
 com recuperação de erros, privacidade e evidência de funcionamento real. C00–C20
-compõem a versão 1.0; C21–C25 registram a evolução posterior.
+compõem a versão 1.0; C21–C26 registram a evolução posterior.
 
 Este documento define o aceite agregado. A execução usa as tarefas de
 [plan/tasks.json](plan/tasks.json) e o [protocolo de execução](docs/EXECUTION.md).
@@ -97,6 +97,7 @@ aceite agregado e evidências; desenho, commit ou build isolado não bastam.
 | C23 | F5 | Edição Markdown | C22 |
 | C24 | F5 | Navegação de código | C23 |
 | C25 | F5 | Avisos → repositório → recursos existentes e APK | C09, tarefa C24.1 |
+| C26 | F5 | Issues e Pull Requests por repositório | C07, C08, C25 |
 
 As dependências desta tabela são gates de aceite/fechamento dos checkpoints.
 Uma célula pode apontar um checkpoint inteiro ou, quando identificada como
@@ -421,6 +422,24 @@ acrescentar permissões, escopos OAuth ou operações administrativas.
 `docs/evidence/C25.1.md`. Até o proprietário ampliar o escopo, “acessar tudo”
 significa usar as funções existentes no app com as permissões da sessão. O
 checkpoint C25 fecha com C25.1, por instrução do proprietário em 2026-10-23, com a suíte integral registrada como **NOT PASS**. C21.3 continua `PLANNED`/`NOT_RUN` e não entra nesse fechamento.
+
+### C26 — Issues e Pull Requests do repositório
+
+**Entregar:** a partir do detalhe de um repositório (`GitHubRepositoryDetailScreen`),
+permitir consultar as Issues e os Pull Requests específicos daquele `owner/repo`,
+filtrar por estado, paginar com segurança, abrir o detalhe existente de cada
+issue (`GitHubIssueDetailScreen`) ou PR (`GitHubPullRequestDetailScreen`) e
+acionar a criação de nova issue, além de refinar a arte vetorial do ícone
+adaptativo do aplicativo.
+
+**Aceite agregado:** listas de issues e PRs consultam apenas o repositório
+selecionado; itens do endpoint de issues que sejam pull requests não se
+misturam na aba de issues; abrir issue ou PR preserva filtros e posição ao
+voltar; falhas de rede/acesso negado e estados vazios são explícitos sem dados
+fictícios.
+
+**Evidência:** contrato e registro de C26.1 em `plan/contracts/C26.1.md` e
+`docs/evidence/C26.1.md`.
 
 ## Execução e refinamento
 

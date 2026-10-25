@@ -15,6 +15,12 @@ internal enum class GitHubPullRequestFilter(val label: String, internal val quer
     MERGED("Mescladas", "is:pr involves:@me is:merged")
 }
 
+internal enum class GitHubRepositoryPullRequestState(val queryValue: String, val label: String) {
+    OPEN("open", "Abertas"),
+    CLOSED("closed", "Fechadas"),
+    ALL("all", "Todas")
+}
+
 internal enum class GitHubPullRequestState(val label: String) {
     OPEN("Aberto"),
     CLOSED("Fechado"),
@@ -114,6 +120,74 @@ internal sealed interface GitHubPullRequestDetailResult {
 internal fun githubPullRequestsPath(filter: GitHubPullRequestFilter): String {
     val encodedQuery = URLEncoder.encode(filter.query, StandardCharsets.UTF_8.name())
     return "/search/issues?q=$encodedQuery&sort=updated&order=desc&per_page=50"
+}
+
+internal fun githubRepositoryPullRequestsPath(
+    repository: String,
+    state: GitHubRepositoryPullRequestState
+): String {
+    val parts = repository.split('/')
+    require(parts.size == 2 && parts.none { it.isBlank() || it == "." || it == ".." })
+    return "/repos/${encodePullRequestSegment(parts[0])}/${encodePullRequestSegment(parts[1])}/pulls?state=${state.queryValue}&per_page=50"
+}
+
+internal fun parseGitHubRepositoryPullRequests(
+    json: String,
+    repository: String
+): List<GitHubPullRequest> {
+    val repoParts = repository.split('/')
+    if (repoParts.size != 2 || repoParts.any { it.isBlank() || it == "." || it == ".." || it.any(Char::isWhitespace) }) {
+        throw IOException("Pull request inválido")
+    }
+    val array = JSONArray(json)
+    return buildList {
+        for (index in 0 until array.length()) {
+            val item = array.optJSONObject(index) ?: throw IOException("Resposta de pull requests inválida")
+            try {
+                add(item.toRepositoryPullRequest(repository))
+            } catch (_: Exception) {
+                // O endpoint pode devolver itens removidos/inconsistentes durante a paginação.
+            }
+        }
+    }
+}
+
+private fun JSONObject.toRepositoryPullRequest(repository: String): GitHubPullRequest {
+    val number = requiredPositiveInt("number")
+    val title = requiredNonBlankString("title")
+    val rawState = requiredNonBlankString("state")
+    val mergedAt = when (val raw = opt("merged_at")) {
+        null, JSONObject.NULL -> null
+        is String -> raw.takeIf(String::isNotBlank)?.let {
+            try { Instant.parse(it) } catch (_: Exception) { throw IOException("Pull request inválido") }
+        }
+        else -> throw IOException("Pull request inválido")
+    }
+    val state = when {
+        mergedAt != null -> GitHubPullRequestState.MERGED
+        rawState == "open" -> GitHubPullRequestState.OPEN
+        rawState == "closed" -> GitHubPullRequestState.CLOSED
+        else -> throw IOException("Pull request inválido")
+    }
+    val htmlUrl = requiredNonBlankString("html_url")
+    val uri = try { URI(htmlUrl) } catch (_: Exception) { throw IOException("Pull request inválido") }
+    val expectedPath = "/$repository/pull/$number"
+    if (uri.scheme != "https" || !uri.host.equals("github.com", ignoreCase = true) ||
+        uri.port != -1 || uri.userInfo != null || uri.query != null || uri.fragment != null ||
+        !uri.path.equals(expectedPath, ignoreCase = true)
+    ) throw IOException("Pull request inválido")
+
+    return GitHubPullRequest(
+        number = number,
+        title = title,
+        state = state,
+        repository = repository,
+        author = optJSONObject("user")?.optionalString("login")?.takeIf(String::isNotBlank),
+        labels = optionalLabels("labels"),
+        updatedAt = optionalString("updated_at")?.let { raw ->
+            try { Instant.parse(raw) } catch (_: Exception) { null }
+        }
+    )
 }
 
 internal fun parseGitHubPullRequestSearch(
@@ -283,6 +357,29 @@ internal class GitHubPullRequestPager(
         }
     }
 
+    fun cancel() = pager.cancel()
+}
+
+internal class GitHubRepositoryPullRequestPager(
+    client: GitHubHttpClient,
+    accessToken: String,
+    repository: String,
+    state: GitHubRepositoryPullRequestState,
+    cacheStore: GitHubCacheStore? = null,
+    accountLogin: String? = null,
+    decode: (String) -> List<GitHubPullRequest> = { parseGitHubRepositoryPullRequests(it, repository) }
+) {
+    private val pager = GitHubPaginator(
+        client = client,
+        firstPath = githubRepositoryPullRequestsPath(repository, state),
+        accessToken = accessToken,
+        decode = decode,
+        itemKey = GitHubPullRequest::identity,
+        cacheStore = cacheStore,
+        accountLogin = accountLogin
+    )
+
+    fun loadNext(): GitHubPageResult<GitHubPullRequest> = pager.loadNext()
     fun cancel() = pager.cancel()
 }
 

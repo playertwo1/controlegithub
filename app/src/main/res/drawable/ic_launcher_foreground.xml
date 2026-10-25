@@ -4,70 +4,102 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Outer subtle container ring -->
+    <!-- Subtle outer octagonal cyber shield ring (within 66x66 safe zone: 23..85) -->
     <path
-        android:fillColor="#1A3B82F6"
-        android:strokeColor="#4D60A5FA"
-        android:strokeWidth="1.8"
+        android:fillColor="#141E293B"
+        android:strokeColor="#4038BDF8"
+        android:strokeWidth="1.5"
+        android:strokeLineJoin="round"
         android:pathData="M54,23L76,32L85,54L76,76L54,85L32,76L23,54L32,32Z" />
 
-    <!-- Main Git trunk & branch curve -->
+    <!-- Sleek geometric Cyber Octocat silhouette (cat ears + rounded head & shoulders) -->
     <path
-        android:fillColor="@android:color/transparent"
-        android:strokeWidth="5.5"
-        android:strokeLineCap="round"
+        android:fillColor="#FF0F172A"
+        android:strokeWidth="2.4"
         android:strokeLineJoin="round"
-        android:pathData="M42,35L42,73M42,57C42,48 52,46 64,39">
+        android:pathData="M33,44C33,35 35,28 39,25C43,27 46,29 54,29C62,29 65,27 69,25C73,28 75,35 75,44C75,55 68,61 63,63C66,66 68,71 68,77L40,77C40,71 42,66 45,63C40,61 33,55 33,44Z">
         <aapt:attr name="android:strokeColor">
             <gradient
-                android:startX="40"
-                android:startY="33"
-                android:endX="68"
-                android:endY="75"
+                android:startX="33"
+                android:startY="25"
+                android:endX="75"
+                android:endY="77"
                 android:type="linear">
                 <item android:offset="0.0" android:color="#FF38BDF8" />
-                <item android:offset="1.0" android:color="#FF3B82F6" />
+                <item android:offset="0.6" android:color="#FF6366F1" />
+                <item android:offset="1.0" android:color="#FFA855F7" />
             </gradient>
         </aapt:attr>
     </path>
 
-    <!-- Secondary control pulse line -->
+    <!-- Glowing cyan cyber visor eyes -->
     <path
         android:fillColor="@android:color/transparent"
-        android:strokeColor="#FF818CF8"
-        android:strokeWidth="4.5"
+        android:strokeColor="#FF22D3EE"
+        android:strokeWidth="2.4"
         android:strokeLineCap="round"
-        android:pathData="M42,57C49,64 56,66 64,66" />
+        android:pathData="M41,38L47,39M67,38L61,39" />
 
-    <!-- Top trunk node -->
+    <!-- Main Git trunk line -->
     <path
-        android:fillColor="#FF38BDF8"
-        android:pathData="M42,28a7,7 0,1 0,0 14a7,7 0,1 0,0 -14Z" />
-    <path
-        android:fillColor="#FF090F1D"
-        android:pathData="M42,32a3,3 0,1 0,0 6a3,3 0,1 0,0 -6Z" />
+        android:fillColor="@android:color/transparent"
+        android:strokeWidth="4.6"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M46,45L46,72">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="46"
+                android:startY="45"
+                android:endX="46"
+                android:endY="72"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FF38BDF8" />
+                <item android:offset="1.0" android:color="#FF2563EB" />
+            </gradient>
+        </aapt:attr>
+    </path>
 
-    <!-- Bottom trunk node -->
+    <!-- Glowing purple feature branch curve -->
     <path
-        android:fillColor="#FF3B82F6"
-        android:pathData="M42,66a7,7 0,1 0,0 14a7,7 0,1 0,0 -14Z" />
-    <path
-        android:fillColor="#FF090F1D"
-        android:pathData="M42,70a3,3 0,1 0,0 6a3,3 0,1 0,0 -6Z" />
+        android:fillColor="@android:color/transparent"
+        android:strokeWidth="4.2"
+        android:strokeLineCap="round"
+        android:pathData="M46,60C46,53 53,51 62,46">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="46"
+                android:startY="60"
+                android:endX="62"
+                android:endY="46"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FF38BDF8" />
+                <item android:offset="1.0" android:color="#FFA855F7" />
+            </gradient>
+        </aapt:attr>
+    </path>
 
-    <!-- Upper-right feature branch node -->
+    <!-- Top trunk Git node (#22D3EE) -->
     <path
         android:fillColor="#FF22D3EE"
-        android:pathData="M64,32a7,7 0,1 0,0 14a7,7 0,1 0,0 -14Z" />
+        android:pathData="M46,40a5,5 0,1 0,0 10a5,5 0,1 0,0 -10Z" />
     <path
         android:fillColor="#FF090F1D"
-        android:pathData="M64,36a3,3 0,1 0,0 6a3,3 0,1 0,0 -6Z" />
+        android:pathData="M46,43a2,2 0,1 0,0 4a2,2 0,1 0,0 -4Z" />
 
-    <!-- Lower-right release/check node -->
+    <!-- Bottom trunk Git node (#38BDF8) -->
     <path
-        android:fillColor="#FF818CF8"
-        android:pathData="M64,59a7,7 0,1 0,0 14a7,7 0,1 0,0 -14Z" />
+        android:fillColor="#FF38BDF8"
+        android:pathData="M46,67a5,5 0,1 0,0 10a5,5 0,1 0,0 -10Z" />
+    <path
+        android:fillColor="#FF090F1D"
+        android:pathData="M46,70a2,2 0,1 0,0 4a2,2 0,1 0,0 -4Z" />
+
+    <!-- Right branch Git node (#A855F7) -->
+    <path
+        android:fillColor="#FFA855F7"
+        android:pathData="M62,41a5,5 0,1 0,0 10a5,5 0,1 0,0 -10Z" />
     <path
         android:fillColor="#FFFFFFFF"
-        android:pathData="M64,63.2a2.8,2.8 0,1 0,0 5.6a2.8,2.8 0,1 0,0 -5.6Z" />
+        android:pathData="M62,44a2,2 0,1 0,0 4a2,2 0,1 0,0 -4Z" />
 </vector>
