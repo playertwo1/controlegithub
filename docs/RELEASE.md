@@ -1,6 +1,6 @@
 # Guia de Release e Distribuição — ControleGitHub
 
-Última atualização: 25 de outubro de 2026
+Última atualização: 3 de novembro de 2026
 
 ## Release atual: v2.5.0
 

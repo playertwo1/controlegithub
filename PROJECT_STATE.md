@@ -1,10 +1,11 @@
 # Estado do projeto
 
-## Release v2.5.0 — em preparação (2026-11-03)
+## Release v2.5.0 — PUBLICADA (2026-11-03)
 
 - Inclui o novo ícone com símbolo Git branco sobre azul, em adaptive, redondo, monocromático e vetor legado. Código 106, versão 2.5.0.
 - `assembleDebug`, `testDebugUnitTest` (221/221), `lintDebug`, `clean assembleRelease`, `python scripts/check_plan.py`, `git diff --check` e verificação v2 do APK: **PASS**. SHA-256 `1F6C2FB0C2BE1ECD3EDBE4CC97D583842E73B69BC1B3AF729F62B0E944BD163E`; certificado `c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec`.
-- Instalado e iniciado com sucesso no Galaxy S25 Ultra (`RQCY10934YV`); confirmado `versionCode 106`, `versionName 2.5.0`. Publicação no GitHub pendente.
+- Release publicada: https://github.com/playertwo1/controlegithub/releases/tag/v2.5.0. Commit `5441281`, tag `v2.5.0`; APK e `SHA256SUMS.txt` anexados.
+- Instalado e iniciado com sucesso no Galaxy S25 Ultra (`RQCY10934YV`); confirmado `versionCode 106`, `versionName 2.5.0`.
 
 ## Release v2.4.0 — PUBLICADA (2026-10-25)
 
