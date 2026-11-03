@@ -1,129 +1,138 @@
-# ControleGitHub
+<p align="center">
+  <img src="docs/images/readme-banner.svg" alt="ControleGitHub — seu GitHub no Android, com controle de repositórios, issues e pull requests" width="100%">
+</p>
 
-[![Release](https://img.shields.io/badge/Release-v2.0.0-blue.svg)](https://github.com/playertwo1/controlegithub/releases)
-[![Android](https://img.shields.io/badge/Android-8.0%2B%20(API%2026%2B)-green.svg)](https://developer.android.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Architecture: Local--First](https://img.shields.io/badge/Architecture-Local--First-purple.svg)](PRIVACY.md)
+<p align="center">
+  <a href="https://github.com/playertwo1/controlegithub/releases/latest"><img src="https://img.shields.io/github/v/release/playertwo1/controlegithub?label=vers%C3%A3o" alt="Última versão publicada"></a>
+  <a href="https://developer.android.com"><img src="https://img.shields.io/badge/Android-8.0%2B%20(API%2026%2B)-3DDC84?logo=android&logoColor=white" alt="Android 8.0 ou superior"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/licen%C3%A7a-MIT-blue.svg" alt="Licença MIT"></a>
+</p>
 
-**Seu GitHub, sob controle.**
-Um aplicativo Android nativo em Kotlin e Jetpack Compose, inspirado na proposta do [GitDeck](https://github.com/debba/gitdeck), com interface própria Material 3 e navegação ágil inspirada na One UI em português do Brasil.
+O **ControleGitHub** é um cliente Android nativo para acompanhar seus repositórios, issues, pull requests, notificações e GitHub Actions em um só lugar. A interface em português é feita com Kotlin e Jetpack Compose; o aplicativo conversa diretamente com a API do GitHub, sem servidor intermediário próprio.
 
----
+[Baixar a versão 2.5.1](https://github.com/playertwo1/controlegithub/releases/tag/v2.5.1) · [Manual do usuário](docs/MANUAL_DO_USUARIO.md) · [Política de privacidade](PRIVACY.md)
 
-## Fase atual do roadmap (C22.1–C24.1)
+## Conteúdo
 
-- **Leitura Markdown:** renderização de Markdown e tabelas GFM com tratamento seguro de links e conteúdo externo.
-- **Edição Markdown:** editor com formatação, abas Escrever/Prévia e rascunhos locais por conta e item.
-- **Navegação de código:** navegação por pastas e arquivos com breadcrumb, números de linha e destaque local; arquivos binários ou acima de 1 MB exibem um aviso.
+- [Funcionalidades](#funcionalidades)
+- [Capturas de tela](#capturas-de-tela)
+- [Privacidade e armazenamento](#privacidade-e-armazenamento)
+- [Instalar o aplicativo](#instalar-o-aplicativo)
+- [Compilar e desenvolver](#compilar-e-desenvolver)
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Documentação](#documentação)
+- [Licença](#licença)
 
-Essas entregas compõem a versão publicada 2.0.0.
+## Funcionalidades
 
----
+- **Painel e resumo diário:** acompanhe repositórios, issues e notificações; copie o resumo de atividade em Markdown.
+- **Repositórios:** busque seus repositórios e explore repositórios públicos; consulte detalhes, código, releases, estrelas e Watch.
+- **Issues e pull requests:** filtre e pagine itens, crie e edite issues, comente, altere labels e estado, revise PRs e inspecione arquivos alterados.
+- **Kanban pessoal:** organize issues em quatro colunas locais, sem alterar os dados do repositório no GitHub.
+- **Notificações e GitHub Actions:** acompanhe avisos, execuções de workflows, jobs e logs.
+- **Markdown e código:** leia Markdown e tabelas, edite com prévia e rascunhos locais; navegue por pastas e arquivos de texto.
+- **Trabalho offline:** consulte dados em cache quando disponíveis; ações que escrevem no GitHub exigem conexão.
+- **Atalhos no launcher:** abra diretamente Resumo Diário, Repositórios, Demandas ou Avisos.
 
-## 🚀 Versão 2.0.0 Oficial
+## Capturas de tela
 
-O ControleGitHub chega à versão **2.0.0**, construída sobre uma arquitetura estritamente **local-first**:
-- Conexão direta e exclusiva entre seu celular e a API oficial do GitHub (`https://api.github.com`).
-- Sem servidores intermediários, sem telemetria e sem coleta oculta de dados.
-- Criptografia em hardware (`AndroidKeyStore` AES-256-GCM) para credenciais de sessão.
-- Backup em nuvem desabilitado por segurança (`android:allowBackup="false"`).
+As imagens abaixo mostram a interface em **modo de demonstração com dados fictícios**. Os números e itens visíveis não representam uma conta GitHub real.
 
----
+| Entrada | Painel de demonstração | Repositórios |
+|---|---|---|
+| ![Tela de entrada do ControleGitHub](docs/screens/01-welcome.png) | ![Painel com dados fictícios de demonstração](docs/screens/02-dashboard.png) | ![Lista de repositórios em demonstração](docs/screens/03-repositories.png) |
 
-## 📥 Download e Instalação
+| Detalhe | Issues e pull requests | Notificações |
+|---|---|---|
+| ![Detalhe de repositório em demonstração](docs/screens/04-detail.png) | ![Tela de trabalho e demandas em demonstração](docs/screens/05-work.png) | ![Notificações em demonstração](docs/screens/06-notifications.png) |
 
-Baixe o pacote oficial assinado na aba de [Releases do GitHub](https://github.com/playertwo1/controlegithub/releases):
+## Privacidade e armazenamento
 
-| Artefato | Versão | Arquivo | Checksum SHA-256 |
-| :--- | :---: | :---: | :--- |
-| **APK de Produção** | `2.0.0` (101) | `app-release.apk` | `64A3549593E6EC7CC10D70F6E49B56FD3FBA6E4BB65FF11015CA1F46575AF8D8` |
+- O login usa **OAuth Device Flow** do GitHub; o app não recebe sua senha.
+- Requisições são feitas diretamente para `api.github.com`; não há backend próprio, telemetria ou analytics.
+- Credenciais são protegidas com `AndroidKeyStore` e criptografia AES-256-GCM.
+- O backup do Android fica desativado para os dados do app. Ao sair da conta, credenciais, cache e dados locais associados são apagados.
+- O modo offline usa cache local isolado por conta. Dados em cache podem ficar desatualizados; operações de escrita precisam de internet.
 
-**Atenção:** a v2.0.0 usa uma nova chave de assinatura. Ela não atualiza a v1.0.0 diretamente. Para instalar, desinstale a versão anterior; o Android apagará os dados locais do aplicativo.
+Consulte a [Política de Privacidade](PRIVACY.md) para os detalhes sobre dados e armazenamento.
 
-### Verificação de Integridade
+## Instalar o aplicativo
 
-No Windows (PowerShell):
-```powershell
-Get-FileHash -Algorithm SHA256 app-release.apk
-```
+1. Baixe `app-release.apk` na [release v2.5.1](https://github.com/playertwo1/controlegithub/releases/tag/v2.5.1).
+2. (Opcional) Baixe também `SHA256SUMS.txt` e confira o SHA-256 do APK.
+3. Abra o APK no Android e confirme a instalação. Se necessário, permita a instalação para a origem usada.
 
-No Linux ou macOS:
-```bash
-sha256sum app-release.apk
-```
+Requer **Android 8.0 (API 26) ou superior**. O SHA-256 da versão 2.5.1 é:
 
-O hash deve ser idêntico a:
 ```text
-64A3549593E6EC7CC10D70F6E49B56FD3FBA6E4BB65FF11015CA1F46575AF8D8
+2DE54D2ED6D923CE55555D818482E52C345D7122F74FC30F8E056C3C1B72F47D
 ```
 
----
+Atualizações entre versões **2.x** preservam os dados locais. Para migrar diretamente de uma versão **1.x**, é necessário desinstalá-la; isso apaga os dados locais daquela instalação. Consulte [todas as releases](https://github.com/playertwo1/controlegithub/releases).
 
-## ✨ Funcionalidades Principais
+## Compilar e desenvolver
 
-- **Autenticação Segura via Device Flow:** Login rápido pelo navegador oficial sem digitar senhas no app.
-- **Painel Executivo & Resumo Diário:** Métricas consolidadas em tempo real e síntese das últimas 24 horas exportável em Markdown.
-- **Repositórios:** Listagem rápida, busca instantânea, ordenação e filtros dinâmicos.
-- **Demandas (Issues):** Visualização completa, criação com proteção anti-duplo clique, edição de título/corpo, comentários, labels e fechar/reabrir.
-- **Revisão de Pull Requests:** Inspeção de arquivos alterados, comentários e submissão formal de pareceres (*Aprovar*, *Comentar*, *Solicitar alterações*).
-- **Quadro Kanban Local (4 Colunas):** Organize issues pessoalmente em *A fazer*, *Em andamento*, *Em revisão* e *Concluído* sem alterar o repositório remoto no GitHub.
-- **Notificações Integradas:** Leitura de avisos por repositório com marcação rápida de leitura.
-- **GitHub Actions (CI/CD):** Acompanhamento de execuções de workflows, jobs e visualizador otimizado de logs de compilação.
-- **Leitura e edição Markdown:** Prévia de conteúdo, tabelas GFM, formatação e rascunhos locais.
-- **Navegador de código:** Acesso à árvore do repositório, arquivos de texto com linhas numeradas e destaque local.
-- **Modo Offline & Cache SQLite:** Consultas salvas localmente com revalidação condicional via HTTP ETag (`304 Not Modified`) e selo de data/hora.
-- **Sincronização em Segundo Plano:** Agendador nativo com `JobScheduler` e alertas locais configuráveis no canal `controlegithub_alerts`.
-- **Acessibilidade e Temas:** Suporte integral aos temas Claro, Escuro e Sistema, alto contraste WCAG AA e compatibilidade com TalkBack.
+### Requisitos
 
----
+- Android Studio com suporte ao Android Gradle Plugin usado pelo projeto.
+- JDK 17 e Android SDK Platform 36.
+- Um emulador ou dispositivo Android 8.0+ para executar o app.
 
-## 📱 Capturas de Tela
+Clone o projeto e abra-o no Android Studio, ou compile pelo terminal:
 
-| Entrada | Painel | Repositórios |
-|---|---|---|
-| ![Entrada](docs/screens/01-welcome.png) | ![Painel](docs/screens/02-dashboard.png) | ![Repositórios](docs/screens/03-repositories.png) |
+```bash
+git clone https://github.com/playertwo1/controlegithub.git
+cd controlegithub
+./gradlew assembleDebug
+./gradlew testDebugUnitTest
+./gradlew lintDebug
+```
 
-| Detalhes | Trabalho & Demandas | Notificações |
-|---|---|---|
-| ![Detalhe](docs/screens/04-detail.png) | ![Trabalho](docs/screens/05-work.png) | ![Notificações](docs/screens/06-notifications.png) |
+No Windows PowerShell, use `.\gradlew.bat` no lugar de `./gradlew`.
 
----
+O login exige um **OAuth App do GitHub** configurado. Passe seu client ID ao Gradle:
 
-## 🛠️ Compilação e Desenvolvimento
+```bash
+./gradlew assembleDebug -PGITHUB_OAUTH_CLIENT_ID=seu-client-id
+```
 
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/playertwo1/controlegithub.git
-   cd controlegithub
-   ```
-2. Abra a pasta no **Android Studio** ou compile via linha de comando com JDK 17 e Android SDK (API 36):
-   ```bash
-   # Compilar versão de depuração (Debug)
-   ./gradlew assembleDebug
+Para compilar uma release assinada, configure a chave de produção local em `.secrets/signing.properties` ou pelas propriedades/variáveis Gradle descritas no [Guia de Release](docs/RELEASE.md). A chave e as credenciais não devem ser commitadas.
 
-   # Executar testes unitários
-   ./gradlew testDebugUnitTest
+## Estrutura do projeto
 
-   # Checagem de Lint
-   ./gradlew lintDebug
-   ```
-3. Para compilar a versão de release, mantenha o keystore e os quatro valores de assinatura em `.secrets/` (diretório ignorado pelo Git) e execute:
-   ```bash
-   ./gradlew assembleRelease
-   ```
+```text
+app/src/main/java/com/playertwo/controlegithub/  # app Compose, telas, clientes GitHub e armazenamento local
+app/src/main/res/                                # recursos Android, incluindo o ícone adaptativo
+app/src/test/                                    # testes unitários e validações da release
+app/src/androidTest/                             # testes instrumentados no Android
+docs/                                            # manual, políticas, evidências e notas de versão
+plan/tasks.json                                  # backlog operacional do projeto
+```
 
----
+O fluxo de dados principal é local ao aplicativo e usa a API oficial do GitHub:
 
-## 📚 Documentação do Projeto
+```mermaid
+flowchart LR
+    UI[Telas Jetpack Compose] --> APP[Lógica do app]
+    APP --> API[API REST do GitHub]
+    APP --> CACHE[Cache SQLite local]
+    APP --> PREFS[Preferências DataStore]
+    APP --> KEYSTORE[Credenciais protegidas pelo AndroidKeyStore]
+    API --> APP
+```
 
-- [Notas de Lançamento 2.0.0](docs/RELEASE_NOTES_v2.0.0.md)
-- [Notas de Lançamento 1.0.0](docs/RELEASE_NOTES_v1.0.0.md)
-- [Manual do Usuário](docs/MANUAL_DO_USUARIO.md)
-- [Guia de Operação e Suporte](docs/OPERACAO_E_SUPORTE.md)
-- [Instruções de Release e Assinatura](docs/RELEASE.md)
-- [Changelog Completo](CHANGELOG.md)
-- [Roadmap Operacional](ROADMAP.md)
-- [Estado Atual e Evidências](PROJECT_STATE.md)
-- [Política de Privacidade](PRIVACY.md)
-- [Política de Segurança](SECURITY.md)
-- [Licença MIT](LICENSE)
+## Documentação
+
+- [Manual do usuário](docs/MANUAL_DO_USUARIO.md)
+- [Notas da versão 2.5.1](docs/RELEASE_NOTES_v2.5.1.md)
+- [Guia de release, assinatura e distribuição](docs/RELEASE.md)
+- [Política de privacidade](PRIVACY.md)
+- [Política de segurança](SECURITY.md)
+- [Guia de operação e suporte](docs/OPERACAO_E_SUPORTE.md)
+- [Roadmap](ROADMAP.md)
+- [Estado do projeto e evidências](PROJECT_STATE.md)
+- [Changelog](CHANGELOG.md)
+
+## Licença
+
+Distribuído sob a licença [MIT](LICENSE).

@@ -1,5 +1,11 @@
 # Estado do projeto
 
+## Release v2.5.1 — em preparação (2026-11-03)
+
+- Aplicado o ícone 3D aprovado, com camadas adaptive, redonda, monocromática e PNG legado. Versão 2.5.1, código 107.
+- `clean assembleRelease`, `assembleDebug testDebugUnitTest lintDebug`, `git diff --check` e auditoria independente do diff: **PASS**. 221 testes unitários; SHA-256 `2DE54D2ED6D923CE55555D818482E52C345D7122F74FC30F8E056C3C1B72F47D`; certificado v2 `c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec`.
+- Instalado e visualmente conferido no emulador. Galaxy S25 Ultra não está conectado ao ADB nesta sessão; instalação física pendente.
+
 ## Release v2.5.0 — PUBLICADA (2026-11-03)
 
 - Inclui o novo ícone com símbolo Git branco sobre azul, em adaptive, redondo, monocromático e vetor legado. Código 106, versão 2.5.0.

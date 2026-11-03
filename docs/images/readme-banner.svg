@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-labelledby="title desc">
+  <title id="title">ControleGitHub</title>
+  <desc id="desc">Seu GitHub no Android, com controle de repositórios, issues e pull requests.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#102b66"/>
+      <stop offset="1" stop-color="#101827"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="340" rx="28" fill="url(#bg)"/>
+  <circle cx="1010" cy="92" r="170" fill="#2563eb" opacity=".12"/>
+  <circle cx="1150" cy="310" r="160" fill="#60a5fa" opacity=".08"/>
+  <g transform="translate(78 74)">
+    <rect width="192" height="192" rx="46" fill="#101215"/>
+    <path d="M37 67L80 42L94 50L51 75Z" fill="#f6f2ed"/>
+    <path d="M37 67L51 75V89L37 81Z" fill="#aaa9a6"/>
+    <path d="M98 43L151 73V89L98 59Z" fill="#f6f2ed"/>
+    <path d="M98 59V73L151 103V89Z" fill="#aaa9a6"/>
+    <path d="M43 92L90 119L107 109L60 82Z" fill="#1f883d"/>
+    <path d="M43 92L60 82L60 96L43 106Z" fill="#176b32"/>
+    <path d="M95 93L144 65L157 73L108 101Z" fill="#f6f2ed"/>
+    <path d="M108 101L157 73V88L108 116Z" fill="#aaa9a6"/>
+    <path d="M38 111L82 137V153L38 128Z" fill="#f6f2ed"/>
+    <path d="M38 128L82 153V166L38 141Z" fill="#aaa9a6"/>
+    <path d="M96 137L144 109L157 117L109 145Z" fill="#f6f2ed"/>
+    <path d="M109 145L157 117V132L109 160Z" fill="#aaa9a6"/>
+  </g>
+  <text x="326" y="148" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="58" font-weight="700">ControleGitHub</text>
+  <text x="330" y="204" fill="#dbeafe" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28">Seu GitHub, sob controle.</text>
+  <text x="330" y="258" fill="#bfdbfe" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19">Android nativo · Kotlin · Jetpack Compose · Português</text>
+</svg>

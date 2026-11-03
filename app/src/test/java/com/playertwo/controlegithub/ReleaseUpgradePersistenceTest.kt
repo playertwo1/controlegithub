@@ -62,8 +62,8 @@ class ReleaseUpgradePersistenceTest {
         val buildGradle = File(root, "app/build.gradle.kts")
         val gradleText = buildGradle.readText(Charsets.UTF_8)
 
-        assertTrue("versionCode deve ser 106", gradleText.contains("versionCode = 106"))
-        assertTrue("versionName deve ser 2.5.0", gradleText.contains("versionName = \"2.5.0\""))
+        assertTrue("versionCode deve ser 107", gradleText.contains("versionCode = 107"))
+        assertTrue("versionName deve ser 2.5.1", gradleText.contains("versionName = \"2.5.1\""))
     }
 
     @Test

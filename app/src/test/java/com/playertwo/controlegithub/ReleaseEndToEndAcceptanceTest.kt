@@ -57,7 +57,7 @@ class ReleaseEndToEndAcceptanceTest {
         val hashBytes = digest.digest(releaseApk.readBytes())
         val hex = hashBytes.joinToString("") { "%02x".format(it) }
 
-        val expectedHash = "1f6c2fb0c2be1ecd3edbe4cc97d583842e73b69bc1b3af729f62b0e944bd163e"
+        val expectedHash = "2de54d2ed6d923ce55555d818482e52c345d7122f74fc30f8e056c3c1b72f47d"
         assertEquals("O hash SHA-256 do APK de release deve corresponder ao auditado", expectedHash, hex.lowercase())
     }
 
@@ -68,13 +68,13 @@ class ReleaseEndToEndAcceptanceTest {
         assertTrue("docs/RELEASE.md deve existir", releaseDoc.exists())
         val docText = releaseDoc.readText(Charsets.UTF_8)
 
-        val expectedHash = "1F6C2FB0C2BE1ECD3EDBE4CC97D583842E73B69BC1B3AF729F62B0E944BD163E"
+        val expectedHash = "2DE54D2ED6D923CE55555D818482E52C345D7122F74FC30F8E056C3C1B72F47D"
         assertTrue("docs/RELEASE.md deve documentar o hash SHA-256 oficial", docText.contains(expectedHash))
 
         val buildGradle = File(root, "app/build.gradle.kts")
         val gradleText = buildGradle.readText(Charsets.UTF_8)
-        assertTrue("versionCode deve ser 106", gradleText.contains("versionCode = 106"))
-        assertTrue("versionName deve ser 2.5.0", gradleText.contains("versionName = \"2.5.0\""))
+        assertTrue("versionCode deve ser 107", gradleText.contains("versionCode = 107"))
+        assertTrue("versionName deve ser 2.5.1", gradleText.contains("versionName = \"2.5.1\""))
 
         val manifest = File(root, "app/src/main/AndroidManifest.xml")
         val manifestText = manifest.readText(Charsets.UTF_8)
