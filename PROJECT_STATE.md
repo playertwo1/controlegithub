@@ -1,11 +1,11 @@
 # Estado do projeto
 
-## Release v2.6.1 — ARTEFATO VALIDADO, PUBLICAÇÃO PENDENTE (2026-11-05)
+## Release v2.6.1 — PUBLICADA (2026-11-05)
 
 - Tocar em imagens de README abre a prévia dentro do app; links de páginas externas continuam com confirmação antes do navegador.
 - APK `com.playertwo.controlegithub`, versão 2.6.1, código 109, 12.817.627 bytes. `clean assembleRelease`, `apksigner` v2, `aapt` e SHA-256 **PASS**; hash `C4B809DB5A8251A0A440A743A6871BDCE99549F86437DB0C631C6885EEA69599`; certificado de produção `c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec`.
 - `assembleDebug`, `testDebugUnitTest` (223/223), `lintDebug` e `compileDebugAndroidTestKotlin`: **PASS**. Testes instrumentados no emulador/aparelho **NOT_RUN**; o usuário validará o APK.
-- Artefato local: `app/build/outputs/apk/release/app-release.apk`. Publicação no GitHub pendente.
+- Release: https://github.com/playertwo1/controlegithub/releases/tag/v2.6.1. Commit `f23c3a5`, tag `v2.6.1`; APK e `SHA256SUMS.txt` anexados, tamanho e digest do APK confirmados via GitHub API.
 
 ## Release v2.6.0 — PUBLICADA (2026-11-04)
 
