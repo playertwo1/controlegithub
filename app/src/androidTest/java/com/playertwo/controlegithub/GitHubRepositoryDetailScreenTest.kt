@@ -4,6 +4,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
@@ -14,13 +15,18 @@ import androidx.work.workDataOf
 import android.content.Context
 import android.content.ContentValues
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Environment
 import android.provider.MediaStore
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.InetAddress
+import java.net.HttpURLConnection
 import java.net.ServerSocket
 import java.net.URI
+import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.util.Base64
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -48,7 +54,8 @@ class GitHubRepositoryDetailScreenTest {
 
     @Test fun opensRealSelectionRendersMarkdownAndConfirmsExternalLinks() {
         DetailApi().use { api ->
-            showRepositories(api)
+            val (imageLoader, imageRequests) = testImageLoader()
+            showRepositories(api, imageLoader = imageLoader)
             compose.waitUntil(10_000) {
                 api.requestCount.get() == 1 &&
                     compose.onAllNodesWithText("acme/Mobile").fetchSemanticsNodes().isNotEmpty()
@@ -79,14 +86,21 @@ class GitHubRepositoryDetailScreenTest {
             compose.onNodeWithText("<script>literal</script>").assertDoesNotExist()
             compose.onNodeWithText("HTML paragraph works").performScrollTo().assertIsDisplayed()
             compose.onNodeWithText("Carregar imagem: README cover").performScrollTo().performClick()
-            compose.onNodeWithText("Abrir link externo?").assertIsDisplayed()
-            compose.onNodeWithText("raw.githubusercontent.com").assertIsDisplayed()
-            compose.onNodeWithText("Cancelar").performClick()
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithTag("markdown_loaded_image").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Imagem: README cover").assertIsDisplayed()
+            assertTrue(imageRequests.contains("https://raw.githubusercontent.com/acme/Mobile/feature/mobile/docs/images/page-cover.png"))
+            compose.onNodeWithText("Fechar").performClick()
             compose.onNodeWithText("unsafe").assertIsDisplayed().assertHasNoClickAction()
             compose.onNodeWithText("Imagem: logo").assertIsDisplayed().performTouchInput { click() }
-            compose.onNodeWithText("Abrir link externo?").assertIsDisplayed()
-            compose.onNodeWithText("example.test").assertIsDisplayed()
-            compose.onNodeWithText("Cancelar").performClick()
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithTag("markdown_loaded_image").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithTag("markdown_image_preview_dialog").assertIsDisplayed()
+            assertTrue(imageRequests.contains("https://example.test/logo.png"))
+            compose.onNodeWithText("Abrir link externo?").assertDoesNotExist()
+            compose.onNodeWithText("Fechar").performClick()
             compose.onNodeWithText("echo safe", substring = true).performScrollTo().assertIsDisplayed()
             compose.onNodeWithText("external").performScrollTo().performTouchInput { click() }
             compose.onNodeWithText("Abrir link externo?").assertIsDisplayed()
@@ -912,22 +926,6 @@ class GitHubRepositoryDetailScreenTest {
         }
     }
 
-    @Test fun markdownImageOffersOnDemandInAppLoadingAction() {
-        DetailApi().use { api ->
-            showRepositories(api)
-            openDetail(api)
-            compose.waitUntil(10_000) {
-                compose.onAllNodesWithText("Intro").fetchSemanticsNodes().isNotEmpty()
-            }
-            compose.onNodeWithText("Intro").performScrollTo().assertIsDisplayed()
-            compose.onNodeWithText("Imagem: logo").assertIsDisplayed().performTouchInput { click() }
-            compose.onNodeWithText("Abrir link externo?").assertIsDisplayed()
-            compose.onNodeWithTag("load_markdown_image_button").assertIsDisplayed()
-            compose.onNodeWithText("Carregar imagem no app").assertIsDisplayed()
-            compose.onNodeWithText("Cancelar").performClick()
-        }
-    }
-
     @Test fun launcherShortcutOpensTargetTabWhenAuthenticated() {
         DetailApi().use { api ->
             val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -987,7 +985,11 @@ class GitHubRepositoryDetailScreenTest {
         }
     }
 
-    private fun showRepositories(api: DetailApi, onSessionExpired: () -> Unit = {}) {
+    private fun showRepositories(
+        api: DetailApi,
+        imageLoader: GitHubMarkdownImageLoader = GitHubMarkdownImageLoader(),
+        onSessionExpired: () -> Unit = {}
+    ) {
         val client = GitHubHttpClient(baseUrl = api.baseUrl)
         val session = GitHubSession(
             GitHubUser("fixture-user", "https://github.com/fixture-user"),
@@ -995,20 +997,46 @@ class GitHubRepositoryDetailScreenTest {
         )
         compose.setContent {
             ControleTheme(AppThemeMode.LIGHT) {
-                GitHubRepositoriesScreen(
-                    modifier = Modifier,
-                    client = client,
-                    session = session,
-                    sessionRestoring = false,
-                    sessionStorageError = false,
-                    sessionExpired = false,
-                    onConnected = { true },
-                    onSessionExpired = { onSessionExpired() },
-                    onLogout = {},
-                    onAppearance = {}
-                )
+                CompositionLocalProvider(LocalGitHubMarkdownImageLoader provides imageLoader) {
+                    GitHubRepositoriesScreen(
+                        modifier = Modifier,
+                        client = client,
+                        session = session,
+                        sessionRestoring = false,
+                        sessionStorageError = false,
+                        sessionExpired = false,
+                        onConnected = { true },
+                        onSessionExpired = { onSessionExpired() },
+                        onLogout = {},
+                        onAppearance = {}
+                    )
+                }
             }
         }
+    }
+
+    private fun testImageLoader(): Pair<GitHubMarkdownImageLoader, ConcurrentLinkedQueue<String>> {
+        val bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        val bytes = ByteArrayOutputStream().use { output ->
+            check(bitmap.compress(Bitmap.CompressFormat.PNG, 100, output))
+            output.toByteArray()
+        }.also { bitmap.recycle() }
+        val requestedUrls = ConcurrentLinkedQueue<String>()
+        val loader = GitHubMarkdownImageLoader { url ->
+            requestedUrls.add(url.toString())
+            TestImageConnection(url, bytes)
+        }
+        return loader to requestedUrls
+    }
+
+    private class TestImageConnection(url: URL, private val bytes: ByteArray) : HttpURLConnection(url) {
+        override fun connect() = Unit
+        override fun disconnect() = Unit
+        override fun usingProxy() = false
+        override fun getResponseCode() = HTTP_OK
+        override fun getContentLengthLong() = bytes.size.toLong()
+        override fun getContentType() = "image/png"
+        override fun getInputStream() = ByteArrayInputStream(bytes)
     }
 
     private fun showFullApp(api: DetailApi) {

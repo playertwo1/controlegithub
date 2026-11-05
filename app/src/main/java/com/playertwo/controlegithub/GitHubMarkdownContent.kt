@@ -110,7 +110,6 @@ internal fun GitHubMarkdownContent(
     val imageLoader = LocalGitHubMarkdownImageLoader.current
     val context = LocalContext.current
     var pendingExternalLink by remember(markdown) { mutableStateOf<GitHubMarkdownLinkTarget.External?>(null) }
-    var pendingExternalImageLabel by remember(markdown) { mutableStateOf<String?>(null) }
     var activeImagePreview by remember(markdown) {
         mutableStateOf<Pair<GitHubMarkdownLinkTarget.External, String>?>(null)
     }
@@ -120,8 +119,11 @@ internal fun GitHubMarkdownContent(
         when (target) {
             is GitHubMarkdownLinkTarget.InApp -> navigator?.invoke(target.destination)
             is GitHubMarkdownLinkTarget.External -> {
-                pendingExternalLink = target
-                pendingExternalImageLabel = imageLabel
+                if (imageLabel != null) {
+                    activeImagePreview = target to imageLabel
+                } else {
+                    pendingExternalLink = target
+                }
             }
         }
     }
@@ -148,36 +150,19 @@ internal fun GitHubMarkdownContent(
     }
 
     pendingExternalLink?.let { target ->
-        val imageLabel = pendingExternalImageLabel
         AlertDialog(
-            onDismissRequest = {
-                pendingExternalLink = null
-                pendingExternalImageLabel = null
-            },
+            onDismissRequest = { pendingExternalLink = null },
             title = { Text("Abrir link externo?") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text("O endereço será aberto fora do app. Sua sessão do GitHub não será enviada.")
                     Text(target.host, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
                     Text(target.url, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    if (imageLabel != null) {
-                        TextButton(
-                            onClick = {
-                                pendingExternalLink = null
-                                pendingExternalImageLabel = null
-                                activeImagePreview = target to imageLabel
-                            },
-                            modifier = Modifier.testTag("load_markdown_image_button")
-                        ) {
-                            Text("Carregar imagem no app")
-                        }
-                    }
                 }
             },
             confirmButton = {
                 TextButton(onClick = {
                     pendingExternalLink = null
-                    pendingExternalImageLabel = null
                     try {
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(target.url)))
                     } catch (_: ActivityNotFoundException) {
@@ -188,10 +173,7 @@ internal fun GitHubMarkdownContent(
                 }) { Text("Abrir no navegador") }
             },
             dismissButton = {
-                TextButton(onClick = {
-                    pendingExternalLink = null
-                    pendingExternalImageLabel = null
-                }) { Text("Cancelar") }
+                TextButton(onClick = { pendingExternalLink = null }) { Text("Cancelar") }
             }
         )
     }

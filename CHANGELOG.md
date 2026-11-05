@@ -7,6 +7,18 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
+## [2.6.1] — 2026-11-05
+
+### Corrigido
+
+- Tocar em imagens de README abre a prévia dentro do app; links externos continuam com confirmação antes de abrir no navegador.
+
+### Verificação
+
+- `assembleDebug`, `testDebugUnitTest` (223/223) e `lintDebug`: **PASS**.
+- `compileDebugAndroidTestKotlin`: **PASS**; testes instrumentados **NOT_RUN** nesta sessão.
+- `clean assembleRelease`, assinatura v2, metadados e SHA-256 do APK: **PASS**.
+
 ## [2.6.0] — 2026-11-04
 
 ### Adicionado

@@ -16,7 +16,7 @@ class ReleaseDeliveryVerificationTest {
         current
     }
 
-    private val canonicalSha256 = "C92A2B0CEF32D42C3BF75F8C25C5253F39944CED99BD3954C07EB0986B28FA97"
+    private val canonicalSha256 = "C4B809DB5A8251A0A440A743A6871BDCE99549F86437DB0C631C6885EEA69599"
 
     @Test
     fun sha256SumsFileIsValidAndMatchesReleaseApkHash() {
@@ -50,11 +50,11 @@ class ReleaseDeliveryVerificationTest {
 
     @Test
     fun releaseNotesDocumentContainsAllRequiredSections() {
-        val notesFile = File(projectRoot, "docs/RELEASE_NOTES_v2.6.0.md")
-        assertTrue("docs/RELEASE_NOTES_v2.6.0.md deve existir", notesFile.exists())
+        val notesFile = File(projectRoot, "docs/RELEASE_NOTES_v2.6.1.md")
+        assertTrue("docs/RELEASE_NOTES_v2.6.1.md deve existir", notesFile.exists())
 
         val text = notesFile.readText(Charsets.UTF_8)
-        assertTrue("Deve referenciar a versão 2.6.0", text.contains("2.6.0"))
+        assertTrue("Deve referenciar a versão 2.6.1", text.contains("2.6.1"))
         assertTrue("Deve conter o hash canônico SHA-256", text.contains(canonicalSha256))
         assertTrue("Deve referenciar o canal oficial GitHub Releases", text.contains("github.com/playertwo1/controlegithub/releases"))
     }

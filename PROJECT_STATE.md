@@ -1,10 +1,17 @@
 # Estado do projeto
 
+## Release v2.6.1 — ARTEFATO VALIDADO, PUBLICAÇÃO PENDENTE (2026-11-05)
+
+- Tocar em imagens de README abre a prévia dentro do app; links de páginas externas continuam com confirmação antes do navegador.
+- APK `com.playertwo.controlegithub`, versão 2.6.1, código 109, 12.817.627 bytes. `clean assembleRelease`, `apksigner` v2, `aapt` e SHA-256 **PASS**; hash `C4B809DB5A8251A0A440A743A6871BDCE99549F86437DB0C631C6885EEA69599`; certificado de produção `c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec`.
+- `assembleDebug`, `testDebugUnitTest` (223/223), `lintDebug` e `compileDebugAndroidTestKotlin`: **PASS**. Testes instrumentados no emulador/aparelho **NOT_RUN**; o usuário validará o APK.
+- Artefato local: `app/build/outputs/apk/release/app-release.apk`. Publicação no GitHub pendente.
+
 ## Release v2.6.0 — PUBLICADA (2026-11-04)
 
-- READMEs exibem texto de HTML comum; imagens relativas usam a branch padrão e continuam com carregamento sob demanda. Explorar GitHub filtra pushes no dia, semana e mês e ordena pelo total atual de estrelas.
+- READMEs exibem texto de HTML comum; imagens relativas usam a branch padrão e podem ser carregadas sob demanda. Explorar GitHub filtra pushes no dia, semana e mês e ordena pelo total atual de estrelas.
 - APK `com.playertwo.controlegithub`, versão 2.6.0, código 108, 12.817.627 bytes. `clean assembleRelease`, `apksigner` v2, `aapt` e SHA-256 **PASS**; hash `C92A2B0CEF32D42C3BF75F8C25C5253F39944CED99BD3954C07EB0986B28FA97`; certificado de produção coincide com v2.5.1.
-- `assembleDebug testDebugUnitTest lintDebug` **PASS** (223/223 testes); `compileDebugAndroidTestKotlin` **PASS**. Testes instrumentados no emulador/aparelho **NOT_RUN** a pedido do usuário, que fará a validação do APK.
+- `assembleDebug testDebugUnitTest lintDebug` **PASS** (223/223 testes); `compileDebugAndroidTestKotlin` **PASS**. Testes instrumentados no emulador/aparelho **NOT_RUN** a pedido do usuário, que fez a validação do APK.
 - Release: https://github.com/playertwo1/controlegithub/releases/tag/v2.6.0. Commit `0fb53b3`, tag `v2.6.0`; APK e `SHA256SUMS.txt` anexados e tamanhos/digest confirmados via GitHub API.
 
 ## Release v2.5.1 — PUBLICADA (2026-11-03)
