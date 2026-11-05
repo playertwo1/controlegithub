@@ -6,6 +6,27 @@ import org.json.JSONObject
 import java.io.IOException
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import java.time.LocalDate
+
+internal enum class GitHubTrendingPeriod(val label: String) {
+    DAY("Hoje"),
+    WEEK("Esta semana"),
+    MONTH("Este mês");
+
+    fun since(today: LocalDate): LocalDate = when (this) {
+        DAY -> today
+        WEEK -> today.minusWeeks(1)
+        MONTH -> today.minusMonths(1)
+    }
+}
+
+internal fun githubTrendingRepositoryQuery(
+    query: String,
+    period: GitHubTrendingPeriod,
+    today: LocalDate = LocalDate.now()
+): String = listOf(query.trim(), "pushed:>=${period.since(today)}")
+    .filter(String::isNotBlank)
+    .joinToString(" ")
 
 internal fun githubGlobalRepositorySearchPath(
     query: String,

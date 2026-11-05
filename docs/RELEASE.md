@@ -1,16 +1,23 @@
 # Guia de Release e Distribuição — ControleGitHub
 
-Última atualização: 3 de novembro de 2026
+Última atualização: 4 de novembro de 2026
 
-## Release atual: v2.5.1
+## Release atual: v2.6.0
 
 - Pacote: `com.playertwo.controlegithub`
-- Versão: `2.5.1` (`versionCode = 107`)
+- Versão: `2.6.0` (`versionCode = 108`)
 - Compatibilidade: Android 8.0 (API 26) ou superior
 - Arquivo: `app-release.apk` (12.817.627 bytes)
-- SHA-256: `2DE54D2ED6D923CE55555D818482E52C345D7122F74FC30F8E056C3C1B72F47D`
+- SHA-256: `C92A2B0CEF32D42C3BF75F8C25C5253F39944CED99BD3954C07EB0986B28FA97`
 - Certificado SHA-256: `c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec`
 - Assinatura: reutiliza a chave de produção v2.x.
+- Notas: [RELEASE_NOTES_v2.6.0.md](RELEASE_NOTES_v2.6.0.md)
+
+## Release v2.5.1
+
+- Versão: `2.5.1` (`versionCode = 107`)
+- Arquivo: `app-release.apk` (12.817.627 bytes)
+- SHA-256: `2DE54D2ED6D923CE55555D818482E52C345D7122F74FC30F8E056C3C1B72F47D`
 - Notas: [RELEASE_NOTES_v2.5.1.md](RELEASE_NOTES_v2.5.1.md)
 
 ## Release v2.5.0
@@ -61,7 +68,7 @@ O certificado deve corresponder ao fingerprint acima, a verificação v2 precisa
 
 ## Distribuição e compatibilidade
 
-A distribuição oficial é feita em [GitHub Releases](https://github.com/playertwo1/controlegithub/releases), com a tag `v2.0.0`, o APK, `SHA256SUMS.txt` e as [notas de lançamento](RELEASE_NOTES_v2.0.0.md).
+A distribuição oficial é feita em [GitHub Releases](https://github.com/playertwo1/controlegithub/releases), com APK, `SHA256SUMS.txt` e notas de lançamento em português.
 
 A chave v2.0.0 é diferente da chave da v1.0.0. O Android não aceita a v2.0.0 como atualização direta; é necessário desinstalar a versão anterior e instalar a nova. A desinstalação apaga os dados locais do aplicativo. As releases v2.x seguintes devem reutilizar a chave v2.0.0 para permitir atualização normal.
 

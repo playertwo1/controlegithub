@@ -1,5 +1,12 @@
 # Estado do projeto
 
+## Release v2.6.0 — CANDIDATA VALIDADA (2026-11-04)
+
+- READMEs exibem texto de HTML comum; imagens relativas usam a branch padrão e continuam com carregamento sob demanda. Explorar GitHub filtra pushes no dia, semana e mês e ordena pelo total atual de estrelas.
+- APK `com.playertwo.controlegithub`, versão 2.6.0, código 108, 12.817.627 bytes. `clean assembleRelease`, `apksigner` v2, `aapt` e SHA-256 **PASS**; hash `C92A2B0CEF32D42C3BF75F8C25C5253F39944CED99BD3954C07EB0986B28FA97`; certificado de produção coincide com v2.5.1.
+- `assembleDebug testDebugUnitTest lintDebug` **PASS** (223/223 testes); `compileDebugAndroidTestKotlin` **PASS**. Testes instrumentados no emulador/aparelho **NOT_RUN** a pedido do usuário, que fará a validação do APK.
+- Publicação GitHub pendente do commit desta candidata.
+
 ## Release v2.5.1 — PUBLICADA (2026-11-03)
 
 - Aplicado o ícone 3D aprovado, com camadas adaptive, redonda, monocromática e PNG legado. Versão 2.5.1, código 107.

@@ -7,6 +7,19 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
+## [2.6.0] — 2026-11-04
+
+### Adicionado
+
+- Em **Explorar GitHub**, filtros Hoje, Esta semana e Este mês listam repositórios com push no período, ordenados pelo total atual de estrelas.
+- Renderização de texto HTML em READMEs e resolução de imagens relativas ao repositório para carregamento sob demanda.
+
+### Verificação
+
+- `assembleDebug`, `testDebugUnitTest` (223/223) e `lintDebug` **PASS**.
+- `compileDebugAndroidTestKotlin` **PASS**; testes instrumentados **NOT_RUN** nesta sessão.
+- `clean assembleRelease`, verificação de assinatura e metadados do APK **PASS**.
+
 ## [2.0.0] — 2026-10-23
 
 Nova versão principal do ControleGitHub. As mudanças C22.1–C24.1 acrescentam leitura e edição Markdown e navegação de arquivos de código. Esta release usa uma nova chave de assinatura; a instalação existente da 1.0.0 precisa ser removida antes da instalação, o que apaga os dados locais do aplicativo.

@@ -1,6 +1,8 @@
 package com.playertwo.controlegithub
 
 import java.net.URI
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.ArrayDeque
 import org.commonmark.Extension
 import org.commonmark.ext.gfm.tables.TablesExtension
@@ -10,6 +12,54 @@ import org.commonmark.parser.Parser
 internal const val MAX_GITHUB_MARKDOWN_CHARS = 256 * 1024
 internal const val MAX_GITHUB_MARKDOWN_AST_NODES = 4_096
 internal const val MAX_GITHUB_MARKDOWN_ROUTE_DEPTH = 10
+
+internal data class GitHubMarkdownRepositoryImages(
+    val owner: String,
+    val repository: String,
+    val branch: String
+)
+
+internal fun resolveGitHubMarkdownImage(
+    rawSource: String,
+    repository: GitHubMarkdownRepositoryImages?
+): String? {
+    val source = rawSource.trim()
+    if (source.isEmpty() || source.length > 8_192 || source.any(Char::isISOControl)) return null
+    val uri = runCatching { URI(source) }.getOrNull() ?: return null
+    if (uri.isAbsolute) {
+        if (uri.scheme.equals("https", true) && uri.rawUserInfo == null && uri.port in setOf(-1, 443) && !uri.host.isNullOrBlank()) {
+            return uri.toASCIIString()
+        }
+        return null
+    }
+    val context = repository ?: return null
+    if (uri.rawAuthority != null || source.startsWith('/') || source.contains('\\') || uri.isOpaque) return null
+    if (!context.owner.matches(Regex("[A-Za-z0-9_.-]{1,100}")) ||
+        !context.repository.matches(Regex("[A-Za-z0-9_.-]{1,100}")) ||
+        context.branch.isBlank() || context.branch.length > 255 || context.branch.any(Char::isISOControl)
+    ) return null
+
+    fun encode(segment: String) = URLEncoder.encode(segment, StandardCharsets.UTF_8.name()).replace("+", "%20")
+    val encodedBranch = context.branch.split('/').joinToString("/") { encode(it) }
+    val repoPrefix = "/${encode(context.owner)}/${encode(context.repository)}/"
+    val base = URI("https://raw.githubusercontent.com$repoPrefix$encodedBranch/")
+    val resolved = runCatching { base.resolve(uri).normalize() }.getOrNull() ?: return null
+    if (!resolved.scheme.equals("https", true) || resolved.host != "raw.githubusercontent.com" ||
+        resolved.rawUserInfo != null || !resolved.rawPath.orEmpty().startsWith(repoPrefix)
+    ) return null
+    return resolved.toASCIIString()
+}
+
+internal fun githubHtmlImageSources(html: String): List<Pair<String, String>> {
+    val tags = Regex("(?is)<img\\b([^>]*)>")
+    val attribute = Regex("(?is)([a-z_:][-a-z0-9_:.]*)\\s*=\\s*(?:\"([^\"]*)\"|'([^']*)'|([^\\s>]+))")
+    return tags.findAll(html).mapNotNull { tag ->
+        val attributes = attribute.findAll(tag.groupValues[1]).associate { match ->
+            match.groupValues[1].lowercase() to (match.groups[2]?.value ?: match.groups[3]?.value ?: match.groups[4]?.value.orEmpty())
+        }
+        attributes["src"]?.takeIf(String::isNotBlank)?.let { it to attributes["alt"].orEmpty().ifBlank { "Imagem do README" } }
+    }.toList()
+}
 
 internal sealed interface GitHubMarkdownDestination {
     data class Repository(val owner: String, val repository: String) : GitHubMarkdownDestination

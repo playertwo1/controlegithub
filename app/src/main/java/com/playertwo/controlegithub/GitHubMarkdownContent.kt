@@ -3,6 +3,7 @@ package com.playertwo.controlegithub
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.text.Html
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -97,7 +98,8 @@ private sealed interface MarkdownImageUiState {
 internal fun GitHubMarkdownContent(
     markdown: String,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(16.dp)
+    contentPadding: PaddingValues = PaddingValues(16.dp),
+    repositoryImages: GitHubMarkdownRepositoryImages? = null
 ) {
     val state by produceState<MarkdownParseState>(MarkdownParseState.Loading, markdown) {
         value = withContext(Dispatchers.Default) {
@@ -137,7 +139,9 @@ internal fun GitHubMarkdownContent(
                     modifier = Modifier.padding(contentPadding),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    MarkdownBlocks(parsed.document, ::openMarkdownTarget)
+                    MarkdownBlocks(parsed.document, ::openMarkdownTarget) { source ->
+                        resolveGitHubMarkdownImage(source, repositoryImages)
+                    }
                 }
             }
         }
@@ -263,11 +267,15 @@ private fun MarkdownImagePreviewDialog(
 }
 
 @Composable
-private fun MarkdownBlocks(node: Node, onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit) {
+private fun MarkdownBlocks(
+    node: Node,
+    onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit,
+    resolveImage: (String) -> String? = { null }
+) {
     var child = node.firstChild
     while (child != null) {
         when (val block = child) {
-            is Paragraph -> MarkdownInlineText(block, onOpenLink)
+            is Paragraph -> MarkdownInlineText(block, onOpenLink, resolveImage = resolveImage)
             is Heading -> MarkdownInlineText(
                 block,
                 onOpenLink,
@@ -276,25 +284,49 @@ private fun MarkdownBlocks(node: Node, onOpenLink: (GitHubMarkdownLinkTarget, St
                     2 -> MaterialTheme.typography.titleLarge
                     3 -> MaterialTheme.typography.titleMedium
                     else -> MaterialTheme.typography.titleSmall
-                }.copy(fontWeight = FontWeight.SemiBold)
+                }.copy(fontWeight = FontWeight.SemiBold),
+                resolveImage = resolveImage
             )
             is BlockQuote -> Surface(
                 shape = RoundedCornerShape(12.dp),
                 color = MaterialTheme.colorScheme.surfaceVariant
             ) {
-                MarkdownBlocks(block, onOpenLink)
+                MarkdownBlocks(block, onOpenLink, resolveImage)
             }
-            is BulletList -> MarkdownList(block, ordered = false, onOpenLink = onOpenLink)
-            is OrderedList -> MarkdownList(block, ordered = true, start = block.markerStartNumber ?: 1, onOpenLink = onOpenLink)
+            is BulletList -> MarkdownList(block, ordered = false, onOpenLink = onOpenLink, resolveImage = resolveImage)
+            is OrderedList -> MarkdownList(block, ordered = true, start = block.markerStartNumber ?: 1, onOpenLink = onOpenLink, resolveImage = resolveImage)
             is FencedCodeBlock -> MarkdownCode(block.literal)
             is IndentedCodeBlock -> MarkdownCode(block.literal)
-            is HtmlBlock -> Text(block.literal, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            is HtmlBlock -> MarkdownHtmlBlock(block.literal, onOpenLink, resolveImage)
             is ThematicBreak -> HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-            is TableBlock -> MarkdownTable(block, onOpenLink)
-            else -> if (block.firstChild != null) MarkdownBlocks(block, onOpenLink)
-                else MarkdownInlineText(block, onOpenLink)
+            is TableBlock -> MarkdownTable(block, onOpenLink, resolveImage)
+            else -> if (block.firstChild != null) MarkdownBlocks(block, onOpenLink, resolveImage)
+                else MarkdownInlineText(block, onOpenLink, resolveImage = resolveImage)
         }
         child = child.next
+    }
+}
+
+@Composable
+private fun MarkdownHtmlBlock(
+    html: String,
+    onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit,
+    resolveImage: (String) -> String?
+) {
+    val text = remember(html) {
+        Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT).toString()
+            .replace('\uFFFC', ' ')
+            .trim()
+    }
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        if (text.isNotBlank()) Text(text, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        githubHtmlImageSources(html).forEach { (source, label) ->
+            val target = resolveImage(source)?.let(::classifyGitHubMarkdownLink)
+                ?: classifyGitHubMarkdownLink(source)
+            if (target != null) TextButton(onClick = { onOpenLink(target, label) }) {
+                Text("Carregar imagem: $label")
+            }
+        }
     }
 }
 
@@ -303,7 +335,8 @@ private fun MarkdownList(
     list: Node,
     ordered: Boolean,
     start: Int = 1,
-    onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit
+    onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit,
+    resolveImage: (String) -> String? = { null }
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
         var itemNumber = start
@@ -317,7 +350,7 @@ private fun MarkdownList(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                        MarkdownBlocks(item, onOpenLink)
+                        MarkdownBlocks(item, onOpenLink, resolveImage)
                     }
                 }
             }
@@ -339,13 +372,17 @@ private fun MarkdownCode(literal: String) {
 }
 
 @Composable
-private fun MarkdownTable(table: TableBlock, onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit) {
+private fun MarkdownTable(
+    table: TableBlock,
+    onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit,
+    resolveImage: (String) -> String? = { null }
+) {
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         var section = table.firstChild
         while (section != null) {
             when (section) {
-                is TableHead -> MarkdownTableRows(section, isHeader = true, onOpenLink)
-                is TableBody -> MarkdownTableRows(section, isHeader = false, onOpenLink)
+                is TableHead -> MarkdownTableRows(section, isHeader = true, onOpenLink, resolveImage)
+                is TableBody -> MarkdownTableRows(section, isHeader = false, onOpenLink, resolveImage)
             }
             section = section.next
         }
@@ -356,7 +393,8 @@ private fun MarkdownTable(table: TableBlock, onOpenLink: (GitHubMarkdownLinkTarg
 private fun MarkdownTableRows(
     section: Node,
     isHeader: Boolean,
-    onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit
+    onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit,
+    resolveImage: (String) -> String? = { null }
 ) {
     var row = section.firstChild
     while (row != null) {
@@ -373,7 +411,8 @@ private fun MarkdownTableRows(
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontWeight = if (isHeader) FontWeight.SemiBold else FontWeight.Normal
                         ),
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 8.dp)
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 8.dp),
+                        resolveImage = resolveImage
                     )
                 }
                 cell = cell.next
@@ -388,17 +427,18 @@ private fun MarkdownInlineText(
     node: Node,
     onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit,
     style: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.bodyMedium,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    resolveImage: (String) -> String? = { null }
 ) {
     val linkColor = MaterialTheme.colorScheme.primary
     val codeBackground = MaterialTheme.colorScheme.surfaceVariant
     val codeColor = MaterialTheme.colorScheme.onSurfaceVariant
     val currentOnOpenLink by rememberUpdatedState(onOpenLink)
-    val annotated = remember(node, linkColor, codeBackground, codeColor) {
+    val annotated = remember(node, linkColor, codeBackground, codeColor, resolveImage) {
         buildAnnotatedString {
             var child = node.firstChild
             while (child != null) {
-                appendInline(child, linkColor, codeBackground, codeColor) { target, imageLabel ->
+                appendInline(child, linkColor, codeBackground, codeColor, resolveImage) { target, imageLabel ->
                     currentOnOpenLink(target, imageLabel)
                 }
                 child = child.next
@@ -413,6 +453,7 @@ private fun AnnotatedString.Builder.appendInline(
     linkColor: Color,
     codeBackground: Color,
     codeColor: Color,
+    resolveImage: (String) -> String?,
     onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit
 ) {
     when (node) {
@@ -420,22 +461,22 @@ private fun AnnotatedString.Builder.appendInline(
         is Code -> withStyle(SpanStyle(fontFamily = FontFamily.Monospace, background = codeBackground, color = codeColor)) {
             append(node.literal)
         }
-        is Emphasis -> withStyle(SpanStyle(fontStyle = FontStyle.Italic)) { appendInlineChildren(node, linkColor, codeBackground, codeColor, onOpenLink) }
-        is StrongEmphasis -> withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { appendInlineChildren(node, linkColor, codeBackground, codeColor, onOpenLink) }
+        is Emphasis -> withStyle(SpanStyle(fontStyle = FontStyle.Italic)) { appendInlineChildren(node, linkColor, codeBackground, codeColor, resolveImage, onOpenLink) }
+        is StrongEmphasis -> withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { appendInlineChildren(node, linkColor, codeBackground, codeColor, resolveImage, onOpenLink) }
         is Link -> {
             val target = classifyGitHubMarkdownLink(node.destination)
-            if (target == null) appendInlineChildren(node, linkColor, codeBackground, codeColor, onOpenLink)
+            if (target == null) appendInlineChildren(node, linkColor, codeBackground, codeColor, resolveImage, onOpenLink)
             else withLink(
                 LinkAnnotation.Url(
                     node.destination,
                     TextLinkStyles(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline))
                 ) { onOpenLink(target, null) }
-            ) { appendInlineChildren(node, linkColor, codeBackground, codeColor, onOpenLink) }
+            ) { appendInlineChildren(node, linkColor, codeBackground, codeColor, resolveImage, onOpenLink) }
         }
         is org.commonmark.node.Image -> {
             val altText = inlinePlainText(node).ifBlank { "Imagem" }
-            val label = "Imagem: $altText"
-            val target = classifyGitHubMarkdownLink(node.destination)
+            val label = altText
+            val target = classifyGitHubMarkdownLink(resolveImage(node.destination) ?: node.destination)
             if (target == null) append(label)
             else withLink(
                 LinkAnnotation.Url(
@@ -444,9 +485,9 @@ private fun AnnotatedString.Builder.appendInline(
                 ) { onOpenLink(target, altText) }
             ) { append(label) }
         }
-        is HtmlInline -> append(node.literal)
+        is HtmlInline -> append(Html.fromHtml(node.literal, Html.FROM_HTML_MODE_COMPACT).toString())
         is SoftLineBreak, is HardLineBreak -> append('\n')
-        else -> appendInlineChildren(node, linkColor, codeBackground, codeColor, onOpenLink)
+        else -> appendInlineChildren(node, linkColor, codeBackground, codeColor, resolveImage, onOpenLink)
     }
 }
 
@@ -455,11 +496,12 @@ private fun AnnotatedString.Builder.appendInlineChildren(
     linkColor: Color,
     codeBackground: Color,
     codeColor: Color,
+    resolveImage: (String) -> String?,
     onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit
 ) {
     var child = node.firstChild
     while (child != null) {
-        appendInline(child, linkColor, codeBackground, codeColor, onOpenLink)
+        appendInline(child, linkColor, codeBackground, codeColor, resolveImage, onOpenLink)
         child = child.next
     }
 }

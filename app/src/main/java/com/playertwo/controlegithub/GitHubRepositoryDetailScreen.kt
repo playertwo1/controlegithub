@@ -454,7 +454,13 @@ internal fun GitHubRepositoryDetailScreen(
                             ) {
                                 GitHubMarkdownContent(
                                     markdown = readme.text.ifBlank { "O README está vazio." },
-                                    contentPadding = PaddingValues(18.dp)
+                                    contentPadding = PaddingValues(18.dp),
+                                    repositoryImages = current.detail.defaultBranch?.let { branch ->
+                                        val ownerAndName = current.detail.fullName.split('/', limit = 2)
+                                        ownerAndName.takeIf { it.size == 2 }?.let {
+                                            GitHubMarkdownRepositoryImages(it[0], it[1], branch)
+                                        }
+                                    }
                                 )
                             }
                         }

@@ -112,6 +112,25 @@ class GitHubMarkdownTest {
             classifyGitHubMarkdownLink("https://github.com/acme/mobile/issues")
         )
     }
+
+    @Test fun relativeRepositoryImagesResolveAgainstTheDefaultBranchWithoutEscapingTheRepository() {
+        val context = GitHubMarkdownRepositoryImages("storytold", "designcraft", "main")
+
+        assertEquals(
+            "https://raw.githubusercontent.com/storytold/designcraft/main/docs/images/page-cover.png",
+            resolveGitHubMarkdownImage("docs/images/page-cover.png", context)
+        )
+        assertEquals(
+            "https://raw.githubusercontent.com/storytold/designcraft/main/docs/images/page-2.png",
+            resolveGitHubMarkdownImage("./docs/images/page-2.png", context)
+        )
+        assertNull(resolveGitHubMarkdownImage("../../other/repo/image.png", context))
+        assertNull(resolveGitHubMarkdownImage("javascript:alert(1)", context))
+        assertEquals(
+            listOf("docs/images/page-cover.png" to "Capa"),
+            githubHtmlImageSources("<img src=\"docs/images/page-cover.png\" alt=\"Capa\">")
+        )
+    }
 }
 
 private fun org.commonmark.node.Node.children(): Sequence<org.commonmark.node.Node> = sequence {

@@ -10,7 +10,7 @@
 
 O **ControleGitHub** é um cliente Android nativo para acompanhar seus repositórios, issues, pull requests, notificações e GitHub Actions em um só lugar. A interface em português é feita com Kotlin e Jetpack Compose; o aplicativo conversa diretamente com a API do GitHub, sem servidor intermediário próprio.
 
-[Baixar a versão 2.5.1](https://github.com/playertwo1/controlegithub/releases/tag/v2.5.1) · [Manual do usuário](docs/MANUAL_DO_USUARIO.md) · [Política de privacidade](PRIVACY.md)
+[Baixar a versão 2.6.0](https://github.com/playertwo1/controlegithub/releases/tag/v2.6.0) · [Manual do usuário](docs/MANUAL_DO_USUARIO.md) · [Política de privacidade](PRIVACY.md)
 
 ## Conteúdo
 
@@ -26,11 +26,11 @@ O **ControleGitHub** é um cliente Android nativo para acompanhar seus repositó
 ## Funcionalidades
 
 - **Painel e resumo diário:** acompanhe repositórios, issues e notificações; copie o resumo de atividade em Markdown.
-- **Repositórios:** busque seus repositórios e explore repositórios públicos; consulte detalhes, código, releases, estrelas e Watch.
+- **Repositórios:** busque seus repositórios e explore repositórios públicos; veja destaques do dia, da semana ou do mês, consulte detalhes, código, releases, estrelas e Watch.
 - **Issues e pull requests:** filtre e pagine itens, crie e edite issues, comente, altere labels e estado, revise PRs e inspecione arquivos alterados.
 - **Kanban pessoal:** organize issues em quatro colunas locais, sem alterar os dados do repositório no GitHub.
 - **Notificações e GitHub Actions:** acompanhe avisos, execuções de workflows, jobs e logs.
-- **Markdown e código:** leia Markdown e tabelas, edite com prévia e rascunhos locais; navegue por pastas e arquivos de texto.
+- **Markdown e código:** leia Markdown, tabelas e HTML comum em READMEs; imagens relativas ao repositório podem ser carregadas sob demanda. Edite com prévia e rascunhos locais; navegue por pastas e arquivos de texto.
 - **Trabalho offline:** consulte dados em cache quando disponíveis; ações que escrevem no GitHub exigem conexão.
 - **Atalhos no launcher:** abra diretamente Resumo Diário, Repositórios, Demandas ou Avisos.
 
@@ -58,14 +58,14 @@ Consulte a [Política de Privacidade](PRIVACY.md) para os detalhes sobre dados e
 
 ## Instalar o aplicativo
 
-1. Baixe `app-release.apk` na [release v2.5.1](https://github.com/playertwo1/controlegithub/releases/tag/v2.5.1).
+1. Baixe `app-release.apk` na [release v2.6.0](https://github.com/playertwo1/controlegithub/releases/tag/v2.6.0).
 2. (Opcional) Baixe também `SHA256SUMS.txt` e confira o SHA-256 do APK.
 3. Abra o APK no Android e confirme a instalação. Se necessário, permita a instalação para a origem usada.
 
-Requer **Android 8.0 (API 26) ou superior**. O SHA-256 da versão 2.5.1 é:
+Requer **Android 8.0 (API 26) ou superior**. O SHA-256 da versão 2.6.0 é:
 
 ```text
-2DE54D2ED6D923CE55555D818482E52C345D7122F74FC30F8E056C3C1B72F47D
+C92A2B0CEF32D42C3BF75F8C25C5253F39944CED99BD3954C07EB0986B28FA97
 ```
 
 Atualizações entre versões **2.x** preservam os dados locais. Para migrar diretamente de uma versão **1.x**, é necessário desinstalá-la; isso apaga os dados locais daquela instalação. Consulte [todas as releases](https://github.com/playertwo1/controlegithub/releases).
@@ -124,7 +124,7 @@ flowchart LR
 ## Documentação
 
 - [Manual do usuário](docs/MANUAL_DO_USUARIO.md)
-- [Notas da versão 2.5.1](docs/RELEASE_NOTES_v2.5.1.md)
+- [Notas da versão 2.6.0](docs/RELEASE_NOTES_v2.6.0.md)
 - [Guia de release, assinatura e distribuição](docs/RELEASE.md)
 - [Política de privacidade](PRIVACY.md)
 - [Política de segurança](SECURITY.md)

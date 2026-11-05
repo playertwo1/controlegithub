@@ -119,6 +119,7 @@ internal fun GitHubRepositoriesScreen(
     var favoritesRetry by remember(client, session?.user?.login) { mutableIntStateOf(0) }
     var globalSearchMode by remember(client, session?.user?.login) { mutableStateOf(false) }
     var globalQuery by remember(client, session?.user?.login) { mutableStateOf("") }
+    var globalTrendingPeriod by remember(client, session?.user?.login) { mutableStateOf(GitHubTrendingPeriod.DAY) }
     var globalPager by remember(client, session?.accessToken) { mutableStateOf<GitHubGlobalRepositorySearchPager?>(null) }
     var globalResults by remember(client, session?.user?.login) { mutableStateOf(emptyList<GitHubRepository>()) }
     var globalHasNext by remember(client, session?.user?.login) { mutableStateOf(false) }
@@ -295,15 +296,15 @@ internal fun GitHubRepositoriesScreen(
         }
     }
 
-    fun submitGlobalSearch() {
+    fun submitGlobalSearch(period: GitHubTrendingPeriod = globalTrendingPeriod) {
         val activeSession = session ?: return
         val trimmed = globalQuery.trim()
-        if (trimmed.isEmpty() || globalLoading || activeSession.isOffline) return
+        if (globalLoading || activeSession.isOffline) return
         globalPager?.cancel()
         val newPager = GitHubGlobalRepositorySearchPager(
             client = client,
             accessToken = activeSession.accessToken,
-            query = trimmed
+            query = githubTrendingRepositoryQuery(trimmed, period)
         )
         globalPager = newPager
         globalResults = emptyList()
@@ -440,13 +441,34 @@ internal fun GitHubRepositoriesScreen(
                                 }
                             }
                         )
+                        Row(
+                            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            GitHubTrendingPeriod.entries.forEach { period ->
+                                FilterChip(
+                                    selected = globalTrendingPeriod == period,
+                                    onClick = {
+                                        globalTrendingPeriod = period
+                                        if (globalLoaded) submitGlobalSearch(period)
+                                    },
+                                    label = { Text(period.label) },
+                                    modifier = Modifier.testTag("global_trending_${period.name.lowercase()}_chip")
+                                )
+                            }
+                        }
+                        Text(
+                            "Atualizados no período, ordenados por estrelas totais.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 12.sp
+                        )
                         Button(
                             onClick = ::submitGlobalSearch,
-                            enabled = globalQuery.isNotBlank() && !globalLoading && !session.isOffline,
+                            enabled = !globalLoading && !session.isOffline,
                             modifier = Modifier.fillMaxWidth().height(48.dp).testTag("global_search_submit_button"),
                             shape = RoundedCornerShape(14.dp)
                         ) {
-                            Text("Pesquisar")
+                            Text(if (globalQuery.isBlank()) "Ver destaques" else "Pesquisar")
                         }
                     }
                 }

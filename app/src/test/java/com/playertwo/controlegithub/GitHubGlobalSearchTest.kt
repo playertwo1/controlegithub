@@ -33,6 +33,25 @@ class GitHubGlobalSearchTest {
     }
 
     @Test
+    fun trendingSearchUsesPushWindowAndRanksByStars() {
+        val today = java.time.LocalDate.parse("2026-11-04")
+
+        assertEquals(
+            "language:kotlin pushed:>=2026-11-04",
+            githubTrendingRepositoryQuery("language:kotlin", GitHubTrendingPeriod.DAY, today)
+        )
+        assertEquals(
+            "pushed:>=2026-10-28",
+            githubTrendingRepositoryQuery("", GitHubTrendingPeriod.WEEK, today)
+        )
+        assertEquals(
+            "pushed:>=2026-10-04",
+            githubTrendingRepositoryQuery("", GitHubTrendingPeriod.MONTH, today)
+        )
+        assertTrue(githubGlobalRepositorySearchPath("pushed:>=2026-11-04").contains("sort=stars&order=desc"))
+    }
+
+    @Test
     fun parseGitHubRepositorySearchParsesItemsAndHandlesEmptyResults() {
         val json = """
             {

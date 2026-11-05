@@ -76,7 +76,12 @@ class GitHubRepositoryDetailScreenTest {
             compose.onNodeWithText("Último push").assertIsDisplayed()
 
             compose.onNodeWithText("Intro").performScrollTo().assertIsDisplayed()
-            compose.onNodeWithText("<script>literal</script>").assertIsDisplayed().assertHasNoClickAction()
+            compose.onNodeWithText("<script>literal</script>").assertDoesNotExist()
+            compose.onNodeWithText("HTML paragraph works").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Carregar imagem: README cover").performScrollTo().performClick()
+            compose.onNodeWithText("Abrir link externo?").assertIsDisplayed()
+            compose.onNodeWithText("raw.githubusercontent.com").assertIsDisplayed()
+            compose.onNodeWithText("Cancelar").performClick()
             compose.onNodeWithText("unsafe").assertIsDisplayed().assertHasNoClickAction()
             compose.onNodeWithText("Imagem: logo").assertIsDisplayed().performTouchInput { click() }
             compose.onNodeWithText("Abrir link externo?").assertIsDisplayed()
@@ -886,6 +891,11 @@ class GitHubRepositoryDetailScreenTest {
                 api.responsesSent.any { it.startsWith("GET /search/repositories?q=compose") } &&
                     compose.onAllNodesWithText("acme/other").fetchSemanticsNodes().isNotEmpty()
             }
+            compose.onNodeWithText("Atualizados no período, ordenados por estrelas totais.").assertIsDisplayed()
+            compose.onNodeWithTag("global_trending_week_chip").performClick()
+            compose.waitUntil(10_000) {
+                api.responsesSent.any { it.contains("pushed%3A%3E%3D") }
+            }
             compose.onNodeWithText("acme/other").assertIsDisplayed().performClick()
 
             compose.waitUntil(10_000) {
@@ -1076,6 +1086,10 @@ class GitHubRepositoryDetailScreenTest {
         @Volatile var watching = false
         private val readme = """# Intro
             |<script>literal</script>
+            |
+            |<p align="center">HTML paragraph works</p>
+            |
+            |<img src="docs/images/page-cover.png" alt="README cover">
             |
             |[issue](https://github.com/acme/Mobile/issues/9)
             |
