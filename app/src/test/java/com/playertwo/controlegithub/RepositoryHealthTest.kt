@@ -45,10 +45,70 @@ class RepositoryHealthTest {
     fun repositoryListParsesHealthFields() {
         val repo = parseGitHubRepositories(
             """[{"id":1,"name":"app","full_name":"me/app","owner":{"login":"me"},"private":false,
-            "stargazers_count":2,"pushed_at":"2026-10-01T00:00:00Z","archived":true,"open_issues_count":4}]"""
+            "stargazers_count":2,"pushed_at":"2026-10-01T00:00:00Z","archived":true,"open_issues_count":4,"size":0}]"""
         ).single()
         assertEquals(Instant.parse("2026-10-01T00:00:00Z"), repo.pushedAt)
         assertEquals(true, repo.archived)
         assertEquals(4, repo.openIssues)
+        assertEquals(0L, repo.sizeKb)
+    }
+
+    @Test
+    fun zeroSizeUnarchivedRepositoryIsEmptyRegardlessOfPushDate() {
+        val freshEmpty = repositoryHealth(now, archived = false, now = now, sizeKb = 0L)
+        assertEquals(RepositoryHealthStatus.EMPTY, freshEmpty.status)
+        assertEquals("Vazio · sem arquivos", freshEmpty.summary)
+        assertEquals("Vazio", freshEmpty.compactSummary)
+
+        val neverPushedEmpty = repositoryHealth(null, archived = false, now = now, sizeKb = 0L)
+        assertEquals(RepositoryHealthStatus.EMPTY, neverPushedEmpty.status)
+
+        val archivedEmpty = repositoryHealth(null, archived = true, now = now, sizeKb = 0L)
+        assertEquals(RepositoryHealthStatus.ARCHIVED, archivedEmpty.status)
+
+        val unknownSize = repositoryHealth(null, archived = false, now = now, sizeKb = null)
+        assertEquals(RepositoryHealthStatus.UNKNOWN, unknownSize.status)
+
+        val nonEmpty = repositoryHealth(daysAgo(5), archived = false, now = now, sizeKb = 12L)
+        assertEquals(RepositoryHealthStatus.ACTIVE, nonEmpty.status)
+    }
+
+    @Test
+    fun severityOrderPutsEmptyFirstAndArchivedAndUnknownLast() {
+        val ordered = RepositoryHealthStatus.entries.sortedBy { it.severityRank }
+        assertEquals(
+            listOf(
+                RepositoryHealthStatus.EMPTY,
+                RepositoryHealthStatus.ABANDONED,
+                RepositoryHealthStatus.STALE,
+                RepositoryHealthStatus.COOLING,
+                RepositoryHealthStatus.ACTIVE,
+                RepositoryHealthStatus.ARCHIVED,
+                RepositoryHealthStatus.UNKNOWN
+            ),
+            ordered
+        )
+        assertEquals(ordered, RepositoryHealthStatus.entries)
+    }
+
+    @Test
+    fun repositoryParsersHandleMissingAndInvalidSize() {
+        val listRepos = parseGitHubRepositories(
+            """[
+                {"id":1,"name":"empty","full_name":"me/empty","owner":{"login":"me"},"private":false,"stargazers_count":0,"size":0},
+                {"id":2,"name":"no-size","full_name":"me/no-size","owner":{"login":"me"},"private":false,"stargazers_count":0},
+                {"id":3,"name":"neg-size","full_name":"me/neg-size","owner":{"login":"me"},"private":false,"stargazers_count":0,"size":-5}
+            ]"""
+        )
+        assertEquals(0L, listRepos[0].sizeKb)
+        assertEquals(RepositoryHealthStatus.EMPTY, listRepos[0].health.status)
+        assertNull(listRepos[1].sizeKb)
+        assertEquals(RepositoryHealthStatus.UNKNOWN, listRepos[1].health.status)
+        assertNull(listRepos[2].sizeKb)
+
+        val detail = parseGitHubRepositoryDetail(
+            """{"id":1,"name":"empty","full_name":"me/empty","owner":{"login":"me"},"private":false,"size":0}"""
+        )
+        assertEquals(0L, detail.sizeKb)
     }
 }

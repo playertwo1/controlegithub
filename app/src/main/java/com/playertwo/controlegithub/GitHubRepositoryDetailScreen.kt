@@ -407,7 +407,14 @@ internal fun GitHubRepositoryDetailScreen(
                             DetailValue("Forks", current.detail.forks?.toString())
                             DetailValue("Issues + PRs abertas", current.detail.openIssuesAndPullRequests?.toString())
                             DetailValue("Último push", current.detail.pushedAt?.let(::formatPushTime))
-                            DetailValue("Saúde", repositoryHealth(current.detail.pushedAt, current.detail.archived).summary)
+                            DetailValue(
+                                "Saúde",
+                                repositoryHealth(
+                                    current.detail.pushedAt,
+                                    current.detail.archived,
+                                    sizeKb = current.detail.sizeKb
+                                ).summary
+                            )
                         }
                     }
                     Row(

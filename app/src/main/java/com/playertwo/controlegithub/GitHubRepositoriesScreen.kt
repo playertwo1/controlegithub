@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,8 +14,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
@@ -36,6 +40,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -47,7 +52,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.util.Locale
@@ -74,7 +82,8 @@ internal fun GitHubRepositoriesScreen(
     favoritesStore: RepositoryFavoritesStore? = null,
     favoriteCleanupError: Boolean = false,
     favoriteOperations: Mutex = remember { Mutex() },
-    cacheStore: GitHubCacheStore? = null
+    cacheStore: GitHubCacheStore? = null,
+    gridPreferences: RepositoryGridPreferences? = null
 ) {
     var refreshVersion by remember(session?.accessToken) { mutableIntStateOf(0) }
     val pager = remember(client, session?.accessToken, refreshVersion, cacheStore) {
@@ -94,6 +103,21 @@ internal fun GitHubRepositoriesScreen(
     }
     val recentStore = LocalRecentRepositoriesStore.current ?: remember(context) {
         DataStoreRecentRepositoriesStore(context)
+    }
+    val activeGridPreferences = remember(context, gridPreferences) {
+        gridPreferences ?: RepositoryGridPreferences(context)
+    }
+    val gridColumns by activeGridPreferences.columns.collectAsState(initial = DEFAULT_REPOSITORY_GRID_COLUMNS)
+    fun setGridColumns(columns: Int) {
+        val normalized = normalizeRepositoryGridColumns(columns)
+        scope.launch {
+            try {
+                activeGridPreferences.setColumns(normalized)
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+            }
+        }
     }
     var recentRepositories by remember(session?.user?.login) { mutableStateOf(emptyList<RecentRepositoryEntry>()) }
     var repositories by remember(client, session?.user?.login) { mutableStateOf(emptyList<GitHubRepository>()) }
@@ -340,12 +364,26 @@ internal fun GitHubRepositoriesScreen(
             isOffline = isOfflineCache || session.isOffline,
             cacheStore = cacheStore
         )
-    } else LazyColumn(
-        modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        item {
+    } else {
+        val fullSpan: LazyGridItemSpanScope.() -> GridItemSpan = { GridItemSpan(maxLineSpan) }
+        val horizontalPadding = when (gridColumns) {
+            3 -> 12.dp
+            2 -> 16.dp
+            else -> 24.dp
+        }
+        val itemSpacing = when (gridColumns) {
+            3 -> 8.dp
+            2 -> 12.dp
+            else -> 16.dp
+        }
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(gridColumns),
+            modifier = modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = horizontalPadding, vertical = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(if (gridColumns == 3) 8.dp else 12.dp),
+            verticalArrangement = Arrangement.spacedBy(itemSpacing)
+        ) {
+        item(span = fullSpan) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     "CONTROLE / GITHUB",
@@ -364,14 +402,14 @@ internal fun GitHubRepositoriesScreen(
         }
 
         if (sessionRestoring) {
-            item {
+            item(span = fullSpan) {
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                     CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
                     Text("Restaurando sessão segura…", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         } else if (session == null) {
-            item {
+            item(span = fullSpan) {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(
                         if (sessionExpired) "Sua sessão expirou. Conecte-se novamente para carregar seus repositórios."
@@ -385,7 +423,7 @@ internal fun GitHubRepositoriesScreen(
                 }
             }
         } else {
-            item {
+            item(span = fullSpan) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
                         Text("Conta conectada", color = MaterialTheme.colorScheme.primary, fontSize = 13.sp)
@@ -398,7 +436,7 @@ internal fun GitHubRepositoriesScreen(
                 }
             }
 
-            item {
+            item(span = fullSpan) {
                 Row(
                     modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -419,7 +457,7 @@ internal fun GitHubRepositoriesScreen(
             }
 
             if (globalSearchMode) {
-                item {
+                item(span = fullSpan) {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Text(
                             "Pesquise repositórios públicos de qualquer pessoa ou organização no GitHub.",
@@ -470,11 +508,17 @@ internal fun GitHubRepositoriesScreen(
                         ) {
                             Text(if (globalQuery.isBlank()) "Ver destaques" else "Pesquisar")
                         }
+                        if (globalResults.isNotEmpty()) {
+                            RepositoryGridColumnsRow(
+                                selectedColumns = gridColumns,
+                                onSelectColumns = ::setGridColumns
+                            )
+                        }
                     }
                 }
 
                 if (globalLoading && globalResults.isEmpty()) {
-                    item {
+                    item(span = fullSpan) {
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                             CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
                             Text("Pesquisando repositórios no GitHub…", color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -483,7 +527,7 @@ internal fun GitHubRepositoriesScreen(
                 }
 
                 globalErrorMessage?.let { message ->
-                    item {
+                    item(span = fullSpan) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(message, color = MaterialTheme.colorScheme.error)
                             globalRetryAt?.let { deadline ->
@@ -499,7 +543,7 @@ internal fun GitHubRepositoriesScreen(
                 }
 
                 if (globalLoaded && globalResults.isEmpty() && globalErrorMessage == null) {
-                    item {
+                    item(span = fullSpan) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text("Nenhum repositório público encontrado para a busca.", fontWeight = FontWeight.SemiBold)
                             Text("Tente outro termo, nome de repositório ou organização.", color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -513,12 +557,13 @@ internal fun GitHubRepositoriesScreen(
                         isFavorite = repository.id in favoriteIds.orEmpty(),
                         favoriteEnabled = favoriteIds != null && !favoritesSaving,
                         onFavoriteClick = { setFavorite(repository, repository.id !in favoriteIds.orEmpty()) },
-                        onClick = { selectedRepository = repository }
+                        onClick = { selectedRepository = repository },
+                        columns = gridColumns
                     )
                 }
 
                 if (globalLoaded && globalHasNext) {
-                    item {
+                    item(span = fullSpan) {
                         Button(
                             onClick = { scope.launch { loadNextGlobalPage() } },
                             enabled = !globalLoading && !globalRetryPending,
@@ -532,13 +577,13 @@ internal fun GitHubRepositoriesScreen(
                 }
             } else {
                 if (isOfflineCache) {
-                item {
+                item(span = fullSpan) {
                     OfflineCacheBadge(cachedAtMillis)
                 }
             }
 
             if (recentRepositories.isNotEmpty()) {
-                item(key = "recent_repositories_section") {
+                item(key = "recent_repositories_section", span = fullSpan) {
                     Column(
                         modifier = Modifier.fillMaxWidth().testTag("recent_repositories_section"),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -585,14 +630,14 @@ internal fun GitHubRepositoriesScreen(
             }
 
             if (favoriteCleanupError) {
-                item { Text("Não foi possível apagar ou restaurar favoritos. Tente sair novamente.", color = MaterialTheme.colorScheme.error) }
+                item(span = fullSpan) { Text("Não foi possível apagar ou restaurar favoritos. Tente sair novamente.", color = MaterialTheme.colorScheme.error) }
             }
             if (sessionStorageError) {
-                item { Text("Não foi possível encerrar a sessão segura. Tente sair novamente.", color = MaterialTheme.colorScheme.error) }
+                item(span = fullSpan) { Text("Não foi possível encerrar a sessão segura. Tente sair novamente.", color = MaterialTheme.colorScheme.error) }
             }
 
             if (loading && repositories.isEmpty()) {
-                item {
+                item(span = fullSpan) {
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                         CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
                         Text("Carregando repositórios…", color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -601,7 +646,7 @@ internal fun GitHubRepositoriesScreen(
             }
 
             if (loaded && repositories.isNotEmpty()) {
-                item {
+                item(span = fullSpan) {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         OutlinedTextField(
                             value = searchQuery,
@@ -707,6 +752,10 @@ internal fun GitHubRepositoriesScreen(
                                 )
                             }
                         }
+                        RepositoryGridColumnsRow(
+                            selectedColumns = gridColumns,
+                            onSelectColumns = ::setGridColumns
+                        )
                         if (hasActiveFilters) {
                             TextButton(onClick = ::clearFilters) { Text("Limpar filtros") }
                         }
@@ -715,7 +764,7 @@ internal fun GitHubRepositoriesScreen(
             }
 
             errorMessage?.let { message ->
-                item {
+                item(span = fullSpan) {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(message, color = MaterialTheme.colorScheme.error)
                         retryAt?.let { deadline ->
@@ -731,7 +780,7 @@ internal fun GitHubRepositoriesScreen(
             }
 
             if (loaded && repositories.isEmpty() && errorMessage == null) {
-                item {
+                item(span = fullSpan) {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(Icons.Outlined.Folder, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(36.dp))
                         Text("Nenhum repositório acessível", fontWeight = FontWeight.SemiBold)
@@ -742,7 +791,7 @@ internal fun GitHubRepositoriesScreen(
             }
 
             if (loaded && repositories.isNotEmpty() && visibleRepositories.isEmpty()) {
-                item {
+                item(span = fullSpan) {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text("Nenhum repositório corresponde aos critérios", fontWeight = FontWeight.SemiBold)
                         Text("Os critérios consideram apenas os repositórios carregados.", color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -756,12 +805,13 @@ internal fun GitHubRepositoriesScreen(
                     isFavorite = repository.id in favoriteIds.orEmpty(),
                     favoriteEnabled = favoriteIds != null && !favoritesSaving,
                     onFavoriteClick = { setFavorite(repository, repository.id !in favoriteIds.orEmpty()) },
-                    onClick = { selectedRepository = repository }
+                    onClick = { selectedRepository = repository },
+                    columns = gridColumns
                 )
             }
 
             if (loaded && hasNext) {
-                item {
+                item(span = fullSpan) {
                     Button(
                         onClick = { scope.launch { loadNextPage() } },
                         enabled = !loading && !retryPending,
@@ -773,13 +823,40 @@ internal fun GitHubRepositoriesScreen(
                     }
                 }
             } else if (retryPending && repositories.isNotEmpty() && errorMessage == null) {
-                item {
+                item(span = fullSpan) {
                     TextButton(onClick = { scope.launch { loadNextPage() } }, enabled = !loading) {
                         Text("Tentar carregar a próxima página")
                     }
                 }
             }
             }
+        }
+        }
+    }
+}
+
+@Composable
+private fun RepositoryGridColumnsRow(
+    selectedColumns: Int,
+    onSelectColumns: (Int) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text("Por linha:", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        REPOSITORY_GRID_COLUMN_OPTIONS.forEach { count ->
+            val description = if (count == 1) "1 repositório por linha" else "$count repositórios por linha"
+            FilterChip(
+                selected = selectedColumns == count,
+                onClick = { onSelectColumns(count) },
+                label = { Text("$count") },
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 48.dp)
+                    .testTag("repo_grid_columns_$count")
+                    .semantics { contentDescription = description }
+            )
         }
     }
 }
@@ -790,48 +867,179 @@ private fun GitHubRepositoryCard(
     isFavorite: Boolean,
     favoriteEnabled: Boolean,
     onFavoriteClick: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    columns: Int = DEFAULT_REPOSITORY_GRID_COLUMNS
 ) {
+    val favoriteDescription = if (isFavorite) {
+        "Remover ${repository.fullName} dos favoritos"
+    } else {
+        "Adicionar ${repository.fullName} aos favoritos"
+    }
+    val favoriteIcon = if (isFavorite) Icons.Filled.Star else Icons.Outlined.StarBorder
+    val cornerRadius = when (columns) {
+        3 -> 14.dp
+        2 -> 16.dp
+        else -> 20.dp
+    }
     Surface(
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(cornerRadius),
         color = MaterialTheme.colorScheme.surface,
-        modifier = Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = onClick)
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 48.dp)
+            .clickable(role = Role.Button, onClick = onClick)
     ) {
-        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(repository.fullName, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-                IconButton(onClick = onFavoriteClick, enabled = favoriteEnabled) {
-                    Icon(
-                        imageVector = if (isFavorite) Icons.Filled.Star else Icons.Outlined.StarBorder,
-                        contentDescription = if (isFavorite) {
-                            "Remover ${repository.fullName} dos favoritos"
-                        } else {
-                            "Adicionar ${repository.fullName} aos favoritos"
-                        },
-                        tint = MaterialTheme.colorScheme.primary
+        when (columns) {
+            3 -> Column(
+                Modifier.padding(start = 10.dp, end = 4.dp, top = 10.dp, bottom = 4.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    repository.name,
+                    fontSize = 13.sp,
+                    lineHeight = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth().padding(end = 6.dp)
+                )
+                Text(
+                    repository.health.compactSummary,
+                    color = repository.health.status.color(),
+                    fontSize = 11.sp,
+                    lineHeight = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth().padding(end = 6.dp)
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            "★ ${repository.stars}",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 11.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            repository.language ?: if (repository.isPrivate) "Privado" else "Público",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 10.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    IconButton(onClick = onFavoriteClick, enabled = favoriteEnabled) {
+                        Icon(
+                            imageVector = favoriteIcon,
+                            contentDescription = favoriteDescription,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+            }
+            2 -> Column(
+                Modifier.padding(start = 12.dp, end = 6.dp, top = 12.dp, bottom = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Row(verticalAlignment = Alignment.Top) {
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            repository.name,
+                            fontSize = 15.sp,
+                            lineHeight = 19.sp,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            repository.owner,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 11.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    IconButton(onClick = onFavoriteClick, enabled = favoriteEnabled) {
+                        Icon(
+                            imageVector = favoriteIcon,
+                            contentDescription = favoriteDescription,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+                Text(
+                    repository.health.compactSummary,
+                    color = repository.health.status.color(),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(end = 6.dp)
+                )
+                val meta = buildString {
+                    append(if (repository.isPrivate) "Privado" else "Público")
+                    repository.language?.let { append(" · ").append(it) }
+                    append(" · ★ ").append(repository.stars)
+                }
+                Text(
+                    meta,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 11.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(end = 6.dp)
+                )
+                repository.description?.takeIf(String::isNotBlank)?.let { description ->
+                    Text(
+                        description,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(end = 6.dp)
                     )
                 }
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    if (repository.isPrivate) "Privado" else "Público",
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-                repository.language?.let { language ->
-                    Text("  ·  $language", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+            else -> Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(repository.fullName, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                    IconButton(onClick = onFavoriteClick, enabled = favoriteEnabled) {
+                        Icon(
+                            imageVector = favoriteIcon,
+                            contentDescription = favoriteDescription,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
-                Text("  ·  ★ ${repository.stars}", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-            }
-            Text(
-                repository.health.summary,
-                color = repository.health.status.color(),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium
-            )
-            repository.description?.takeIf(String::isNotBlank)?.let { description ->
-                Text(description, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, lineHeight = 19.sp)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        if (repository.isPrivate) "Privado" else "Público",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    repository.language?.let { language ->
+                        Text("  ·  $language", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                    }
+                    Text("  ·  ★ ${repository.stars}", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                }
+                Text(
+                    repository.health.summary,
+                    color = repository.health.status.color(),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                repository.description?.takeIf(String::isNotBlank)?.let { description ->
+                    Text(description, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, lineHeight = 19.sp)
+                }
             }
         }
     }

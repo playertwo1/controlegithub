@@ -19,9 +19,10 @@ internal data class GitHubRepository(
     val stars: Int,
     val pushedAt: Instant? = null,
     val archived: Boolean = false,
-    val openIssues: Int? = null
+    val openIssues: Int? = null,
+    val sizeKb: Long? = null
 ) {
-    val health: RepositoryHealth get() = repositoryHealth(pushedAt, archived)
+    val health: RepositoryHealth get() = repositoryHealth(pushedAt, archived, sizeKb = sizeKb)
 
     override fun toString() = "GitHubRepository(id=$id, isPrivate=$isPrivate)"
 }
@@ -51,6 +52,10 @@ internal fun parseGitHubRepositories(json: String): List<GitHubRepository> {
         }
         val archived = repository.opt("archived") as? Boolean ?: false
         val openIssues = (repository.opt("open_issues_count") as? Number)?.toInt()?.takeIf { it >= 0 }
+        val sizeKb = (repository.opt("size") as? Number)?.let { number ->
+            val value = number.toLong()
+            value.takeIf { it >= 0L && number.toDouble() == value.toDouble() }
+        }
         val idValue = id.toLong()
         val starsValue = stars.toInt()
         if (idValue <= 0 || id.toDouble() != idValue.toDouble() || starsValue < 0 ||
@@ -59,7 +64,7 @@ internal fun parseGitHubRepositories(json: String): List<GitHubRepository> {
         ) throw IOException("Resposta de repositórios inválida")
         GitHubRepository(
             idValue, name, fullName, owner, isPrivate, description, language, starsValue,
-            pushedAt, archived, openIssues
+            pushedAt, archived, openIssues, sizeKb
         )
     }
 }
