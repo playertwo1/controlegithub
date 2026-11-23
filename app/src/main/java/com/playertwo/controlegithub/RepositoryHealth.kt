@@ -1,5 +1,7 @@
 package com.playertwo.controlegithub
 
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.time.Instant
 
@@ -14,6 +16,78 @@ internal enum class RepositoryHealthStatus(
     ACTIVE("Ativo", 4),
     ARCHIVED("Arquivado", 5),
     UNKNOWN("Sem dados", 6)
+}
+
+internal enum class RepositoryEmptyStatus {
+    EMPTY,
+    NOT_EMPTY,
+    UNCONFIRMED
+}
+
+internal data class RepositoryEmptyProbeResult(
+    val status: RepositoryEmptyStatus,
+    val stopBatch: Boolean = false
+)
+
+internal const val MAX_EMPTY_CANDIDATE_CHECKS_PER_BATCH = 10
+
+internal fun isEmptyRepositoryCandidate(archived: Boolean, sizeKb: Long?): Boolean =
+    !archived && sizeKb == 0L
+
+internal fun repositoryCommitsProbePath(owner: String, name: String): String {
+    fun encode(value: String) = URLEncoder.encode(value, StandardCharsets.UTF_8.name()).replace("+", "%20")
+    return "/repos/${encode(owner)}/${encode(name)}/commits?per_page=1"
+}
+
+internal fun confirmRepositoryEmpty(
+    client: GitHubHttpClient,
+    accessToken: String,
+    owner: String,
+    name: String,
+    onCallCreated: (GitHubHttpCall) -> Unit = {}
+): RepositoryEmptyProbeResult {
+    val call = client.get(repositoryCommitsProbePath(owner, name), accessToken)
+    onCallCreated(call)
+    return when (val response = call.execute()) {
+        is GitHubHttpResult.Success -> RepositoryEmptyProbeResult(RepositoryEmptyStatus.NOT_EMPTY)
+        is GitHubHttpResult.Failure -> when {
+            response.statusCode == 409 -> RepositoryEmptyProbeResult(RepositoryEmptyStatus.EMPTY)
+            response.error == GitHubHttpError.RATE_LIMITED ||
+                response.error == GitHubHttpError.UNAUTHORIZED ||
+                response.error == GitHubHttpError.NETWORK ||
+                response.error == GitHubHttpError.TIMEOUT ||
+                response.error == GitHubHttpError.CANCELLED ||
+                response.error == GitHubHttpError.SERVER ->
+                RepositoryEmptyProbeResult(RepositoryEmptyStatus.UNCONFIRMED, stopBatch = true)
+            else -> RepositoryEmptyProbeResult(RepositoryEmptyStatus.UNCONFIRMED)
+        }
+    }
+}
+
+internal fun checkEmptyRepositoryCandidates(
+    repositories: List<GitHubRepository>,
+    existingResults: Map<Long, RepositoryEmptyStatus>,
+    maxChecks: Int = MAX_EMPTY_CANDIDATE_CHECKS_PER_BATCH,
+    isCancelled: () -> Boolean = { false },
+    probe: (GitHubRepository) -> RepositoryEmptyProbeResult
+): Map<Long, RepositoryEmptyStatus> {
+    if (maxChecks <= 0) return existingResults
+    val candidates = repositories
+        .asSequence()
+        .filter { it.isEmptyCandidate && it.id !in existingResults }
+        .distinctBy(GitHubRepository::id)
+        .take(maxChecks)
+        .toList()
+    if (candidates.isEmpty()) return existingResults
+
+    val updated = existingResults.toMutableMap()
+    for (candidate in candidates) {
+        if (isCancelled()) break
+        val result = probe(candidate)
+        if (result.stopBatch) break
+        updated[candidate.id] = result.status
+    }
+    return updated
 }
 
 internal data class RepositoryHealth(
@@ -44,12 +118,12 @@ internal fun repositoryHealth(
     pushedAt: Instant?,
     archived: Boolean,
     now: Instant = Instant.now(),
-    sizeKb: Long? = null
+    confirmedEmpty: Boolean = false
 ): RepositoryHealth {
     val days = pushedAt?.let { Duration.between(it, now).toDays().coerceAtLeast(0) }
     val status = when {
         archived -> RepositoryHealthStatus.ARCHIVED
-        sizeKb == 0L -> RepositoryHealthStatus.EMPTY
+        confirmedEmpty -> RepositoryHealthStatus.EMPTY
         days == null -> RepositoryHealthStatus.UNKNOWN
         days <= ACTIVE_DAYS -> RepositoryHealthStatus.ACTIVE
         days <= COOLING_DAYS -> RepositoryHealthStatus.COOLING

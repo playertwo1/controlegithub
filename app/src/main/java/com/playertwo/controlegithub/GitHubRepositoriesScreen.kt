@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.sp
 import java.util.Locale
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Mutex
@@ -107,20 +108,26 @@ internal fun GitHubRepositoriesScreen(
     val activeGridPreferences = remember(context, gridPreferences) {
         gridPreferences ?: RepositoryGridPreferences(context)
     }
-    val gridColumns by activeGridPreferences.columns.collectAsState(initial = DEFAULT_REPOSITORY_GRID_COLUMNS)
+    val loadedGridColumns by activeGridPreferences.columns.collectAsState(initial = null)
+    var gridColumnsSaveError by remember(activeGridPreferences) { mutableStateOf(false) }
     fun setGridColumns(columns: Int) {
         val normalized = normalizeRepositoryGridColumns(columns)
         scope.launch {
             try {
                 activeGridPreferences.setColumns(normalized)
+                gridColumnsSaveError = false
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (_: Exception) {
+                gridColumnsSaveError = true
             }
         }
     }
     var recentRepositories by remember(session?.user?.login) { mutableStateOf(emptyList<RecentRepositoryEntry>()) }
     var repositories by remember(client, session?.user?.login) { mutableStateOf(emptyList<GitHubRepository>()) }
+    var emptyProbeResults by remember(client, session?.user?.login) {
+        mutableStateOf<Map<Long, RepositoryEmptyStatus>>(emptyMap())
+    }
     var hasNext by remember(pager) { mutableStateOf(false) }
     var loaded by remember(pager) { mutableStateOf(false) }
     var loading by remember(pager) { mutableStateOf(false) }
@@ -180,16 +187,50 @@ internal fun GitHubRepositoriesScreen(
             }
         }
     }
-    val availableLanguages = remember(repositories) {
-        repositories.mapNotNull(GitHubRepository::language)
+    LaunchedEffect(repositories, session?.accessToken, session?.isOffline, isOfflineCache, refreshVersion) {
+        val activeSession = session ?: return@LaunchedEffect
+        if (activeSession.isOffline || isOfflineCache) return@LaunchedEffect
+        val existing = emptyProbeResults
+        if (repositories.none { it.isEmptyCandidate && it.id !in existing }) return@LaunchedEffect
+        var activeCall: GitHubHttpCall? = null
+        try {
+            val updated = withContext(Dispatchers.IO) {
+                checkEmptyRepositoryCandidates(
+                    repositories = repositories,
+                    existingResults = existing,
+                    isCancelled = { !coroutineContext.isActive }
+                ) { candidate ->
+                    confirmRepositoryEmpty(
+                        client = client,
+                        accessToken = activeSession.accessToken,
+                        owner = candidate.owner,
+                        name = candidate.name,
+                        onCallCreated = { activeCall = it }
+                    )
+                }
+            }
+            if (updated != existing) emptyProbeResults = updated
+        } finally {
+            activeCall?.cancel()
+        }
+    }
+    val resolvedRepositories = remember(repositories, emptyProbeResults) {
+        repositories.map { repository ->
+            val confirmed = repository.isEmptyCandidate &&
+                emptyProbeResults[repository.id] == RepositoryEmptyStatus.EMPTY
+            if (confirmed == repository.confirmedEmpty) repository else repository.copy(confirmedEmpty = confirmed)
+        }
+    }
+    val availableLanguages = remember(resolvedRepositories) {
+        resolvedRepositories.mapNotNull(GitHubRepository::language)
             .distinctBy { it.lowercase(Locale.ROOT) }
             .sortedBy { it.lowercase(Locale.ROOT) }
     }
     val visibleRepositories = remember(
-        repositories, searchQuery, visibilityFilter, languageFilter, favoriteIds, favoritesOnly, healthFilter, sortOrder
+        resolvedRepositories, searchQuery, visibilityFilter, languageFilter, favoriteIds, favoritesOnly, healthFilter, sortOrder
     ) {
         val filtered = filterGitHubRepositories(
-            repositories, searchQuery, visibilityFilter, languageFilter,
+            resolvedRepositories, searchQuery, visibilityFilter, languageFilter,
             favoriteIds.orEmpty(), favoritesOnly && favoriteIds != null
         )
         sortGitHubRepositories(filterByHealth(filtered, healthFilter), sortOrder)
@@ -364,7 +405,26 @@ internal fun GitHubRepositoriesScreen(
             isOffline = isOfflineCache || session.isOffline,
             cacheStore = cacheStore
         )
+    } else if (loadedGridColumns == null) {
+        Column(modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 20.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "CONTROLE / GITHUB",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 12.sp,
+                    letterSpacing = 2.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(onClick = onAppearance) {
+                    Icon(Icons.Outlined.Settings, contentDescription = "Configurações de aparência")
+                }
+            }
+            Spacer(Modifier.height(22.dp))
+            Text("Seus repositórios", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        }
     } else {
+        val gridColumns = loadedGridColumns!!
         val fullSpan: LazyGridItemSpanScope.() -> GridItemSpan = { GridItemSpan(maxLineSpan) }
         val horizontalPadding = when (gridColumns) {
             3 -> 12.dp
@@ -430,7 +490,13 @@ internal fun GitHubRepositoriesScreen(
                         Text("@${session.user.login}", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                     }
                     TextButton(onClick = onLogout, enabled = !favoritesSaving) { Text("Sair") }
-                    IconButton(onClick = { refreshVersion++ }, enabled = !loading) {
+                    IconButton(
+                        onClick = {
+                            emptyProbeResults = emptyMap()
+                            refreshVersion++
+                        },
+                        enabled = !loading
+                    ) {
                         Icon(Icons.Outlined.Refresh, contentDescription = "Atualizar repositórios")
                     }
                 }
@@ -511,6 +577,7 @@ internal fun GitHubRepositoriesScreen(
                         if (globalResults.isNotEmpty()) {
                             RepositoryGridColumnsRow(
                                 selectedColumns = gridColumns,
+                                saveError = gridColumnsSaveError,
                                 onSelectColumns = ::setGridColumns
                             )
                         }
@@ -558,7 +625,8 @@ internal fun GitHubRepositoriesScreen(
                         favoriteEnabled = favoriteIds != null && !favoritesSaving,
                         onFavoriteClick = { setFavorite(repository, repository.id !in favoriteIds.orEmpty()) },
                         onClick = { selectedRepository = repository },
-                        columns = gridColumns
+                        columns = gridColumns,
+                        showOwnerInCompact = true
                     )
                 }
 
@@ -754,6 +822,7 @@ internal fun GitHubRepositoriesScreen(
                         }
                         RepositoryGridColumnsRow(
                             selectedColumns = gridColumns,
+                            saveError = gridColumnsSaveError,
                             onSelectColumns = ::setGridColumns
                         )
                         if (hasActiveFilters) {
@@ -785,7 +854,13 @@ internal fun GitHubRepositoriesScreen(
                         Icon(Icons.Outlined.Folder, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(36.dp))
                         Text("Nenhum repositório acessível", fontWeight = FontWeight.SemiBold)
                         Text("A lista da conta está vazia ou não há repositórios concedidos a este app.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        TextButton(onClick = { refreshVersion++ }, enabled = !loading) { Text("Atualizar") }
+                        TextButton(
+                            onClick = {
+                                emptyProbeResults = emptyMap()
+                                refreshVersion++
+                            },
+                            enabled = !loading
+                        ) { Text("Atualizar") }
                     }
                 }
             }
@@ -838,24 +913,34 @@ internal fun GitHubRepositoriesScreen(
 @Composable
 private fun RepositoryGridColumnsRow(
     selectedColumns: Int,
+    saveError: Boolean,
     onSelectColumns: (Int) -> Unit
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text("Por linha:", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-        REPOSITORY_GRID_COLUMN_OPTIONS.forEach { count ->
-            val description = if (count == 1) "1 repositório por linha" else "$count repositórios por linha"
-            FilterChip(
-                selected = selectedColumns == count,
-                onClick = { onSelectColumns(count) },
-                label = { Text("$count") },
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 48.dp)
-                    .testTag("repo_grid_columns_$count")
-                    .semantics { contentDescription = description }
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Por linha:", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+            REPOSITORY_GRID_COLUMN_OPTIONS.forEach { count ->
+                val description = if (count == 1) "1 repositório por linha" else "$count repositórios por linha"
+                FilterChip(
+                    selected = selectedColumns == count,
+                    onClick = { onSelectColumns(count) },
+                    label = { Text("$count") },
+                    modifier = Modifier
+                        .defaultMinSize(minWidth = 48.dp)
+                        .testTag("repo_grid_columns_$count")
+                        .semantics { contentDescription = description }
+                )
+            }
+        }
+        if (saveError) {
+            Text(
+                "Não foi possível salvar a escolha de colunas.",
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 12.sp
             )
         }
     }
@@ -868,7 +953,8 @@ private fun GitHubRepositoryCard(
     favoriteEnabled: Boolean,
     onFavoriteClick: () -> Unit,
     onClick: () -> Unit,
-    columns: Int = DEFAULT_REPOSITORY_GRID_COLUMNS
+    columns: Int = DEFAULT_REPOSITORY_GRID_COLUMNS,
+    showOwnerInCompact: Boolean = false
 ) {
     val favoriteDescription = if (isFavorite) {
         "Remover ${repository.fullName} dos favoritos"
@@ -903,6 +989,17 @@ private fun GitHubRepositoryCard(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.fillMaxWidth().padding(end = 6.dp)
                 )
+                if (showOwnerInCompact) {
+                    Text(
+                        repository.owner,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 10.sp,
+                        lineHeight = 13.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.fillMaxWidth().padding(end = 6.dp)
+                    )
+                }
                 Text(
                     repository.health.compactSummary,
                     color = repository.health.status.color(),

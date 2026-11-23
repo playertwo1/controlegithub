@@ -48,7 +48,7 @@ internal fun filterByHealth(
     now: Instant = Instant.now()
 ): List<GitHubRepository> =
     if (health == null) repositories else repositories.filter {
-        repositoryHealth(it.pushedAt, it.archived, now, it.sizeKb).status == health
+        repositoryHealth(it.pushedAt, it.archived, now, confirmedEmpty = it.confirmedEmpty).status == health
     }
 
 /** NAME preserva a ordem da API; HEALTH ordena mais doentes primeiro e mais dias sem push dentro do mesmo estado. */
@@ -59,7 +59,7 @@ internal fun sortGitHubRepositories(
 ): List<GitHubRepository> = when (sort) {
     RepositorySort.NAME -> repositories
     RepositorySort.HEALTH -> repositories
-        .map { it to repositoryHealth(it.pushedAt, it.archived, now, it.sizeKb) }
+        .map { it to repositoryHealth(it.pushedAt, it.archived, now, confirmedEmpty = it.confirmedEmpty) }
         .sortedWith(
             compareBy<Pair<GitHubRepository, RepositoryHealth>> { it.second.status.severityRank }
                 .thenBy(nullsLast(reverseOrder())) { it.second.daysWithoutPush }

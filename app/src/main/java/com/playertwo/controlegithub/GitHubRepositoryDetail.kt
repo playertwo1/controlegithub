@@ -21,7 +21,8 @@ internal data class GitHubRepositoryDetail(
     val openIssuesAndPullRequests: Long?,
     val pushedAt: Instant?,
     val archived: Boolean = false,
-    val sizeKb: Long? = null
+    val sizeKb: Long? = null,
+    val confirmedEmpty: Boolean = false
 )
 
 internal sealed interface GitHubReadmeResult {
@@ -65,7 +66,14 @@ internal class GitHubRepositoryDetailLoader(
             return GitHubRepositoryDetailResult.Failed(GitHubHttpError.UNEXPECTED)
         }
 
-        val readmePath = "$route/readme" + metadata.defaultBranch?.let {
+        val confirmedEmpty = if (isEmptyRepositoryCandidate(metadata.archived, metadata.sizeKb)) {
+            confirmRepositoryEmpty(client, accessToken, repository.owner, repository.name).status == RepositoryEmptyStatus.EMPTY
+        } else {
+            false
+        }
+        val resolvedMetadata = if (confirmedEmpty) metadata.copy(confirmedEmpty = true) else metadata
+
+        val readmePath = "$route/readme" + resolvedMetadata.defaultBranch?.let {
             "?ref=${encodePathSegment(it)}"
         }.orEmpty()
         val readme = when (val response = client.get(readmePath, accessToken).execute()) {
@@ -79,7 +87,7 @@ internal class GitHubRepositoryDetailLoader(
                 else -> GitHubReadmeResult.Failed(response.error, response.retryAtEpochMillis)
             }
         }
-        return GitHubRepositoryDetailResult.Loaded(metadata, readme)
+        return GitHubRepositoryDetailResult.Loaded(resolvedMetadata, readme)
     }
 
     private fun repositoryRoute(owner: String, name: String) =
@@ -125,7 +133,7 @@ internal fun parseGitHubRepositoryDetail(json: String): GitHubRepositoryDetail {
         openIssuesAndPullRequests = repository.optionalNonNegativeLong("open_issues_count"),
         pushedAt = pushedAt,
         archived = repository.opt("archived") as? Boolean ?: false,
-        sizeKb = repository.optionalNonNegativeLong("size")
+        sizeKb = repository.lenientNonNegativeLong("size")
     )
 }
 
@@ -167,4 +175,9 @@ private fun JSONObject.optionalNonNegativeLong(key: String): Long? = when (val v
     is Number -> value.toLong().takeIf { it >= 0 && value.toDouble() == it.toDouble() }
         ?: throw IOException("Resposta de repositório inválida")
     else -> throw IOException("Resposta de repositório inválida")
+}
+
+private fun JSONObject.lenientNonNegativeLong(key: String): Long? = when (val value = opt(key)) {
+    is Number -> value.toLong().takeIf { it >= 0L && value.toDouble() == it.toDouble() }
+    else -> null
 }

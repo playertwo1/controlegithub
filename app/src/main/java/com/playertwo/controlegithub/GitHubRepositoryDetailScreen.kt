@@ -412,7 +412,7 @@ internal fun GitHubRepositoryDetailScreen(
                                 repositoryHealth(
                                     current.detail.pushedAt,
                                     current.detail.archived,
-                                    sizeKb = current.detail.sizeKb
+                                    confirmedEmpty = current.detail.confirmedEmpty
                                 ).summary
                             )
                         }

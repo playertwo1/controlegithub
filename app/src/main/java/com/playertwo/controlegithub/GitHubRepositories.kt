@@ -20,9 +20,11 @@ internal data class GitHubRepository(
     val pushedAt: Instant? = null,
     val archived: Boolean = false,
     val openIssues: Int? = null,
-    val sizeKb: Long? = null
+    val sizeKb: Long? = null,
+    val confirmedEmpty: Boolean = false
 ) {
-    val health: RepositoryHealth get() = repositoryHealth(pushedAt, archived, sizeKb = sizeKb)
+    val isEmptyCandidate: Boolean get() = isEmptyRepositoryCandidate(archived, sizeKb)
+    val health: RepositoryHealth get() = repositoryHealth(pushedAt, archived, confirmedEmpty = confirmedEmpty)
 
     override fun toString() = "GitHubRepository(id=$id, isPrivate=$isPrivate)"
 }
