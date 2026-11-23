@@ -10,7 +10,7 @@
 
 O **ControleGitHub** é um cliente Android nativo para acompanhar seus repositórios, issues, pull requests, notificações e GitHub Actions em um só lugar. A interface em português é feita com Kotlin e Jetpack Compose; o aplicativo conversa diretamente com a API do GitHub, sem servidor intermediário próprio.
 
-[Baixar a versão 2.6.1](https://github.com/playertwo1/controlegithub/releases/tag/v2.6.1) · [Manual do usuário](docs/MANUAL_DO_USUARIO.md) · [Política de privacidade](PRIVACY.md)
+[Baixar a versão 2.7.0](https://github.com/playertwo1/controlegithub/releases/tag/v2.7.0) · [Manual do usuário](docs/MANUAL_DO_USUARIO.md) · [Política de privacidade](PRIVACY.md)
 
 ## Conteúdo
 
@@ -58,14 +58,14 @@ Consulte a [Política de Privacidade](PRIVACY.md) para os detalhes sobre dados e
 
 ## Instalar o aplicativo
 
-1. Baixe `app-release.apk` na [release v2.6.1](https://github.com/playertwo1/controlegithub/releases/tag/v2.6.1).
+1. Baixe `ControleGitHub-v2.7.0.apk` na [release v2.7.0](https://github.com/playertwo1/controlegithub/releases/tag/v2.7.0).
 2. (Opcional) Baixe também `SHA256SUMS.txt` e confira o SHA-256 do APK.
 3. Abra o APK no Android e confirme a instalação. Se necessário, permita a instalação para a origem usada.
 
-Requer **Android 8.0 (API 26) ou superior**. O SHA-256 da versão 2.6.1 é:
+Requer **Android 8.0 (API 26) ou superior**. O SHA-256 da versão 2.7.0 é:
 
 ```text
-C4B809DB5A8251A0A440A743A6871BDCE99549F86437DB0C631C6885EEA69599
+9DBD77FFB54A646FAA132D25E0182E3C389234987CA81A0CE7E9F68BE77F3217
 ```
 
 Atualizações entre versões **2.x** preservam os dados locais. Para migrar diretamente de uma versão **1.x**, é necessário desinstalá-la; isso apaga os dados locais daquela instalação. Consulte [todas as releases](https://github.com/playertwo1/controlegithub/releases).
@@ -124,7 +124,7 @@ flowchart LR
 ## Documentação
 
 - [Manual do usuário](docs/MANUAL_DO_USUARIO.md)
-- [Notas da v2.7.0 preparada para publicação](docs/RELEASE_NOTES_v2.7.0.md)
+- [Notas da versão 2.7.0](docs/RELEASE_NOTES_v2.7.0.md)
 - [Notas da versão 2.6.1](docs/RELEASE_NOTES_v2.6.1.md)
 - [Guia de release, assinatura e distribuição](docs/RELEASE.md)
 - [Política de privacidade](PRIVACY.md)
