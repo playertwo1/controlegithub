@@ -26,7 +26,7 @@ O **ControleGitHub** é um cliente Android nativo para acompanhar seus repositó
 ## Funcionalidades
 
 - **Painel e resumo diário:** acompanhe repositórios, issues e notificações; copie o resumo de atividade em Markdown.
-- **Repositórios:** busque seus repositórios e explore repositórios públicos; veja destaques do dia, da semana ou do mês, consulte detalhes, código, releases, estrelas e Watch.
+- **Repositórios:** organize seus repositórios em 1, 2 ou 3 por linha, filtre e ordene por saúde, busque seus repositórios e explore repositórios públicos; veja destaques do dia, da semana ou do mês, consulte detalhes, código, releases, estrelas e Watch.
 - **Issues e pull requests:** filtre e pagine itens, crie e edite issues, comente, altere labels e estado, revise PRs e inspecione arquivos alterados.
 - **Kanban pessoal:** organize issues em quatro colunas locais, sem alterar os dados do repositório no GitHub.
 - **Notificações e GitHub Actions:** acompanhe avisos, execuções de workflows, jobs e logs.
@@ -124,6 +124,7 @@ flowchart LR
 ## Documentação
 
 - [Manual do usuário](docs/MANUAL_DO_USUARIO.md)
+- [Notas da v2.7.0 preparada para publicação](docs/RELEASE_NOTES_v2.7.0.md)
 - [Notas da versão 2.6.1](docs/RELEASE_NOTES_v2.6.1.md)
 - [Guia de release, assinatura e distribuição](docs/RELEASE.md)
 - [Política de privacidade](PRIVACY.md)

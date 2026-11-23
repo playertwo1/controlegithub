@@ -2,6 +2,7 @@ package com.playertwo.controlegithub
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Assume.assumeTrue
 import org.junit.Test
 import java.io.File
 import java.security.MessageDigest
@@ -16,10 +17,10 @@ class ReleaseDeliveryVerificationTest {
         current
     }
 
-    private val canonicalSha256 = "C4B809DB5A8251A0A440A743A6871BDCE99549F86437DB0C631C6885EEA69599"
+    private val canonicalSha256 = "9DBD77FFB54A646FAA132D25E0182E3C389234987CA81A0CE7E9F68BE77F3217"
 
     @Test
-    fun sha256SumsFileIsValidAndMatchesReleaseApkHash() {
+    fun sha256SumsFileDeclaresCanonicalReleaseHash() {
         val sumsFile = File(projectRoot, "SHA256SUMS.txt")
         assertTrue("Arquivo SHA256SUMS.txt deve existir na raiz do projeto", sumsFile.exists())
 
@@ -31,30 +32,34 @@ class ReleaseDeliveryVerificationTest {
         val declaredFilename = parts[1].removePrefix("*")
 
         assertEquals("Hash no SHA256SUMS.txt deve coincidir com o hash oficial da release", canonicalSha256, declaredHash)
-        assertEquals("Nome do artefato deve ser app-release.apk", "app-release.apk", declaredFilename)
+        assertEquals("Nome do artefato deve ser ControleGitHub-v2.7.0.apk", "ControleGitHub-v2.7.0.apk", declaredFilename)
+    }
 
-        val releaseApk = File(projectRoot, "app/build/outputs/apk/release/app-release.apk")
-        if (releaseApk.exists()) {
-            val digest = MessageDigest.getInstance("SHA-256")
-            val computedHash = releaseApk.inputStream().use { input ->
-                val buffer = ByteArray(16 * 1024)
-                var bytesRead: Int
-                while (input.read(buffer).also { bytesRead = it } != -1) {
-                    digest.update(buffer, 0, bytesRead)
-                }
-                digest.digest().joinToString("") { "%02X".format(it) }
+    @Test
+    fun releaseApkMatchesSha256Sums() {
+        val releaseApk = File(projectRoot, "app/build/outputs/apk/release/ControleGitHub-v2.7.0.apk")
+        assumeTrue("Gere ControleGitHub-v2.7.0.apk para verificar seu checksum", releaseApk.isFile)
+        val expectedHash = File(projectRoot, "SHA256SUMS.txt").readText(Charsets.UTF_8)
+            .trim().split("\\s+".toRegex(), limit = 2).first().uppercase()
+        val digest = MessageDigest.getInstance("SHA-256")
+        releaseApk.inputStream().use { input ->
+            val buffer = ByteArray(16 * 1024)
+            var bytesRead: Int
+            while (input.read(buffer).also { bytesRead = it } != -1) {
+                digest.update(buffer, 0, bytesRead)
             }
-            assertEquals("O hash real do app-release.apk deve bater rigorosamente com o SHA256SUMS.txt", canonicalSha256, computedHash)
         }
+        val computedHash = digest.digest().joinToString("") { "%02X".format(it) }
+        assertEquals("O hash real de ControleGitHub-v2.7.0.apk deve bater com SHA256SUMS.txt", expectedHash, computedHash)
     }
 
     @Test
     fun releaseNotesDocumentContainsAllRequiredSections() {
-        val notesFile = File(projectRoot, "docs/RELEASE_NOTES_v2.6.1.md")
-        assertTrue("docs/RELEASE_NOTES_v2.6.1.md deve existir", notesFile.exists())
+        val notesFile = File(projectRoot, "docs/RELEASE_NOTES_v2.7.0.md")
+        assertTrue("docs/RELEASE_NOTES_v2.7.0.md deve existir", notesFile.exists())
 
         val text = notesFile.readText(Charsets.UTF_8)
-        assertTrue("Deve referenciar a versão 2.6.1", text.contains("2.6.1"))
+        assertTrue("Deve referenciar a versão 2.7.0", text.contains("2.7.0"))
         assertTrue("Deve conter o hash canônico SHA-256", text.contains(canonicalSha256))
         assertTrue("Deve referenciar o canal oficial GitHub Releases", text.contains("github.com/playertwo1/controlegithub/releases"))
     }

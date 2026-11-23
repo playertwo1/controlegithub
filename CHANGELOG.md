@@ -7,6 +7,14 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
+## [2.7.0] — 2026-11-23
+
+### Adicionado
+
+- Seletor de 1, 2 ou 3 repositórios por linha.
+- Ordenação e filtro por saúde. O estado **Vazio** é exibido quando o GitHub confirma a condição com HTTP 409.
+- Ajustes no cabeçalho, no alinhamento do seletor e na validação do layout a 412 dp.
+
 ## [2.6.1] — 2026-11-05
 
 ### Corrigido

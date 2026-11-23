@@ -41,8 +41,8 @@ android {
         applicationId = "com.playertwo.controlegithub"
         minSdk = 26
         targetSdk = 36
-        versionCode = 109
-        versionName = "2.6.1"
+        versionCode = 110
+        versionName = "2.7.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "GITHUB_OAUTH_CLIENT_ID", "\"$githubOAuthClientId\"")
     }

@@ -2,6 +2,15 @@
 
 Última atualização: 5 de novembro de 2026
 
+## Release v2.7.0 preparada para publicação
+
+- Pacote: com.playertwo.controlegithub
+- Versão: 2.7.0 (versionCode = 110)
+- Arquivo de entrega: ControleGitHub-v2.7.0.apk (12.850.395 bytes), cópia do app-release.apk gerado pelo Gradle
+- SHA-256: 9DBD77FFB54A646FAA132D25E0182E3C389234987CA81A0CE7E9F68BE77F3217
+- Certificado SHA-256: c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec
+- Notas: [RELEASE_NOTES_v2.7.0.md](RELEASE_NOTES_v2.7.0.md)
+
 ## Release atual: v2.6.1
 
 - Pacote: `com.playertwo.controlegithub`

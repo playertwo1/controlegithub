@@ -1,5 +1,14 @@
 # Estado do projeto
 
+## Release v2.7.0 — PREPARADA (2026-11-23)
+
+- Seletor de 1, 2 ou 3 repositórios por linha.
+- Ordenação e filtro por saúde. O estado **Vazio** é exibido quando o GitHub confirma a condição com HTTP 409.
+- Ajustes no cabeçalho, no alinhamento do seletor e na validação do layout a 412 dp.
+- APK de produção ControleGitHub-v2.7.0.apk, versão 2.7.0, código 110, pacote com.playertwo.controlegithub, 12.850.395 bytes.
+- SHA-256: 9DBD77FFB54A646FAA132D25E0182E3C389234987CA81A0CE7E9F68BE77F3217. Certificado de produção: c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec.
+- Publicação no GitHub pendente de autorização.
+
 ## Release v2.6.1 — PUBLICADA (2026-11-05)
 
 - Tocar em imagens de README abre a prévia dentro do app; links de páginas externas continuam com confirmação antes do navegador.
