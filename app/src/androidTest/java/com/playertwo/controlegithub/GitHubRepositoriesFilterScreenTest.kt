@@ -155,19 +155,26 @@ class GitHubRepositoriesFilterScreenTest {
             compose.onNodeWithText("acme/Mobile").assertDoesNotExist()
 
             compose.onNodeWithText("Todas as linguagens").performClick()
-            compose.onNodeWithText("acme/docs").assertIsDisplayed()
-            compose.onNodeWithText("acme/tools").assertIsDisplayed()
-            compose.onNodeWithText("acme/Mobile").assertIsDisplayed()
+            assertRepositoryDisplayed("acme/docs")
+            assertRepositoryDisplayed("acme/tools")
+            assertRepositoryDisplayed("acme/Mobile")
             assertEquals(1, api.requestCount.get())
 
+            compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Públicos"))
             compose.onNodeWithText("Públicos").performClick()
             compose.onNodeWithText("acme/Mobile").assertDoesNotExist()
+            compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Limpar filtros"))
             compose.onNodeWithText("Limpar filtros").performClick()
-            compose.onNodeWithText("acme/Mobile").assertIsDisplayed()
-            compose.onNodeWithText("acme/docs").assertIsDisplayed()
-            compose.onNodeWithText("acme/tools").assertIsDisplayed()
+            assertRepositoryDisplayed("acme/Mobile")
+            assertRepositoryDisplayed("acme/docs")
+            assertRepositoryDisplayed("acme/tools")
             assertEquals(1, api.requestCount.get())
         }
+    }
+
+    private fun assertRepositoryDisplayed(fullName: String) {
+        compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText(fullName))
+        compose.onNodeWithText(fullName).assertIsDisplayed()
     }
 
     @Test fun searchByLanguageAppliesToNextPageAndRefreshKeepsCriteria() {

@@ -1,6 +1,7 @@
 package com.playertwo.controlegithub
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -55,6 +56,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -444,21 +446,23 @@ internal fun GitHubRepositoriesScreen(
             verticalArrangement = Arrangement.spacedBy(itemSpacing)
         ) {
         item(span = fullSpan) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    "CONTROLE / GITHUB",
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 12.sp,
-                    letterSpacing = 2.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f)
-                )
-                IconButton(onClick = onAppearance) {
-                    Icon(Icons.Outlined.Settings, contentDescription = "Configurações de aparência")
+            Column(Modifier.fillMaxWidth()) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        "CONTROLE / GITHUB",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 12.sp,
+                        letterSpacing = 2.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(onClick = onAppearance) {
+                        Icon(Icons.Outlined.Settings, contentDescription = "Configurações de aparência")
+                    }
                 }
+                Spacer(Modifier.height(22.dp))
+                Text("Seus repositórios", fontSize = 28.sp, fontWeight = FontWeight.Bold)
             }
-            Spacer(Modifier.height(22.dp))
-            Text("Seus repositórios", fontSize = 28.sp, fontWeight = FontWeight.Bold)
         }
 
         if (sessionRestoring) {
@@ -928,7 +932,14 @@ private fun RepositoryGridColumnsRow(
                 FilterChip(
                     selected = selectedColumns == count,
                     onClick = { onSelectColumns(count) },
-                    label = { Text("$count") },
+                    label = {
+                        Box(
+                            modifier = Modifier.defaultMinSize(minWidth = 16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("$count", textAlign = TextAlign.Center)
+                        }
+                    },
                     modifier = Modifier
                         .defaultMinSize(minWidth = 48.dp)
                         .testTag("repo_grid_columns_$count")
