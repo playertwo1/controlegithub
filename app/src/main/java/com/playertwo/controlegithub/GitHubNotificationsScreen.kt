@@ -80,7 +80,9 @@ internal fun GitHubNotificationsScreen(
     sessionRestoring: Boolean,
     onSessionExpired: (GitHubSession) -> Unit,
     onAppearance: () -> Unit,
-    cacheStore: GitHubCacheStore? = null
+    cacheStore: GitHubCacheStore? = null,
+    alertIntent: android.content.Intent? = null,
+    onAlertConsumed: () -> Unit = {}
 ) {
     val login = session?.user?.login
     val token = session?.accessToken
@@ -105,6 +107,7 @@ internal fun GitHubNotificationsScreen(
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
     var readFilter by rememberSaveable(login) { mutableStateOf(NotificationReadFilter.ALL) }
     var typeFilter by rememberSaveable(login) { mutableStateOf(NotificationTypeFilter.ALL) }
+    var openedAlertId by rememberSaveable(login) { mutableStateOf<String?>(null) }
     var selectedNotification by remember(token) { mutableStateOf<GitHubNotification?>(null) }
     var originMode by remember(token) { mutableStateOf(NotificationOriginMode.NONE) }
     var openedDirectlyFromCard by remember(token) { mutableStateOf(false) }
@@ -161,9 +164,40 @@ internal fun GitHubNotificationsScreen(
         if (pager != null && !sessionRestoring) loadNextPage()
     }
     DisposableEffect(pager) { onDispose { pager?.cancel() } }
+    LaunchedEffect(alertIntent, token, sessionRestoring) {
+        if (token == null || sessionRestoring) return@LaunchedEffect
+        if (alertIntent == null && (openedAlertId == null || selectedNotification != null)) return@LaunchedEffect
+        if (alertIntent != null) {
+            openedAlertId = alertIntent.getStringExtra(LocalNotificationManager.EXTRA_THREAD_ID)
+        }
+        selectedNotification = null
+        originMode = NotificationOriginMode.NONE
+        openedDirectlyFromCard = false
+        markReadError = null
+        val threadId = openedAlertId
+        if (threadId != null) {
+            var notification = notifications.firstOrNull { it.id == threadId }
+            if (notification == null) {
+                notification = withContext(Dispatchers.IO) { fetchNotificationThread(client, token, threadId) }
+            }
+            if (notification != null) {
+                selectedNotification = notification
+                originMode = when {
+                    notification.subjectType == "Release" -> NotificationOriginMode.RELEASES
+                    notificationDestination(notification) == GitHubNotificationDestination.Unavailable -> NotificationOriginMode.NONE
+                    else -> NotificationOriginMode.ORIGIN
+                }
+                openedDirectlyFromCard = originMode != NotificationOriginMode.NONE
+            } else {
+                openedAlertId = null
+            }
+        }
+        if (alertIntent != null) onAlertConsumed()
+    }
 
     val selected = selectedNotification
     val closeOrigin = {
+        if (openedDirectlyFromCard) openedAlertId = null
         originMode = NotificationOriginMode.NONE
         if (openedDirectlyFromCard) {
             selectedNotification = null
@@ -285,6 +319,7 @@ internal fun GitHubNotificationsScreen(
         } else null
 
         BackHandler {
+            openedAlertId = null
             selectedNotification = null
             openedDirectlyFromCard = false
             markReadError = null
@@ -293,6 +328,7 @@ internal fun GitHubNotificationsScreen(
             modifier = modifier,
             notification = selected,
             onBack = {
+                openedAlertId = null
                 selectedNotification = null
                 openedDirectlyFromCard = false
                 markReadError = null

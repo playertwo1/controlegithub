@@ -23,6 +23,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -81,6 +82,54 @@ internal val LocalGitHubMarkdownNavigator =
 
 internal val LocalGitHubMarkdownImageLoader =
     staticCompositionLocalOf { GitHubMarkdownImageLoader() }
+
+private val automaticReadmeImageHosts = setOf(
+    "raw.githubusercontent.com",
+    "user-images.githubusercontent.com",
+    "github-production-user-asset-6210df.s3.amazonaws.com",
+    "camo.githubusercontent.com",
+    "private-user-images.githubusercontent.com"
+)
+
+private val LocalReadmeImages = staticCompositionLocalOf { emptyMap<Node, List<Pair<String, String>>>() }
+
+private fun Node.markdownDescendants(): Sequence<Node> = sequence {
+    var child = firstChild
+    while (child != null) {
+        val node = child
+        yield(node)
+        yieldAll(node.markdownDescendants())
+        child = node.next
+    }
+}
+
+private fun Node.imageSources(): List<Pair<String, String>> = when (this) {
+    is org.commonmark.node.Image -> listOf(destination to inlinePlainText(this).ifBlank { "Imagem" })
+    is HtmlBlock -> githubHtmlImageSources(literal)
+    is HtmlInline -> githubHtmlImageSources(literal)
+    else -> emptyList()
+}
+
+private fun collectReadmeImages(
+    document: Node,
+    repository: GitHubMarkdownRepositoryImages?
+): Map<Node, List<Pair<String, String>>> {
+    if (repository == null) return emptyMap()
+    val images = mutableMapOf<Node, MutableList<Pair<String, String>>>()
+    var count = 0
+    for (node in document.markdownDescendants()) {
+        for ((source, label) in node.imageSources()) {
+            val url = resolveGitHubMarkdownImage(source, repository) ?: continue
+            val host = java.net.URI(url).host.lowercase()
+            if (host !in automaticReadmeImageHosts) continue
+            images.getOrPut(node) { mutableListOf() }.add(url to label)
+            count++
+            // shortcut: bound eager image loading, revisit when the renderer virtualizes offscreen images.
+            if (count == 12) return images
+        }
+    }
+    return images
+}
 
 private sealed interface MarkdownParseState {
     data object Loading : MarkdownParseState
@@ -141,8 +190,13 @@ internal fun GitHubMarkdownContent(
                     modifier = Modifier.padding(contentPadding),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    MarkdownBlocks(parsed.document, ::openMarkdownTarget) { source ->
-                        resolveGitHubMarkdownImage(source, repositoryImages)
+                    val readmeImages = remember(parsed.document, repositoryImages) {
+                        collectReadmeImages(parsed.document, repositoryImages)
+                    }
+                    CompositionLocalProvider(LocalReadmeImages provides readmeImages) {
+                        MarkdownBlocks(parsed.document, ::openMarkdownTarget) { source ->
+                            resolveGitHubMarkdownImage(source, repositoryImages)
+                        }
                     }
                 }
             }
@@ -205,12 +259,37 @@ private fun MarkdownImagePreviewDialog(
     imageLoader: GitHubMarkdownImageLoader,
     onDismiss: () -> Unit
 ) {
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        modifier = Modifier.testTag("markdown_image_preview_dialog"),
+        title = { Text("Imagem: $imageLabel") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(host, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
+                MarkdownImage(url, imageLabel, imageLoader)
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text("Fechar") }
+        }
+    )
+}
+
+@Composable
+private fun MarkdownImage(
+    url: String,
+    imageLabel: String,
+    imageLoader: GitHubMarkdownImageLoader,
+    maxDimension: Int = 2048
+) {
     val uiState by produceState<MarkdownImageUiState>(MarkdownImageUiState.Loading, url, imageLoader) {
+        value = MarkdownImageUiState.Loading
         value = withContext(Dispatchers.IO) {
             when (val result = imageLoader.load(url)) {
                 is MarkdownImageLoadResult.Failed -> MarkdownImageUiState.Error(result.message)
                 is MarkdownImageLoadResult.Loaded -> {
-                    val decoded = decodeMarkdownImageBitmap(result.bytes)
+                    val decoded = decodeMarkdownImageBitmap(result.bytes, maxDimension)
                     if (decoded != null) {
                         MarkdownImageUiState.Ready(decoded.asImageBitmap())
                     } else {
@@ -221,31 +300,30 @@ private fun MarkdownImagePreviewDialog(
         }
     }
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        modifier = Modifier.testTag("markdown_image_preview_dialog"),
-        title = { Text("Imagem: $imageLabel") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(host, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
-                when (val current = uiState) {
-                    MarkdownImageUiState.Loading -> Text("Carregando imagem...")
-                    is MarkdownImageUiState.Ready -> Image(
-                        bitmap = current.bitmap,
-                        contentDescription = imageLabel,
-                        modifier = Modifier.fillMaxWidth().testTag("markdown_loaded_image")
-                    )
-                    is MarkdownImageUiState.Error -> Text(
-                        text = current.message,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Fechar") }
+    when (val current = uiState) {
+        MarkdownImageUiState.Loading -> Text("Carregando imagem...")
+        is MarkdownImageUiState.Ready -> Image(
+            bitmap = current.bitmap,
+            contentDescription = imageLabel,
+            modifier = Modifier.fillMaxWidth().testTag("markdown_loaded_image")
+        )
+        is MarkdownImageUiState.Error -> Text(
+            text = current.message,
+            color = MaterialTheme.colorScheme.error
+        )
+    }
+}
+
+@Composable
+private fun ReadmeImages(node: Node) {
+    val images = LocalReadmeImages.current
+    if (images.isEmpty()) return
+    val loader = LocalGitHubMarkdownImageLoader.current
+    for (element in sequenceOf(node) + node.markdownDescendants()) {
+        for ((url, label) in images[element].orEmpty()) {
+            MarkdownImage(url, label, loader, maxDimension = 1024)
         }
-    )
+    }
 }
 
 @Composable
@@ -279,7 +357,7 @@ private fun MarkdownBlocks(
             is OrderedList -> MarkdownList(block, ordered = true, start = block.markerStartNumber ?: 1, onOpenLink = onOpenLink, resolveImage = resolveImage)
             is FencedCodeBlock -> MarkdownCode(block.literal)
             is IndentedCodeBlock -> MarkdownCode(block.literal)
-            is HtmlBlock -> MarkdownHtmlBlock(block.literal, onOpenLink, resolveImage)
+            is HtmlBlock -> MarkdownHtmlBlock(block, onOpenLink, resolveImage)
             is ThematicBreak -> HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             is TableBlock -> MarkdownTable(block, onOpenLink, resolveImage)
             else -> if (block.firstChild != null) MarkdownBlocks(block, onOpenLink, resolveImage)
@@ -291,10 +369,11 @@ private fun MarkdownBlocks(
 
 @Composable
 private fun MarkdownHtmlBlock(
-    html: String,
+    block: HtmlBlock,
     onOpenLink: (GitHubMarkdownLinkTarget, String?) -> Unit,
     resolveImage: (String) -> String?
 ) {
+    val html = block.literal
     val text = remember(html) {
         Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT).toString()
             .replace('\uFFFC', ' ')
@@ -302,7 +381,10 @@ private fun MarkdownHtmlBlock(
     }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         if (text.isNotBlank()) Text(text, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        ReadmeImages(block)
+        val automaticImages = LocalReadmeImages.current[block].orEmpty()
         githubHtmlImageSources(html).forEach { (source, label) ->
+            if ((resolveImage(source) to label) in automaticImages) return@forEach
             val target = resolveImage(source)?.let(::classifyGitHubMarkdownLink)
                 ?: classifyGitHubMarkdownLink(source)
             if (target != null) TextButton(onClick = { onOpenLink(target, label) }) {
@@ -427,7 +509,15 @@ private fun MarkdownInlineText(
             }
         }
     }
-    Text(text = annotated, modifier = modifier, style = style, lineHeight = 22.sp)
+    val automaticImages = LocalReadmeImages.current
+    if (automaticImages.isEmpty() || node.markdownDescendants().none(automaticImages::containsKey)) {
+        Text(text = annotated, modifier = modifier, style = style, lineHeight = 22.sp)
+    } else {
+        Column(modifier = modifier) {
+            if (annotated.isNotBlank()) Text(text = annotated, style = style, lineHeight = 22.sp)
+            ReadmeImages(node)
+        }
+    }
 }
 
 private fun AnnotatedString.Builder.appendInline(
@@ -467,7 +557,7 @@ private fun AnnotatedString.Builder.appendInline(
                 ) { onOpenLink(target, altText) }
             ) { append(label) }
         }
-        is HtmlInline -> append(Html.fromHtml(node.literal, Html.FROM_HTML_MODE_COMPACT).toString())
+        is HtmlInline -> append(Html.fromHtml(node.literal, Html.FROM_HTML_MODE_COMPACT).toString().replace('\uFFFC', ' '))
         is SoftLineBreak, is HardLineBreak -> append('\n')
         else -> appendInlineChildren(node, linkColor, codeBackground, codeColor, resolveImage, onOpenLink)
     }

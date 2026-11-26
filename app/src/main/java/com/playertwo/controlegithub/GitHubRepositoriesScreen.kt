@@ -88,8 +88,10 @@ internal fun GitHubRepositoriesScreen(
     cacheStore: GitHubCacheStore? = null,
     gridPreferences: RepositoryGridPreferences? = null
 ) {
-    var refreshVersion by remember(session?.accessToken) { mutableIntStateOf(0) }
-    val pager = remember(client, session?.accessToken, refreshVersion, cacheStore) {
+    val accountLogin = session?.user?.login
+    val accessToken = session?.accessToken
+    var refreshVersion by remember(accessToken) { mutableIntStateOf(0) }
+    val pager = remember(client, accessToken, refreshVersion, cacheStore) {
         session?.let {
             GitHubRepositoryPager(
                 client = client,
@@ -125,43 +127,42 @@ internal fun GitHubRepositoriesScreen(
             }
         }
     }
-    var recentRepositories by remember(session?.user?.login) { mutableStateOf(emptyList<RecentRepositoryEntry>()) }
-    var repositories by remember(client, session?.user?.login) { mutableStateOf(emptyList<GitHubRepository>()) }
-    var emptyProbeResults by remember(client, session?.user?.login) {
+    var recentRepositories by remember(accountLogin) { mutableStateOf(emptyList<RecentRepositoryEntry>()) }
+    var repositories by remember(client, accountLogin) { mutableStateOf(emptyList<GitHubRepository>()) }
+    var emptyProbeResults by remember(client, accountLogin) {
         mutableStateOf<Map<Long, RepositoryEmptyStatus>>(emptyMap())
     }
     var hasNext by remember(pager) { mutableStateOf(false) }
     var loaded by remember(pager) { mutableStateOf(false) }
     var loading by remember(pager) { mutableStateOf(false) }
     var retryPending by remember(pager) { mutableStateOf(false) }
-    var isOfflineCache by remember(client, session?.user?.login) { mutableStateOf(false) }
-    var cachedAtMillis by remember(client, session?.user?.login) { mutableStateOf<Long?>(null) }
+    var isOfflineCache by remember(client, accountLogin) { mutableStateOf(false) }
+    var cachedAtMillis by remember(client, accountLogin) { mutableStateOf<Long?>(null) }
     var errorMessage by remember(pager) { mutableStateOf<String?>(null) }
     var retryAt by remember(pager) { mutableStateOf<Long?>(null) }
     var selectedRepository by remember(pager) { mutableStateOf<GitHubRepository?>(null) }
-    var searchQuery by remember(client, session?.user?.login) { mutableStateOf("") }
-    var visibilityFilter by remember(client, session?.user?.login) { mutableStateOf(RepositoryVisibilityFilter.ALL) }
-    var languageFilter by remember(client, session?.user?.login) { mutableStateOf<String?>(null) }
-    var healthFilter by remember(client, session?.user?.login) { mutableStateOf<RepositoryHealthStatus?>(null) }
-    var sortOrder by remember(client, session?.user?.login) { mutableStateOf(RepositorySort.NAME) }
-    var favoriteIds by remember(client, session?.user?.login) { mutableStateOf<Set<Long>?>(null) }
-    var favoritesLoadError by remember(client, session?.user?.login) { mutableStateOf(false) }
-    var favoritesWriteError by remember(client, session?.user?.login) { mutableStateOf(false) }
-    var favoritesSaving by remember(client, session?.user?.login) { mutableStateOf(false) }
-    var favoritesOnly by remember(client, session?.user?.login) { mutableStateOf(false) }
-    var favoritesRetry by remember(client, session?.user?.login) { mutableIntStateOf(0) }
-    var globalSearchMode by remember(client, session?.user?.login) { mutableStateOf(false) }
-    var globalQuery by remember(client, session?.user?.login) { mutableStateOf("") }
-    var globalTrendingPeriod by remember(client, session?.user?.login) { mutableStateOf(GitHubTrendingPeriod.DAY) }
-    var globalPager by remember(client, session?.accessToken) { mutableStateOf<GitHubGlobalRepositorySearchPager?>(null) }
-    var globalResults by remember(client, session?.user?.login) { mutableStateOf(emptyList<GitHubRepository>()) }
-    var globalHasNext by remember(client, session?.user?.login) { mutableStateOf(false) }
-    var globalLoaded by remember(client, session?.user?.login) { mutableStateOf(false) }
-    var globalLoading by remember(client, session?.user?.login) { mutableStateOf(false) }
-    var globalRetryPending by remember(client, session?.user?.login) { mutableStateOf(false) }
-    var globalErrorMessage by remember(client, session?.user?.login) { mutableStateOf<String?>(null) }
-    var globalRetryAt by remember(client, session?.user?.login) { mutableStateOf<Long?>(null) }
-    val accountLogin = session?.user?.login
+    var searchQuery by remember(client, accountLogin) { mutableStateOf("") }
+    var visibilityFilter by remember(client, accountLogin) { mutableStateOf(RepositoryVisibilityFilter.ALL) }
+    var languageFilter by remember(client, accountLogin) { mutableStateOf<String?>(null) }
+    var healthFilter by remember(client, accountLogin) { mutableStateOf<RepositoryHealthStatus?>(null) }
+    var sortOrder by remember(client, accountLogin) { mutableStateOf(RepositorySort.NAME) }
+    var favoriteIds by remember(client, accountLogin) { mutableStateOf<Set<Long>?>(null) }
+    var favoritesLoadError by remember(client, accountLogin) { mutableStateOf(false) }
+    var favoritesWriteError by remember(client, accountLogin) { mutableStateOf(false) }
+    var favoritesSaving by remember(client, accountLogin) { mutableStateOf(false) }
+    var favoritesOnly by remember(client, accountLogin) { mutableStateOf(false) }
+    var favoritesRetry by remember(client, accountLogin) { mutableIntStateOf(0) }
+    var globalSearchMode by remember(client, accountLogin) { mutableStateOf(false) }
+    var globalQuery by remember(client, accountLogin) { mutableStateOf("") }
+    var globalTrendingPeriod by remember(client, accountLogin) { mutableStateOf(GitHubTrendingPeriod.DAY) }
+    var globalPager by remember(client, accessToken) { mutableStateOf<GitHubGlobalRepositorySearchPager?>(null) }
+    var globalResults by remember(client, accountLogin) { mutableStateOf(emptyList<GitHubRepository>()) }
+    var globalHasNext by remember(client, accountLogin) { mutableStateOf(false) }
+    var globalLoaded by remember(client, accountLogin) { mutableStateOf(false) }
+    var globalLoading by remember(client, accountLogin) { mutableStateOf(false) }
+    var globalRetryPending by remember(client, accountLogin) { mutableStateOf(false) }
+    var globalErrorMessage by remember(client, accountLogin) { mutableStateOf<String?>(null) }
+    var globalRetryAt by remember(client, accountLogin) { mutableStateOf<Long?>(null) }
     LaunchedEffect(recentStore, accountLogin, selectedRepository) {
         if (accountLogin == null) {
             recentRepositories = emptyList()
@@ -189,7 +190,7 @@ internal fun GitHubRepositoriesScreen(
             }
         }
     }
-    LaunchedEffect(repositories, session?.accessToken, session?.isOffline, isOfflineCache, refreshVersion) {
+    LaunchedEffect(repositories, accessToken, session?.isOffline, isOfflineCache, refreshVersion) {
         val activeSession = session ?: return@LaunchedEffect
         if (activeSession.isOffline || isOfflineCache) return@LaunchedEffect
         val existing = emptyProbeResults

@@ -85,21 +85,20 @@ class GitHubRepositoryDetailScreenTest {
             compose.onNodeWithText("Intro").performScrollTo().assertIsDisplayed()
             compose.onNodeWithText("<script>literal</script>").assertDoesNotExist()
             compose.onNodeWithText("HTML paragraph works").performScrollTo().assertIsDisplayed()
-            compose.onNodeWithText("Carregar imagem: README cover").performScrollTo().performClick()
             compose.waitUntil(10_000) {
-                compose.onAllNodesWithTag("markdown_loaded_image").fetchSemanticsNodes().isNotEmpty()
+                compose.onAllNodesWithTag("markdown_loaded_image").fetchSemanticsNodes().size == 2
             }
-            compose.onNodeWithText("Imagem: README cover").assertIsDisplayed()
+            compose.onNodeWithContentDescription("README cover").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithContentDescription("logo").performScrollTo().assertIsDisplayed()
             assertTrue(imageRequests.contains("https://raw.githubusercontent.com/acme/Mobile/feature/mobile/docs/images/page-cover.png"))
-            compose.onNodeWithText("Fechar").performClick()
-            compose.onNodeWithText("unsafe").assertIsDisplayed().assertHasNoClickAction()
-            compose.onNodeWithText("Imagem: logo").assertIsDisplayed().performTouchInput { click() }
+            assertTrue(imageRequests.contains("https://user-images.githubusercontent.com/logo.png"))
+            compose.onNodeWithText("unsafe").performScrollTo().assertIsDisplayed().assertHasNoClickAction()
+            compose.onNodeWithTag("markdown_image_preview_dialog").assertDoesNotExist()
+            assertTrue(imageRequests.none { it == "https://example.test/external.png" })
+            compose.onNodeWithText("external image").performScrollTo().performTouchInput { click() }
             compose.waitUntil(10_000) {
-                compose.onAllNodesWithTag("markdown_loaded_image").fetchSemanticsNodes().isNotEmpty()
+                compose.onAllNodesWithTag("markdown_image_preview_dialog").fetchSemanticsNodes().isNotEmpty()
             }
-            compose.onNodeWithTag("markdown_image_preview_dialog").assertIsDisplayed()
-            assertTrue(imageRequests.contains("https://example.test/logo.png"))
-            compose.onNodeWithText("Abrir link externo?").assertDoesNotExist()
             compose.onNodeWithText("Fechar").performClick()
             compose.onNodeWithText("echo safe", substring = true).performScrollTo().assertIsDisplayed()
             compose.onNodeWithText("external").performScrollTo().performTouchInput { click() }
@@ -228,7 +227,7 @@ class GitHubRepositoryDetailScreenTest {
 
             compose.onAllNodesWithContentDescription("Voltar aos repositórios").onLast().performClick()
             compose.onNodeWithText("acme/Mobile").assertIsDisplayed()
-            compose.onNodeWithText("issue").assertIsDisplayed()
+            compose.onNodeWithText("issue").performScrollTo().assertIsDisplayed()
             compose.onAllNodesWithContentDescription("Voltar aos repositórios").assertCountEquals(1)
             assertEquals(requestsAfterReturningToDocs, api.requestCount.get())
         }
@@ -987,7 +986,7 @@ class GitHubRepositoryDetailScreenTest {
 
     private fun showRepositories(
         api: DetailApi,
-        imageLoader: GitHubMarkdownImageLoader = GitHubMarkdownImageLoader(),
+        imageLoader: GitHubMarkdownImageLoader = testImageLoader().first,
         onSessionExpired: () -> Unit = {}
     ) {
         val client = GitHubHttpClient(baseUrl = api.baseUrl)
@@ -1046,27 +1045,30 @@ class GitHubRepositoryDetailScreenTest {
             SessionCredentials("instrumentation-fixture-token")
         )
         val sessionState = androidx.compose.runtime.mutableStateOf<GitHubSession?>(session)
+        val (imageLoader) = testImageLoader()
         compose.setContent {
             ControleTheme(AppThemeMode.LIGHT) {
-                val activeSession = sessionState.value
-                ControleApp(
-                    themeMode = AppThemeMode.LIGHT,
-                    preferenceError = false,
-                    favoritesStore = DataStoreRepositoryFavoritesStore(context),
-                    favoriteOperations = kotlinx.coroutines.sync.Mutex(),
-                    session = activeSession,
-                    sessionRestoring = false,
-                    sessionRetry = false,
-                    sessionStorageError = false,
-                    favoriteCleanupError = false,
-                    onRetrySession = {},
-                    onRetrySessionCleanup = {},
-                    onConnected = { connected -> sessionState.value = connected; true },
-                    onSessionExpired = { sessionState.value = null },
-                    onLogout = {},
-                    onThemeModeChange = {},
-                    apiClient = GitHubHttpClient(api.baseUrl)
-                )
+                CompositionLocalProvider(LocalGitHubMarkdownImageLoader provides imageLoader) {
+                    val activeSession = sessionState.value
+                    ControleApp(
+                        themeMode = AppThemeMode.LIGHT,
+                        preferenceError = false,
+                        favoritesStore = DataStoreRepositoryFavoritesStore(context),
+                        favoriteOperations = kotlinx.coroutines.sync.Mutex(),
+                        session = activeSession,
+                        sessionRestoring = false,
+                        sessionRetry = false,
+                        sessionStorageError = false,
+                        favoriteCleanupError = false,
+                        onRetrySession = {},
+                        onRetrySessionCleanup = {},
+                        onConnected = { connected -> sessionState.value = connected; true },
+                        onSessionExpired = { sessionState.value = null },
+                        onLogout = {},
+                        onThemeModeChange = {},
+                        apiClient = GitHubHttpClient(api.baseUrl)
+                    )
+                }
             }
         }
     }
@@ -1127,7 +1129,9 @@ class GitHubRepositoryDetailScreenTest {
             |
             |[unsafe](javascript:alert(1))
             |
-            |![logo](https://example.test/logo.png)
+            |![logo](https://user-images.githubusercontent.com/logo.png)
+            |
+            |![external image](https://example.test/external.png)
             |
             |```sh
             |echo safe

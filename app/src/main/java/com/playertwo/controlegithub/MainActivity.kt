@@ -69,8 +69,14 @@ class MainActivity : ComponentActivity() {
             var shortcutRequestPage by remember {
                 mutableStateOf(resolveAppShortcutPage(intent?.action, intent?.dataString))
             }
+            var alertRequest by rememberSaveable {
+                mutableStateOf(intent?.takeIf { it.action == LocalNotificationManager.OPEN_ALERT } ?: Intent())
+            }
             DisposableEffect(this@MainActivity) {
                 val listener = Consumer<Intent> { newIntent ->
+                    if (newIntent.action == LocalNotificationManager.OPEN_ALERT) {
+                        alertRequest = newIntent
+                    }
                     val resolved = resolveAppShortcutPage(newIntent.action, newIntent.dataString)
                     if (resolved != null) {
                         shortcutRequestPage = resolved
@@ -133,6 +139,8 @@ class MainActivity : ComponentActivity() {
                     kanbanStore = kanbanStore,
                     recentRepositoriesStore = recentRepositoriesStore,
                     initialShortcutPage = shortcutRequestPage,
+                    alertIntent = alertRequest.takeIf { it.action == LocalNotificationManager.OPEN_ALERT },
+                    onAlertConsumed = { alertRequest = Intent() },
                     onShortcutConsumed = { shortcutRequestPage = null },
                     onRetrySession = { scope.launch { restoreSession() } },
                     onRetrySessionCleanup = {
@@ -277,7 +285,9 @@ internal fun ControleApp(
     kanbanStore: KanbanStore? = null,
     recentRepositoriesStore: RecentRepositoriesStore? = null,
     initialShortcutPage: Int? = null,
-    onShortcutConsumed: () -> Unit = {}
+    onShortcutConsumed: () -> Unit = {},
+    alertIntent: Intent? = null,
+    onAlertConsumed: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val activeRecentRepositoriesStore = remember(context, recentRepositoriesStore) {
@@ -293,10 +303,11 @@ internal fun ControleApp(
     var logoutConfirm by rememberSaveable { mutableStateOf(false) }
     var repositorySessionExpired by remember { mutableStateOf(false) }
     var markdownRouteSessionToken by remember { mutableStateOf(session?.accessToken) }
-    LaunchedEffect(initialShortcutPage, session, sessionRestoring) {
-        if (initialShortcutPage != null && session != null && !sessionRestoring) {
+    LaunchedEffect(initialShortcutPage, alertIntent, session, sessionRestoring) {
+        val requestedPage = if (alertIntent != null) 3 else initialShortcutPage
+        if (requestedPage != null && session != null && !sessionRestoring) {
             started = true
-            page = initialShortcutPage
+            page = requestedPage
             workAreaPullRequests = false
             selectedName = null
             appearanceOpen = false
@@ -442,7 +453,9 @@ internal fun ControleApp(
             sessionRestoring = sessionRestoring,
             cacheStore = cacheStore,
             onSessionExpired = onSessionExpired,
-            onAppearance = { appearanceOpen = true }
+            onAppearance = { appearanceOpen = true },
+            alertIntent = alertIntent,
+            onAlertConsumed = onAlertConsumed
         )
         else LazyColumn(Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item {

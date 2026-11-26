@@ -81,6 +81,8 @@ internal object LocalNotificationManager {
     const val CHANNEL_ID = "controlegithub_alerts"
     const val CHANNEL_NAME = "Alertas do GitHub"
     const val NOTIFICATION_ID = 20261
+    const val OPEN_ALERT = "com.playertwo.controlegithub.OPEN_ALERT"
+    const val EXTRA_THREAD_ID = "thread_id"
 
     fun ensureChannel(context: Context) {
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager ?: return
@@ -124,7 +126,9 @@ internal object LocalNotificationManager {
         }
 
         val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            action = OPEN_ALERT
+            putExtra(EXTRA_THREAD_ID, items.singleOrNull()?.id)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
         val pendingIntent = PendingIntent.getActivity(
             context,

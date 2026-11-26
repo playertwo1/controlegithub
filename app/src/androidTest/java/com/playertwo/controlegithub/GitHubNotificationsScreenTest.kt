@@ -1,7 +1,12 @@
 package com.playertwo.controlegithub
 
+import android.content.Intent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.*
+import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.ExistingWorkPolicy
@@ -49,6 +54,59 @@ class GitHubNotificationsScreenTest {
                     compose.onAllNodesWithText("Nenhuma notificação.").fetchSemanticsNodes().isNotEmpty()
             }
             assertTrue(api.requests.single().startsWith("GET /notifications?all=true&per_page=50"))
+        }
+    }
+
+    @Test
+    fun alertOpensIssueOutsideFirstPageAndGroupedAlertReturnsToInbox() {
+        val threadPath = "/notifications/threads/thread-1"
+        NotificationsScreenApi(
+            notificationsJson = "[]",
+            originResponses = mapOf(threadPath to NOTIFICATION.trim().removeSurrounding("[", "]"))
+        ).use { api ->
+            var alert by mutableStateOf<Intent?>(Intent(LocalNotificationManager.OPEN_ALERT).apply {
+                putExtra(LocalNotificationManager.EXTRA_THREAD_ID, "thread-1")
+            })
+            val restoration = StateRestorationTester(compose)
+            restoration.setContent {
+                ControleTheme(AppThemeMode.LIGHT) {
+                    ControleApp(
+                        themeMode = AppThemeMode.LIGHT,
+                        preferenceError = false,
+                        favoritesStore = DataStoreRepositoryFavoritesStore(
+                            InstrumentationRegistry.getInstrumentation().targetContext
+                        ),
+                        favoriteOperations = kotlinx.coroutines.sync.Mutex(),
+                        favoriteCleanupError = false,
+                        apiClient = androidx.compose.runtime.remember { GitHubHttpClient(api.baseUri) },
+                        session = androidx.compose.runtime.remember { notificationFixtureSession() },
+                        sessionRestoring = false,
+                        sessionRetry = false,
+                        sessionStorageError = false,
+                        onRetrySession = {},
+                        onRetrySessionCleanup = {},
+                        onConnected = { true },
+                        onSessionExpired = {},
+                        onLogout = {},
+                        onThemeModeChange = {},
+                        alertIntent = alert,
+                        onAlertConsumed = { alert = null }
+                    )
+                }
+            }
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Fixture actual issue").fetchSemanticsNodes().isNotEmpty()
+            }
+            assertTrue(api.requests.any { it.startsWith("GET $threadPath ") })
+            restoration.emulateSavedInstanceStateRestore()
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Fixture actual issue").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.runOnIdle { alert = Intent(LocalNotificationManager.OPEN_ALERT) }
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Nenhuma notificação.").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Fixture actual issue").assertDoesNotExist()
         }
     }
 
@@ -513,7 +571,7 @@ private class NotificationsScreenApi(
                 }
                 val body = when {
                     secondPageJson != null && path.contains("page=2") -> secondPageJson
-                    path.startsWith("/notifications") -> notificationsJson
+                    path.startsWith("/notifications") -> originResponses[path] ?: notificationsJson
                     else -> originResponses[path] ?: when {
                         path.matches(Regex("/repos/[^/]+/[^/]+/issues/[0-9]+")) -> ISSUE_DETAIL
                         path.contains("/comments?") -> "[]"

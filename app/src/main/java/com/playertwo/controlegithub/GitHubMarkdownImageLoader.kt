@@ -119,5 +119,15 @@ internal class GitHubMarkdownImageLoader(
     }
 }
 
-internal fun decodeMarkdownImageBitmap(bytes: ByteArray): Bitmap? =
-    runCatching { BitmapFactory.decodeByteArray(bytes, 0, bytes.size) }.getOrNull()
+internal fun decodeMarkdownImageBitmap(bytes: ByteArray, maxDimension: Int = 2048): Bitmap? =
+    runCatching {
+        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)
+        val largestDimension = maxOf(options.outWidth, options.outHeight)
+        options.inSampleSize = 1
+        while (largestDimension / options.inSampleSize > maxDimension) {
+            options.inSampleSize *= 2
+        }
+        options.inJustDecodeBounds = false
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)
+    }.getOrNull()

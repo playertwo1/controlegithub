@@ -132,6 +132,21 @@ internal class GitHubNotificationPager(
     }
 }
 
+internal fun fetchNotificationThread(
+    client: GitHubHttpClient,
+    accessToken: String,
+    threadId: String
+): GitHubNotification? {
+    if (!NOTIFICATION_ID.matches(threadId)) return null
+    val response = client.get("/notifications/threads/$threadId", accessToken).execute()
+    if (response !is GitHubHttpResult.Success) return null
+    return try {
+        parseGitHubNotifications("[${response.body}]").singleOrNull()?.takeIf { it.id == threadId }
+    } catch (_: IOException) {
+        null
+    }
+}
+
 internal sealed interface MarkNotificationReadResult {
     data object Success : MarkNotificationReadResult
     data class Failure(val error: GitHubHttpError, val retryAtEpochMillis: Long? = null) : MarkNotificationReadResult
