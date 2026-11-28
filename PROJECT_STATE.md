@@ -1,5 +1,14 @@
 # Estado do projeto
 
+## Release v2.7.1 — PUBLICADA (2026-11-28)
+
+- Um aviso individual abre issue, pull request, repositório ou releases. Vários avisos são publicados separados e o resumo abre a caixa Avisos. Destino indisponível avisa na caixa e não marca como lido.
+- O README carrega imagens hospedadas pelo GitHub quando entram na tela. O toque amplia. SVG não é exibido. Imagens de outros sites continuam por toque.
+- APK de produção ControleGitHub-v2.7.1.apk, versão 2.7.1, código 111, pacote com.playertwo.controlegithub, 12.850.395 bytes.
+- SHA-256: FBB262B7E1BD5186ED75BD2F3C659679CBE0641903EFA6D93E5812529E184FC2. Certificado de produção: c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec.
+- Release: https://github.com/playertwo1/controlegithub/releases/tag/v2.7.1. Commit 28b1751, tag v2.7.1. APK e SHA256SUMS.txt anexados. Tamanhos 12.850.395 e 92 bytes confirmados pela API do GitHub.
+- `clean assembleRelease`, `apksigner` v2 e `aapt`: **PASS**. `testDebugUnitTest` 241 testes, 0 falhas e 2 ignorados. `lintDebug`: **PASS**. Emulador e aparelho físico: **NOT_RUN**.
+
 ## Correções locais de avisos e imagens (2026-11-28)
 
 - Um aviso individual abre issue, pull request, repositório ou releases. Vários avisos são publicados separados, cada um com o próprio destino, e o resumo abre a caixa Avisos. Destino indisponível avisa na caixa e não marca como lido.
