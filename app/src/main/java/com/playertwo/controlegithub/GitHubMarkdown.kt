@@ -19,6 +19,23 @@ internal data class GitHubMarkdownRepositoryImages(
     val branch: String
 )
 
+internal val automaticReadmeImageHosts = setOf(
+    "raw.githubusercontent.com",
+    "user-images.githubusercontent.com",
+    "github-production-user-asset-6210df.s3.amazonaws.com",
+    "camo.githubusercontent.com",
+    "private-user-images.githubusercontent.com"
+)
+
+internal fun automaticReadmeImageUrl(
+    rawSource: String,
+    repository: GitHubMarkdownRepositoryImages?
+): String? {
+    val url = resolveGitHubMarkdownImage(rawSource, repository) ?: return null
+    val host = runCatching { URI(url).host }.getOrNull()?.lowercase() ?: return null
+    return url.takeIf { host in automaticReadmeImageHosts }
+}
+
 internal fun resolveGitHubMarkdownImage(
     rawSource: String,
     repository: GitHubMarkdownRepositoryImages?

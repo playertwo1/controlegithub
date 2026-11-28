@@ -141,6 +141,15 @@ class GitHubMarkdownImageLoaderTest {
             loader500.load("https://example.test/error.png")
         )
     }
+
+    @Test fun svgIsReportedAsUnsupportedInsteadOfALoadedBitmap() {
+        val svg = "<svg xmlns=\"http://www.w3.org/2000/svg\"></svg>".toByteArray()
+        val message = "SVG não é exibido no app. Esse formato não tem decodificação segura aqui."
+
+        assertEquals(message, unsupportedMarkdownImageMessage(svg, "image/svg+xml"))
+        assertEquals(message, unsupportedMarkdownImageMessage(svg, null))
+        assertNull(unsupportedMarkdownImageMessage(byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47), "image/png"))
+    }
 }
 
 private class FakeHttpURLConnection(

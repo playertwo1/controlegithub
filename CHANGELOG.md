@@ -11,8 +11,8 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ### Corrigido
 
-- Alertas individuais do Android abrem o item de origem no app quando disponível. Alertas agrupados abrem a aba **Avisos**.
-- O README exibe automaticamente imagens hospedadas pelo GitHub. As imagens Markdown de outros sites continuam disponíveis por toque.
+- Um aviso individual abre o item de origem no app. Vários avisos chegam separados, cada um com o próprio destino, e o resumo abre a aba **Avisos**.
+- O README exibe imagens hospedadas pelo GitHub quando entram na tela. As imagens de outros sites continuam disponíveis por toque.
 - A tela de repositórios reutiliza as chaves de sessão para evitar o bloqueio na análise do compilador Kotlin.
 
 ## [2.7.0] — 2026-11-23

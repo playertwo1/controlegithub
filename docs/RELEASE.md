@@ -1,8 +1,17 @@
 # Guia de Release e Distribuição — ControleGitHub
 
-Última atualização: 5 de novembro de 2026
+Última atualização: 28 de novembro de 2026
 
-## Release v2.7.0 preparada para publicação
+## Release v2.7.1
+
+- Pacote: `com.playertwo.controlegithub`
+- Versão: `2.7.1` (`versionCode = 111`)
+- Arquivo: `ControleGitHub-v2.7.1.apk` (12.850.395 bytes)
+- SHA-256: `FBB262B7E1BD5186ED75BD2F3C659679CBE0641903EFA6D93E5812529E184FC2`
+- Certificado SHA-256: `c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec`
+- Notas: [RELEASE_NOTES_v2.7.1.md](RELEASE_NOTES_v2.7.1.md)
+
+## Release v2.7.0
 
 - Pacote: com.playertwo.controlegithub
 - Versão: 2.7.0 (versionCode = 110)
@@ -11,7 +20,7 @@
 - Certificado SHA-256: c622fc491da08aee1b9e196db0cc7ba92784eefc02c047c387049042ad0aa2ec
 - Notas: [RELEASE_NOTES_v2.7.0.md](RELEASE_NOTES_v2.7.0.md)
 
-## Release atual: v2.6.1
+## Release v2.6.1
 
 - Pacote: `com.playertwo.controlegithub`
 - Versão: `2.6.1` (`versionCode = 109`)

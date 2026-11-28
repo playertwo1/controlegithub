@@ -85,16 +85,26 @@ class GitHubRepositoryDetailScreenTest {
             compose.onNodeWithText("Intro").performScrollTo().assertIsDisplayed()
             compose.onNodeWithText("<script>literal</script>").assertDoesNotExist()
             compose.onNodeWithText("HTML paragraph works").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithContentDescription("README cover").performScrollTo()
             compose.waitUntil(10_000) {
-                compose.onAllNodesWithTag("markdown_loaded_image").fetchSemanticsNodes().size == 2
+                imageRequests.contains("https://raw.githubusercontent.com/acme/Mobile/feature/mobile/docs/images/page-cover.png")
+            }
+            compose.onNodeWithContentDescription("logo").performScrollTo()
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithTag("markdown_loaded_image").fetchSemanticsNodes().size == 2 &&
+                    imageRequests.contains("https://user-images.githubusercontent.com/logo.png")
             }
             compose.onNodeWithContentDescription("README cover").performScrollTo().assertIsDisplayed()
             compose.onNodeWithContentDescription("logo").performScrollTo().assertIsDisplayed()
-            assertTrue(imageRequests.contains("https://raw.githubusercontent.com/acme/Mobile/feature/mobile/docs/images/page-cover.png"))
-            assertTrue(imageRequests.contains("https://user-images.githubusercontent.com/logo.png"))
-            compose.onNodeWithText("unsafe").performScrollTo().assertIsDisplayed().assertHasNoClickAction()
             compose.onNodeWithTag("markdown_image_preview_dialog").assertDoesNotExist()
             assertTrue(imageRequests.none { it == "https://example.test/external.png" })
+            compose.onNodeWithContentDescription("README cover").performScrollTo().performClick()
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithTag("markdown_image_preview_dialog").fetchSemanticsNodes().isNotEmpty()
+            }
+            compose.onNodeWithText("Fechar").performClick()
+            compose.onNodeWithTag("markdown_image_preview_dialog").assertDoesNotExist()
+            compose.onNodeWithText("unsafe").performScrollTo().assertIsDisplayed().assertHasNoClickAction()
             compose.onNodeWithText("external image").performScrollTo().performTouchInput { click() }
             compose.waitUntil(10_000) {
                 compose.onAllNodesWithTag("markdown_image_preview_dialog").fetchSemanticsNodes().isNotEmpty()

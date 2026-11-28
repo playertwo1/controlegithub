@@ -1,5 +1,13 @@
 # Estado do projeto
 
+## Correções locais de avisos e imagens (2026-11-28)
+
+- Um aviso individual abre issue, pull request, repositório ou releases. Vários avisos são publicados separados, cada um com o próprio destino, e o resumo abre a caixa Avisos. Destino indisponível avisa na caixa e não marca como lido.
+- O README carrega imagens hospedadas pelo GitHub quando entram na tela, sem limite de 12. O toque amplia. Falha mantém o texto alternativo e oferece nova tentativa. SVG não é exibido. Imagens de outros sites continuam por toque.
+- A tela de repositórios reutiliza as chaves de login e token da sessão nas chamadas a `remember`. O depurador localizou nessa função o excesso de análise de fluxo que bloqueava a compilação Kotlin.
+- A primeira execução integral no emulador API 36 executou 222 testes e registrou 7 falhas. Uma delas conferia a visibilidade de um link do README sem rolar após as imagens passarem a ocupar espaço. As demais foram em comentários de issue, instalação manual via release, paginação/filtro, busca pública e atualização.
+- Após o ajuste, `assembleDebug`, `testDebugUnitTest` (233 aprovados e 2 ignorados), `lintDebug` (0 erros e 20 avisos) e os 5 testes instrumentados selecionados de avisos e README passaram no emulador API 36. A última rodada instrumentada foi focada. O toque em um alerta novo com a conta real em aparelho físico ficou `NOT_RUN`.
+
 ## Release v2.7.0 — PUBLICADA (2026-11-23)
 
 - Seletor de 1, 2 ou 3 repositórios por linha.

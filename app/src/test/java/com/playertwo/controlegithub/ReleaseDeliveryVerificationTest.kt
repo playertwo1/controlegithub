@@ -17,7 +17,7 @@ class ReleaseDeliveryVerificationTest {
         current
     }
 
-    private val canonicalSha256 = "9DBD77FFB54A646FAA132D25E0182E3C389234987CA81A0CE7E9F68BE77F3217"
+    private val canonicalSha256 = "FBB262B7E1BD5186ED75BD2F3C659679CBE0641903EFA6D93E5812529E184FC2"
 
     @Test
     fun sha256SumsFileDeclaresCanonicalReleaseHash() {
@@ -32,13 +32,13 @@ class ReleaseDeliveryVerificationTest {
         val declaredFilename = parts[1].removePrefix("*")
 
         assertEquals("Hash no SHA256SUMS.txt deve coincidir com o hash oficial da release", canonicalSha256, declaredHash)
-        assertEquals("Nome do artefato deve ser ControleGitHub-v2.7.0.apk", "ControleGitHub-v2.7.0.apk", declaredFilename)
+        assertEquals("Nome do artefato deve ser ControleGitHub-v2.7.1.apk", "ControleGitHub-v2.7.1.apk", declaredFilename)
     }
 
     @Test
     fun releaseApkMatchesSha256Sums() {
-        val releaseApk = File(projectRoot, "app/build/outputs/apk/release/ControleGitHub-v2.7.0.apk")
-        assumeTrue("Gere ControleGitHub-v2.7.0.apk para verificar seu checksum", releaseApk.isFile)
+        val releaseApk = File(projectRoot, "app/build/outputs/apk/release/ControleGitHub-v2.7.1.apk")
+        assumeTrue("Gere ControleGitHub-v2.7.1.apk para verificar seu checksum", releaseApk.isFile)
         val expectedHash = File(projectRoot, "SHA256SUMS.txt").readText(Charsets.UTF_8)
             .trim().split("\\s+".toRegex(), limit = 2).first().uppercase()
         val digest = MessageDigest.getInstance("SHA-256")
@@ -50,16 +50,16 @@ class ReleaseDeliveryVerificationTest {
             }
         }
         val computedHash = digest.digest().joinToString("") { "%02X".format(it) }
-        assertEquals("O hash real de ControleGitHub-v2.7.0.apk deve bater com SHA256SUMS.txt", expectedHash, computedHash)
+        assertEquals("O hash real de ControleGitHub-v2.7.1.apk deve bater com SHA256SUMS.txt", expectedHash, computedHash)
     }
 
     @Test
     fun releaseNotesDocumentContainsAllRequiredSections() {
-        val notesFile = File(projectRoot, "docs/RELEASE_NOTES_v2.7.0.md")
-        assertTrue("docs/RELEASE_NOTES_v2.7.0.md deve existir", notesFile.exists())
+        val notesFile = File(projectRoot, "docs/RELEASE_NOTES_v2.7.1.md")
+        assertTrue("docs/RELEASE_NOTES_v2.7.1.md deve existir", notesFile.exists())
 
         val text = notesFile.readText(Charsets.UTF_8)
-        assertTrue("Deve referenciar a versão 2.7.0", text.contains("2.7.0"))
+        assertTrue("Deve referenciar a versão 2.7.1", text.contains("2.7.1"))
         assertTrue("Deve conter o hash canônico SHA-256", text.contains(canonicalSha256))
         assertTrue("Deve referenciar o canal oficial GitHub Releases", text.contains("github.com/playertwo1/controlegithub/releases"))
     }

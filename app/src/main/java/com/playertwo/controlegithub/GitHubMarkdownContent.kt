@@ -5,11 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import android.text.Html
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -25,6 +27,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -35,8 +38,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.findRootCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -83,15 +92,10 @@ internal val LocalGitHubMarkdownNavigator =
 internal val LocalGitHubMarkdownImageLoader =
     staticCompositionLocalOf { GitHubMarkdownImageLoader() }
 
-private val automaticReadmeImageHosts = setOf(
-    "raw.githubusercontent.com",
-    "user-images.githubusercontent.com",
-    "github-production-user-asset-6210df.s3.amazonaws.com",
-    "camo.githubusercontent.com",
-    "private-user-images.githubusercontent.com"
-)
-
 private val LocalReadmeImages = staticCompositionLocalOf { emptyMap<Node, List<Pair<String, String>>>() }
+
+private val LocalEnlargeReadmeImage =
+    staticCompositionLocalOf<((String, String) -> Unit)?> { null }
 
 private fun Node.markdownDescendants(): Sequence<Node> = sequence {
     var child = firstChild
@@ -110,22 +114,16 @@ private fun Node.imageSources(): List<Pair<String, String>> = when (this) {
     else -> emptyList()
 }
 
-private fun collectReadmeImages(
+internal fun collectReadmeImages(
     document: Node,
     repository: GitHubMarkdownRepositoryImages?
 ): Map<Node, List<Pair<String, String>>> {
     if (repository == null) return emptyMap()
     val images = mutableMapOf<Node, MutableList<Pair<String, String>>>()
-    var count = 0
     for (node in document.markdownDescendants()) {
         for ((source, label) in node.imageSources()) {
-            val url = resolveGitHubMarkdownImage(source, repository) ?: continue
-            val host = java.net.URI(url).host.lowercase()
-            if (host !in automaticReadmeImageHosts) continue
+            val url = automaticReadmeImageUrl(source, repository) ?: continue
             images.getOrPut(node) { mutableListOf() }.add(url to label)
-            count++
-            // shortcut: bound eager image loading, revisit when the renderer virtualizes offscreen images.
-            if (count == 12) return images
         }
     }
     return images
@@ -193,7 +191,15 @@ internal fun GitHubMarkdownContent(
                     val readmeImages = remember(parsed.document, repositoryImages) {
                         collectReadmeImages(parsed.document, repositoryImages)
                     }
-                    CompositionLocalProvider(LocalReadmeImages provides readmeImages) {
+                    CompositionLocalProvider(
+                        LocalReadmeImages provides readmeImages,
+                        LocalEnlargeReadmeImage provides { url, label ->
+                            val target = classifyGitHubMarkdownLink(url)
+                            if (target is GitHubMarkdownLinkTarget.External) {
+                                activeImagePreview = target to label
+                            }
+                        }
+                    ) {
                         MarkdownBlocks(parsed.document, ::openMarkdownTarget) { source ->
                             resolveGitHubMarkdownImage(source, repositoryImages)
                         }
@@ -267,7 +273,7 @@ private fun MarkdownImagePreviewDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(host, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
-                MarkdownImage(url, imageLabel, imageLoader)
+                MarkdownImage(url, imageLabel, imageLoader, showStatusLabel = false)
             }
         },
         confirmButton = {
@@ -281,19 +287,25 @@ private fun MarkdownImage(
     url: String,
     imageLabel: String,
     imageLoader: GitHubMarkdownImageLoader,
-    maxDimension: Int = 2048
+    maxDimension: Int = 2048,
+    showStatusLabel: Boolean = true,
+    onEnlarge: (() -> Unit)? = null
 ) {
-    val uiState by produceState<MarkdownImageUiState>(MarkdownImageUiState.Loading, url, imageLoader) {
+    var attempt by remember(url) { mutableIntStateOf(0) }
+    val uiState by produceState<MarkdownImageUiState>(MarkdownImageUiState.Loading, url, imageLoader, attempt) {
         value = MarkdownImageUiState.Loading
         value = withContext(Dispatchers.IO) {
             when (val result = imageLoader.load(url)) {
                 is MarkdownImageLoadResult.Failed -> MarkdownImageUiState.Error(result.message)
                 is MarkdownImageLoadResult.Loaded -> {
-                    val decoded = decodeMarkdownImageBitmap(result.bytes, maxDimension)
-                    if (decoded != null) {
-                        MarkdownImageUiState.Ready(decoded.asImageBitmap())
-                    } else {
-                        MarkdownImageUiState.Error("Não foi possível decodificar a imagem recebida.")
+                    val unsupported = unsupportedMarkdownImageMessage(result.bytes, result.contentType)
+                    when {
+                        unsupported != null -> MarkdownImageUiState.Error(unsupported)
+                        else -> {
+                            val decoded = decodeMarkdownImageBitmap(result.bytes, maxDimension)
+                            if (decoded != null) MarkdownImageUiState.Ready(decoded.asImageBitmap())
+                            else MarkdownImageUiState.Error("Não foi possível decodificar a imagem recebida.")
+                        }
                     }
                 }
             }
@@ -301,16 +313,34 @@ private fun MarkdownImage(
     }
 
     when (val current = uiState) {
-        MarkdownImageUiState.Loading -> Text("Carregando imagem...")
-        is MarkdownImageUiState.Ready -> Image(
-            bitmap = current.bitmap,
-            contentDescription = imageLabel,
-            modifier = Modifier.fillMaxWidth().testTag("markdown_loaded_image")
-        )
-        is MarkdownImageUiState.Error -> Text(
-            text = current.message,
-            color = MaterialTheme.colorScheme.error
-        )
+        MarkdownImageUiState.Loading -> Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            if (showStatusLabel) Text(imageLabel)
+            Text("Carregando imagem...")
+        }
+        is MarkdownImageUiState.Ready -> {
+            val ratio = current.bitmap.width.coerceAtLeast(1).toFloat() / current.bitmap.height.coerceAtLeast(1)
+            Image(
+                bitmap = current.bitmap,
+                contentDescription = imageLabel,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(ratio)
+                    .testTag("markdown_loaded_image")
+                    .then(
+                        if (onEnlarge != null) {
+                            Modifier.clickable(onClickLabel = "Ampliar imagem") { onEnlarge() }
+                        } else {
+                            Modifier
+                        }
+                    )
+            )
+        }
+        is MarkdownImageUiState.Error -> Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            if (showStatusLabel) Text(imageLabel)
+            Text(current.message, color = MaterialTheme.colorScheme.error)
+            TextButton(onClick = { attempt++ }) { Text("Tentar novamente") }
+        }
     }
 }
 
@@ -318,10 +348,42 @@ private fun MarkdownImage(
 private fun ReadmeImages(node: Node) {
     val images = LocalReadmeImages.current
     if (images.isEmpty()) return
-    val loader = LocalGitHubMarkdownImageLoader.current
     for (element in sequenceOf(node) + node.markdownDescendants()) {
         for ((url, label) in images[element].orEmpty()) {
-            MarkdownImage(url, label, loader, maxDimension = 1024)
+            ReadmeImageSlot(url, label)
+        }
+    }
+}
+
+@Composable
+private fun ReadmeImageSlot(url: String, label: String) {
+    var visible by remember(url) { mutableStateOf(false) }
+    val enlarge = LocalEnlargeReadmeImage.current
+    val loader = LocalGitHubMarkdownImageLoader.current
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .onGloballyPositioned { coordinates ->
+                if (visible || !coordinates.isAttached) return@onGloballyPositioned
+                if (coordinates.size.width == 0 || coordinates.size.height == 0) return@onGloballyPositioned
+                val bounds = coordinates.boundsInRoot()
+                val root = coordinates.findRootCoordinates().size
+                val onScreen = bounds.bottom > 0f && bounds.top < root.height &&
+                    bounds.right > 0f && bounds.left < root.width
+                if (onScreen) visible = true
+            }
+            .then(if (visible) Modifier else Modifier.semantics { contentDescription = label })
+    ) {
+        if (!visible) {
+            Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        } else {
+            MarkdownImage(
+                url = url,
+                imageLabel = label,
+                imageLoader = loader,
+                maxDimension = 1024,
+                onEnlarge = enlarge?.let { callback -> { callback(url, label) } }
+            )
         }
     }
 }

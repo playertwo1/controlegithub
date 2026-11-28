@@ -108,6 +108,7 @@ internal fun GitHubNotificationsScreen(
     var readFilter by rememberSaveable(login) { mutableStateOf(NotificationReadFilter.ALL) }
     var typeFilter by rememberSaveable(login) { mutableStateOf(NotificationTypeFilter.ALL) }
     var openedAlertId by rememberSaveable(login) { mutableStateOf<String?>(null) }
+    var alertOpenError by rememberSaveable(login) { mutableStateOf<String?>(null) }
     var selectedNotification by remember(token) { mutableStateOf<GitHubNotification?>(null) }
     var originMode by remember(token) { mutableStateOf(NotificationOriginMode.NONE) }
     var openedDirectlyFromCard by remember(token) { mutableStateOf(false) }
@@ -181,6 +182,7 @@ internal fun GitHubNotificationsScreen(
                 notification = withContext(Dispatchers.IO) { fetchNotificationThread(client, token, threadId) }
             }
             if (notification != null) {
+                alertOpenError = null
                 selectedNotification = notification
                 originMode = when {
                     notification.subjectType == "Release" -> NotificationOriginMode.RELEASES
@@ -189,8 +191,14 @@ internal fun GitHubNotificationsScreen(
                 }
                 openedDirectlyFromCard = originMode != NotificationOriginMode.NONE
             } else {
+                selectedNotification = null
+                originMode = NotificationOriginMode.NONE
+                openedDirectlyFromCard = false
                 openedAlertId = null
+                alertOpenError = "Não foi possível abrir este aviso."
             }
+        } else {
+            alertOpenError = null
         }
         if (alertIntent != null) onAlertConsumed()
     }
@@ -371,6 +379,11 @@ internal fun GitHubNotificationsScreen(
                 }
             }
             Text("Avisos", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        }
+        alertOpenError?.let { message ->
+            item {
+                Text(message, color = MaterialTheme.colorScheme.error, modifier = Modifier.testTag("alert-open-error"))
+            }
         }
         item {
             FilterRow(readFilter.label, NotificationReadFilter.entries.map { it.label }) { label ->

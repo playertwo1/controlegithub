@@ -98,6 +98,7 @@ class GitHubNotificationsScreenTest {
                 compose.onAllNodesWithText("Fixture actual issue").fetchSemanticsNodes().isNotEmpty()
             }
             assertTrue(api.requests.any { it.startsWith("GET $threadPath ") })
+            assertTrue(api.requests.none { it.startsWith("PATCH ") })
             restoration.emulateSavedInstanceStateRestore()
             compose.waitUntil(10_000) {
                 compose.onAllNodesWithText("Fixture actual issue").fetchSemanticsNodes().isNotEmpty()
@@ -107,6 +108,34 @@ class GitHubNotificationsScreenTest {
                 compose.onAllNodesWithText("Nenhuma notificação.").fetchSemanticsNodes().isNotEmpty()
             }
             compose.onNodeWithText("Fixture actual issue").assertDoesNotExist()
+        }
+    }
+
+    @Test
+    fun missingAlertOpensInboxWithWarningAndDoesNotMarkRead() {
+        NotificationsScreenApi(notificationsJson = "[]").use { api ->
+            compose.setContent {
+                ControleTheme(AppThemeMode.LIGHT) {
+                    GitHubNotificationsScreen(
+                        modifier = Modifier,
+                        client = androidx.compose.runtime.remember { GitHubHttpClient(api.baseUri) },
+                        session = androidx.compose.runtime.remember { notificationFixtureSession() },
+                        sessionRestoring = false,
+                        onSessionExpired = {},
+                        onAppearance = {},
+                        alertIntent = Intent(LocalNotificationManager.OPEN_ALERT).apply {
+                            putExtra(LocalNotificationManager.EXTRA_THREAD_ID, "thread-missing")
+                        },
+                        onAlertConsumed = {}
+                    )
+                }
+            }
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Não foi possível abrir este aviso.").fetchSemanticsNodes().isNotEmpty() &&
+                    compose.onAllNodesWithText("Nenhuma notificação.").fetchSemanticsNodes().isNotEmpty()
+            }
+            assertTrue(api.requests.any { it.startsWith("GET /notifications/threads/thread-missing ") })
+            assertTrue(api.requests.none { it.startsWith("PATCH ") })
         }
     }
 

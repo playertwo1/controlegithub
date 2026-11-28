@@ -77,10 +77,57 @@ internal fun filterAlertCandidates(
     }
 }
 
+internal data class PlannedLocalAlert(
+    val notificationId: Int,
+    val threadId: String?,
+    val title: String,
+    val text: String,
+    val summary: Boolean
+)
+
+internal fun planLocalAlerts(items: List<GitHubNotification>): List<PlannedLocalAlert> {
+    val unique = items.distinctBy { it.id }
+    if (unique.isEmpty()) return emptyList()
+    if (unique.size == 1) {
+        val item = unique.first()
+        return listOf(plannedIndividualAlert(item, usedIds = mutableSetOf()))
+    }
+    val usedIds = mutableSetOf<Int>()
+    val individuals = unique.map { plannedIndividualAlert(it, usedIds) }
+    return individuals + PlannedLocalAlert(
+        notificationId = LocalNotificationManager.NOTIFICATION_ID,
+        threadId = null,
+        title = "ControleGitHub (${unique.size} novas notificações)",
+        text = unique.take(3).joinToString("; ") { it.title ?: it.repositoryFullName },
+        summary = true
+    )
+}
+
+private fun plannedIndividualAlert(
+    item: GitHubNotification,
+    usedIds: MutableSet<Int>
+): PlannedLocalAlert {
+    var id = item.id.hashCode() and 0x7fffffff
+    if (id == 0) id = 1
+    while (id == LocalNotificationManager.NOTIFICATION_ID || id in usedIds) {
+        id = if (id == Int.MAX_VALUE) 1 else id + 1
+    }
+    usedIds.add(id)
+    return PlannedLocalAlert(
+        notificationId = id,
+        threadId = item.id,
+        title = item.repositoryFullName,
+        text = item.title ?: "Nova atividade",
+        summary = false
+    )
+}
+
 internal object LocalNotificationManager {
     const val CHANNEL_ID = "controlegithub_alerts"
     const val CHANNEL_NAME = "Alertas do GitHub"
     const val NOTIFICATION_ID = 20261
+    const val ALERT_GROUP = "controlegithub_alerts"
+    const val ALERT_TAG = "controlegithub_alert"
     const val OPEN_ALERT = "com.playertwo.controlegithub.OPEN_ALERT"
     const val EXTRA_THREAD_ID = "thread_id"
 
@@ -105,52 +152,55 @@ internal object LocalNotificationManager {
     }
 
     fun notifyNewEvents(context: Context, items: List<GitHubNotification>): Int {
-        if (items.isEmpty()) return 0
+        val posts = planLocalAlerts(items)
+        if (posts.isEmpty()) return 0
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager ?: return 0
         if (!manager.areNotificationsEnabled()) return 0
 
         ensureChannel(context)
-
-        val title = if (items.size == 1) {
-            val first = items.first()
-            first.repositoryFullName
-        } else {
-            "ControleGitHub (${items.size} novas notificações)"
-        }
-
-        val text = if (items.size == 1) {
-            val first = items.first()
-            first.title ?: "Nova atividade"
-        } else {
-            items.take(3).joinToString("; ") { it.title ?: it.repositoryFullName }
-        }
-
-        val intent = Intent(context, MainActivity::class.java).apply {
-            action = OPEN_ALERT
-            putExtra(EXTRA_THREAD_ID, items.singleOrNull()?.id)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        }
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val notification = Notification.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_stat_notification)
-            .setContentTitle(title)
-            .setContentText(text)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-            .build()
-
         return try {
-            manager.notify(NOTIFICATION_ID, notification)
-            items.size
+            cancelPostedAlerts(manager)
+            val grouped = posts.size > 1
+            for (post in posts) {
+                val notification = Notification.Builder(context, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_stat_notification)
+                    .setContentTitle(post.title)
+                    .setContentText(post.text)
+                    .setContentIntent(alertContentIntent(context, post))
+                    .setAutoCancel(true)
+                    .apply {
+                        if (grouped) {
+                            setGroup(ALERT_GROUP)
+                            setGroupSummary(post.summary)
+                        }
+                    }
+                    .build()
+                manager.notify(ALERT_TAG, post.notificationId, notification)
+            }
+            posts.count { !it.summary }
         } catch (_: SecurityException) {
             0
         }
+    }
+
+    private fun alertContentIntent(context: Context, post: PlannedLocalAlert): PendingIntent {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            action = OPEN_ALERT
+            if (post.threadId != null) putExtra(EXTRA_THREAD_ID, post.threadId)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        return PendingIntent.getActivity(
+            context,
+            post.notificationId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    }
+
+    private fun cancelPostedAlerts(manager: NotificationManager) {
+        manager.activeNotifications
+            .filter { it.tag == ALERT_TAG }
+            .forEach { manager.cancel(ALERT_TAG, it.id) }
     }
 
     fun cancelAll(context: Context) {

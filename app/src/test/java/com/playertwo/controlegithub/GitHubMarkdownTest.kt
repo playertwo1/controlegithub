@@ -131,6 +131,43 @@ class GitHubMarkdownTest {
             githubHtmlImageSources("<img src=\"docs/images/page-cover.png\" alt=\"Capa\">")
         )
     }
+
+    @Test fun readmeCollectsRelativeHtmlAndAllowedHttpsWhenTheyBelongToTheRepository() {
+        val repository = GitHubMarkdownRepositoryImages("acme", "Mobile", "feature/mobile")
+        val document = parseGitHubMarkdown(
+            """
+            # Intro
+
+            <img src="docs/images/page-cover.png" alt="README cover">
+
+            ![logo](https://user-images.githubusercontent.com/logo.png)
+
+            ![external image](https://example.test/external.png)
+
+            ![broken](https://raw.githubusercontent.com/acme/Mobile/feature/mobile/missing.png)
+            """.trimIndent()
+        )!!
+
+        assertEquals(
+            listOf(
+                "https://raw.githubusercontent.com/acme/Mobile/feature/mobile/docs/images/page-cover.png" to "README cover",
+                "https://user-images.githubusercontent.com/logo.png" to "logo",
+                "https://raw.githubusercontent.com/acme/Mobile/feature/mobile/missing.png" to "broken"
+            ),
+            collectReadmeImages(document, repository).values.flatten()
+        )
+        assertTrue(collectReadmeImages(document, null).isEmpty())
+        assertTrue(collectReadmeImages(parseGitHubMarkdown("# Só texto")!!, repository).isEmpty())
+    }
+
+    @Test fun readmeKeepsEveryAllowedImageInsteadOfStoppingAtTwelve() {
+        val repository = GitHubMarkdownRepositoryImages("acme", "app", "main")
+        val markdown = (1..13).joinToString("\n") { "![n$it](https://user-images.githubusercontent.com/$it.png)" }
+        val images = collectReadmeImages(parseGitHubMarkdown(markdown)!!, repository).values.flatten()
+
+        assertEquals(13, images.size)
+        assertEquals("https://user-images.githubusercontent.com/13.png" to "n13", images.last())
+    }
 }
 
 private fun org.commonmark.node.Node.children(): Sequence<org.commonmark.node.Node> = sequence {

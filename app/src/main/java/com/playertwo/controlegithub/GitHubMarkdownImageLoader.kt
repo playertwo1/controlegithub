@@ -119,6 +119,16 @@ internal class GitHubMarkdownImageLoader(
     }
 }
 
+internal fun unsupportedMarkdownImageMessage(bytes: ByteArray, contentType: String?): String? {
+    val type = contentType?.substringBefore(';')?.trim()?.lowercase().orEmpty()
+    val head = bytes.copyOfRange(0, minOf(bytes.size, 256))
+        .toString(Charsets.UTF_8)
+        .trimStart()
+        .lowercase()
+    val svg = type == "image/svg+xml" || head.startsWith("<svg") || (head.startsWith("<?xml") && "<svg" in head)
+    return if (svg) "SVG não é exibido no app. Esse formato não tem decodificação segura aqui." else null
+}
+
 internal fun decodeMarkdownImageBitmap(bytes: ByteArray, maxDimension: Int = 2048): Bitmap? =
     runCatching {
         val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
